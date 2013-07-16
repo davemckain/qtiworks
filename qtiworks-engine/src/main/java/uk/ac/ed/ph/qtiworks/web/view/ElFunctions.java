@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.qtiworks.web.view;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
+import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiContext;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiResource;
 import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
@@ -59,25 +60,8 @@ import org.apache.commons.lang3.StringEscapeUtils;
  */
 public final class ElFunctions {
 
-    /* NB: We prefer String over URI here as it's more general, and takes advantage of
-     * stringification within the JSTL.
-     */
-    public static String extractContentPackagePath(final String uriString) {
-        return QtiContentPackageExtractor.PACKAGE_URI_SCHEME.uriToDecodedPath(uriString);
-    }
-
-    public static String dumpObject(final Object object) {
-        return StringEscapeUtils.escapeXml(ObjectDumper.dumpObject(object, DumpMode.DEEP));
-    }
-
-    //-------------------------------------------------
-
     public static String internalLink(final PageContext pageContext, final String withinContextUrl) {
         return escapeLink(ViewUtilities.createInternalLink(getRequest(pageContext), withinContextUrl));
-    }
-
-    private static HttpServletRequest getRequest(final PageContext pageContext) {
-        return (HttpServletRequest) pageContext.getRequest();
     }
 
     public static String escapeLink(final String link) {
@@ -87,6 +71,10 @@ public final class ElFunctions {
         catch (final URISyntaxException e) {
             throw new QtiWorksRuntimeException("Bad URI link " + link);
         }
+    }
+
+    private static HttpServletRequest getRequest(final PageContext pageContext) {
+        return (HttpServletRequest) pageContext.getRequest();
     }
 
     //-------------------------------------------------
@@ -111,6 +99,19 @@ public final class ElFunctions {
         return time!=null ? ViewUtilities.getDayDateAndTimeFormat().format(time) : "";
     }
 
+    public static String dumpObject(final Object object) {
+        return escapeXml(ObjectDumper.dumpObject(object, DumpMode.DEEP));
+    }
+
+    //-------------------------------------------------
+
+    /* NB: We prefer String over URI here as it's more general, and takes advantage of
+     * stringification within the JSTL.
+     */
+    public static String extractContentPackagePath(final String uriString) {
+        return QtiContentPackageExtractor.PACKAGE_URI_SCHEME.uriToDecodedPath(uriString);
+    }
+
     public static String formatAssessmentType(final AssessmentObjectType assessmentType) {
         switch (assessmentType) {
             case ASSESSMENT_ITEM: return "Item";
@@ -119,15 +120,21 @@ public final class ElFunctions {
         }
     }
 
-    //-------------------------------------------------
+    public static String formatAssessmentFileName(final AssessmentPackage assessmentPackage) {
+       return escapeXml(assessmentPackage.getAssessmentHref().replaceFirst("^.+/", ""));
+    }
 
     public static String formatLtiContextTitle(final LtiContext ltiContext) {
         final String title = ltiContext.getContextTitle();
-        return title!=null ? title : "This Course";
+        return escapeXml(title!=null ? title : "This Course");
     }
 
     public static String formatLtiResourceTitle(final LtiResource ltiResource) {
         final String title = ltiResource.getResourceLinkTitle();
-        return title!=null ? title : "This Launch";
+        return escapeXml(title!=null ? title : "This Launch");
+    }
+
+    private static String escapeXml(final String rawString) {
+        return StringEscapeUtils.escapeXml(rawString);
     }
 }

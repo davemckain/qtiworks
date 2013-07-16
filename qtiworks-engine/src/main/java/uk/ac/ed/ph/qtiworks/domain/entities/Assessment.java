@@ -33,8 +33,6 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
-import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
-
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 
@@ -148,22 +146,6 @@ public class Assessment implements BaseEntity, TimestampedOnCreation {
     @Basic(optional=false)
     @Column(name="public")
     private boolean isPublic;
-
-    /**
-     * Short name for this Assessment.
-     * Used for listings and other stuff.
-     */
-    @Basic(optional=false)
-    @Column(name="name", length=DomainConstants.ASSESSMENT_NAME_MAX_LENGTH)
-    private String name;
-
-    /**
-     * Title of this item/test.
-     * Used for listings and other stuff.
-     */
-    @Basic(optional=false)
-    @Column(name="title", length=DomainConstants.ASSESSMENT_TITLE_MAX_LENGTH)
-    private String title;
 
     /**
      * For sample items, this specifies the category it belongs to. This should be set to null
@@ -301,24 +283,6 @@ public class Assessment implements BaseEntity, TimestampedOnCreation {
     }
 
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
-    }
-
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(final String title) {
-        this.title = title;
-    }
-
-
     public SampleCategory getSampleCategory() {
         return sampleCategory;
     }
@@ -386,8 +350,6 @@ public class Assessment implements BaseEntity, TimestampedOnCreation {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(aid=" + aid
                 + ",version=" + version
-                + ",name=" + name
-                + ",title=" + title
                 + ",assessmentType=" + assessmentType
                 + ",isPublic=" + isPublic
                 + ",packageImportVersion=" + packageImportVersion

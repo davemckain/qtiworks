@@ -33,6 +33,8 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
+import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
+
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.resolution.RootNodeLookup;
@@ -155,6 +157,11 @@ public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
     @Basic(optional=false)
     @Column(name="assessment_href")
     private String assessmentHref;
+
+    /** Title of this item/test within this package. Created on import */
+    @Basic(optional=false)
+    @Column(name="title", length=DomainConstants.ASSESSMENT_TITLE_MAX_LENGTH, updatable=false)
+    private String title;
 
     /** Has this item/test been validated? */
     @Basic(optional=false)
@@ -287,6 +294,15 @@ public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
     }
 
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(final String title) {
+        this.title = title;
+    }
+
+
     public boolean isValidated() {
         return validated;
     }
@@ -354,6 +370,9 @@ public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(apid=" + apid
+                + ",assessmentType=" + assessmentType
+                + ",importType=" + importType
+                + ",title=" + title
                 + ")";
     }
 

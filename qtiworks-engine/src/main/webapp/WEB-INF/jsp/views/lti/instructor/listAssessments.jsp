@@ -73,8 +73,8 @@ assessmentListRouting (aid -> action -> URL)
                 </c:choose>
               </td>
               <td>
-                <h4><a href="${utils:escapeLink(assessmentRouting['show'])}"><c:out value="${assessment.name}"/></a></h4>
-                <span class="title"><c:out value="${assessment.title}"/></span>
+                <h4><a href="${utils:escapeLink(assessmentRouting['show'])}"><c:out value="${utils:formatAssessmentFileName(assessmentPackage)}"/></a></h4>
+                <span class="title"><c:out value="${assessmentPackage.title}"/></span>
               </td>
               <td class="center">
                 <c:choose>

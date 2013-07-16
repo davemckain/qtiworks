@@ -86,6 +86,14 @@ All Rights Reserved.
     )</function-signature>
   </function>
   <function>
+    <description>AssessmentPackage assessment file name formatting</description>
+    <name>formatAssessmentFileName</name>
+    <function-class>uk.ac.ed.ph.qtiworks.web.view.ElFunctions</function-class>
+    <function-signature>String formatAssessmentFileName(
+      uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage
+    )</function-signature>
+  </function>
+  <function>
     <description>LTIContext title formatting</description>
     <name>formatLtiContextTitle</name>
     <function-class>uk.ac.ed.ph.qtiworks.web.view.ElFunctions</function-class>

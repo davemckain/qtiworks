@@ -29,7 +29,7 @@ All Rights Reserved
   <h4>
     <c:choose>
       <c:when test="${test}">
-        Test Item at ${utils:extractContentPackagePath(itemSystemId)} validation ${errorWord}
+        Test Item at <c:out value="${utils:extractContentPackagePath(itemSystemId)}"/> validation ${errorWord}
       </c:when>
       <c:otherwise>
         Item validation ${errorWord}
@@ -40,7 +40,7 @@ All Rights Reserved
     <p>
       <c:choose>
         <c:when test="${test}">
-          The item at path ${utils:extractContentPackagePath(itemSystemId)}
+        The item at path <c:out value="${utils:extractContentPackagePath(itemSystemId)}"/>
           referenced by this test
           ${validationResult.valid ? 'passed' : 'did not pass'}
           all of our validation checks. Further details are provided below.
@@ -81,7 +81,7 @@ All Rights Reserved
             <div class="details">
               <p>
                 We could not read in and parse the response processing template with href
-                <b>${utils:extractContentPackagePath(resolvedResponseProcessingTemplateLookup.systemId)}</b>.
+                <b><c:out value="${utils:extractContentPackagePath(resolvedResponseProcessingTemplateLookup.systemId)}"/></b>.
               </p>
               <%-- (These are in context of RP) --%>
               <validator:xmlFindResult rootNodeLookup="${templateLookup}"/>

@@ -23,15 +23,13 @@ assessmentRouting (action -> URL)
     <a href="${utils:escapeLink(primaryRouting['dashboard'])}">QTIWorks Dashboard</a> &#xbb;
     <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Your assessments</a> &#xbb;
   </nav>
-  <h2>Assessment '${fn:escapeXml(assessment.name)}'</h2>
+  <h2>Assessment '${fn:escapeXml(utils:formatAssessmentFileName(assessmentPackage))}'</h2>
 
   <div class="grid_6">
     <div class="infoBox">
       <div class="cat">Title</div>
       <div class="value">
-        <a href="${utils:escapeLink(assessmentRouting['edit'])}">
-          ${fn:escapeXml(assessment.title)}
-        </a>
+        ${fn:escapeXml(assessmentPackage.title)}
       </div>
     </div>
   </div>
@@ -116,7 +114,6 @@ assessmentRouting (action -> URL)
   <h4>Actions</h4>
 
   <ul>
-    <li><a href="${utils:escapeLink(assessmentRouting['edit'])}">Edit Assessment properties</a></li>
     <li><a href="${utils:escapeLink(assessmentRouting['replace'])}">Replace Assessment Package Content</a></li>
     <li><a href="${utils:escapeLink(assessmentRouting['validate'])}">Show validation status</a></li>
     <c:if test="${assessmentPackage.launchable}">

@@ -70,14 +70,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * Helper service for importing assessment package data into the filesystem
+ * Tiny helper service for importing assessment package data into the filesystem
+ * <p>
+ * (This should have been absorbed into {@link AssessmentPackageFileService}, but its current lack
+ * of dependencies makes it easy to unit test!)
  *
  * @author David McKain
  */
 @Service
-public class AssessmentPackageImporter {
+public class AssessmentPackageFileImporter {
 
-    private static final Logger logger = LoggerFactory.getLogger(AssessmentPackageImporter.class);
+    private static final Logger logger = LoggerFactory.getLogger(AssessmentPackageFileImporter.class);
 
     /** File name that will be used when uploading standalone XML */
     private static final String STANDALONE_XML_IMPORT_FILE_NAME = "qti.xml";
@@ -85,6 +88,9 @@ public class AssessmentPackageImporter {
     /**
      * Imports the assessment data from the given {@link MultipartFile} into the given
      * sandbox directory, which the caller must have created.
+     * <p>
+     * Returns a partially-filled unpersisted {@link AssessmentPackage} object representing the
+     * results of this.
      *
      * @throws AssessmentPackageFileImportException
      * @throws IllegalArgumentException if any of the provided arguments are null
@@ -96,20 +102,20 @@ public class AssessmentPackageImporter {
             throws AssessmentPackageFileImportException {
         Assert.notNull(importSandboxDirectory, "importSandboxDirectory");
         Assert.notNull(multipartFile, "multipartFile");
-        AssessmentPackage result = null;
+        AssessmentPackage assessmentPackage = null;
 
         final String contentType = multipartFile.getContentType();
         if ("application/xml".equals(contentType) || "text/xml".equals(contentType) || contentType.endsWith("+xml")) {
             /* Looks like an XML content type */
             logger.debug("Import data uses a known XML MIME type {} so saving to {} and treating as XML", contentType, importSandboxDirectory);
-            result = importStandaloneXml(importSandboxDirectory, multipartFile);
+            assessmentPackage = importStandaloneXml(importSandboxDirectory, multipartFile);
         }
         else {
             /* Try to treat as a ZIP */
             final boolean zipSuccess = tryUnpackZipFile(importSandboxDirectory, multipartFile);
             if (zipSuccess) {
                 logger.debug("Import data was successfully expanded as a ZIP file");
-                result = processUnpackedZip(importSandboxDirectory);
+                assessmentPackage = processUnpackedZip(importSandboxDirectory);
             }
             else {
                 logger.warn("Import data with MIME type {} was not a supported XML MIME type and no ZIP entries were found within", contentType);
@@ -117,8 +123,8 @@ public class AssessmentPackageImporter {
             }
         }
 
-        logger.info("Successfully imported new {}", result);
-        return result;
+        logger.info("Successfully imported data for new {}", assessmentPackage);
+        return assessmentPackage;
     }
 
     private AssessmentPackage importStandaloneXml(final File importSandboxDirectory, final MultipartFile multipartFile) {

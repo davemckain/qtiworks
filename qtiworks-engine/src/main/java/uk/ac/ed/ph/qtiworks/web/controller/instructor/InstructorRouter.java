@@ -104,7 +104,6 @@ public class InstructorRouter {
     public Map<String, String> buildAssessmentRouting(final long aid) {
         final Map<String, String> result = new HashMap<String, String>();
         result.put("show", buildWebUrl("/assessment/" + aid));
-        result.put("edit", buildWebUrl("/assessment/" + aid + "/edit"));
         result.put("replace", buildWebUrl("/assessment/" + aid + "/replace"));
         result.put("validate", buildWebUrl("/assessment/" + aid + "/validate"));
         result.put("delete", buildWebUrl("/assessment/" + aid + "/delete"));

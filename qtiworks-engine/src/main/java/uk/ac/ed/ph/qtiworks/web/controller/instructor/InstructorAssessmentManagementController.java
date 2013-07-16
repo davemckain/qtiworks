@@ -47,7 +47,6 @@ import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentAndPackage;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentLtiOutcomesSettingsTemplate;
-import uk.ac.ed.ph.qtiworks.services.domain.AssessmentMetadataTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException.APFIFailureReason;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException;
@@ -167,40 +166,6 @@ public class InstructorAssessmentManagementController {
         final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
         instructorModelHelper.setupModelForAssessment(assessment, model);
         return "showAssessment";
-    }
-
-    @RequestMapping(value="/assessment/{aid}/edit", method=RequestMethod.GET)
-    public String showEditAssessmentForm(@PathVariable final long aid, final Model model)
-            throws PrivilegeException, DomainEntityNotFoundException {
-        final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
-
-        final AssessmentMetadataTemplate template = new AssessmentMetadataTemplate();
-        template.setName(assessment.getName());
-        template.setTitle(assessment.getTitle());
-        model.addAttribute(template);
-
-        instructorModelHelper.setupModelForAssessment(assessment, model);
-        return "editAssessmentForm";
-    }
-
-    @RequestMapping(value="/assessment/{aid}/edit", method=RequestMethod.POST)
-    public String handleEditAssessmentForm(@PathVariable final long aid, final Model model,
-            final RedirectAttributes redirectAttributes,
-            final @Valid @ModelAttribute AssessmentMetadataTemplate template, final BindingResult result)
-            throws PrivilegeException, DomainEntityNotFoundException {
-        /* Validate command Object */
-        if (result.hasErrors()) {
-            instructorModelHelper.setupModelForAssessment(aid, model);
-            return "editAssessmentForm";
-        }
-        try {
-            assessmentManagementService.updateAssessmentMetadata(aid, template);
-        }
-        catch (final BindException e) {
-            throw new QtiWorksLogicException("Top layer validation is currently same as service layer in this case, so this Exception should not happen");
-        }
-        GlobalRouter.addFlashMessage(redirectAttributes, "Assessment successfully edited");
-        return instructorRouter.buildInstructorRedirect("/assessment/" + aid);
     }
 
     @RequestMapping(value="/assessment/{aid}/replace", method=RequestMethod.GET)

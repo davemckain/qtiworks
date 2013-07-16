@@ -54,18 +54,18 @@ import org.springframework.web.multipart.MultipartFile;
 import com.google.common.io.Files;
 
 /**
- * Tests the {@link AssessmentPackageImporter} helper/service
+ * Tests the {@link AssessmentPackageFileImporter} helper/service
  *
  * @author David McKain
  */
-public class AssessmentPackageImporterTest {
+public class AssessmentPackageFileImporterTest {
 
-    private AssessmentPackageImporter importer;
+    private AssessmentPackageFileImporter assessmentPackageFileImporter;
     private File importSandboxDirectory;
 
     @Before
     public void setup() {
-        importer = new AssessmentPackageImporter();
+        assessmentPackageFileImporter = new AssessmentPackageFileImporter();
         importSandboxDirectory = Files.createTempDir();
     }
 
@@ -80,12 +80,12 @@ public class AssessmentPackageImporterTest {
 
     @Test(expected=IllegalArgumentException.class)
     public void nullDirectory() throws Exception {
-        importer.importAssessmentPackageData(null, getThisUnitTestMultipartFile("uk/ac/ed/ph/qtiworks/samples/ims/choice.xml", "text/xml"));
+        assessmentPackageFileImporter.importAssessmentPackageData(null, getThisUnitTestMultipartFile("uk/ac/ed/ph/qtiworks/samples/ims/choice.xml", "text/xml"));
     }
 
     @Test(expected=IllegalArgumentException.class)
     public void nullResource() throws Exception {
-        importer.importAssessmentPackageData(importSandboxDirectory, null);
+        assessmentPackageFileImporter.importAssessmentPackageData(importSandboxDirectory, null);
     }
 
     //----------------------------------------------------------
@@ -94,7 +94,7 @@ public class AssessmentPackageImporterTest {
     public void importStandaloneItem() throws Exception {
         final MultipartFile multipartFile = getThisUnitTestMultipartFile("uk/ac/ed/ph/qtiworks/samples/ims/choice.xml", "text/xml");
 
-        final AssessmentPackage result = importer.importAssessmentPackageData(importSandboxDirectory, multipartFile);
+        final AssessmentPackage result = assessmentPackageFileImporter.importAssessmentPackageData(importSandboxDirectory, multipartFile);
         Assert.assertEquals(importSandboxDirectory.getPath(), result.getSandboxPath());
         Assert.assertEquals(AssessmentObjectType.ASSESSMENT_ITEM, result.getAssessmentType());
         Assert.assertEquals(AssessmentPackageImportType.STANDALONE_ITEM_XML, result.getImportType());
@@ -104,7 +104,7 @@ public class AssessmentPackageImporterTest {
     public void importPackagedItem() throws Exception {
         final MultipartFile multipartFile = getThisUnitTestMultipartFile("uk/ac/ed/ph/qtiworks/services/Aardvark-cannon.zip", "application/zip");
 
-        final AssessmentPackage result = importer.importAssessmentPackageData(importSandboxDirectory, multipartFile);
+        final AssessmentPackage result = assessmentPackageFileImporter.importAssessmentPackageData(importSandboxDirectory, multipartFile);
         Assert.assertEquals(importSandboxDirectory.getPath(), result.getSandboxPath());
         Assert.assertEquals(AssessmentObjectType.ASSESSMENT_ITEM, result.getAssessmentType());
         Assert.assertEquals(AssessmentPackageImportType.CONTENT_PACKAGE, result.getImportType());
@@ -114,7 +114,7 @@ public class AssessmentPackageImporterTest {
     public void importPackagedTest() throws Exception {
         final MultipartFile multipartFile = getThisUnitTestMultipartFile("uk/ac/ed/ph/qtiworks/services/WebDeveloperTest1.zip", "application/zip");
 
-        final AssessmentPackage result = importer.importAssessmentPackageData(importSandboxDirectory, multipartFile);
+        final AssessmentPackage result = assessmentPackageFileImporter.importAssessmentPackageData(importSandboxDirectory, multipartFile);
         Assert.assertEquals(importSandboxDirectory.getPath(), result.getSandboxPath());
         Assert.assertEquals(AssessmentObjectType.ASSESSMENT_TEST, result.getAssessmentType());
         Assert.assertEquals(AssessmentPackageImportType.CONTENT_PACKAGE, result.getImportType());
@@ -126,7 +126,7 @@ public class AssessmentPackageImporterTest {
     public void notXmlOrZip() throws Exception {
         final MultipartFile multipartFile = getThisUnitTestMultipartFile("uk/ac/ed/ph/qtiworks/QtiWorksRuntimeException.class", "application/x-java-class");
         try {
-            importer.importAssessmentPackageData(importSandboxDirectory, multipartFile);
+            assessmentPackageFileImporter.importAssessmentPackageData(importSandboxDirectory, multipartFile);
             Assert.fail("Should have failed");
         }
         catch (final AssessmentPackageFileImportException e) {
@@ -138,7 +138,7 @@ public class AssessmentPackageImporterTest {
     public void badZipIncomplete() throws Exception {
         final MultipartFile multipartFile = getThisUnitTestMultipartFile("uk/ac/ed/ph/qtiworks/services/WebDeveloperTest1-incomplete.zip", "application/zip");
         try {
-            importer.importAssessmentPackageData(importSandboxDirectory, multipartFile);
+            assessmentPackageFileImporter.importAssessmentPackageData(importSandboxDirectory, multipartFile);
             Assert.fail("Should have failed");
         }
         catch (final AssessmentPackageFileImportException e) {
@@ -150,7 +150,7 @@ public class AssessmentPackageImporterTest {
     public void notContentPackage() throws Exception {
         final MultipartFile multipartFile = getThisUnitTestMultipartFile("uk/ac/ed/ph/qtiworks/services/NotContentPackage.zip", "application/zip");
         try {
-            importer.importAssessmentPackageData(importSandboxDirectory, multipartFile);
+            assessmentPackageFileImporter.importAssessmentPackageData(importSandboxDirectory, multipartFile);
             Assert.fail("Should have failed");
         }
         catch (final AssessmentPackageFileImportException e) {
@@ -162,7 +162,7 @@ public class AssessmentPackageImporterTest {
     public void badManifest() throws Exception {
         final MultipartFile multipartFile = getThisUnitTestMultipartFile("uk/ac/ed/ph/qtiworks/services/BadManifest.zip", "application/zip");
         try {
-            importer.importAssessmentPackageData(importSandboxDirectory, multipartFile);
+            assessmentPackageFileImporter.importAssessmentPackageData(importSandboxDirectory, multipartFile);
             Assert.fail("Should have failed");
         }
         catch (final AssessmentPackageFileImportException e) {
@@ -174,7 +174,7 @@ public class AssessmentPackageImporterTest {
     public void badMix() throws Exception {
         final MultipartFile multipartFile = getThisUnitTestMultipartFile("uk/ac/ed/ph/qtiworks/services/BadMix.zip", "application/zip");
         try {
-            importer.importAssessmentPackageData(importSandboxDirectory, multipartFile);
+            assessmentPackageFileImporter.importAssessmentPackageData(importSandboxDirectory, multipartFile);
             Assert.fail("Should have failed");
         }
         catch (final AssessmentPackageFileImportException e) {
@@ -190,7 +190,7 @@ public class AssessmentPackageImporterTest {
     public void externalHref() throws Exception {
         final MultipartFile multipartFile = getThisUnitTestMultipartFile("uk/ac/ed/ph/qtiworks/services/ExternalHref.zip", "application/zip");
         try {
-            importer.importAssessmentPackageData(importSandboxDirectory, multipartFile);
+            assessmentPackageFileImporter.importAssessmentPackageData(importSandboxDirectory, multipartFile);
             Assert.fail("Should have failed");
         }
         catch (final AssessmentPackageFileImportException e) {
@@ -205,7 +205,7 @@ public class AssessmentPackageImporterTest {
     public void missingFile() throws Exception {
         final MultipartFile multipartFile = getThisUnitTestMultipartFile("uk/ac/ed/ph/qtiworks/services/MissingFile.zip", "application/zip");
         try {
-            importer.importAssessmentPackageData(importSandboxDirectory, multipartFile);
+            assessmentPackageFileImporter.importAssessmentPackageData(importSandboxDirectory, multipartFile);
             Assert.fail("Should have failed");
         }
         catch (final AssessmentPackageFileImportException e) {

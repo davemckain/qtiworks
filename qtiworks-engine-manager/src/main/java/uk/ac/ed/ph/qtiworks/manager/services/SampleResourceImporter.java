@@ -439,6 +439,13 @@ public class SampleResourceImporter {
         assessmentPackage.setErrorCount(0);
         assessmentPackage.setWarningCount(0);
         assessmentPackage.setImportVersion(Long.valueOf(1L));
+
+        /* Extract title from QTI XML (if possible) */
+        final String guessedTitle = assessmentPackageFileService.guessAssessmentTitle(assessmentPackage);
+        final String resultingTitle = !StringUtilities.isNullOrEmpty(guessedTitle) ? guessedTitle : DEFAULT_IMPORT_TITLE;
+        assessmentPackage.setTitle(ServiceUtilities.trimSentence(resultingTitle, DomainConstants.ASSESSMENT_TITLE_MAX_LENGTH));
+
+        /* Persist package */
         assessmentPackageDao.persist(assessmentPackage);
 
         /* Create owning Assessment entity */
@@ -449,17 +456,6 @@ public class SampleResourceImporter {
         assessment.setSelectedAssessmentPackage(assessmentPackage);
         assessment.setPackageImportVersion(Long.valueOf(1L));
         assessment.setSampleCategory(sampleCategory);
-
-        /* We'll use last part of href as assessment name.
-         * This works OK as all of our samples are of the form set/name.xml */
-        final String assessmentHref = qtiSampleAssessment.getAssessmentHref();
-        final String assessmentName = assessmentHref.replaceFirst("^.+/", "");
-        assessment.setName(ServiceUtilities.trimString(assessmentName, DomainConstants.ASSESSMENT_NAME_MAX_LENGTH));
-
-        /* Guess a title */
-        final String guessedTitle = assessmentPackageFileService.guessAssessmentTitle(assessmentPackage);
-        final String resultingTitle = !StringUtilities.isNullOrEmpty(guessedTitle) ? guessedTitle : DEFAULT_IMPORT_TITLE;
-        assessment.setTitle(ServiceUtilities.trimSentence(resultingTitle, DomainConstants.ASSESSMENT_TITLE_MAX_LENGTH));
 
         /* Persist/relate entities */
         assessmentPackage.setAssessment(assessment);

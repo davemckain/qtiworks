@@ -35,11 +35,16 @@ package uk.ac.ed.ph.qtiworks.services;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
+import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackageImportType;
+import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment;
+import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.OutputStreamer;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
@@ -75,6 +80,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import org.springframework.web.multipart.MultipartFile;
 import org.w3c.dom.Document;
 
 /**
@@ -92,6 +98,12 @@ public class AssessmentPackageFileService {
 
     /** Content type used when streaming QTI sources */
     private static final String QTI_CONTENT_TYPE = "application/xml";
+
+    /** Default title for assessment if it can't be extracted from the XML */
+    private static final String DEFAULT_IMPORT_TITLE = "Assessment";
+
+    @Resource
+    private AssessmentPackageFileImporter assessmentPackageFileImporter;
 
     @Resource
     private QtiXmlReader qtiXmlReader;
@@ -122,6 +134,90 @@ public class AssessmentPackageFileService {
                 /* (No resolution of external resources, since the samples are all self-contained) */
         );
     }
+
+    //-------------------------------------------------
+
+    /**
+     * Wraps around {@link AssessmentPackageFileImporter#importAssessmentPackageData(File, MultipartFile)}
+     * Imports the assessment data from the given {@link MultipartFile} into the given
+     * sandbox directory, which the caller must have created.
+     * <p>
+     * Returns a partially-filled unpersisted {@link AssessmentPackage} object representing the
+     * results of this.
+     *
+     * @throws AssessmentPackageFileImportException
+     * @throws IllegalArgumentException if any of the provided arguments are null
+     * @throws QtiWorksRuntimeException if something unexpected happens, such as experiencing
+     *   an {@link IOException}
+     */
+    public AssessmentPackage importAssessmentPackage(final User owner,
+            final MultipartFile multipartFile, final boolean validate)
+            throws AssessmentPackageFileImportException {
+        Assert.notNull(owner, "owner");
+        Assert.notNull(multipartFile, "multipartFile");
+        final File packageSandbox = filespaceManager.createAssessmentPackageSandbox(owner);
+        final AssessmentPackage assessmentPackage;
+        try {
+            assessmentPackage = assessmentPackageFileImporter.importAssessmentPackageData(packageSandbox, multipartFile);
+
+            /* Record importer */
+            assessmentPackage.setImporter(owner);
+
+            /* Try to extract the title from the QTI XML */
+            final String guessedTitle = guessAssessmentTitle(assessmentPackage);
+            final String resultingTitle = !StringUtilities.isNullOrEmpty(guessedTitle) ? guessedTitle : DEFAULT_IMPORT_TITLE;
+            assessmentPackage.setTitle(ServiceUtilities.trimSentence(resultingTitle, DomainConstants.ASSESSMENT_TITLE_MAX_LENGTH));
+
+            /* Validate (if asked) and record summary result */
+            if (validate) {
+                final AssessmentObjectValidationResult<?> validationResult = loadAndValidateAssessment(assessmentPackage);
+                assessmentPackage.setValidated(true);
+                assessmentPackage.setLaunchable(validationResult.getResolvedAssessmentObject().getRootNodeLookup().wasSuccessful());
+                assessmentPackage.setErrorCount(validationResult.getErrors().size());
+                assessmentPackage.setWarningCount(validationResult.getWarnings().size());
+                assessmentPackage.setValid(validationResult.isValid());
+            }
+        }
+        catch (final AssessmentPackageFileImportException e) {
+            filespaceManager.deleteSandbox(packageSandbox);
+            throw e;
+        }
+        catch (final RuntimeException e) {
+            filespaceManager.deleteSandbox(packageSandbox);
+            throw e;
+        }
+        return assessmentPackage;
+    }
+
+    /**
+     * Attempts to extract the title from an {@link AssessmentItem} or {@link AssessmentTest} for
+     * bootstrapping the initial state of the resulting {@link AssessmentPackage}.
+     * <p>
+     * This performs a low level XML parse to save time; proper read/validation using JQTI+
+     * is expected to happen later on.
+     *
+     * @param assessmentPackage
+     * @return guessed title, or an empty String if nothing could be guessed.
+     */
+    public String guessAssessmentTitle(final AssessmentPackage assessmentPackage) {
+        Assert.notNull(assessmentPackage, "assessmentPackage");
+        final ResourceLocator inputResourceLocator = createResolvingResourceLocator(assessmentPackage);
+        final URI assessmentSystemId = createAssessmentObjectUri(assessmentPackage);
+        XmlReadResult xmlReadResult;
+        try {
+            xmlReadResult = qtiXmlReader.read(assessmentSystemId, inputResourceLocator, false);
+        }
+        catch (final XmlResourceNotFoundException e) {
+            throw new QtiWorksLogicException("Assessment resource for package " + assessmentPackage, e);
+        }
+        /* Let's simply extract the title attribute from the document element, and not worry about
+         * anything else at this point.
+         */
+        final Document document = xmlReadResult.getDocument();
+        return document!=null ? document.getDocumentElement().getAttribute("title") : "";
+    }
+
+    //-------------------------------------------------
 
     /**
      * Creates a {@link ResourceLocator} for the given {@link AssessmentPackage} that is capable
@@ -265,37 +361,14 @@ public class AssessmentPackageFileService {
         else {
             throw new QtiWorksLogicException("Unexpected logic branch " + assessmentObjectType);
         }
+
+        /* Record summary result back into AssessmentPackage */
+        assessmentPackage.setValidated(true);
+        assessmentPackage.setLaunchable(result.getResolvedAssessmentObject().getRootNodeLookup().wasSuccessful());
+        assessmentPackage.setErrorCount(result.getErrors().size());
+        assessmentPackage.setWarningCount(result.getWarnings().size());
+        assessmentPackage.setValid(result.isValid());
         return result;
-    }
-
-    //-------------------------------------------------
-
-    /**
-     * Attempts to extract the title from an {@link AssessmentItem} or {@link AssessmentTest} for
-     * bootstrapping the initial state of the resulting {@link AssessmentPackage}.
-     * <p>
-     * This performs a low level XML parse to save time; proper read/validation using JQTI+
-     * is expected to happen later on.
-     *
-     * @param assessmentPackage
-     * @return guessed title, or an empty String if nothing could be guessed.
-     */
-    public String guessAssessmentTitle(final AssessmentPackage assessmentPackage) {
-        Assert.notNull(assessmentPackage, "assessmentPackage");
-        final ResourceLocator inputResourceLocator = createResolvingResourceLocator(assessmentPackage);
-        final URI assessmentSystemId = createAssessmentObjectUri(assessmentPackage);
-        XmlReadResult xmlReadResult;
-        try {
-            xmlReadResult = qtiXmlReader.read(assessmentSystemId, inputResourceLocator, false);
-        }
-        catch (final XmlResourceNotFoundException e) {
-            throw new QtiWorksLogicException("Assessment resource for package " + assessmentPackage, e);
-        }
-        /* Let's simply extract the title attribute from the document element, and not worry about
-         * anything else at this point.
-         */
-        final Document document = xmlReadResult.getDocument();
-        return document!=null ? document.getDocumentElement().getAttribute("title") : "";
     }
 
     //-------------------------------------------------

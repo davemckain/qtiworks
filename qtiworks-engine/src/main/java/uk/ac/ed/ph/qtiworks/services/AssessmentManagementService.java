@@ -61,7 +61,6 @@ import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionOutcomeDao;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliveryDao;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliverySettingsDao;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentLtiOutcomesSettingsTemplate;
-import uk.ac.ed.ph.qtiworks.services.domain.AssessmentMetadataTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException.APSFailureReason;
@@ -70,7 +69,6 @@ import uk.ac.ed.ph.qtiworks.services.domain.ItemDeliverySettingsTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.TestDeliverySettingsTemplate;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
-import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
@@ -102,7 +100,6 @@ public class AssessmentManagementService {
 
     private static final Logger logger = LoggerFactory.getLogger(AssessmentManagementService.class);
 
-    public static final String DEFAULT_IMPORT_TITLE = "My Assessment";
 
     @Resource
     private AuditLogger auditLogger;
@@ -120,13 +117,10 @@ public class AssessmentManagementService {
     private AssessmentDataService assessmentDataService;
 
     @Resource
-    private AssessmentPackageFileService assessmentPackageFileService;
-
-    @Resource
     private DataDeletionService dataDeletionService;
 
     @Resource
-    private AssessmentPackageImporter assessmentPackageFileImporter;
+    private AssessmentPackageFileService assessmentPackageFileService;
 
     @Resource
     private AssessmentDao assessmentDao;
@@ -207,17 +201,12 @@ public class AssessmentManagementService {
         final User caller = ensureCallerMayCreateAssessment();
 
         /* First, upload the data into a sandbox */
-        final AssessmentPackage assessmentPackage = importPackageFiles(multipartFile);
+        final AssessmentPackage assessmentPackage = importPackageFiles(multipartFile, validate);
         final Assessment assessment;
         try {
             /* Persist new AssessmentPackage (before linking to Assessment) */
             assessmentPackage.setImportVersion(Long.valueOf(1L));
             assessmentPackageDao.persist(assessmentPackage);
-
-            /* Maybe validate AssessmentPackage */
-            if (validate) {
-                assessmentDataService.validateAssessmentPackage(assessmentPackage);
-            }
 
             /* Create resulting Assessment entity */
             assessment = new Assessment();
@@ -228,21 +217,6 @@ public class AssessmentManagementService {
             if (currentLtiResource!=null) {
                 assessment.setOwnerLtiContext(currentLtiResource.getLtiContext());
             }
-
-            final String fileName = multipartFile.getOriginalFilename();
-            String assessmentName;
-            if (StringUtilities.isNullOrBlank(fileName)) {
-                assessmentName = assessmentPackage.getAssessmentType()==AssessmentObjectType.ASSESSMENT_ITEM ? "Item" : "Test";
-            }
-            else {
-                assessmentName = ServiceUtilities.trimString(fileName, DomainConstants.ASSESSMENT_NAME_MAX_LENGTH);
-            }
-            assessment.setName(assessmentName);
-
-            /* Guess a title */
-            final String guessedTitle = assessmentPackageFileService.guessAssessmentTitle(assessmentPackage);
-            final String resultingTitle = !StringUtilities.isNullOrEmpty(guessedTitle) ? guessedTitle : DEFAULT_IMPORT_TITLE;
-            assessment.setTitle(ServiceUtilities.trimSentence(resultingTitle, DomainConstants.ASSESSMENT_TITLE_MAX_LENGTH));
 
             /* Relate Assessment & AssessmentPackage */
             assessment.setSelectedAssessmentPackage(assessmentPackage);
@@ -293,32 +267,6 @@ public class AssessmentManagementService {
         /* Log what happened */
         logger.debug("Deleted Assessment #{}", assessment.getId());
         auditLogger.recordEvent("Deleted Assessment #" + assessment.getId());
-    }
-
-    /**
-     * Updates the basic metadata/properties for the {@link Assessment} having the given ID (aid).
-     */
-    public Assessment updateAssessmentMetadata(final long aid, final AssessmentMetadataTemplate template)
-            throws BindException, DomainEntityNotFoundException, PrivilegeException {
-        /* Validate data */
-        Assert.notNull(template, "command");
-        final BeanPropertyBindingResult errors = new BeanPropertyBindingResult(template, "assessmentMetadataTemplate");
-        jsr303Validator.validate(template, errors);
-        if (errors.hasErrors()) {
-            throw new BindException(errors);
-        }
-
-        /* Look up Assessment */
-        final Assessment assessment = assessmentDao.requireFindById(aid);
-        ensureCallerMayManage(assessment);
-
-        /* Make changes */
-        assessment.setName(template.getName().trim());
-        assessment.setTitle(template.getTitle().trim());
-        assessmentDao.update(assessment);
-
-        auditLogger.recordEvent("Metadata updated for Assessment #" + aid);
-        return assessment;
     }
 
     /**
@@ -390,7 +338,7 @@ public class AssessmentManagementService {
         final AssessmentPackage oldPackage = assessment.getSelectedAssessmentPackage();
 
         /* Upload data into a new sandbox */
-        final AssessmentPackage newAssessmentPackage = importPackageFiles(multipartFile);
+        final AssessmentPackage newAssessmentPackage = importPackageFiles(multipartFile, validate);
 
         /* Make sure we haven't gone item->test or test->item */
         if (newAssessmentPackage.getAssessmentType()!=assessment.getAssessmentType()) {
@@ -419,11 +367,6 @@ public class AssessmentManagementService {
             logger.warn("Failed to update state of AssessmentPackage {} after file replacement - deleting new sandbox", e);
             deleteAssessmentPackageSandbox(newAssessmentPackage);
             throw new QtiWorksRuntimeException("Failed to update AssessmentPackage entity " + assessment, e);
-        }
-
-        /* Maybe validate new AssessmentPackage */
-        if (validate) {
-            assessmentDataService.validateAssessmentPackage(newAssessmentPackage);
         }
 
         /* Finally delete the old package (if applicable) */
@@ -933,18 +876,9 @@ public class AssessmentManagementService {
         assessmentPackage.setSandboxPath(null);
     }
 
-    private AssessmentPackage importPackageFiles(final MultipartFile multipartFile)
+    private AssessmentPackage importPackageFiles(final MultipartFile multipartFile, final boolean validate)
             throws AssessmentPackageFileImportException {
         final User owner = identityService.getCurrentThreadUser();
-        final File packageSandbox = filespaceManager.createAssessmentPackageSandbox(owner);
-        try {
-            final AssessmentPackage assessmentPackage = assessmentPackageFileImporter.importAssessmentPackageData(packageSandbox, multipartFile);
-            assessmentPackage.setImporter(owner);
-            return assessmentPackage;
-        }
-        catch (final AssessmentPackageFileImportException e) {
-            filespaceManager.deleteSandbox(packageSandbox);
-            throw e;
-        }
+        return assessmentPackageFileService.importAssessmentPackage(owner, multipartFile, validate);
     }
 }

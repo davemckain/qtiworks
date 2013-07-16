@@ -15,16 +15,14 @@ Shows information about a particular Assessment
       <a href="${utils:escapeLink(primaryRouting['resourceDashboard'])}">Assessment Launch Dashboard</a> &#xbb;
       <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Assessment Library</a> &#xbb;
     </nav>
-    <h2>${fn:escapeXml(assessment.title)} (${fn:escapeXml(assessment.name)})</h2>
+    <h2>${fn:escapeXml(assessmentPackage.title)} (${fn:escapeXml(utils:formatAssessmentFileName(assessmentPackage))})</h2>
   </header>
 
   <div class="grid_6">
     <div class="infoBox">
       <div class="cat">Title</div>
       <div class="value">
-        <a href="${utils:escapeLink(assessmentRouting['edit'])}">
-          ${fn:escapeXml(assessment.title)}
-        </a>
+        ${fn:escapeXml(assessmentPackage.title)}
       </div>
     </div>
   </div>
@@ -125,7 +123,6 @@ Shows information about a particular Assessment
 
   <h3>Actions</h3>
   <ul class="menu">
-    <li><a href="${utils:escapeLink(assessmentRouting['edit'])}">Edit Assessment properties</a></li>
     <li><a href="${utils:escapeLink(assessmentRouting['replace'])}">Replace Assessment Package Content</a></li>
     <li><a href="${utils:escapeLink(assessmentRouting['validate'])}">Show validation status</a></li>
     <c:if test="${assessmentPackage.launchable}">

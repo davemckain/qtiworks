@@ -174,7 +174,6 @@ public class AssessmentDataService {
 
     //-------------------------------------------------
     // Validation
-    // (These methods arguably belong somewhere as, we're not doing any permission checking here)
 
     public AssessmentObjectValidationResult<?> validateAssessment(final Assessment assessment) {
         final AssessmentPackage currentAssessmentPackage = ensureSelectedAssessmentPackage(assessment);
@@ -185,12 +184,7 @@ public class AssessmentDataService {
         /* Run the validation process */
         final AssessmentObjectValidationResult<?> validationResult = assessmentPackageFileService.loadAndValidateAssessment(assessmentPackage);
 
-        /* Persist results */
-        assessmentPackage.setValidated(true);
-        assessmentPackage.setLaunchable(validationResult.getResolvedAssessmentObject().getRootNodeLookup().wasSuccessful());
-        assessmentPackage.setErrorCount(validationResult.getErrors().size());
-        assessmentPackage.setWarningCount(validationResult.getWarnings().size());
-        assessmentPackage.setValid(validationResult.isValid());
+        /* Persist results (stored in entity) */
         assessmentPackageDao.update(assessmentPackage);
 
         return validationResult;

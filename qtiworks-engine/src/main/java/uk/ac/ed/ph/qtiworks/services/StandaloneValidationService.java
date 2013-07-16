@@ -41,8 +41,6 @@ import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
 
-import java.io.File;
-
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -61,26 +59,21 @@ public class StandaloneValidationService {
     private IdentityService identityService;
 
     @Resource
-    private AssessmentPackageImporter assessmentPackageImporter;
+    private AssessmentPackageFileService assessmentPackageFileService;
 
     @Resource
     private FilespaceManager filespaceManager;
-
-    @Resource
-    private AssessmentPackageFileService assessmentPackageFileService;
 
     public AssessmentObjectValidationResult<?> importAndValidate(final MultipartFile multipartFile)
             throws AssessmentPackageFileImportException {
         Assert.notNull(multipartFile, "multipartFile");
         final User caller = identityService.getCurrentThreadUser();
-        final File sandboxDirectory = filespaceManager.createAssessmentPackageSandbox(caller);
-        final AssessmentPackage importedPackage;
+        final AssessmentPackage temporaryPackage = assessmentPackageFileService.importAssessmentPackage(caller, multipartFile, false);
         try {
-            importedPackage = assessmentPackageImporter.importAssessmentPackageData(sandboxDirectory, multipartFile);
-            return assessmentPackageFileService.loadAndValidateAssessment(importedPackage);
+            return assessmentPackageFileService.loadAndValidateAssessment(temporaryPackage);
         }
         finally {
-            filespaceManager.deleteSandbox(sandboxDirectory);
+            filespaceManager.deleteAssessmentPackageSandbox(temporaryPackage);
         }
     }
 }

@@ -18,7 +18,7 @@ outcomeDeclarationList
     <nav class="breadcrumbs">
       <a href="${utils:escapeLink(primaryRouting['resourceDashboard'])}">Assessment Launch Dashboard</a> &#xbb;
       <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Assessment Library</a> &#xbb;
-      <a href="${utils:escapeLink(assessmentRouting['show'])}">Assessment ${fn:escapeXml(assessment.name)}</a>
+      <a href="${utils:escapeLink(assessmentRouting['show'])}">Assessment ${fn:escapeXml(utils:formatAssessmentFileName(assessmentPackage))}</a>
     </nav>
     <h2>LTI assessment outcomes settings</h2>
     <div class="hints">
