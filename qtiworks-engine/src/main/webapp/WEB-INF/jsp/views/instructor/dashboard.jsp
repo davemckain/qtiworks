@@ -21,7 +21,7 @@ All Rights Reserved
 
     <div class="grid_6">
       <div class="box">
-        <a href="${utils:escapeLink(primaryRouting['listDeliverySettings'])}" class="boxButton deliverysettings" title="Manage Delivery Settings">
+        <a href="${utils:escapeLink(primaryRouting['deliverySettingsManager'])}" class="boxButton deliverysettings" title="Manage Delivery Settings">
           <h3>Manage Delivery Settings</h3>
           <div>Manage your delivery settings</div>
         </a>

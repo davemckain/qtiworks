@@ -476,6 +476,7 @@ public class LtiInstructorAssessmentManagementController {
     public String deleteDeliverySettings(@PathVariable final long dsid, final RedirectAttributes redirectAttributes)
             throws PrivilegeException, DomainEntityNotFoundException {
         /* Delete settings and update any Deliveries using them */
+        final DeliverySettings deliverySettings = assessmentManagementService.lookupDeliverySettings(dsid);
         final int deliveriesAffected = assessmentManagementService.deleteDeliverySettings(dsid);
 
         /* Redirect back to list of settings */
@@ -491,7 +492,8 @@ public class LtiInstructorAssessmentManagementController {
             }
         }
         GlobalRouter.addFlashMessage(redirectAttributes, flashMessageBuilder.toString());
-        return ltiInstructorRouter.buildInstructorRedirect("/deliverysettings");
+        return ltiInstructorRouter.buildInstructorRedirect("/deliverysettings/"
+                + (deliverySettings.getAssessmentType()==AssessmentObjectType.ASSESSMENT_ITEM ? "item" : "test"));
     }
 
     @RequestMapping(value="/deliverysettings/item/{dsid}", method=RequestMethod.GET)

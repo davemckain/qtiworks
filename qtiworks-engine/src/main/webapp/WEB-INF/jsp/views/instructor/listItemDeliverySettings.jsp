@@ -3,8 +3,6 @@
 Copyright (c) 2012-2013, The University of Edinburgh.
 All Rights Reserved
 
-Lists Item DeliverySettings associated with LTI context
-
 Additional Model attrs:
 
 deliverySettingsList
@@ -12,24 +10,22 @@ deliverySettingsListRouting: dsid -> action -> URL
 
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
-<page:ltipage title="Item Delivery Settings">
+<page:page title="Item Delivery Settings">
 
-  <header class="actionHeader">
-    <nav class="breadcrumbs">
-      <a href="${utils:escapeLink(primaryRouting['resourceDashboard'])}">Assessment Launch Dashboard</a> &#xbb;
-      <a href="${utils:escapeLink(primaryRouting['deliverySettingsManager'])}">Delivery Settings Manager</a> &#xbb;
-    </nav>
-    <h2>Item Delivery Settings</h2>
-    <div class="hints">
-      <p>
-        Your Delivery Settings for running single Assessment Items are shown below.
-      </p>
-    </div>
-  </header>
+  <nav class="breadcrumbs">
+    <a href="${utils:escapeLink(primaryRouting['dashboard'])}">QTIWorks Dashboard</a> &#xbb;
+    <a href="${utils:escapeLink(primaryRouting['deliverySettingsManager'])}">Delivery Settings Manager</a> &#xbb;
+  </nav>
+  <h2>Item Delivery Settings</h2>
+  <div class="hints">
+    <p>
+      Your Delivery Settings for running single Assessment Items are shown below.
+    </p>
+  </div>
   <table class="listTable">
     <thead>
       <tr>
-        <th colspan="2"></th>
+        <th></th>
         <th>Name</th>
         <th>Created</th>
       </tr>
@@ -38,20 +34,8 @@ deliverySettingsListRouting: dsid -> action -> URL
       <c:forEach var="deliverySettings" items="${deliverySettingsList}" varStatus="loopStatus">
         <c:set var="deliverySettingsRouting" value="${deliverySettingsListRouting[deliverySettings.id]}"/>
         <c:set var="areBeingUsed" value="${!empty thisAssessment && !empty theseDeliverySettings && theseDeliverySettings.id==deliverySettings.id}"/>
-        <tr class="${areBeingUsed ? 'selected' : ''}">
+        <tr>
           <td class="bigStatus">${loopStatus.index + 1}</td>
-          <td align="center" class="actions">
-            <c:if test="${!empty thisAssessment && thisAssessment.assessmentType==deliverySettings.assessmentType}">
-              <c:choose>
-                <c:when test="${!empty theseDeliverySettings && theseDeliverySettings.id==deliverySettings.id}">
-                  Using these Delivery Settings for this launch
-                </c:when>
-                <c:otherwise>
-                  <page:postLink path="${deliverySettingsRouting['select']}" title="Use for this launch"/>
-                </c:otherwise>
-              </c:choose>
-            </c:if>
-          </td>
           <td align="center">
             <h4>
               <a href="${utils:escapeLink(deliverySettingsRouting['showOrEdit'])}">
@@ -72,8 +56,8 @@ deliverySettingsListRouting: dsid -> action -> URL
         <td colspan="2" align="center" class="actions">
           <a href="${utils:escapeLink(primaryRouting['createItemDeliverySettings'])}">Create new Delivery Settings for running a single Assessment Item</a>
         </td>
-        <td colspan="2"></td>
       </tr>
     </tbody>
   </table>
-</page:ltipage>
+
+</page:page>

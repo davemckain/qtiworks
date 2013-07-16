@@ -35,9 +35,7 @@ primaryRouting (action -> URL)
         <c:set var="assessmentPackage" value="${assessmentAndPackage.assessmentPackage}"/>
         <c:set var="assessmentRouting" value="${assessmentListRouting[assessment.id]}"/>
         <tr>
-          <td align="center">
-            <div class="bigStatus">${loopStatus.index + 1}</div>
-          </td>
+          <td class="bigStatus">${loopStatus.index + 1}</td>
           <td align="center" class="actions">
             <c:if test="${assessmentPackage.launchable}">
               <page:postLink path="${assessmentRouting['try']}" title="Quick Try"/>

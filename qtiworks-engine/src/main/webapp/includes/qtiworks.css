@@ -305,6 +305,15 @@ table.listTable td h4 {
   background-color: #ccdbf0;
 }
 
+td.bigStatus {
+  text-align: center;
+  padding: 0 !important;
+}
+
+td.plus {
+  text-align: center;
+}
+
 td.plus:before {
   content: '\271a';
   line-height: 40px;
@@ -471,6 +480,14 @@ div.sampleList .launch {
 
 .boxButton.deliverysettings h3:after {
   content: '\2672'; /* Recycling symbol */
+}
+
+.boxButton.itemdeliverysettings h3:after {
+  content: '\2022'; /* Bullet */
+}
+
+.boxButton.testdeliverysettings h3:after {
+  content: '\2746'; /* Snowflake */
 }
 
 .boxButton div {

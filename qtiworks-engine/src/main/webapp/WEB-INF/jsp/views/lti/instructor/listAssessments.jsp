@@ -45,9 +45,7 @@ assessmentListRouting (aid -> action -> URL)
         <c:set var="assessmentRouting" value="${assessmentListRouting[assessment.id]}"/>
         <c:set var="isSelectedAssessment" value="${!empty thisAssessment && thisAssessment.id==assessment.id}"/>
         <tr class="${isSelectedAssessment ? 'selected' : ''}">
-          <td align="center">
-            <div class="bigStatus">${loopStatus.index + 1}</div>
-          </td>
+          <td class="bigStatus">${loopStatus.index + 1}</td>
           <td align="center" class="actions">
             <c:if test="${assessmentPackage.launchable}">
               <page:postLink path="${assessmentRouting['try']}" title="Quick Try"/>

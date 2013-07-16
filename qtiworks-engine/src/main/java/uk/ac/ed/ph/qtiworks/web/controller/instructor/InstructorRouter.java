@@ -82,9 +82,11 @@ public class InstructorRouter {
         primaryRouting.put("dashboard", buildWebUrl("/"));
         primaryRouting.put("uploadAssessment", buildWebUrl("/assessments/upload"));
         primaryRouting.put("listAssessments", buildWebUrl("/assessments"));
-        primaryRouting.put("listDeliverySettings", buildWebUrl("/deliverysettings"));
-        primaryRouting.put("createItemDeliverySettings", buildWebUrl("/deliverysettings/create-for-item"));
-        primaryRouting.put("createTestDeliverySettings", buildWebUrl("/deliverysettings/create-for-test"));
+        primaryRouting.put("deliverySettingsManager", buildWebUrl("/deliverysettings"));
+        primaryRouting.put("listItemDeliverySettings", buildWebUrl("/deliverysettings/item"));
+        primaryRouting.put("listTestDeliverySettings", buildWebUrl("/deliverysettings/test"));
+        primaryRouting.put("createItemDeliverySettings", buildWebUrl("/deliverysettings/item/create"));
+        primaryRouting.put("createTestDeliverySettings", buildWebUrl("/deliverysettings/test/create"));
         return primaryRouting;
     }
 
@@ -154,7 +156,7 @@ public class InstructorRouter {
         final Map<String, String> result = new HashMap<String, String>();
 
         final String itemOrTestString = deliverySettings.getAssessmentType()==AssessmentObjectType.ASSESSMENT_ITEM ? "item" : "test";
-        result.put("showOrEdit", buildWebUrl("/deliverysettings/" + dsid + "/for-" + itemOrTestString));
+        result.put("showOrEdit", buildWebUrl("/deliverysettings/" + itemOrTestString + "/" + dsid));
         result.put("delete", buildWebUrl("/deliverysettings/" + dsid + "/delete"));
         return result;
     }

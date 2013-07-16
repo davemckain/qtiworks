@@ -383,14 +383,27 @@ public class InstructorAssessmentManagementController {
     // Management of DeliverySettings (and subtypes)
 
     @RequestMapping(value="/deliverysettings", method=RequestMethod.GET)
-    public String listOwnDeliverySettings(final Model model) {
-        final List<DeliverySettings> deliverySettingsList = assessmentDataService.getCallerUserDeliverySettings();
-        model.addAttribute("deliverySettingsList", deliverySettingsList);
-        model.addAttribute("deliverySettingsListRouting", instructorRouter.buildDeliverySettingsListRouting(deliverySettingsList));
-        return "listDeliverySettings";
+    public String listCallerDeliverySettings() {
+        return "deliverySettingsManager";
     }
 
-    @RequestMapping(value="/deliverysettings/create-for-item", method=RequestMethod.GET)
+    @RequestMapping(value="/deliverysettings/item", method=RequestMethod.GET)
+    public String listCallerItemDeliverySettings(final Model model) {
+        final List<DeliverySettings> deliverySettingsList = assessmentDataService.getCallerUserDeliverySettingsForType(AssessmentObjectType.ASSESSMENT_ITEM);
+        model.addAttribute("deliverySettingsList", deliverySettingsList);
+        model.addAttribute("deliverySettingsListRouting", instructorRouter.buildDeliverySettingsListRouting(deliverySettingsList));
+        return "listItemDeliverySettings";
+    }
+
+    @RequestMapping(value="/deliverysettings/test", method=RequestMethod.GET)
+    public String listCallerTestDeliverySettings(final Model model) {
+        final List<DeliverySettings> deliverySettingsList = assessmentDataService.getCallerUserDeliverySettingsForType(AssessmentObjectType.ASSESSMENT_TEST);
+        model.addAttribute("deliverySettingsList", deliverySettingsList);
+        model.addAttribute("deliverySettingsListRouting", instructorRouter.buildDeliverySettingsListRouting(deliverySettingsList));
+        return "listTestDeliverySettings";
+    }
+
+    @RequestMapping(value="/deliverysettings/item/create", method=RequestMethod.GET)
     public String showCreateItemDeliverySettingsForm(final Model model) {
         final long existingSettingsCount = assessmentDataService.countCallerUserDeliverySettings(AssessmentObjectType.ASSESSMENT_ITEM);
         final ItemDeliverySettingsTemplate template = assessmentDataService.createItemDeliverySettingsTemplate();
@@ -400,7 +413,7 @@ public class InstructorAssessmentManagementController {
         return "createItemDeliverySettingsForm";
     }
 
-    @RequestMapping(value="/deliverysettings/create-for-test", method=RequestMethod.GET)
+    @RequestMapping(value="/deliverysettings/test/create", method=RequestMethod.GET)
     public String showCreateTestDeliverySettingsForm(final Model model) {
         final long existingOptionCount = assessmentDataService.countCallerUserDeliverySettings(AssessmentObjectType.ASSESSMENT_TEST);
         final TestDeliverySettingsTemplate template = assessmentDataService.createTestDeliverySettingsTemplate();
@@ -410,7 +423,7 @@ public class InstructorAssessmentManagementController {
         return "createTestDeliverySettingsForm";
     }
 
-    @RequestMapping(value="/deliverysettings/create-for-item", method=RequestMethod.POST)
+    @RequestMapping(value="/deliverysettings/item/create", method=RequestMethod.POST)
     public String handleCreateItemDeliverySettingsForm(final RedirectAttributes redirectAttributes,
             final @Valid @ModelAttribute ItemDeliverySettingsTemplate template,
             final BindingResult result)
@@ -430,10 +443,10 @@ public class InstructorAssessmentManagementController {
 
         /* Go back to list */
         GlobalRouter.addFlashMessage(redirectAttributes, "Item Delivery Settings successfully created");
-        return instructorRouter.buildInstructorRedirect("/deliverysettings");
+        return instructorRouter.buildInstructorRedirect("/deliverysettings/item");
     }
 
-    @RequestMapping(value="/deliverysettings/create-for-test", method=RequestMethod.POST)
+    @RequestMapping(value="/deliverysettings/test/create", method=RequestMethod.POST)
     public String handleCreateTestDeliverySettingsForm(final RedirectAttributes redirectAttributes,
             final @Valid @ModelAttribute TestDeliverySettingsTemplate template,
             final BindingResult result)
@@ -453,13 +466,14 @@ public class InstructorAssessmentManagementController {
 
         /* Go back to list */
         GlobalRouter.addFlashMessage(redirectAttributes, "Test Delivery Settings successfully created");
-        return instructorRouter.buildInstructorRedirect("/deliverysettings");
+        return instructorRouter.buildInstructorRedirect("/deliverysettings/test");
     }
 
     @RequestMapping(value="/deliverysettings/{dsid}/delete", method=RequestMethod.POST)
     public String deleteDeliverySettings(@PathVariable final long dsid, final RedirectAttributes redirectAttributes)
             throws PrivilegeException, DomainEntityNotFoundException {
         /* Delete settings and update any Deliveries using them */
+        final DeliverySettings deliverySettings = assessmentManagementService.lookupDeliverySettings(dsid);
         final int deliveriesAffected = assessmentManagementService.deleteDeliverySettings(dsid);
 
         /* Redirect back to list of settings */
@@ -475,10 +489,11 @@ public class InstructorAssessmentManagementController {
             }
         }
         GlobalRouter.addFlashMessage(redirectAttributes, flashMessageBuilder.toString());
-        return instructorRouter.buildInstructorRedirect("/deliverysettings");
+        return instructorRouter.buildInstructorRedirect("/deliverysettings/"
+                + (deliverySettings.getAssessmentType()==AssessmentObjectType.ASSESSMENT_ITEM ? "item" : "test"));
     }
 
-    @RequestMapping(value="/deliverysettings/{dsid}/for-item", method=RequestMethod.GET)
+    @RequestMapping(value="/deliverysettings/item/{dsid}", method=RequestMethod.GET)
     public String showEditItemDeliverySettingsForm(@PathVariable final long dsid, final Model model)
             throws PrivilegeException, DomainEntityNotFoundException {
         final ItemDeliverySettings itemDeliverySettings = assessmentManagementService.lookupItemDeliverySettings(dsid);
@@ -490,7 +505,7 @@ public class InstructorAssessmentManagementController {
         return "editItemDeliverySettingsForm";
     }
 
-    @RequestMapping(value="/deliverysettings/{dsid}/for-test", method=RequestMethod.GET)
+    @RequestMapping(value="/deliverysettings/test/{dsid}", method=RequestMethod.GET)
     public String showEditTestDeliverySettingsForm(@PathVariable final long dsid, final Model model)
             throws PrivilegeException, DomainEntityNotFoundException {
         final TestDeliverySettings testDeliverySettings = assessmentManagementService.lookupTestDeliverySettings(dsid);
@@ -502,7 +517,7 @@ public class InstructorAssessmentManagementController {
         return "editTestDeliverySettingsForm";
     }
 
-    @RequestMapping(value="/deliverysettings/{dsid}/for-item", method=RequestMethod.POST)
+    @RequestMapping(value="/deliverysettings/item/{dsid}", method=RequestMethod.POST)
     public String handleEditItemDeliverySettingsForm(@PathVariable final long dsid, final Model model, final RedirectAttributes redirectAttributes,
             final @Valid @ModelAttribute ItemDeliverySettingsTemplate template, final BindingResult result)
             throws PrivilegeException, DomainEntityNotFoundException {
@@ -520,12 +535,11 @@ public class InstructorAssessmentManagementController {
             throw new QtiWorksLogicException("Top layer validation is currently same as service layer in this case, so this Exception should not happen");
         }
 
-        /* Return to show/edit with a flash message */
         GlobalRouter.addFlashMessage(redirectAttributes, "Item Delivery Settings successfully changed");
-        return instructorRouter.buildInstructorRedirect("/deliverysettings/" + dsid + "/for-item");
+        return instructorRouter.buildInstructorRedirect("/deliverysettings/item");
     }
 
-    @RequestMapping(value="/deliverysettings/{dsid}/for-test", method=RequestMethod.POST)
+    @RequestMapping(value="/deliverysettings/test/{dsid}", method=RequestMethod.POST)
     public String handleEditTestDeliverySettingsForm(@PathVariable final long dsid,
             final Model model, final RedirectAttributes redirectAttributes,
             final @Valid @ModelAttribute TestDeliverySettingsTemplate template, final BindingResult result)
@@ -544,8 +558,7 @@ public class InstructorAssessmentManagementController {
             throw new QtiWorksLogicException("Top layer validation is currently same as service layer in this case, so this Exception should not happen");
         }
 
-        /* Return to show/edit with a flash message */
         GlobalRouter.addFlashMessage(redirectAttributes, "Test Delivery Settings successfully changed");
-        return instructorRouter.buildInstructorRedirect("/deliverysettings/" + dsid + "/for-test");
+        return instructorRouter.buildInstructorRedirect("/deliverysettings/test");
     }
 }
