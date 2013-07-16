@@ -15,16 +15,19 @@ a:link, a:visited {
 }
 
 .flashMessage {
-  background-color: #ffffcc;
-  margin: 0.5em 0;
-  padding: 0.5em;
-  border: 1px solid #999999;
+  background: #c80042 linear-gradient(to bottom, #c80042, #df3065);
+  font-weight: bold;
+  color: white;
+  margin: 0.7em 0;
+  padding: 0.8em;
+  border: 2px solid #cccccc;
   border-radius: 0.5em;
 }
 
 .errorMessage {
-  color: red;
+  color: #c80042;
   font-weight: bold;
+  font-size: 1.2em;
   background: url(images/exclamation.png) 5px center no-repeat;
   padding-left: 24px;
 }
@@ -169,6 +172,7 @@ table.dashboard {
   border-collapse: separate;
   border-radius: 0.8em;
   border: 2px solid #ccdbf0;
+  margin-bottom: 3em;
 }
 
 .dashboard .indicator {
@@ -667,12 +671,13 @@ ul.dsSelector li div.dsPrompt {
 /* Form error messages */
 .formErrors {
   margin: 1em 0;
+  color: #c80042;
   font-weight: bold;
-  color: red;
+  font-size: 1.1em;
 }
 
 .required {
-  color: red;
+  color: #c80042;
 }
 
 .expandy {

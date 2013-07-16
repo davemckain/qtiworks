@@ -15,7 +15,17 @@ Shows information about a particular Assessment
       <a href="${utils:escapeLink(primaryRouting['resourceDashboard'])}">Assessment Launch Dashboard</a> &#xbb;
       <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Assessment Library</a> &#xbb;
     </nav>
-    <h2>${fn:escapeXml(assessmentPackage.title)} (${fn:escapeXml(utils:formatAssessmentFileName(assessmentPackage))})</h2>
+    <h2>
+      ${fn:escapeXml(utils:formatAssessmentFileName(assessmentPackage))}
+      [${fn:escapeXml(assessmentPackage.title)}]
+    </h2>
+    <div class="hints">
+      <p>
+        This page lets you manage this Assessment. You can view its validation status and try the Assessment
+        out (unless it has a lot of errors). You may also configure how LTI outcomes should be returned for
+        this Assessment.
+      </p>
+    <div>
   </header>
 
   <table class="dashboard">
@@ -29,7 +39,7 @@ Shows information about a particular Assessment
           <div class="value">
             <c:choose>
               <c:when test="${assessmentPackage.launchable}">
-              This assessment can be launched
+              This Assessment ${utils:formatAssessmentType(assessment.assessmentType)} can be launched
               <c:if test="${!assessmentPackage.valid}"> but has validation issues so may not work correctly</c:if>
               </c:when>
               <c:otherwise>This assessment has too many errors and cannot be launched</c:otherwise>
@@ -123,7 +133,7 @@ Shows information about a particular Assessment
       title="Delete this Assessment"/>
   </div>
   <c:if test="${assessmentPackage.launchable && !empty deliverySettingsList}">
-    <p>Try out using Delivery Settings:</p>
+    <div>Try out using Delivery Settings:</div>
     <ul class="menu">
       <c:forEach var="deliverySettings" items="${deliverySettingsList}">
         <li>
