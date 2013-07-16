@@ -31,7 +31,7 @@ LTI resource dashboard (after domain-level launch)
           </div>
         </td>
         <td class="actions">
-          <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Select / Upload From Assessment Library</a>
+          <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Select&#xa0;/&#xa0;Upload&#xa0;from&#xa0;Assessment&#xa0;Library</a>
         </td>
       </tr>
       <%-- Validation status --%>
@@ -84,10 +84,10 @@ LTI resource dashboard (after domain-level launch)
           <div class="value">
             <c:choose>
               <c:when test="${thisDelivery.open}">
-                This Assessment is currently available to candidates
+                This Assessment launch is currently available to candidates
               </c:when>
               <c:otherwise>
-                You have not yet made this Assessment available to candidates
+                You have not yet made this Assessment launch available to candidates
               </c:otherwise>
             </c:choose>
           </div>
@@ -115,7 +115,7 @@ LTI resource dashboard (after domain-level launch)
           </div>
         </td>
         <td class="actions">
-          <a href="${thisAssessmentRouting['outcomesSettings']}">Set up LTI outcomes</a>
+          <a href="${thisAssessmentRouting['outcomesSettings']}">Set&#xa0;up&#xa0;LTI&#xa0;outcomes</a>
         </td>
       </tr>
       <%-- Delivery Settings --%>
@@ -170,7 +170,7 @@ LTI resource dashboard (after domain-level launch)
           </div>
         </td>
         <td class="actions">
-          <a href="${primaryRouting['listCandidateSessions']}">Show / Proctor candidate sessions</a>
+          <a href="${primaryRouting['listCandidateSessions']}">Show&#xa0;/&#xa0;Proctor&#xa0;candidate&#xa0;sessions</a>
         </td>
       </tr>
     </tbody>

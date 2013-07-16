@@ -20,7 +20,7 @@ All Rights Reserved
 <form action="${actionUrl}" method="post" class="postLink">
   <input type="submit" value="${fn:escapeXml(title)}">
 </form>
-<c:if test="${!empty confirm && confirmCondition==true}">
+<c:if test="${!empty confirm && (empty confirmCondition || confirmCondition==true)}">
   <script>
     $("form[action='${actionUrl}']").submit(function() {
       return confirm('${confirm}');

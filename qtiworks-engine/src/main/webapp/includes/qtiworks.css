@@ -47,6 +47,10 @@ aside {
   text-align: center;
 }
 
+.floatRight {
+  float: right;
+}
+
 /* ========== Home Page ========== */
 
 .homepage header {
@@ -108,7 +112,6 @@ aside {
   height: 80px;
   margin: 15px 0 25px 0;
   padding: 0 0 15px 80px;
-  x-border-bottom: 1px solid #ccdbf0;
 }
 
 .ltipage header.pageHeader h1 {
