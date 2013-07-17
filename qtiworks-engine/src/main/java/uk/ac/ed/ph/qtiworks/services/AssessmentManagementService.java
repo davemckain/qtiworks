@@ -695,8 +695,6 @@ public class AssessmentManagementService {
         final long existingDeliveryCount = assessmentDataService.countUserCreatedDeliveries(assessment);
         template.setTitle("Delivery #" + (existingDeliveryCount+1));
         template.setDsid(null);
-        template.setOpen(false);
-        template.setLtiEnabled(false);
 
         /* Create and return new entity */
         final Delivery result = createDelivery(assessment, null, template);
@@ -732,9 +730,9 @@ public class AssessmentManagementService {
         delivery.setAssessment(assessment);
         delivery.setDeliverySettings(deliverySettings);
         delivery.setDeliveryType(DeliveryType.USER_CREATED);
-        delivery.setOpen(template.isOpen());
-        delivery.setLtiEnabled(template.isLtiEnabled());
         delivery.setTitle(template.getTitle().trim());
+        delivery.setOpen(false);
+        delivery.setLtiEnabled(false);
         delivery.setLtiConsumerKeyToken(ServiceUtilities.createRandomAlphanumericToken(DomainConstants.LTI_SECRET_LENGTH));
         delivery.setLtiConsumerSecret(ServiceUtilities.createRandomAlphanumericToken(DomainConstants.LTI_SECRET_LENGTH));
         deliveryDao.persist(delivery);
@@ -777,9 +775,7 @@ public class AssessmentManagementService {
         final DeliverySettings deliverySettings = (dsid!=null) ? lookupAndMatchDeliverySettings(dsid.longValue(), assessment) : null;
 
         /* Update data */
-        delivery.setOpen(template.isOpen());
         delivery.setTitle(template.getTitle().trim());
-        delivery.setLtiEnabled(template.isLtiEnabled());
         delivery.setDeliverySettings(deliverySettings);
         deliveryDao.update(delivery);
 
@@ -799,6 +795,22 @@ public class AssessmentManagementService {
         deliveryDao.update(delivery);
 
         auditLogger.recordEvent("Set open status for Delivery #" + delivery.getId() + " to " + open);
+        return delivery;
+    }
+
+    public Delivery setDeliveryLtiLinkOpenStatus(final long did, final boolean open)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        /* Look up delivery and check privileges */
+        final Delivery delivery = lookupDelivery(did);
+        final Assessment assessment = delivery.getAssessment();
+        ensureCallerMayManage(assessment);
+
+        /* Update */
+        delivery.setOpen(open);
+        delivery.setLtiEnabled(open);
+        deliveryDao.update(delivery);
+
+        auditLogger.recordEvent("Set LTI link availability status for Delivery #" + delivery.getId() + " to " + open);
         return delivery;
     }
 

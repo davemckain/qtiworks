@@ -134,6 +134,7 @@ public class InstructorRouter {
         result.put("edit", buildWebUrl("/delivery/" + did + "/edit"));
         result.put("delete", buildWebUrl("/delivery/" + did + "/delete"));
         result.put("try", buildWebUrl("/delivery/" + did + "/try"));
+        result.put("toggleAvailability", buildWebUrl("/delivery/" + did + "/toggle-availability"));
         result.put("candidateSessions", buildWebUrl("/delivery/" + did + "/candidate-sessions"));
         result.put("candidateSummaryReportCsv", buildWebUrl("/delivery/candidate-summary-report-" + did + ".csv"));
         result.put("candidateResultsZip", buildWebUrl("/delivery/candidate-results-" + did + ".zip"));

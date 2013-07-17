@@ -5,16 +5,9 @@ All Rights Reserved
 
 Form for editing Delivery properties
 
-Model:
+Additional Model:
 
 deliveryTemplate
-delivery
-deliverySettingsList
-assessment
-assessmentRouting (action -> URL)
-deliveryRouting (action -> URL)
-primaryRouting (action -> URL)
-primaryRouting
 
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
@@ -53,37 +46,11 @@ primaryRouting
         </div>
       </div>
       <div class="clear"></div>
-      <div class="stdFormRow">
-        <div class="grid_1">
-          <div class="bigStatus">2<span class="required">*</span></div>
-        </div>
-        <div class="grid_2">
-          <label for="open">Open to candidates?</label>
-        </div>
-        <div class="grid_5">
-          <form:radiobutton path="open" value="true" /> Yes
-          <form:radiobutton path="open" value="false" /> No
-        </div>
-      </div>
-      <div class="clear"></div>
-      <div class="stdFormRow">
-        <div class="grid_1">
-          <div class="bigStatus">3&#xa0;</div>
-        </div>
-        <div class="grid_2">
-          <label for="ltiEnabled">LTI enabled?</label>
-        </div>
-        <div class="grid_5">
-          <form:radiobutton path="ltiEnabled" value="true" /> Yes
-          <form:radiobutton path="ltiEnabled" value="false" /> No
-        </div>
-      </div>
-      <div class="clear"></div>
     </fieldset>
     <fieldset>
       <div class="stdFormRow">
         <div class="grid_1">
-          <div class="bigStatus">4<span class="required">*</span></div>
+          <div class="bigStatus">2<span class="required">*</span></div>
         </div>
         <div class="grid_11">
           Select Delivery Settings:
@@ -116,7 +83,7 @@ primaryRouting
     <fieldset>
       <div class="stdFormRow">
         <div class="grid_1">
-          <div class="bigStatus">5</div>
+          <div class="bigStatus">3</div>
         </div>
         <div class="grid_2">
           <label for="submit">Hit "Save"</label>

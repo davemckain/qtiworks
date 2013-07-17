@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.qtiworks.web.controller.instructor;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
+import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
@@ -338,6 +339,19 @@ public class InstructorAssessmentManagementController {
         return instructorRouter.buildInstructorRedirect("/assessment/" + assessment.getId() + "/deliveries");
     }
 
+    @RequestMapping(value="/delivery/{did}/toggle-availability", method=RequestMethod.POST)
+    public String toggleDeliveryAvailabilityStatus(final @PathVariable long did)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        final Delivery delivery = assessmentManagementService.lookupDelivery(did);
+        try {
+            assessmentManagementService.setDeliveryLtiLinkOpenStatus(delivery.getId(), !delivery.isOpen());
+        }
+        catch (final DomainEntityNotFoundException e) {
+            throw QtiWorksRuntimeException.unexpectedException(e);
+        }
+        return instructorRouter.buildInstructorRedirect("/delivery/" + delivery.getId().longValue());
+    }
+
     @RequestMapping(value="/delivery/{did}/edit", method=RequestMethod.GET)
     public String showEditDeliveryForm(final Model model, @PathVariable final long did)
             throws PrivilegeException, DomainEntityNotFoundException {
@@ -346,8 +360,6 @@ public class InstructorAssessmentManagementController {
 
         final DeliveryTemplate template = new DeliveryTemplate();
         template.setTitle(delivery.getTitle());
-        template.setOpen(delivery.isOpen());
-        template.setLtiEnabled(delivery.isLtiEnabled());
         template.setDsid(deliverySettings!=null ? deliverySettings.getId() : null);
 
         model.addAttribute(template);

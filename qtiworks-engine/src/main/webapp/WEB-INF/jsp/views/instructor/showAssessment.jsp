@@ -14,7 +14,7 @@ Shows information about a particular Assessment
   <header class="actionHeader">
     <nav class="breadcrumbs">
       <a href="${utils:escapeLink(primaryRouting['dashboard'])}">QTIWorks Dashboard</a> &#xbb;
-      <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Your assessments</a> &#xbb;
+      <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Your Assessments</a> &#xbb;
     </nav>
     <h2>
       ${fn:escapeXml(utils:formatAssessmentFileName(assessmentPackage))}

@@ -43,7 +43,7 @@ import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.NotBlank;
 
 /**
- * Template for creating/editing an {@link Delivery}
+ * Template for the core properties of a {@link Delivery}
  *
  * @author David McKain
  */
@@ -55,11 +55,6 @@ public final class DeliveryTemplate {
     @NotBlank
     @Size(min=1)
     private String title;
-
-    private boolean open;
-
-    private boolean ltiEnabled;
-
 
     public Long getDsid() {
         return dsid;
@@ -76,24 +71,6 @@ public final class DeliveryTemplate {
 
     public void setTitle(final String title) {
         this.title = title;
-    }
-
-
-    public boolean isOpen() {
-        return open;
-    }
-
-    public void setOpen(final boolean open) {
-        this.open = open;
-    }
-
-
-    public boolean isLtiEnabled() {
-        return ltiEnabled;
-    }
-
-    public void setLtiEnabled(final boolean ltiEnabled) {
-        this.ltiEnabled = ltiEnabled;
     }
 
     //------------------------------------------------------------

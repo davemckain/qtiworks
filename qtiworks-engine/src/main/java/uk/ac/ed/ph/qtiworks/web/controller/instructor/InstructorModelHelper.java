@@ -102,6 +102,8 @@ public class InstructorModelHelper {
     public Delivery setupModelForDelivery(final Delivery delivery, final Model model) {
         setupModelForAssessment(delivery.getAssessment(), model);
         model.addAttribute(delivery);
+        model.addAttribute("deliverySettings", delivery.getDeliverySettings());
+        model.addAttribute("deliveryStatusReport", assessmentDataService.getDeliveryStatusReport(delivery));
         model.addAttribute("deliveryRouting", instructorRouter.buildDeliveryRouting(delivery));
         return delivery;
     }
