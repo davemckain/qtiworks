@@ -1,5 +1,5 @@
 -- Schema migration script for upgrading from 1.0-M4 to 1.0-M5.
--- (This is not complete yet. It incorporates a merger of DEV26->DEV31 at present)
+-- (This is not complete yet. It incorporates a merger of DEV26->DEV32 at present)
 --
 -- NB: This has been written to work with PostgreSQL and will probably need
 -- tweaked slightly to work with other databases.
@@ -209,5 +209,15 @@ ALTER TABLE delivery_settings ADD lock_version BIGINT;
 UPDATE delivery_settings SET lock_version = 1;
 ALTER TABLE delivery_settings ALTER lock_version SET NOT NULL;
 
+-- Simplification to assessment naming
+ALTER TABLE assessment_packages ADD file_name VARCHAR(64);
+ALTER TABLE assessment_packages ADD title VARCHAR(256);
+UPDATE assessment_packages ap SET
+  title=(SELECT a.title FROM assessments a WHERE ap.apid=a.selected_apid),
+  file_name=(SELECT a.name FROM assessments a WHERE ap.apid=a.selected_apid);
+ALTER TABLE assessment_packages ALTER title SET NOT NULL;
+ALTER TABLE assessment_packages ALTER file_name SET NOT NULL;
+ALTER TABLE assessments DROP name;
+ALTER TABLE assessments DROP title;
 
 COMMIT WORK;
