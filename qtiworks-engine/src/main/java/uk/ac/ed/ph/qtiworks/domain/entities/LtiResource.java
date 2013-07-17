@@ -71,6 +71,10 @@ import org.hibernate.annotations.Type;
 @Table(name="lti_resources")
 @SequenceGenerator(name="ltiResourceSequence", sequenceName="lti_resource_sequence", initialValue=1, allocationSize=1)
 @NamedQueries({
+    @NamedQuery(name="LtiResource.getForCreatorUser",
+            query="SELECT lr"
+                + "  FROM LtiResource lr"
+                + "  WHERE lr.creatorUser = :user"),
     @NamedQuery(name="LtiResource.findByLtiDomainAndResourceLinkId",
             query="SELECT lr"
                 + "  FROM LtiResource lr"

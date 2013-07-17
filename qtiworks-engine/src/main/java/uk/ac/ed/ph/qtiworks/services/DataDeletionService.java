@@ -257,6 +257,9 @@ public class DataDeletionService {
     /**
      * "Resets" the given {@link User} from the system, removing all data owned
      * or accumulated by it.
+     * <p>
+     * NOTE: This needs further testing to make sure it copes with the slightly different
+     * ownership model used for domain-level LTI.
      *
      * @see #deleteUser(User)
      *
@@ -265,6 +268,9 @@ public class DataDeletionService {
     public void resetUser(final User user) {
         Assert.notNull(user, "user");
 
+        for (final LtiResource ltiResource : ltiResourceDao.getForCreatorUser(user)) {
+            deleteLtiResource(ltiResource);
+        }
         for (final AssessmentAndPackage item : assessmentDao.getForOwnerUser(user)) {
             deleteAssessment(item.getAssessment());
         }
@@ -336,13 +342,13 @@ public class DataDeletionService {
      * deliveries that were created before the given time, removing all associated data is removed.
      */
     public void purgeAnonymousData(final Date creationTimeThreshold) {
-        final int usersDeleted = deleteAnonymousUsers(creationTimeThreshold);
-        if (usersDeleted > 0) {
-            logger.info("Purged {} anonymous users from the system", usersDeleted);
-        }
         final int transientDeliveriesDeleted = deleteTransientDeliveries(creationTimeThreshold);
         if (transientDeliveriesDeleted > 0) {
             logger.info("Purged {} transient deliveries from the system", transientDeliveriesDeleted);
+        }
+        final int usersDeleted = deleteAnonymousUsers(creationTimeThreshold);
+        if (usersDeleted > 0) {
+            logger.info("Purged {} anonymous users from the system", usersDeleted);
         }
     }
 }

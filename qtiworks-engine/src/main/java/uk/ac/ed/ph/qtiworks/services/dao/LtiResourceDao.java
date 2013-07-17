@@ -35,6 +35,9 @@ package uk.ac.ed.ph.qtiworks.services.dao;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiDomain;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiResource;
+import uk.ac.ed.ph.qtiworks.domain.entities.User;
+
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -58,6 +61,12 @@ public class LtiResourceDao extends GenericDao<LtiResource> {
 
     public LtiResourceDao() {
         super(LtiResource.class);
+    }
+
+    public List<LtiResource> getForCreatorUser(final User user) {
+        final TypedQuery<LtiResource> query = em.createNamedQuery("LtiResource.getForCreatorUser", LtiResource.class);
+        query.setParameter("user", user);
+        return query.getResultList();
     }
 
     public LtiResource findByLtiDomainAndResourceLinkId(final LtiDomain ltiDomain, final String resourceLinkId) {
