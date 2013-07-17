@@ -12,28 +12,33 @@ candidateSessionListRouting (xid -> action -> URL)
 
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
-<page:page title="Candidate Session Reports &amp; Proctoring">
+<page:page title="Candidate Session Management">
 
-  <nav class="breadcrumbs">
-    <a href="${utils:escapeLink(primaryRouting['dashboard'])}">QTIWorks Dashboard</a> &#xbb;
-    <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Your assessments</a> &#xbb;
-    <a href="${utils:escapeLink(assessmentRouting['show'])}">Assessment '${fn:escapeXml(utils:formatAssessmentFileName(assessmentPackage))}'</a> &#xbb;
-    <a href="${utils:escapeLink(assessmentRouting['deliveries'])}">Assessment Deliveries</a> &#xbb;
-    <a href="${utils:escapeLink(deliveryRouting['show'])}">Delivery '${fn:escapeXml(delivery.title)}'</a>
-  </nav>
-  <h2>Candidate Session Reports &amp; Proctoring</h2>
-
-  <div class="hints">
-    <p>
-      This shows you a summary report of all candidate attempts made on this delivery,
-      showing you the state of the session and the value of the LTI result outcome variable (if set up).
-    </p>
-    <p>
-      You may download an expanded CSV version of this report containing all
-      outcomes variables using the link below. You can also download the QTI <code>assessmentResult</code>
-      reports (in XML format) and perform basic proctoring of candidate sessions.
-    </p>
-  </div>
+  <header class="actionHeader">
+    <nav class="breadcrumbs">
+      <a href="${utils:escapeLink(primaryRouting['dashboard'])}">QTIWorks Dashboard</a> &#xbb;
+      <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Assessment Manager</a> &#xbb;
+    </nav>
+    <h2>
+      <span class="assessmentLabel">Assessment&#xa0;${utils:formatAssessmentType(assessment)}</span>
+      <a href="${utils:escapeLink(assessmentRouting['show'])}">${fn:escapeXml(utils:formatAssessmentFileName(assessmentPackage))}</a>
+      &#xbb;
+      <span class="deliveryLabel">Delivery</span>
+      <a href="${utils:escapeLink(deliveryRouting['show'])}">${fn:escapeXml(delivery.title)}</a>
+      &#xbb; Candidate Sessions
+    </h2>
+    <div class="hints">
+      <p>
+        This shows you a summary report of all candidate attempts made on this delivery,
+        showing you the state of the session and the value of the LTI result outcome variable (if set up).
+      </p>
+      <p>
+        You may download an expanded CSV version of this report containing all
+        outcomes variables using the link below. You can also download the QTI <code>assessmentResult</code>
+        reports (in XML format) and perform basic proctoring of candidate sessions.
+      </p>
+    </div>
+  </header>
 
   <c:choose>
     <c:when test="${!empty deliveryCandidateSummaryReport}">
@@ -113,13 +118,16 @@ candidateSessionListRouting (xid -> action -> URL)
     </c:otherwise>
   </c:choose>
 
-  <h4>Actions</h4>
+  <h3>Actions</h3>
   <ul class="menu">
     <li><a href="${utils:escapeLink(deliveryRouting['candidateSummaryReportCsv'])}">Download full candidate outcome summary (CSV)</a></li>
     <li><a href="${utils:escapeLink(deliveryRouting['candidateResultsZip'])}">Download all candiate &lt;assessmentResult&gt; XML files (ZIP)</a></li>
     <li><page:postLink path="${deliveryRouting['terminateAllSessions']}" confirm="Are you sure?" title="Terminate all remaining candidate sessions on this delivery"/></li>
     <li><page:postLink path="${deliveryRouting['deleteAllSessions']}" confirm="Are you sure? All candidate data gathered here will be permanently deleted!" title="Delete all candidate session data for this Delivery"/></li>
   </ul>
+  <p class="floatRight">
+    <a href="${utils:escapeLink(deliveryRouting['show'])}">Return to Delivery</a>
+  </p>
 
 </page:page>
 

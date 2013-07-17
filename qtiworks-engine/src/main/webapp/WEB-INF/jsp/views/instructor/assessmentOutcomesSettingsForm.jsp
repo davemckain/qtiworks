@@ -7,10 +7,8 @@ LTI result outcome settings form
 
 Additional model attrs:
 
-assessment
 assessmentLtiOutcomesSettingsTemplate (form backing object)
 outcomeDeclarationList
-assessmentRouting (action -> URL)
 
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
@@ -19,13 +17,13 @@ assessmentRouting (action -> URL)
   <header class="actionHeader">
     <nav class="breadcrumbs">
       <a href="${utils:escapeLink(primaryRouting['dashboard'])}">QTIWorks Dashboard</a> &#xbb;
-      <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Your Assessments</a> &#xbb;
-      <a href="${utils:escapeLink(assessmentRouting['show'])}">
-        ${fn:escapeXml(utils:formatAssessmentFileName(assessmentPackage))}
-        [${fn:escapeXml(assessmentPackage.title)}]
-      </a> &#xbb;
+      <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Assessment Manager</a> &#xbb;
     </nav>
-    <h2>LTI assessment outcomes settings</h2>
+    <h2>
+      <span class="assessmentLabel">Assessment&#xa0;${utils:formatAssessmentType(assessment)}</span>
+      <a href="${utils:escapeLink(assessmentRouting['show'])}">${fn:escapeXml(utils:formatAssessmentFileName(assessmentPackage))}</a>
+      &#xbb; Set LTI outcomes
+    </h2>
   </header>
 
   <c:choose>
@@ -130,5 +128,9 @@ assessmentRouting (action -> URL)
       </p>
     </c:otherwise>
   </c:choose>
+  <p class="floatRight">
+    <a href="${utils:escapeLink(assessmentRouting['show'])}">Cancel and return to Assessment</a>
+  </p>
+
 
 </page:page>

@@ -30,6 +30,7 @@ deliverySettingsListRouting: dsid -> action -> URL
         <th></th>
         <th>Name</th>
         <th>Created</th>
+        <th></th>
       </tr>
     </thead>
     <tbody>
@@ -48,11 +49,16 @@ deliverySettingsListRouting: dsid -> action -> URL
           <td class="center">
             <c:out value="${utils:formatDateAndTime(deliverySettings.creationTime)}"/>
           </td>
+          <td class="center">
+            <div class="scary actions">
+              <page:postLink path="${deliverySettingsRouting['delete']}" confirm="Are you sure?" title="Delete these Delivery Settings"/>
+            </div>
+          </td>
         </tr>
       </c:forEach>
       <tr>
         <td class="plus"></td>
-        <td colspan="2" align="center" class="actions">
+        <td colspan="3" class="actions">
           <a href="${utils:escapeLink(primaryRouting['createTestDeliverySettings'])}">Create new Delivery Settings for running an Assessment Test</a>
         </td>
       </tr>

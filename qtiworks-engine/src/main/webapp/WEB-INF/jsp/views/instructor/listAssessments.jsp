@@ -13,12 +13,20 @@ primaryRouting (action -> URL)
 
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
-<page:page title="Your Assessments">
+<page:page title="Assessment Manager">
 
-  <nav class="breadcrumbs">
-    <a href="${utils:escapeLink(primaryRouting['dashboard'])}">QTIWorks Dashboard</a> &#xbb;
-  </nav>
-  <h2>Your Assessments</h2>
+  <header class="actionHeader">
+    <nav class="breadcrumbs">
+      <a href="${utils:escapeLink(primaryRouting['dashboard'])}">QTIWorks Dashboard</a> &#xbb;
+    </nav>
+    <h2>Assessment Manager</h2>
+    <div class="hints">
+      <p>
+        Assessment Manager are shown below. You can add new Assessments, view and try each Assessment,
+        and manage the Deliveries of each Assessment to your assessment candidates.
+      </p>
+    </div>
+  </header>
 
   <table class="listTable">
     <thead>
@@ -58,10 +66,10 @@ primaryRouting (action -> URL)
       </c:forEach>
       <tr>
         <td class="plus"></td>
-        <td colspan="1" align="center" class="actions">
+        <td colspan="2" class="actions">
           <a href="${utils:escapeLink(primaryRouting['uploadAssessment'])}">Upload a new assessment</a>
         </td>
-        <td colspan="3"></td>
+        <td colspan="2"></td>
       </tr>
     </tbody>
   </table>

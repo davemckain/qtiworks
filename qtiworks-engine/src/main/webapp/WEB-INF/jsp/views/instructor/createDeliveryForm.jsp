@@ -16,7 +16,7 @@ deliveryTemplate
   <header class="actionHeader">
     <nav class="breadcrumbs">
       <a href="${utils:escapeLink(primaryRouting['dashboard'])}">QTIWorks Dashboard</a> &#xbb;
-      <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Your Assessments</a> &#xbb;
+      <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Assessment Manager</a> &#xbb;
       <a href="${utils:escapeLink(assessmentRouting['show'])}">
         ${fn:escapeXml(utils:formatAssessmentFileName(assessmentPackage))}
         [${fn:escapeXml(assessmentPackage.title)}]

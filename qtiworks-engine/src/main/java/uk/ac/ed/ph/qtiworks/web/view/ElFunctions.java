@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.qtiworks.web.view;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
+import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiContext;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiResource;
@@ -41,7 +42,6 @@ import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
-import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.utils.contentpackaging.QtiContentPackageExtractor;
 
 import java.net.URI;
@@ -112,8 +112,8 @@ public final class ElFunctions {
         return QtiContentPackageExtractor.PACKAGE_URI_SCHEME.uriToDecodedPath(uriString);
     }
 
-    public static String formatAssessmentType(final AssessmentObjectType assessmentType) {
-        switch (assessmentType) {
+    public static String formatAssessmentType(final Assessment assessment) {
+        switch (assessment.getAssessmentType()) {
             case ASSESSMENT_ITEM: return "Item";
             case ASSESSMENT_TEST: return "Test";
             default: return "";

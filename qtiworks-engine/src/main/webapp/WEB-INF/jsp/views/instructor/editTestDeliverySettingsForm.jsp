@@ -17,9 +17,11 @@ testDeliverySettingsTemplate - form backing template
     <nav class="breadcrumbs">
       <a href="${utils:escapeLink(primaryRouting['dashboard'])}">QTIWorks Dashboard</a> &#xbb;
       <a href="${utils:escapeLink(primaryRouting['deliverySettingsManager'])}">Delivery Settings Manager</a> &#xbb;
-      <a href="${utils:escapeLink(primaryRouting['listTestDeliverySettings'])}">Test Delivery Settings</a> &#xbb;
     </nav>
-    <h2>Test Delivery Settings '${fn:escapeXml(deliverySettings.title)}'</h2>
+    <h2>
+      <a href="${utils:escapeLink(primaryRouting['listTestDeliverySettings'])}">Test Delivery Settings</a> &#xbb;
+      ${fn:escapeXml(deliverySettings.title)}
+    </h2>
     <div class="hints">
       <p>
         The current values for these settings are shown below. You can make changes to these if required.
@@ -27,13 +29,11 @@ testDeliverySettingsTemplate - form backing template
       </p>
     </div>
   </header>
-  <ul class="menu">
-    <li>
-      <page:postLink path="${deliverySettingsRouting['delete']}" confirm="Are you sure?" title="Delete these Delivery Settings"/>
-    </li>
-  </ul>
-
   <%@ include file="/WEB-INF/jsp/includes/instructor/testDeliverySettingsForm.jspf" %>
+
+  <p class="floatRight">
+    <a href="${utils:escapeLink(primaryRouting['listTestDeliverySettings'])}">Cancel and return to Test Delivery Settings list</a>
+  </p>
 
 </page:page>
 

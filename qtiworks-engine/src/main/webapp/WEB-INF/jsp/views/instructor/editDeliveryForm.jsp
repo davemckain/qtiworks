@@ -16,15 +16,16 @@ deliveryTemplate
   <header class="actionHeader">
     <nav class="breadcrumbs">
       <a href="${utils:escapeLink(primaryRouting['dashboard'])}">QTIWorks Dashboard</a> &#xbb;
-      <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Your Assessments</a> &#xbb;
-      <a href="${utils:escapeLink(assessmentRouting['show'])}">
-        ${fn:escapeXml(utils:formatAssessmentFileName(assessmentPackage))}
-        [${fn:escapeXml(assessmentPackage.title)}]
-      </a> &#xbb;
-      <a href="${utils:escapeLink(assessmentRouting['deliveries'])}">Assessment Deliveries</a> &#xbb;
-      <a href="${utils:escapeLink(deliveryRouting['show'])}">Delivery '${fn:escapeXml(delivery.title)}'</a> &#xbb;
+      <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Assessment Manager</a> &#xbb;
     </nav>
-    <h2>Edit Delivery Properties</h2>
+    <h2>
+      <span class="assessmentLabel">Assessment&#xa0;${utils:formatAssessmentType(assessment)}</span>
+      <a href="${utils:escapeLink(assessmentRouting['show'])}">${fn:escapeXml(utils:formatAssessmentFileName(assessmentPackage))}</a>
+      &#xbb;
+      <span class="deliveryLabel">Delivery</span>
+      <a href="${utils:escapeLink(deliveryRouting['show'])}">${fn:escapeXml(delivery.title)}</a>
+      &#xbb; Edit
+    </h2>
     <div class="hints">
       <p>
         This page lets you change the key properties for this delivery.
@@ -104,5 +105,8 @@ deliveryTemplate
     </div>
 
   </form:form>
+  <p class="floatRight">
+    <a href="${utils:escapeLink(deliveryRouting['show'])}">Cancel and return to Delivery</a>
+  </p>
 
 </page:page>

@@ -7,17 +7,17 @@ Shows information about a particular Assessment
 
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
-<c:set var="nonTerminatedSessionCount" value="${assessmentStatusReport.nonTerminatedSessionCount}" scope="request"/>
 <page:page title="Assessment details">
 
   <header class="actionHeader">
     <nav class="breadcrumbs">
       <a href="${utils:escapeLink(primaryRouting['dashboard'])}">QTIWorks Dashboard</a> &#xbb;
-      <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Your Assessments</a> &#xbb;
+      <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Assessment Manager</a> &#xbb;
     </nav>
     <h2>
+      <span class="assessmentLabel">Assessment&#xa0;${utils:formatAssessmentType(assessment)}</span>
       ${fn:escapeXml(utils:formatAssessmentFileName(assessmentPackage))}
-      [${fn:escapeXml(assessmentPackage.title)}]
+      <span class="assessmentTitle"> [${fn:escapeXml(assessmentPackage.title)}]</span>
     </h2>
     <div class="hints">
       <p>
@@ -40,7 +40,7 @@ Shows information about a particular Assessment
           <div class="value">
             <c:choose>
               <c:when test="${assessmentPackage.launchable}">
-              This Assessment ${utils:formatAssessmentType(assessment.assessmentType)} can be launched
+              This Assessment can be launched
               <c:if test="${!assessmentPackage.valid}"> but has validation issues so may not work correctly</c:if>
               </c:when>
               <c:otherwise>This assessment has too many errors and cannot be launched</c:otherwise>
@@ -125,37 +125,9 @@ Shows information about a particular Assessment
           <a href="${utils:escapeLink(assessmentRouting['outcomesSettings'])}">Set&#xa0;up&#xa0;LTI&#xa0;outcomes</a>
         </td>
       </tr>
-      <%-- Deliveries --%>
-      <c:set var="status" value="${assessmentStatusReport.userCreatedDeliveryCount==0 ? 'statusWarning' : 'statusOk'}"/>
-      <tr class="${status}">
-        <td class="indicator"></td>
-        <td class="category">
-          <div class="name">Deliveries of this Assessment:</div>
-          <div class="value">
-            <c:choose>
-              <c:when test="${assessmentStatusReport.userCreatedDeliveryCount==0}">
-                No Deliveries of this Assessment have been created
-              </c:when>
-              <c:otherwise>
-                You have created ${assessmentStatusReport.userCreatedDeliveryCount}&#xa0;
-                ${assessmentStatusReport.userCreatedDeliveryCount==1 ? 'Delivery' : 'Deliveries'}&#xa0;
-                of this Assessment.
-              </c:otherwise>
-            </c:choose>
-          </div>
-        </td>
-        <td class="actions">
-          <a href="${utils:escapeLink(assessmentRouting['deliveries'])}">Manage&#xa0;Deliveries</a>
-        </td>
-      </tr>
     </tbody>
   </table>
 
-  <div class="floatRight">
-    <page:postLink path="${assessmentRouting['delete']}"
-      confirm="Are you sure? This will permanently delete the Assessment and all data gathered about it. There are currently ${nonTerminatedSessionCount} candidate sessions(s) running on this Assessment."
-      title="Delete this Assessment"/>
-  </div>
   <c:if test="${assessmentPackage.launchable && !empty deliverySettingsList}">
     <div>Try out using Delivery Settings:</div>
     <ul class="menu">
@@ -166,5 +138,59 @@ Shows information about a particular Assessment
       </c:forEach>
     </ul>
   </c:if>
+
+  <h3><span class="deliveryLabel">Delivery</span> Assessment Deliveries</h3>
+  <div class="hints">
+    <p>
+      Each Delivery you have created for this Assessment is listed below. You can create new Deliveries to make this Assessment
+      available to candidates via a simple LTI launch link.
+    </p>
+  </div>
+  <table class="listTable">
+    <thead>
+      <th></th>
+      <th>Title</th>
+      <th>Available to candidates?</th>
+      <th>Selected Delivery Settings</th>
+    </thead>
+    <tbody>
+      <c:forEach var="delivery" items="${deliveryList}" varStatus="loopStatus">
+        <tr>
+          <td align="center">
+            <div class="bigStatus">${loopStatus.index + 1}</div>
+          </td>
+          <td align="center">
+            <a href="${utils:escapeLink(deliveryListRouting[delivery.id]['show'])}"><c:out value="${delivery.title}"/></a>
+          </td>
+          <td align="center">
+            ${delivery.open ? 'Yes' : 'No' }
+          </td>
+          <td align="center">
+            <c:choose>
+              <c:when test="${empty deliverySettings}">
+                (Using QTIWorks default Delivery Settings)
+              </c:when>
+              <c:otherwise>
+                Using '${fn:escapeXml(deliverySettings.title)}'
+              </c:otherwise>
+            </c:choose>
+          </td>
+        </tr>
+      </c:forEach>
+      <tr>
+        <td class="plus"></td>
+        <td colspan="3" class="actions">
+          <a href="${utils:escapeLink(assessmentRouting['createDelivery'])}">Create new Delivery</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="floatRight actions scary">
+    <c:set var="nonTerminatedSessionCount" value="${assessmentStatusReport.nonTerminatedSessionCount}" scope="request"/>
+    <page:postLink path="${assessmentRouting['delete']}"
+      confirm="Are you sure? This will permanently delete the Assessment and all data gathered about it. There are currently ${nonTerminatedSessionCount} candidate sessions(s) running on this Assessment."
+      title="Delete this Assessment"/>
+  </div>
 
 </page:page>

@@ -165,7 +165,10 @@ public class InstructorAssessmentManagementController {
     public String showAssessment(@PathVariable final long aid, final Model model)
             throws PrivilegeException, DomainEntityNotFoundException {
         final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
+        final List<Delivery> deliveries = assessmentDataService.getUserCreatedDeliveries(assessment);
         instructorModelHelper.setupModelForAssessment(assessment, model);
+        model.addAttribute(deliveries);
+        model.addAttribute("deliveryListRouting", instructorRouter.buildDeliveryListRouting(deliveries));
         return "showAssessment";
     }
 
@@ -293,19 +296,8 @@ public class InstructorAssessmentManagementController {
     //------------------------------------------------------
     // Management of Deliveries
 
-    @RequestMapping(value="/assessment/{aid}/deliveries", method=RequestMethod.GET)
-    public String listDeliveries(final @PathVariable long aid, final Model model)
-            throws PrivilegeException, DomainEntityNotFoundException {
-        final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
-        final List<Delivery> deliveries = assessmentDataService.getUserCreatedDeliveries(assessment);
-        instructorModelHelper.setupModelForAssessment(assessment, model);
-        model.addAttribute(deliveries);
-        model.addAttribute("deliveryListRouting", instructorRouter.buildDeliveryListRouting(deliveries));
-        return "listDeliveries";
-    }
-
     @RequestMapping(value="/delivery/{did}", method=RequestMethod.GET)
-    public String showOwnDelivery(final Model model, @PathVariable final long did)
+    public String showDelivery(final Model model, @PathVariable final long did)
             throws PrivilegeException, DomainEntityNotFoundException {
         final Delivery delivery = assessmentManagementService.lookupDelivery(did);
         instructorModelHelper.setupModelForDelivery(delivery, model);
@@ -314,7 +306,7 @@ public class InstructorAssessmentManagementController {
 
     /** FIXME: Support trying out with authorMode turned off */
     @RequestMapping(value="/delivery/{did}/try", method=RequestMethod.POST)
-    public String tryOwnDelivery(final @PathVariable long did)
+    public String tryDelivery(final @PathVariable long did)
             throws PrivilegeException, DomainEntityNotFoundException {
         final Delivery delivery = assessmentManagementService.lookupDelivery(did);
         final String exitUrl = instructorRouter.buildWithinContextUrl("/delivery/" + did);

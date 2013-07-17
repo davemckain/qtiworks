@@ -20,16 +20,18 @@ candidateSessionSummaryReport
   <header class="actionHeader">
     <nav class="breadcrumbs">
       <a href="${utils:escapeLink(primaryRouting['dashboard'])}">QTIWorks Dashboard</a> &#xbb;
-      <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Your Assessments</a> &#xbb;
-      <a href="${utils:escapeLink(assessmentRouting['show'])}">
-        ${fn:escapeXml(utils:formatAssessmentFileName(assessmentPackage))}
-        [${fn:escapeXml(assessmentPackage.title)}]
-      </a> &#xbb;
-      <a href="${utils:escapeLink(assessmentRouting['deliveries'])}">Assessment Deliveries</a> &#xbb;
-      <a href="${utils:escapeLink(deliveryRouting['show'])}">Delivery '${fn:escapeXml(delivery.title)}'</a> &#xbb;
-      <a href="${utils:escapeLink(deliveryRouting['candidateSessions'])}">Candidate Reports &amp; Proctoring</a> &#xbb;
+      <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Assessment Manager</a> &#xbb;
     </nav>
-    <h2>Candidate Session #${candidateSession.id}</h2>
+    <h2>
+      <span class="assessmentLabel">Assessment&#xa0;${utils:formatAssessmentType(assessment)}</span>
+      <a href="${utils:escapeLink(assessmentRouting['show'])}">${fn:escapeXml(utils:formatAssessmentFileName(assessmentPackage))}</a>
+      &#xbb;
+      <span class="deliveryLabel">Delivery</span>
+      <a href="${utils:escapeLink(deliveryRouting['show'])}">${fn:escapeXml(delivery.title)}</a>
+      &#xbb;
+      <a href="${utils:escapeLink(deliveryRouting['candidateSessions'])}">Sessions</a>
+      &#xbb; #${candidateSession.id}
+    </h2>
     <div class="hints">
       <p>
         This page shows you the state of this candidate session, and allows you to perform some basic proctoring
@@ -46,7 +48,7 @@ candidateSessionSummaryReport
   </div>
   <div class="grid_4">
     <div class="infoBox">
-      <div class="cat">Session Started</div>
+      <div class="cat">Session Launched</div>
       <div class="value">${utils:formatDayDateAndTime(candidateSessionSummaryData.launchTime)}</div>
     </div>
   </div>
@@ -106,6 +108,9 @@ candidateSessionSummaryReport
   </ul>
 
   <h3>All Outcome Variables</h3>
+  <div class="hints">
+    <p>The current values of all outcome variables are shown below. Numerical variables are shown first, then other variables.</p>
+  </div>
   <c:set var="numericOutcomeCount" value="${fn:length(candidateSessionSummaryMetadata.numericOutcomeIdentifiers)}"/>
   <c:set var="otherOutcomeCount" value="${fn:length(candidateSessionSummaryMetadata.otherOutcomeIdentifiers)}"/>
   <table class="cellTable">
@@ -139,4 +144,8 @@ candidateSessionSummaryReport
       </c:if>
     </body>
   </table>
+  <p class="floatRight">
+    <a href="${utils:escapeLink(deliveryRouting['candidateSessions'])}">Return to Candidate Sessions list</a>
+  </p>
+
 </page:page>

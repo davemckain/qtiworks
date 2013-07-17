@@ -17,13 +17,13 @@ validationResult (AssessmentObjectValidationResult)
   <header class="actionHeader">
     <nav class="breadcrumbs">
       <a href="${utils:escapeLink(primaryRouting['dashboard'])}">QTIWorks Dashboard</a> &#xbb;
-      <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Your Assessments</a> &#xbb;
-      <a href="${utils:escapeLink(assessmentRouting['show'])}">
-        ${fn:escapeXml(utils:formatAssessmentFileName(assessmentPackage))}
-        [${fn:escapeXml(assessmentPackage.title)}]
-      </a> &#xbb;
+      <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Assessment Manager</a> &#xbb;
     </nav>
-    <h2>Assessment Validation Status</h2>
+    <h2>
+      <span class="assessmentLabel">Assessment&#xa0;${utils:formatAssessmentType(assessment)}</span>
+      <a href="${utils:escapeLink(assessmentRouting['show'])}">${fn:escapeXml(utils:formatAssessmentFileName(assessmentPackage))}</a>
+      &#xbb; Validation Status
+    </h2>
     <div class="hints">
       <p>
         This page shows the results of passing this Assessment through the QTIWorks QTI validation
@@ -31,7 +31,6 @@ validationResult (AssessmentObjectValidationResult)
       </p>
     </div>
   </header>
-
   <c:set var="assessmentType" value="${validationResult.resolvedAssessmentObject.type}"/>
   <div class="validationResult">
     <c:choose>
@@ -46,5 +45,8 @@ validationResult (AssessmentObjectValidationResult)
       </c:otherwise>
     </c:choose>
   </div>
+  <p>
+    <a href="${utils:escapeLink(assessmentRouting['show'])}">Return to Assessment</a>
+  </p>
 
 </page:page>

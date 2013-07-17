@@ -12,14 +12,15 @@ Shows a Delivery
   <header class="actionHeader">
     <nav class="breadcrumbs">
       <a href="${utils:escapeLink(primaryRouting['dashboard'])}">QTIWorks Dashboard</a> &#xbb;
-      <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Your Assessments</a> &#xbb;
-      <a href="${utils:escapeLink(assessmentRouting['show'])}">
-        ${fn:escapeXml(utils:formatAssessmentFileName(assessmentPackage))}
-        [${fn:escapeXml(assessmentPackage.title)}]
-      </a> &#xbb;
-      <a href="${utils:escapeLink(assessmentRouting['deliveries'])}">Assessment Deliveries</a>
+      <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Assessment Manager</a> &#xbb;
     </nav>
-    <h2>Delivery '${fn:escapeXml(delivery.title)}'</h2>
+    <h2>
+      <span class="assessmentLabel">Assessment&#xa0;${utils:formatAssessmentType(assessment)}</span>
+      <a href="${utils:escapeLink(assessmentRouting['show'])}">${fn:escapeXml(utils:formatAssessmentFileName(assessmentPackage))}</a>
+      &#xbb;
+      <span class="deliveryLabel">Delivery</span>
+      ${fn:escapeXml(delivery.title)}
+    </h2>
   </header>
 
   <c:choose>
@@ -119,14 +120,8 @@ Shows a Delivery
       </tr>
     </tbody>
   </table>
-  <div class="floatRight">
-    <page:postLink path="${deliveryRouting['delete']}"
-      confirm="Are you sure? This will delete the Delivery and all candidate data collected for it."
-      title="Delete Delivery"/>
-  </div>
-
   <c:if test="${delivery.ltiEnabled}">
-    <h3>LTI launch details</h3>
+    <h3 class="clear:both">LTI launch details</h3>
     <p class="hints">
       The details below can be used in a LTI Tool Consumer to enable candidates to run this Assessment Delivery.
       This should work in any VLE or similar tool that supports these kinds of LTI web links.
@@ -139,5 +134,13 @@ Shows a Delivery
       <li><b>Secret</b>: <code>${delivery.ltiConsumerSecret}</code></li>
     </ul>
   </c:if>
+  <div class="floatRight scary actions">
+    <page:postLink path="${deliveryRouting['delete']}"
+      confirm="Are you sure? This will delete the Delivery and all candidate data collected for it."
+      title="Delete Delivery"/>
+  </div>
+  <p>
+    <a href="${utils:escapeLink(assessmentRouting['show'])}">Return to Assessment</a>
+  </p>
 
 </page:page>

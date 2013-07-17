@@ -82,7 +82,7 @@ All Rights Reserved.
     <name>formatAssessmentType</name>
     <function-class>uk.ac.ed.ph.qtiworks.web.view.ElFunctions</function-class>
     <function-signature>String formatAssessmentType(
-      uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType
+      uk.ac.ed.ph.qtiworks.domain.entities.Assessment
     )</function-signature>
   </function>
   <function>

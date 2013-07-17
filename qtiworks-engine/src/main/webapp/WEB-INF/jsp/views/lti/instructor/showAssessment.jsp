@@ -39,7 +39,7 @@ Shows information about a particular Assessment
           <div class="value">
             <c:choose>
               <c:when test="${assessmentPackage.launchable}">
-              This Assessment ${utils:formatAssessmentType(assessment.assessmentType)} can be launched
+              This Assessment ${utils:formatAssessmentType(assessment)} can be launched
               <c:if test="${!assessmentPackage.valid}"> but has validation issues so may not work correctly</c:if>
               </c:when>
               <c:otherwise>This assessment has too many errors and cannot be launched</c:otherwise>
