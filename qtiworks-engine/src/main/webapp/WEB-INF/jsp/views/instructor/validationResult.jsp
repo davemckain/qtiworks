@@ -8,21 +8,29 @@ Validation results
 Model:
 
 validationResult (AssessmentObjectValidationResult)
-assessment
-assessmentRouting (action -> URL)
-primaryRouting (action -> URL)
 
 --%>
 <%@ taglib prefix="validator" tagdir="/WEB-INF/tags/validator" %>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
 <page:page title="Validation result">
 
-  <nav class="breadcrumbs">
-    <a href="${utils:escapeLink(primaryRouting['dashboard'])}">QTIWorks Dashboard</a> &#xbb;
-    <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Your assessments</a> &#xbb;
-    <a href="${utils:escapeLink(assessmentRouting['show'])}">Assessment '${fn:escapeXml(utils:formatAssessmentFileName(assessmentPackage))}'</a>
-  </nav>
-  <h2>Assessment Validation Status</h2>
+  <header class="actionHeader">
+    <nav class="breadcrumbs">
+      <a href="${utils:escapeLink(primaryRouting['dashboard'])}">QTIWorks Dashboard</a> &#xbb;
+      <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Your Assessments</a> &#xbb;
+      <a href="${utils:escapeLink(assessmentRouting['show'])}">
+        ${fn:escapeXml(utils:formatAssessmentFileName(assessmentPackage))}
+        [${fn:escapeXml(assessmentPackage.title)}]
+      </a> &#xbb;
+    </nav>
+    <h2>Assessment Validation Status</h2>
+    <div class="hints">
+      <p>
+        This page shows the results of passing this Assessment through the QTIWorks QTI validation
+        process.
+      </p>
+    </div>
+  </header>
 
   <c:set var="assessmentType" value="${validationResult.resolvedAssessmentObject.type}"/>
   <div class="validationResult">

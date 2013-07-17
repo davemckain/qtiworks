@@ -12,11 +12,13 @@ deliverySettingsListRouting: dsid -> action -> URL
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
 <page:page title="Item Delivery Settings">
 
-  <nav class="breadcrumbs">
-    <a href="${utils:escapeLink(primaryRouting['dashboard'])}">QTIWorks Dashboard</a> &#xbb;
-    <a href="${utils:escapeLink(primaryRouting['deliverySettingsManager'])}">Delivery Settings Manager</a> &#xbb;
-  </nav>
-  <h2>Item Delivery Settings</h2>
+  <header class="actionHeader">
+    <nav class="breadcrumbs">
+      <a href="${utils:escapeLink(primaryRouting['dashboard'])}">QTIWorks Dashboard</a> &#xbb;
+      <a href="${utils:escapeLink(primaryRouting['deliverySettingsManager'])}">Delivery Settings Manager</a> &#xbb;
+    </nav>
+    <h2>Item Delivery Settings</h2>
+  </header>
   <div class="hints">
     <p>
       Your Delivery Settings for running single Assessment Items are shown below.

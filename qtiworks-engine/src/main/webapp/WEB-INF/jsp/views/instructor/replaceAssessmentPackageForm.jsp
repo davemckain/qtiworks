@@ -12,27 +12,28 @@ primaryRouting (action -> URL)
 
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
-<c:set var="assessmentPackage" value="${assessmentStatusReport.assessmentPackage}" scope="request"/>
 <c:set var="nonTerminatedCandidateRoleSessionCount" value="${assessmentStatusReport.nonTerminatedCandidateRoleSessionCount}" scope="request"/>
 <page:page title="Replace Assessment Package Content">
 
-  <nav class="breadcrumbs">
-    <a href="${utils:escapeLink(primaryRouting['dashboard'])}">QTIWorks Dashboard</a> &#xbb;
-    <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Your assessments</a> &#xbb;
-    <a href="${utils:escapeLink(assessmentRouting['show'])}">Assessment '${fn:escapeXml(utils:formatAssessmentFileName(assessmentPackage))}'</a>
-  </nav>
-  <h2>Replace Assessment Package Content</h2>
+  <header class="actionHeader">
+    <nav class="breadcrumbs">
+      <a href="${utils:escapeLink(primaryRouting['dashboard'])}">QTIWorks Dashboard</a> &#xbb;
+      <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Your Assessments</a> &#xbb;
+      <a href="${utils:escapeLink(assessmentRouting['show'])}">
+        ${fn:escapeXml(utils:formatAssessmentFileName(assessmentPackage))}
+        [${fn:escapeXml(assessmentPackage.title)}]
+      </a> &#xbb;
+    </nav>
+    <h2>Replace Assessment Package Content</h2>
+    <div class="hints">
+      <p>
+        This lets you upload new QTI to replace what we have already stored in the system. You'll probably
+        want to do this when trying out and/or debugging your own assessments that you are writing or generating
+        in another system.
+      </p>
+    </div>
+  </header>
 
-  <div class="hints">
-    <p>
-      This lets you upload new QTI to replace what we have already stored in the system. You'll probably
-      want to do this when trying out and/or debugging your own assessments that you are writing or generating
-      in another system.
-    </p>
-    <p>
-      All of the existing assessment metadata (e.g. name and title) will be kept around.
-    </p>
-  </div>
   <c:if test="${nonTerminatedCandidateRoleSessionCount>0}">
     <p class="warningMessage">
       <c:choose>

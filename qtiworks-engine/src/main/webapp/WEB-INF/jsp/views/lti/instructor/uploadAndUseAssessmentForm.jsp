@@ -16,10 +16,7 @@ Instructor upload assessment package form
     <h2>Upload Assessment</h2>
     <div class="hints">
       <p>
-        You can upload a new QTI Assessment Item or Test here. We will generate
-        an initial name and title for your assessment using the name of the file
-        you upload and the 'title' attribute in the QTI XML. You can
-        subsequently change these details to suit.
+        You can upload a new QTI Assessment Item or Test here.
       </p>
       <p>
         Your assessment will be validated automatically during the upload process.

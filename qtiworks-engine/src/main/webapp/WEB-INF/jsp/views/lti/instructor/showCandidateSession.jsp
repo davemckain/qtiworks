@@ -70,7 +70,7 @@ candidateSessionSummaryReport
     <div class="clear"></div>
   </c:if>
 
-  <h4>Actions</h4>
+  <h3>Actions</h3>
   <ul class="menu">
     <li>
       <c:choose>

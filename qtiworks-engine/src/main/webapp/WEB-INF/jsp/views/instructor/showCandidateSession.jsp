@@ -15,17 +15,28 @@ candidateSessionSummaryReport
 <c:set var="candidateSessionSummaryMetadata" value="${candidateSessionSummaryReport.candidateSessionSummaryMetadata}"/>
 <c:set var="candidateSessionSummaryData" value="${candidateSessionSummaryReport.candidateSessionSummaryData}"/>
 <c:set var="assessmentResultXml" value="${candidateSessionSummaryReport.assessmentResultXml}"/>
-<page:page title="Candidate Session details">
+<page:page title="Candidate Session Management">
 
-  <nav class="breadcrumbs">
-    <a href="${utils:escapeLink(primaryRouting['dashboard'])}">QTIWorks Dashboard</a> &#xbb;
-    <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Your assessments</a> &#xbb;
-    <a href="${utils:escapeLink(assessmentRouting['show'])}">Assessment '${fn:escapeXml(utils:formatAssessmentFileName(assessmentPackage))}'</a> &#xbb;
-    <a href="${utils:escapeLink(assessmentRouting['deliveries'])}">Assessment Deliveries</a> &#xbb;
-    <a href="${utils:escapeLink(deliveryRouting['show'])}">Delivery '${fn:escapeXml(delivery.title)}'</a> &#xbb;
-    <a href="${utils:escapeLink(deliveryRouting['candidateSessions'])}">Candidate Reports &amp; Proctoring</a> &#xbb;
-  </nav>
-  <h2>Candidate Session #${candidateSession.id}</h2>
+  <header class="actionHeader">
+    <nav class="breadcrumbs">
+      <a href="${utils:escapeLink(primaryRouting['dashboard'])}">QTIWorks Dashboard</a> &#xbb;
+      <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Your Assessments</a> &#xbb;
+      <a href="${utils:escapeLink(assessmentRouting['show'])}">
+        ${fn:escapeXml(utils:formatAssessmentFileName(assessmentPackage))}
+        [${fn:escapeXml(assessmentPackage.title)}]
+      </a> &#xbb;
+      <a href="${utils:escapeLink(assessmentRouting['deliveries'])}">Assessment Deliveries</a> &#xbb;
+      <a href="${utils:escapeLink(deliveryRouting['show'])}">Delivery '${fn:escapeXml(delivery.title)}'</a> &#xbb;
+      <a href="${utils:escapeLink(deliveryRouting['candidateSessions'])}">Candidate Reports &amp; Proctoring</a> &#xbb;
+    </nav>
+    <h2>Candidate Session #${candidateSession.id}</h2>
+    <div class="hints">
+      <p>
+        This page shows you the state of this candidate session, and allows you to perform some basic proctoring
+        actions on it.
+      </p>
+    </div>
+  </header>
 
   <div class="grid_4">
     <div class="infoBox">
@@ -72,7 +83,7 @@ candidateSessionSummaryReport
     <div class="clear"></div>
   </c:if>
 
-  <h4>Actions</h4>
+  <h3>Actions</h3>
   <ul class="menu">
     <li>
       <c:choose>
@@ -95,7 +106,6 @@ candidateSessionSummaryReport
   </ul>
 
   <h3>All Outcome Variables</h3>
-
   <c:set var="numericOutcomeCount" value="${fn:length(candidateSessionSummaryMetadata.numericOutcomeIdentifiers)}"/>
   <c:set var="otherOutcomeCount" value="${fn:length(candidateSessionSummaryMetadata.otherOutcomeIdentifiers)}"/>
   <table class="cellTable">
