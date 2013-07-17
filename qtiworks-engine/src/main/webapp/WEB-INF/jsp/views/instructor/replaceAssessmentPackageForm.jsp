@@ -98,6 +98,5 @@ primaryRouting (action -> URL)
     <a href="${utils:escapeLink(assessmentRouting['show'])}">Cancel and return to Assessment</a>
   </p>
 
-
 </page:page>
 

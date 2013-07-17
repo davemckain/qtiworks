@@ -91,7 +91,7 @@ public class InstructorAssessmentReportingController {
         instructorModelHelper.setupModelForDelivery(did, model);
         model.addAttribute(report);
         model.addAttribute("candidateSessionListRouting", instructorRouter.buildCandidateSessionListRouting(report));
-        return "deliveryCandidateSummaryReport";
+        return "listCandidateSessions";
     }
 
     @RequestMapping(value="/delivery/{did}/terminate-all-sessions", method=RequestMethod.POST)

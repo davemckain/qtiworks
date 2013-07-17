@@ -20,9 +20,12 @@ primaryRouting (action -> URL)
     <nav class="breadcrumbs">
       <a href="${utils:escapeLink(primaryRouting['resourceDashboard'])}">Assessment Launch Dashboard</a> &#xbb;
       <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Assessment library</a> &#xbb;
-      <a href="${utils:escapeLink(assessmentRouting['show'])}">Assessment ${fn:escapeXml(utils:formatAssessmentFileName(assessmentPackage))}</a>
     </nav>
-    <h2>Edit Assessment Properties</h2>
+    <h2>
+      <span class="assessmentLabel">Assessment&#xa0;${utils:formatAssessmentType(assessment)}</span>
+      <a href="${utils:escapeLink(assessmentRouting['show'])}">${fn:escapeXml(utils:formatAssessmentFileName(assessmentPackage))}</a>
+      &#xbb; Replace Package Content
+    </h2>
     <div class="hints">
       <p>
         This lets you upload new QTI to replace what we have already stored in the system. You'll probably
@@ -94,8 +97,10 @@ primaryRouting (action -> URL)
         <input id="submit" name="submit" type="submit" value="Replace Assessment Package Content"/>
       </div>
     </fieldset>
-
   </form:form>
+  <p class="floatRight">
+    <a href="${utils:escapeLink(assessmentRouting['show'])}">Cancel and return to Assessment</a>
+  </p>
 
 </page:ltipage>
 

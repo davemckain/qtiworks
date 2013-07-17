@@ -18,12 +18,12 @@ deliverySettingsListRouting: dsid -> action -> URL
       <a href="${utils:escapeLink(primaryRouting['deliverySettingsManager'])}">Delivery Settings Manager</a> &#xbb;
     </nav>
     <h2>Item Delivery Settings</h2>
+    <div class="hints">
+      <p>
+        Your Delivery Settings for running single Assessment Items are shown below.
+      </p>
+    </div>
   </header>
-  <div class="hints">
-    <p>
-      Your Delivery Settings for running single Assessment Items are shown below.
-    </p>
-  </div>
   <table class="listTable">
     <thead>
       <tr>
@@ -67,5 +67,7 @@ deliverySettingsListRouting: dsid -> action -> URL
       </tr>
     </tbody>
   </table>
-
+  <div class="floatRight">
+    <a href="${utils:escapeLink(primaryRouting['deliverySettingsManager'])}">Back to Delivery Settings Manager</a>
+  </div>
 </page:page>

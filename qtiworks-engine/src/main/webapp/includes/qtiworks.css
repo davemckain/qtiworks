@@ -117,9 +117,9 @@ aside {
   margin-bottom: 0.3em;
 }
 
-.page header.actionHeader h2 a,
-.page header.actionHeader h2 a:link,
-.page header.actionHeader h2 a:visited {
+header.actionHeader h2 a,
+header.actionHeader h2 a:link,
+header.actionHeader h2 a:visited {
   text-decoration: none;
   color: black;
 }

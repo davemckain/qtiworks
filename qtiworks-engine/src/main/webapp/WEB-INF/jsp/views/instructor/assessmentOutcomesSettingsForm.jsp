@@ -24,6 +24,13 @@ outcomeDeclarationList
       <a href="${utils:escapeLink(assessmentRouting['show'])}">${fn:escapeXml(utils:formatAssessmentFileName(assessmentPackage))}</a>
       &#xbb; Set LTI outcomes
     </h2>
+    <div class="hints">
+      <p>
+        This form lets you select which QTI outcome variable to use for returning results to LTI Tool Consumers
+        when running this Assessment. You must provide this information if you want QTIWorks to return results
+        for this Assessment.
+      </p>
+    </div>
   </header>
 
   <c:choose>
@@ -131,6 +138,5 @@ outcomeDeclarationList
   <p class="floatRight">
     <a href="${utils:escapeLink(assessmentRouting['show'])}">Cancel and return to Assessment</a>
   </p>
-
 
 </page:page>

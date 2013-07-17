@@ -16,7 +16,7 @@ Instructor upload assessment package form
     <h2>Upload Assessment</h2>
     <div class="hints">
       <p>
-        You can upload a new QTI Assessment Item or Test here.
+        You can upload a new QTI Assessment Item or Test to use for this launch here.
       </p>
       <p>
         Your assessment will be validated automatically during the upload process.
@@ -29,4 +29,7 @@ Instructor upload assessment package form
 
   <%@ include file="/WEB-INF/jsp/includes/instructor/uploadAssessmentForm.jspf" %>
 
+  <p class="floatRight">
+    <a href="${utils:escapeLink(primaryRouting['resourceDashboard'])}">Cancel and return to dashboard</a>
+  </p>
 </page:ltipage>

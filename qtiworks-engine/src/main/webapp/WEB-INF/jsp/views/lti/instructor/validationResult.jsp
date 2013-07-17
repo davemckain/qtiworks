@@ -19,9 +19,12 @@ assessmentRouting (action -> URL)
     <nav class="breadcrumbs">
       <a href="${utils:escapeLink(primaryRouting['resourceDashboard'])}">Assessment Launch Dashboard</a> &#xbb;
       <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Assessment Library</a> &#xbb;
-      <a href="${utils:escapeLink(assessmentRouting['show'])}">Assessment ${fn:escapeXml(utils:formatAssessmentFileName(assessmentPackage))}</a>
     </nav>
-    <h2>Validation Report</h2>
+    <h2>
+      <span class="assessmentLabel">Assessment&#xa0;${utils:formatAssessmentType(assessment)}</span>
+      <a href="${utils:escapeLink(assessmentRouting['show'])}">${fn:escapeXml(utils:formatAssessmentFileName(assessmentPackage))}</a>
+      &#xbb; Validation Status
+    </h2>
   </header>
 
   <c:set var="assessmentType" value="${validationResult.resolvedAssessmentObject.type}"/>
@@ -38,5 +41,9 @@ assessmentRouting (action -> URL)
       </c:otherwise>
     </c:choose>
   </div>
+  <p>
+    <a href="${utils:escapeLink(assessmentRouting['show'])}">Return to Assessment</a>
+  </p>
+
 
 </page:ltipage>

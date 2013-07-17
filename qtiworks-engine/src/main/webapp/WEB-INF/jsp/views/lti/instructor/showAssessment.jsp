@@ -7,7 +7,6 @@ Shows information about a particular Assessment
 
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
-<c:set var="nonTerminatedSessionCount" value="${assessmentStatusReport.nonTerminatedSessionCount}" scope="request"/>
 <page:ltipage title="Assessment details">
 
   <header class="actionHeader">
@@ -16,8 +15,9 @@ Shows information about a particular Assessment
       <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Assessment Library</a> &#xbb;
     </nav>
     <h2>
+      <span class="assessmentLabel">Assessment&#xa0;${utils:formatAssessmentType(assessment)}</span>
       ${fn:escapeXml(utils:formatAssessmentFileName(assessmentPackage))}
-      [${fn:escapeXml(assessmentPackage.title)}]
+      <span class="assessmentTitle"> [${fn:escapeXml(assessmentPackage.title)}]</span>
     </h2>
     <div class="hints">
       <p>
@@ -127,11 +127,6 @@ Shows information about a particular Assessment
     </tbody>
   </table>
 
-  <div class="floatRight">
-    <page:postLink path="${assessmentRouting['delete']}"
-      confirm="Are you sure? This will permanently delete the Assessment and all data gathered about it. There are currently ${nonTerminatedSessionCount} candidate sessions(s) running on this Assessment."
-      title="Delete this Assessment"/>
-  </div>
   <c:if test="${assessmentPackage.launchable && !empty deliverySettingsList}">
     <div>Try out using Delivery Settings:</div>
     <ul class="menu">
@@ -142,4 +137,12 @@ Shows information about a particular Assessment
       </c:forEach>
     </ul>
   </c:if>
+
+  <div class="floatRight actions scary">
+    <c:set var="nonTerminatedSessionCount" value="${assessmentStatusReport.nonTerminatedSessionCount}" scope="request"/>
+    <page:postLink path="${assessmentRouting['delete']}"
+      confirm="Are you sure? This will permanently delete the Assessment and all data gathered about it. There are currently ${nonTerminatedSessionCount} candidate sessions(s) running on this Assessment."
+      title="Delete this Assessment"/>
+  </div>
+
 </page:ltipage>

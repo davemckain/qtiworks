@@ -18,9 +18,12 @@ outcomeDeclarationList
     <nav class="breadcrumbs">
       <a href="${utils:escapeLink(primaryRouting['resourceDashboard'])}">Assessment Launch Dashboard</a> &#xbb;
       <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Assessment Library</a> &#xbb;
-      <a href="${utils:escapeLink(assessmentRouting['show'])}">Assessment ${fn:escapeXml(utils:formatAssessmentFileName(assessmentPackage))}</a>
     </nav>
-    <h2>LTI assessment outcomes settings</h2>
+    <h2>
+      <span class="assessmentLabel">Assessment&#xa0;${utils:formatAssessmentType(assessment)}</span>
+      <a href="${utils:escapeLink(assessmentRouting['show'])}">${fn:escapeXml(utils:formatAssessmentFileName(assessmentPackage))}</a>
+      &#xbb; Set LTI outcomes
+    </h2>
     <div class="hints">
       <p>
         This form lets you select which QTI outcome variable to use for returning results to LTI Tool Consumers
@@ -128,5 +131,9 @@ outcomeDeclarationList
       </p>
     </c:otherwise>
   </c:choose>
+  <p class="floatRight">
+    <a href="${utils:escapeLink(assessmentRouting['show'])}">Cancel and return to Assessment</a>
+  </p>
+
 
 </page:ltipage>

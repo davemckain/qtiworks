@@ -17,9 +17,11 @@ testDeliverySettingsTemplate - form backing template
     <nav class="breadcrumbs">
       <a href="${utils:escapeLink(primaryRouting['resourceDashboard'])}">Assessment Launch Dashboard</a> &#xbb;
       <a href="${utils:escapeLink(primaryRouting['deliverySettingsManager'])}">Delivery Settings Manager</a> &#xbb;
-    <a href="${utils:escapeLink(primaryRouting['listTestDeliverySettings'])}">Test Delivery Settings</a> &#xbb;
     </nav>
-    <h2>Create Test Delivery Settings</h2>
+    <h2>
+      <a href="${utils:escapeLink(primaryRouting['listItemDeliverySettings'])}">Item Delivery Settings</a> &#xbb;
+      Create New
+    </h2>
     <div class="hints">
       <p>
         This form lets you create a new set of Delivery Settings to use with deliveries of Assessment Tests.
@@ -28,5 +30,9 @@ testDeliverySettingsTemplate - form backing template
   </header>
 
   <%@ include file="/WEB-INF/jsp/includes/instructor/testDeliverySettingsForm.jspf" %>
+
+  <p class="floatRight">
+    <a href="${utils:escapeLink(primaryRouting['listTestDeliverySettings'])}">Cancel and return to Test Delivery Settings list</a>
+  </p>
 
 </page:ltipage>

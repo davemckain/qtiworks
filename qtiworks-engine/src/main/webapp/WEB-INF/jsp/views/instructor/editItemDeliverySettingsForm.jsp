@@ -34,6 +34,4 @@ itemDeliverySettingsTemplate - form backing template
     <a href="${utils:escapeLink(primaryRouting['listItemDeliverySettings'])}">Cancel and return to Item Delivery Settings list</a>
   </p>
 
-
-
 </page:page>

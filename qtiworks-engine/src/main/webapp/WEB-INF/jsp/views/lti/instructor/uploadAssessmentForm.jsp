@@ -30,4 +30,8 @@ Instructor upload assessment package form
 
   <%@ include file="/WEB-INF/jsp/includes/instructor/uploadAssessmentForm.jspf" %>
 
+  <p class="floatRight">
+    <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Cancel and return to Assessment Library</a>
+  </p>
+
 </page:ltipage>

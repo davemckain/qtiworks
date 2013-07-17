@@ -81,7 +81,7 @@ assessmentListRouting (aid -> action -> URL)
       </c:forEach>
       <tr>
         <td class="plus"></td>
-        <td colspan="2" align="center" class="actions">
+        <td colspan="2" class="actions">
           <a href="${utils:escapeLink(primaryRouting['uploadAssessment'])}">Upload a new assessment</a>
         </td>
         <td colspan="3"></td>
