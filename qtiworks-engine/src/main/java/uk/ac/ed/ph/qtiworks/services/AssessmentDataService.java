@@ -55,6 +55,7 @@ import uk.ac.ed.ph.qtiworks.services.dao.DeliverySettingsDao;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentAndPackage;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStatusReport;
 import uk.ac.ed.ph.qtiworks.services.domain.DeliveryStatusReport;
+import uk.ac.ed.ph.qtiworks.services.domain.DeliveryTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.ItemDeliverySettingsTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.TestDeliverySettingsTemplate;
 
@@ -280,6 +281,14 @@ public class AssessmentDataService {
     }
 
     //-------------------------------------------------
+
+    public DeliveryTemplate createDeliveryTemplate(final Assessment assessment) {
+        final DeliveryTemplate template = new DeliveryTemplate();
+        final long existingDeliveryCount = countUserCreatedDeliveries(assessment);
+        template.setTitle("Delivery #" + (existingDeliveryCount+1));
+        template.setDsid(null);
+        return template;
+    }
 
     public ItemDeliverySettingsTemplate createItemDeliverySettingsTemplate() {
         final ItemDeliverySettingsTemplate template = new ItemDeliverySettingsTemplate();

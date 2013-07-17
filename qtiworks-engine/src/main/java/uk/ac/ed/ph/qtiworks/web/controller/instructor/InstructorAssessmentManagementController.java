@@ -322,13 +322,39 @@ public class InstructorAssessmentManagementController {
         return GlobalRouter.buildSessionStartRedirect(candidateSession);
     }
 
-    /** (Deliveries are currently very simple so created using a sensible default) */
-    @RequestMapping(value="/assessment/{aid}/deliveries/create", method=RequestMethod.POST)
-    public String createDelivery(final @PathVariable long aid, final RedirectAttributes redirectAttributes)
+    @RequestMapping(value="/assessment/{aid}/deliveries/create", method=RequestMethod.GET)
+    public String showCreateDeliveryForm(final Model model, @PathVariable final long aid)
             throws PrivilegeException, DomainEntityNotFoundException {
-        final Delivery delivery = assessmentManagementService.createDelivery(aid);
+        final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
+        final DeliveryTemplate template = assessmentDataService.createDeliveryTemplate(assessment);
+
+        model.addAttribute(template);
+        instructorModelHelper.setupModelForAssessment(assessment, model);
+        return "createDeliveryForm";
+    }
+
+    @RequestMapping(value="/assessment/{aid}/deliveries/create", method=RequestMethod.POST)
+    public String handleCreateDeliveryForm(@PathVariable final long aid, final Model model, final RedirectAttributes redirectAttributes,
+            final @Valid @ModelAttribute DeliveryTemplate template, final BindingResult result)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        /* Validate command Object */
+        if (result.hasErrors()) {
+            instructorModelHelper.setupModelForAssessment(aid, model);
+            return "createDeliveryForm";
+        }
+
+        /* Perform creation */
+        final Delivery delivery;
+        try {
+            delivery = assessmentManagementService.createDelivery(aid, template);
+        }
+        catch (final BindException e) {
+            throw new QtiWorksLogicException("Top layer validation is currently same as service layer in this case, so this Exception should not happen");
+        }
+
+        /* Return to show */
         GlobalRouter.addFlashMessage(redirectAttributes, "Delivery successfully created");
-        return instructorRouter.buildInstructorRedirect("/delivery/" + delivery.getId().longValue());
+        return instructorRouter.buildInstructorRedirect("/delivery/" + delivery.getId());
     }
 
     @RequestMapping(value="/delivery/{did}/delete", method=RequestMethod.POST)

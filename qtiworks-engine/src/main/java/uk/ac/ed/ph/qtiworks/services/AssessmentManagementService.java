@@ -683,25 +683,7 @@ public class AssessmentManagementService {
         return delivery;
     }
 
-    /** Creates a new {@link Delivery} for the given Assignment using reasonable default values */
-    public Delivery createDelivery(final long aid)
-            throws PrivilegeException, DomainEntityNotFoundException {
-        /* Look up Assessment and check privs */
-        final Assessment assessment = lookupAssessment(aid);
-        ensureCallerMayManage(assessment);
-
-        /* Create Delivery template with reasonable defaults */
-        final DeliveryTemplate template = new DeliveryTemplate();
-        final long existingDeliveryCount = assessmentDataService.countUserCreatedDeliveries(assessment);
-        template.setTitle("Delivery #" + (existingDeliveryCount+1));
-        template.setDsid(null);
-
-        /* Create and return new entity */
-        final Delivery result = createDelivery(assessment, null, template);
-        auditLogger.recordEvent("Created Delivery #" + result.getId() + " for Assessment #" + aid + " without template");
-        return result;
-    }
-
+    /** Creates a new {@link Delivery} using the given {@link DeliveryTemplate} */
     public Delivery createDelivery(final long aid, final DeliveryTemplate template)
             throws PrivilegeException, DomainEntityNotFoundException, BindException {
         /* Validate template */
@@ -719,18 +701,34 @@ public class AssessmentManagementService {
         }
 
         /* Create and return new entity */
-        final Delivery result = createDelivery(assessment, deliverySettings, template);
+        final Delivery result = createDelivery(assessment, template.getTitle(), deliverySettings);
         auditLogger.recordEvent("Created Delivery #" + result.getId() + " for Assessment #" + aid + " using template");
         return result;
     }
 
-    private Delivery createDelivery(final Assessment assessment,
-            final DeliverySettings deliverySettings, final DeliveryTemplate template) {
+    /** Creates a new {@link Delivery} for the given Assignment using reasonable default values */
+    public Delivery createDelivery(final long aid)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        /* Look up Assessment and check privs */
+        final Assessment assessment = lookupAssessment(aid);
+        ensureCallerMayManage(assessment);
+
+        /* Create Delivery template with reasonable defaults */
+        final DeliveryTemplate template = assessmentDataService.createDeliveryTemplate(assessment);
+
+        /* Create and return new entity */
+        final Delivery result = createDelivery(assessment, template.getTitle(), null);
+        auditLogger.recordEvent("Created Delivery #" + result.getId() + " for Assessment #" + aid + " without template");
+        return result;
+    }
+
+    private Delivery createDelivery(final Assessment assessment, final String title,
+            final DeliverySettings deliverySettings) {
         final Delivery delivery = new Delivery();
         delivery.setAssessment(assessment);
         delivery.setDeliverySettings(deliverySettings);
         delivery.setDeliveryType(DeliveryType.USER_CREATED);
-        delivery.setTitle(template.getTitle().trim());
+        delivery.setTitle(title.trim());
         delivery.setOpen(false);
         delivery.setLtiEnabled(false);
         delivery.setLtiConsumerKeyToken(ServiceUtilities.createRandomAlphanumericToken(DomainConstants.LTI_SECRET_LENGTH));

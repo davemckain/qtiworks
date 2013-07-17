@@ -123,7 +123,7 @@ Shows information about a particular Assessment
           </div>
         </td>
         <td class="actions">
-          <a href="${utils:escapeLink(thisAssessmentRouting['outcomesSettings'])}">Set&#xa0;up&#xa0;LTI&#xa0;outcomes</a>
+          <a href="${utils:escapeLink(assessmentRouting['outcomesSettings'])}">Set&#xa0;up&#xa0;LTI&#xa0;outcomes</a>
         </td>
       </tr>
       <%-- Deliveries --%>

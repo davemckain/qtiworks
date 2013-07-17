@@ -16,12 +16,17 @@ assessmentRouting (action -> URL)
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
 <page:page title="LTI assessment outcomes settings">
 
-  <nav class="breadcrumbs">
-    <a href="${utils:escapeLink(primaryRouting['dashboard'])}">QTIWorks Dashboard</a> &#xbb;
-    <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Your assessments</a> &#xbb;
-    <a href="${utils:escapeLink(assessmentRouting['show'])}">Assessment '${fn:escapeXml(utils:formatAssessmentFileName(assessmentPackage))}'</a>
-  </nav>
-  <h2>LTI assessment outcomes settings</h2>
+  <header class="actionHeader">
+    <nav class="breadcrumbs">
+      <a href="${utils:escapeLink(primaryRouting['dashboard'])}">QTIWorks Dashboard</a> &#xbb;
+      <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Your Assessments</a> &#xbb;
+      <a href="${utils:escapeLink(assessmentRouting['show'])}">
+        ${fn:escapeXml(utils:formatAssessmentFileName(assessmentPackage))}
+        [${fn:escapeXml(assessmentPackage.title)}]
+      </a> &#xbb;
+    </nav>
+    <h2>LTI assessment outcomes settings</h2>
+  </header>
 
   <c:choose>
     <c:when test="${!empty outcomeDeclarationList}">

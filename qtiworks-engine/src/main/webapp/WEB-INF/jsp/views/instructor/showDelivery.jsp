@@ -90,7 +90,7 @@ Shows a Delivery
           <div class="value">
             <c:choose>
               <c:when test="${empty deliverySettings}">
-                Not specified - will use default Delivery Settings
+                Not specified - will use QTIWorks default Delivery Settings
               </c:when>
               <c:otherwise>
                 Using '${fn:escapeXml(deliverySettings.title)}'
@@ -99,7 +99,7 @@ Shows a Delivery
           </div>
         </td>
         <td class="actions">
-          <a href="${utils:escapeLink(deliveryRouting['edit'])}">Update&#xa0;Delivery&#xa0;Properties</a>
+          <a href="${utils:escapeLink(deliveryRouting['edit'])}">Edit&#xa0;Delivery&#xa0;Properties</a>
         </td>
       </tr>
       <%-- Candidate Sessions --%>

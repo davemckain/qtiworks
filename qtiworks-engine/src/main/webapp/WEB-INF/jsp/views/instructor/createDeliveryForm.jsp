@@ -3,7 +3,7 @@
 Copyright (c) 2012-2013, The University of Edinburgh.
 All Rights Reserved
 
-Form for editing Delivery properties
+Form for creating a Delivery
 
 Additional Model:
 
@@ -21,13 +21,13 @@ deliveryTemplate
         ${fn:escapeXml(utils:formatAssessmentFileName(assessmentPackage))}
         [${fn:escapeXml(assessmentPackage.title)}]
       </a> &#xbb;
-      <a href="${utils:escapeLink(assessmentRouting['deliveries'])}">Assessment Deliveries</a> &#xbb;
-      <a href="${utils:escapeLink(deliveryRouting['show'])}">Delivery '${fn:escapeXml(delivery.title)}'</a> &#xbb;
     </nav>
-    <h2>Edit Delivery Properties</h2>
+    <h2>Create New Delivery</h2>
     <div class="hints">
       <p>
-        This page lets you change the key properties for this delivery.
+        This form lets you create a new Delivery of the Assessment
+        ${fn:escapeXml(utils:formatAssessmentFileName(assessmentPackage))}
+        [${fn:escapeXml(assessmentPackage.title)}].
       </p>
     </div>
   </header>
@@ -42,10 +42,10 @@ deliveryTemplate
         <div class="grid_1">
           <div class="bigStatus">1<span class="required">*</span></div>
         </div>
-        <div class="grid_2">
-          <label for="title">Title:</label>
+        <div class="grid_3">
+          <label for="title">Enter Title:</label>
         </div>
-        <div class="grid_9">
+        <div class="grid_8">
           <form:input path="title" size="30" type="input" cssClass="expandy" />
         </div>
       </div>
@@ -58,7 +58,6 @@ deliveryTemplate
         </div>
         <div class="grid_3">Select Delivery Settings:</div>
         <div class="grid_8">
-          Select Delivery Settings:
           <ul class="dsSelector">
             <li>
               <input type="radio" id="dsdefault" name="dsid" value=""${empty deliveryTemplate.dsid ? ' checked="checked"' : ''} />
@@ -80,7 +79,8 @@ deliveryTemplate
             </c:forEach>
           </ul>
           <p>
-          <a href="${utils:escapeLink(primaryRouting['listDeliverySettings'])}">(You can create additional settings to choose from.)</a></p>
+            <a href="${utils:escapeLink(primaryRouting[assessment.assessmentType=='ASSESSMENT_ITEM' ? 'listItemDeliverySettings' : 'listTestDeliverySettings'])}">(You can create additional settings to choose from.)</a>
+          </p>
         </div>
       </div>
       <div class="clear"></div>

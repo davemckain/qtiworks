@@ -16,7 +16,7 @@ Lists Deliveries for a given Assignment
       <a href="${utils:escapeLink(assessmentRouting['show'])}">
         ${fn:escapeXml(utils:formatAssessmentFileName(assessmentPackage))}
         [${fn:escapeXml(assessmentPackage.title)}]
-      </a>
+      </a> &#xbb;
     </nav>
     <h2>Assessment Deliveries</h2>
     <div class="hints">
@@ -31,7 +31,7 @@ Lists Deliveries for a given Assignment
     <thead>
       <th></th>
       <th>Title</th>
-      <th>Open to candidates?</th>
+      <th>Available to candidates?</th>
       <th>Selected Delivery Settings</th>
     </thead>
     <tbody>
@@ -47,14 +47,21 @@ Lists Deliveries for a given Assignment
             ${delivery.open ? 'Yes' : 'No' }
           </td>
           <td align="center">
-            ${fn:escapeXml(delivery.deliverySettings.title)}
+            <c:choose>
+              <c:when test="${empty deliverySettings}">
+                (Using QTIWorks default Delivery Settings)
+              </c:when>
+              <c:otherwise>
+                Using '${fn:escapeXml(deliverySettings.title)}'
+              </c:otherwise>
+            </c:choose>
           </td>
         </tr>
       </c:forEach>
       <tr>
         <td class="plus"></td>
         <td colspan="3" align="center" class="actions">
-          <page:postLink path="${utils:escapeLink(assessmentRouting['createDelivery'])}" title="Create new Delivery"/>
+          <a href="${utils:escapeLink(assessmentRouting['createDelivery'])}">Create new Delivery</a>
         </td>
       </tr>
     </tbody>
