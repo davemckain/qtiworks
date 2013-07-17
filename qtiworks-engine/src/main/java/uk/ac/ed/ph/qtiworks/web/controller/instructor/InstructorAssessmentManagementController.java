@@ -297,9 +297,8 @@ public class InstructorAssessmentManagementController {
             throws PrivilegeException, DomainEntityNotFoundException {
         final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
         final List<Delivery> deliveries = assessmentDataService.getUserCreatedDeliveries(assessment);
-        model.addAttribute(assessment);
+        instructorModelHelper.setupModelForAssessment(assessment, model);
         model.addAttribute(deliveries);
-        model.addAttribute("assessmentRouting", instructorRouter.buildAssessmentRouting(assessment));
         model.addAttribute("deliveryListRouting", instructorRouter.buildDeliveryListRouting(deliveries));
         return "listDeliveries";
     }

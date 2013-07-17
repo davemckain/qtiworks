@@ -16,7 +16,10 @@ Shows information about a particular Assessment
       <a href="${utils:escapeLink(primaryRouting['dashboard'])}">QTIWorks Dashboard</a> &#xbb;
       <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Your assessments</a> &#xbb;
     </nav>
-    <h2>Assessment '${fn:escapeXml(utils:formatAssessmentFileName(assessmentPackage))}'</h2>
+    <h2>
+      ${fn:escapeXml(utils:formatAssessmentFileName(assessmentPackage))}
+      [${fn:escapeXml(assessmentPackage.title)}]
+    </h2>
     <div class="hints">
       <p>
         This page lets you manage this Assessment and drill down into the management of the Deliveries of
