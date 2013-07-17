@@ -83,12 +83,12 @@ aside {
 
 /* ========== Old Sub-page Page Header ========== */
 
-.page header {
+.page header.pageHeader {
   margin: 0.7em 0;
   font-family: 'Ubuntu', sans-serif;
 }
 
-.page header h1 {
+.page header.pageHeader h1 {
   background: url(images/smallcog.png) left center no-repeat;
   margin: 0;
   font-size: 40px;
@@ -97,15 +97,26 @@ aside {
   padding-left: 50px;
 }
 
-.page header h1 a:link, header h1 a:visited {
+.page header.pageHeader h1 a:link, header.pageHeader h1 a:visited {
   color: black;
   text-decoration: none;
   vertical-align: middle;
 }
 
-.page header h1 a:hover {
+.page header.pageHeader h1 a:hover {
   color: #66455e;
 }
+
+.page header.actionHeader h2 {
+  font-size: 1.7em;
+  border-bottom: 2px solid #ccdbf0;
+  margin-bottom: 0.3em;
+}
+
+.page header.actionHeader {
+  margin-bottom: 2em;
+}
+
 
 /* ========== LTI Instructor Mode header ========== */
 
@@ -191,6 +202,14 @@ table.dashboard {
 .dashboard .statusWarning .indicator:before {
   color: #ff9900;
   content: '!';
+}
+
+.dashboard .statusGood .indicator:before {
+  color: #33cc33;
+  content: '\2713';
+}
+
+.dashboard .statusOk .indicator:before {
 }
 
 .dashboard .category {

@@ -39,7 +39,7 @@ All Rights Reserved
   </head>
   <body class="<c:out value='${cssClass}' default='page'/>">
     <div class="container_12">
-      <header>
+      <header class="pageHeader">
         <c:choose>
           <c:when test="${cssClass=='homepage'}">
             <h1>QTIWorks</h1>

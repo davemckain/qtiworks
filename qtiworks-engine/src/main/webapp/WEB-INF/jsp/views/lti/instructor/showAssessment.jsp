@@ -31,7 +31,7 @@ Shows information about a particular Assessment
   <table class="dashboard">
     <tbody>
       <%-- Launchability status --%>
-      <c:set var="status" value="${assessmentPackage.launchable ? 'statusOk' : 'statusError'}"/>
+      <c:set var="status" value="${assessmentPackage.launchable ? 'statusGood' : 'statusError'}"/>
       <tr class="${status}">
         <td class="indicator"></td>
         <td class="category">
@@ -53,7 +53,7 @@ Shows information about a particular Assessment
       <%-- Validation status --%>
       <c:set var="status">
         <c:choose>
-          <c:when test="${assessmentPackage.valid}">statusOk</c:when>
+          <c:when test="${assessmentPackage.valid}">statusGood</c:when>
           <c:when test="${assessmentPackage.errorCount > 0}">statusError</c:when>
           <c:when test="${assessmentPackage.warningCount > 0}">statusWarning</c:when>
         </c:choose>
@@ -99,11 +99,11 @@ Shows information about a particular Assessment
           </div>
         </td>
         <td class="actions">
-          <a href="${utils:escapeLink(assessmentRouting['replace'])}">Replace&#xa0;Assessment&#xa0;Package&#xa0;Content</a>
+          <a href="${utils:escapeLink(assessmentRouting['replace'])}">Replace&#xa0;Package&#xa0;Content</a>
         </td>
       </tr>
       <%-- LTI outcomes --%>
-      <c:set var="status" value="${empty assessment.ltiResultOutcomeIdentifier ? 'statusError' : 'statusOk'}"/>
+      <c:set var="status" value="${empty assessment.ltiResultOutcomeIdentifier ? 'statusError' : 'statusGood'}"/>
       <tr class="${status}">
         <td class="indicator"></td>
         <td class="category">
@@ -115,7 +115,7 @@ Shows information about a particular Assessment
                 with range [${assessment.ltiResultMinimum}..${assessment.ltiResultMaximum}]
               </c:when>
               <c:otherwise>
-                Not set up. Outcomes cannot be returned for this assessment until this is set up
+                Not set up. Outcomes cannot be returned for this Assessment until set up
               </c:otherwise>
             </c:choose>
           </div>

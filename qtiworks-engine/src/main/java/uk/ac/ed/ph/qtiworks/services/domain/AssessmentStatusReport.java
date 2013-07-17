@@ -47,17 +47,20 @@ public final class AssessmentStatusReport {
 
     private final Assessment assessment;
     private final AssessmentPackage assessmentPackage;
+    private final long userCreatedDeliveryCount;
     private final long sessionCount;
     private final long candidateRoleSessionCount;
     private final long nonTerminatedSessionCount;
     private final long nonTerminatedCandidateRoleSessionCount;
 
     public AssessmentStatusReport(final Assessment assessment, final AssessmentPackage assessmentPackage,
+            final long userCreatedDeliveryCount,
             final long sessionCount, final long candidateRoleSessionCount,
             final long nonTerminatedSessionCount,
             final long nonTerminatedCandidateRoleSessionCount) {
         this.assessment = assessment;
         this.assessmentPackage = assessmentPackage;
+        this.userCreatedDeliveryCount = userCreatedDeliveryCount;
         this.sessionCount = sessionCount;
         this.candidateRoleSessionCount = candidateRoleSessionCount;
         this.nonTerminatedSessionCount = nonTerminatedSessionCount;
@@ -70,6 +73,10 @@ public final class AssessmentStatusReport {
 
     public AssessmentPackage getAssessmentPackage() {
         return assessmentPackage;
+    }
+
+    public long getUserCreatedDeliveryCount() {
+        return userCreatedDeliveryCount;
     }
 
     public long getSessionCount() {
