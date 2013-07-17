@@ -33,7 +33,7 @@ assessmentListRouting (aid -> action -> URL)
       <tr>
         <th></th>
         <th colspan="2">Actions</th>
-        <th>Title &amp; Assessment File Name</th>
+        <th>Title &amp; Package File Name</th>
         <th>Assessment Type</th>
         <th>Created</th>
       </tr>

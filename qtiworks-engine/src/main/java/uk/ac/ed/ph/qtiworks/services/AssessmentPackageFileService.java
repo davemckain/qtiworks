@@ -163,8 +163,16 @@ public class AssessmentPackageFileService {
             /* Record importer */
             assessmentPackage.setImporter(owner);
 
+            /* Create name for package, using original fileName if available.
+             * If not supplied, use name of QTI assessment XML resource */
+            String fileName = multipartFile.getOriginalFilename();
+            if (fileName==null || fileName.isEmpty()) {
+                fileName = assessmentPackage.getAssessmentHref().replaceFirst("^.+/", "");
+            }
+            assessmentPackage.setFileName(ServiceUtilities.trimSentence(fileName, DomainConstants.ASSESSMENT_NAME_MAX_LENGTH));
+
             /* Try to extract the title from the QTI XML */
-            final String guessedTitle = guessAssessmentTitle(assessmentPackage);
+            final String guessedTitle = extractAssessmentTitle(assessmentPackage);
             final String resultingTitle = !StringUtilities.isNullOrEmpty(guessedTitle) ? guessedTitle : DEFAULT_IMPORT_TITLE;
             assessmentPackage.setTitle(ServiceUtilities.trimSentence(resultingTitle, DomainConstants.ASSESSMENT_TITLE_MAX_LENGTH));
 
@@ -197,9 +205,9 @@ public class AssessmentPackageFileService {
      * is expected to happen later on.
      *
      * @param assessmentPackage
-     * @return guessed title, or an empty String if nothing could be guessed.
+     * @return extracted title, or an empty String if nothing could be extracted.
      */
-    public String guessAssessmentTitle(final AssessmentPackage assessmentPackage) {
+    public String extractAssessmentTitle(final AssessmentPackage assessmentPackage) {
         Assert.notNull(assessmentPackage, "assessmentPackage");
         final ResourceLocator inputResourceLocator = createResolvingResourceLocator(assessmentPackage);
         final URI assessmentSystemId = createAssessmentObjectUri(assessmentPackage);
@@ -208,7 +216,7 @@ public class AssessmentPackageFileService {
             xmlReadResult = qtiXmlReader.read(assessmentSystemId, inputResourceLocator, false);
         }
         catch (final XmlResourceNotFoundException e) {
-            throw new QtiWorksLogicException("Assessment resource for package " + assessmentPackage, e);
+            throw new QtiWorksLogicException("Assessment resource missing for package " + assessmentPackage, e);
         }
         /* Let's simply extract the title attribute from the document element, and not worry about
          * anything else at this point.

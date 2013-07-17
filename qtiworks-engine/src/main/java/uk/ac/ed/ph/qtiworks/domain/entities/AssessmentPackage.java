@@ -158,6 +158,14 @@ public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
     @Column(name="assessment_href")
     private String assessmentHref;
 
+    /**
+     * "File name" for this package, deduced from multipart data sent, or created
+     * synthetically.
+     */
+    @Basic(optional=false)
+    @Column(name="file_name", length=DomainConstants.ASSESSMENT_NAME_MAX_LENGTH, updatable=false)
+    private String fileName;
+
     /** Title of this item/test within this package. Created on import */
     @Basic(optional=false)
     @Column(name="title", length=DomainConstants.ASSESSMENT_TITLE_MAX_LENGTH, updatable=false)
@@ -294,6 +302,15 @@ public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
     }
 
 
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(final String fileName) {
+        this.fileName = fileName;
+    }
+
+
     public String getTitle() {
         return title;
     }
@@ -372,6 +389,7 @@ public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
                 + "(apid=" + apid
                 + ",assessmentType=" + assessmentType
                 + ",importType=" + importType
+                + ",fileName=" + fileName
                 + ",title=" + title
                 + ")";
     }

@@ -24,7 +24,7 @@ primaryRouting (action -> URL)
     <thead>
       <tr>
         <th colspan="2"></th>
-        <th>Title &amp; Assessment File Name</th>
+        <th>Title &amp; Package File Name</th>
         <th>Assessment Type</th>
         <th>Created</th>
       </tr>

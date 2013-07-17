@@ -440,8 +440,11 @@ public class SampleResourceImporter {
         assessmentPackage.setWarningCount(0);
         assessmentPackage.setImportVersion(Long.valueOf(1L));
 
+        /* We'll use last component of path to assessment XMl as file name */
+        assessmentPackage.setFileName(qtiSampleAssessment.getAssessmentHref().replaceFirst("^.+/", ""));
+
         /* Extract title from QTI XML (if possible) */
-        final String guessedTitle = assessmentPackageFileService.guessAssessmentTitle(assessmentPackage);
+        final String guessedTitle = assessmentPackageFileService.extractAssessmentTitle(assessmentPackage);
         final String resultingTitle = !StringUtilities.isNullOrEmpty(guessedTitle) ? guessedTitle : DEFAULT_IMPORT_TITLE;
         assessmentPackage.setTitle(ServiceUtilities.trimSentence(resultingTitle, DomainConstants.ASSESSMENT_TITLE_MAX_LENGTH));
 

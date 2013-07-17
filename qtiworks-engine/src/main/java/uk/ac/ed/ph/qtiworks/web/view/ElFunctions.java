@@ -121,7 +121,7 @@ public final class ElFunctions {
     }
 
     public static String formatAssessmentFileName(final AssessmentPackage assessmentPackage) {
-       return escapeXml(assessmentPackage.getAssessmentHref().replaceFirst("^.+/", ""));
+       return escapeXml(assessmentPackage.getFileName());
     }
 
     public static String formatLtiContextTitle(final LtiContext ltiContext) {
