@@ -12,6 +12,33 @@ All Rights Reserved
   </nav>
   <h2>QTIWorks Release Notes (Development)</h2>
 
+  <h3>1.0-DEV32 [Development] (16/07/2013)</h3>
+  <p>
+    This final snapshot brings the project to feature freeze in the context
+    of its current funding.
+  </p>
+  <p>
+    This snapshot mainaly includes some reorganisation and tidying of the MVC
+    layer, in particular the new domain-level LTI instructor interface and the
+    existing instructor interface. The latter has been simplified a bit and
+    tidied up visually.
+  </p>
+  <p>
+    Additionally, there are a number of fixes to the recent LTI functionality,
+    including a fix to the LTI outcomes reporting service to handle issues with
+    the computation of body hashes. Oddly, this was working fine in the free
+    Blackboard coursesites.com site, but not on any Learn VLEs that I had tried.
+    There is also a minor fix to the rendering system to tell it what to do with
+    HTML <code>th</code> elements.
+  </p>
+  <p>
+    <strong>Note:</strong>  If you are following these development releases,
+    then you will need to run the schema migration script
+    <code>qtiworks-engine/support/schema-migrations/dev31-to-dev32.sql</code>
+    after compiling this version of the webapp. There is no need to delete
+    candidate data if upgrading from DEV31.
+  </p>
+
   <h3>1.0-DEV31 [Development] (09/07/2013)</h3>
   <p>
     This snapshot includes a working implementation of LTI instructor role
