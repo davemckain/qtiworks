@@ -12,7 +12,7 @@ All Rights Reserved
   </nav>
   <h2>QTIWorks Release Notes (Development)</h2>
 
-  <h3>1.0-DEV32 [Development] (16/07/2013)</h3>
+  <h3>1.0-DEV32 [Development] (17/07/2013)</h3>
   <p>
     This final snapshot brings the project to feature freeze in the context
     of its current funding.
