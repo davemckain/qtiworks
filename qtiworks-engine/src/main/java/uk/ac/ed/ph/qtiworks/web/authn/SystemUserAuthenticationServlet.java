@@ -34,8 +34,8 @@
 package uk.ac.ed.ph.qtiworks.web.authn;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.SystemUser;
-import uk.ac.ed.ph.qtiworks.services.base.AuditLogger;
-import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
+import uk.ac.ed.ph.qtiworks.services.AuditLogger;
+import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.dao.SystemUserDao;
 
 import java.io.IOException;

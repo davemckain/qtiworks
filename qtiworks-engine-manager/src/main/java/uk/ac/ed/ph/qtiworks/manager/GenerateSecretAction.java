@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.qtiworks.manager;
 
 import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
-import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
+import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
 
 import java.util.List;
 

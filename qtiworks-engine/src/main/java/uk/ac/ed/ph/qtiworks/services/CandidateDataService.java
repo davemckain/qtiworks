@@ -51,7 +51,6 @@ import uk.ac.ed.ph.qtiworks.domain.entities.TestDeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.mathassess.GlueValueBinder;
 import uk.ac.ed.ph.qtiworks.mathassess.MathAssessConstants;
-import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateEventDao;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateEventNotificationDao;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionOutcomeDao;

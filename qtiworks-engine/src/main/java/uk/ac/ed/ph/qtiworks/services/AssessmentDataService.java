@@ -46,7 +46,6 @@ import uk.ac.ed.ph.qtiworks.domain.entities.LtiResource;
 import uk.ac.ed.ph.qtiworks.domain.entities.TestDeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.domain.entities.UserRole;
-import uk.ac.ed.ph.qtiworks.services.base.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.dao.AssessmentDao;
 import uk.ac.ed.ph.qtiworks.services.dao.AssessmentPackageDao;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;

@@ -44,8 +44,6 @@ import uk.ac.ed.ph.qtiworks.domain.entities.QueuedLtiOutcome;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.domain.entities.UserType;
 import uk.ac.ed.ph.qtiworks.services.ScheduledService;
-import uk.ac.ed.ph.qtiworks.services.base.AuditLogger;
-import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.services.dao.QueuedLtiOutcomeDao;
 

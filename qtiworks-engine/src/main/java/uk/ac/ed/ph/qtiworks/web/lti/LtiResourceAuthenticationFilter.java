@@ -35,7 +35,7 @@ package uk.ac.ed.ph.qtiworks.web.lti;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiResource;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiUser;
-import uk.ac.ed.ph.qtiworks.services.base.IdentityService;
+import uk.ac.ed.ph.qtiworks.services.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.dao.LtiResourceDao;
 import uk.ac.ed.ph.qtiworks.web.authn.AbstractWebAuthenticationFilter;
 

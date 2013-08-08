@@ -39,7 +39,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.services.AssessmentProctoringService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentReportingService;
-import uk.ac.ed.ph.qtiworks.services.base.IdentityService;
+import uk.ac.ed.ph.qtiworks.services.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.domain.CandidateSessionSummaryReport;
 import uk.ac.ed.ph.qtiworks.services.domain.DeliveryCandidateSummaryReport;
 import uk.ac.ed.ph.qtiworks.web.GlobalRouter;

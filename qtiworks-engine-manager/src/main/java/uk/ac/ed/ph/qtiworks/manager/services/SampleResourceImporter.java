@@ -59,7 +59,7 @@ import uk.ac.ed.ph.qtiworks.samples.TestImplementationSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.UpmcSampleSet;
 import uk.ac.ed.ph.qtiworks.services.AssessmentPackageFileService;
 import uk.ac.ed.ph.qtiworks.services.DataDeletionService;
-import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
+import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.dao.AssessmentDao;
 import uk.ac.ed.ph.qtiworks.services.dao.AssessmentPackageDao;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliveryDao;

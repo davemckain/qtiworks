@@ -50,7 +50,7 @@ import uk.ac.ed.ph.qtiworks.services.CandidateAuditLogger;
 import uk.ac.ed.ph.qtiworks.services.CandidateDataService;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionCloser;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
-import uk.ac.ed.ph.qtiworks.services.base.IdentityService;
+import uk.ac.ed.ph.qtiworks.services.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateResponseDao;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
 

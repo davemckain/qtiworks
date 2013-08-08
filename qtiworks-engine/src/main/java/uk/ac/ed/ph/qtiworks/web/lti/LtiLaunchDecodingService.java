@@ -45,7 +45,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.LtiDomain;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiLaunchType;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.UserRole;
-import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
+import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliveryDao;
 import uk.ac.ed.ph.qtiworks.services.dao.LtiDomainDao;
 import uk.ac.ed.ph.qtiworks.services.dao.LtiUserDao;

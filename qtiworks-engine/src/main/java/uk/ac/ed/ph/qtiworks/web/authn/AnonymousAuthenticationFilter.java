@@ -35,7 +35,7 @@ package uk.ac.ed.ph.qtiworks.web.authn;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.domain.entities.AnonymousUser;
-import uk.ac.ed.ph.qtiworks.services.base.IdentityService;
+import uk.ac.ed.ph.qtiworks.services.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.dao.AnonymousUserDao;
 
 import java.io.IOException;

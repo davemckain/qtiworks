@@ -44,7 +44,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.LtiResource;
 import uk.ac.ed.ph.qtiworks.services.AssessmentDataService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentReportingService;
-import uk.ac.ed.ph.qtiworks.services.base.IdentityService;
+import uk.ac.ed.ph.qtiworks.services.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStatusReport;
 import uk.ac.ed.ph.qtiworks.services.domain.CandidateSessionSummaryReport;
 import uk.ac.ed.ph.qtiworks.services.domain.DeliveryStatusReport;

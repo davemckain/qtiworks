@@ -41,7 +41,7 @@ import uk.ac.ed.ph.qtiworks.rendering.AuthorViewRenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.ItemRenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
-import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
+import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateForbiddenException;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateItemDeliveryService;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateRenderingService;

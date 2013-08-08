@@ -39,8 +39,6 @@ import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
-import uk.ac.ed.ph.qtiworks.services.base.AuditLogger;
-import uk.ac.ed.ph.qtiworks.services.base.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
 
 import javax.annotation.Resource;

@@ -37,7 +37,7 @@ import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksDeploymentSettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.SystemUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.domain.entities.UserRole;
-import uk.ac.ed.ph.qtiworks.services.base.IdentityService;
+import uk.ac.ed.ph.qtiworks.services.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.dao.SystemUserDao;
 import uk.ac.ed.ph.qtiworks.services.dao.UserDao;
 import uk.ac.ed.ph.qtiworks.web.WebUtilities;
