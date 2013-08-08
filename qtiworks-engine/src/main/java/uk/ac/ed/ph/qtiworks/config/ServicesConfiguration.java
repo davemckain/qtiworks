@@ -36,7 +36,6 @@ package uk.ac.ed.ph.qtiworks.config;
 import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksDeploymentSettings;
 import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.mathassess.MathAssessExtensionPackage;
-import uk.ac.ed.ph.qtiworks.services.base.SystemEmailService;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
@@ -64,8 +63,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
-import org.springframework.mail.MailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.stereotype.Repository;
@@ -95,19 +92,6 @@ public class ServicesConfiguration {
     @Bean
     public LocalValidatorFactoryBean jsr303Validator() {
         return new LocalValidatorFactoryBean();
-    }
-
-    @Bean
-    public MailSender mailSender() {
-        final JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        mailSender.setHost(qtiWorksDeploymentSettings.getEmailSmtpHost());
-        return mailSender;
-    }
-
-    @Bean
-    public SystemEmailService systemEmailService() {
-        final SystemEmailService emailService = new SystemEmailService();
-        return emailService;
     }
 
     @Resource(name="extraJpaProperties")

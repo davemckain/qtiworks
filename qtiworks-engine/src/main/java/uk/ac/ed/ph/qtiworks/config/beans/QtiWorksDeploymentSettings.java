@@ -63,9 +63,6 @@ public final class QtiWorksDeploymentSettings implements Serializable {
     private @Value("${qtiworks.hibernate.dialect}") String hibernateDialect;
     private @Value("${qtiworks.admin.name}") String adminName;
     private @Value("${qtiworks.admin.email}") String adminEmailAddress;
-    private @Value("${qtiworks.email.enabled:false}") boolean emailEnabled;
-    private @Value("${qtiworks.email.devmode:false}") boolean emailDevMode;
-    private @Value("${qtiworks.email.smtp.host}") String emailSmtpHost;
     private @Value("${qtiworks.base.url}") String baseUrl;
     private @Value("${qtiworks.web.authn.fake.login:}") String fakeLoginName;
 
@@ -95,18 +92,6 @@ public final class QtiWorksDeploymentSettings implements Serializable {
 
     public String getAdminEmailAddress() {
         return adminEmailAddress;
-    }
-
-    public boolean isEmailEnabled() {
-        return emailEnabled;
-    }
-
-    public boolean isEmailDevMode() {
-        return emailDevMode;
-    }
-
-    public String getEmailSmtpHost() {
-        return emailSmtpHost;
     }
 
     public String getFilesystemBase() {
