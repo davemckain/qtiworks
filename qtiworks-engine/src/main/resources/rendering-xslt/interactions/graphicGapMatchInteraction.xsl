@@ -39,7 +39,7 @@
             </param>
           </xsl:for-each>
           <xsl:variable name="gapImgs" select="qw:filter-visible(qti:gapImg)" as="element(qti:gapImg)*"/>
-          <param name="movable_element_count" value="{$gapImgs}"/>
+          <param name="movable_element_count" value="{count($gapImgs)}"/>
           <xsl:for-each select="$gapImgs">
             <param name="movable_object{position()-1}">
               <xsl:attribute name="value"><xsl:value-of select="@identifier"/>::<xsl:value-of select="qw:convert-link(qti:object/@data)"/>::<xsl:if test="@label">::hotSpotLabel:<xsl:value-of select="@label"/></xsl:if><xsl:if test="@matchGroup">::<xsl:value-of select="translate(normalize-space(@matchGroup), ' ', '::')"/></xsl:if><xsl:if test="@matchMax">::maxAssociations:<xsl:value-of select="@matchMax"/></xsl:if></xsl:attribute>
