@@ -168,12 +168,12 @@ Common templates for item & test author views
   </xsl:template>
 
   <xsl:template match="qw:itemSessionState" mode="variableValuesPanel" as="element(div)*">
-    <xsl:if test="exists(qw:outcomeValue)">
+    <xsl:if test="exists(qw:outcomeVariable)">
       <div class="resultPanel">
-        <h4>Outcome values (<xsl:value-of select="count(qw:outcomeValue)"/>)</h4>
+        <h4>Outcome values (<xsl:value-of select="count(qw:outcomeVariable)"/>)</h4>
         <div class="details">
           <xsl:call-template name="dumpValues">
-            <xsl:with-param name="valueHolders" select="qw:outcomeValue"/>
+            <xsl:with-param name="valueHolders" select="qw:outcomeVariable"/>
           </xsl:call-template>
         </div>
       </div>
