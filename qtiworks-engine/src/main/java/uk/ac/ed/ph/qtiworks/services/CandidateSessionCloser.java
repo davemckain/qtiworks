@@ -53,7 +53,7 @@ import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.running.TestSessionController;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.value.FloatValue;
+import uk.ac.ed.ph.jqtiplus.value.NumberValue;
 import uk.ac.ed.ph.jqtiplus.value.Signature;
 
 import java.util.List;
@@ -154,7 +154,7 @@ public class CandidateSessionCloser {
             return;
         }
         /* Make sure result outcomeVariable can be normalized correctly */
-        final double rawScore = ((FloatValue) resultOutcomeVariable.getComputedValue()).doubleValue();
+        final double rawScore = ((NumberValue) resultOutcomeVariable.getComputedValue()).doubleValue();
         final Double normalizedScore = computeNormalizedScore(resultOutcomeVariable, rawScore, assessment);
         if (normalizedScore==null) {
             recordLtiRecordingSkipped(candidateSession,
