@@ -124,6 +124,33 @@ Shows information about a particular Assessment
           <a href="${utils:escapeLink(assessmentRouting['outcomesSettings'])}">Set&#xa0;up&#xa0;LTI&#xa0;outcomes</a>
         </td>
       </tr>
+      <%-- Selected for this launch? --%>
+      <c:set var="isSelectedAssessment" value="${!empty thisAssessment && thisAssessment.id==assessment.id}"/>
+      <c:set var="status" value="${isSelectedAssessment ? 'statusGood' : 'statusWarning'}"/>
+      <tr class="${status}">
+        <td class="indicator"></td>
+        <td class="category">
+          <div class="name">Selected for this launch?</div>
+          <div class="value">
+            <c:choose>
+              <c:when test="${!isSelectedAssessment}">
+                This assessment is not the one that will be used for this launch of QTIWorks
+              </c:when>
+              <c:otherwise>
+                This assessment is selected to be used for this launch of QTIWorks
+              </c:otherwise>
+            </c:choose>
+          </div>
+        </td>
+        <td class="actions">
+          <c:if test="${!isSelectedAssessment}">
+            <page:postLink path="${assessmentRouting['select']}" title="Select for this launch"
+              confirmCondition="${thisDeliveryStatusReport.sessionCount>0}"
+              confirm="Are you sure? Selecting a different assessment would terminate ${thisDeliveryStatusReport.nonTerminatedSessionCount} candidate session(s) currently running on this launch, and delete the gathered data for all ${thisDeliveryStatusReport.sessionCount} session(s) launched so far"
+            />
+          </c:if>
+        </td>
+      </tr>
     </tbody>
   </table>
 
