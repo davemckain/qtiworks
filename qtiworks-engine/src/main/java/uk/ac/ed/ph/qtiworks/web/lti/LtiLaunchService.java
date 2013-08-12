@@ -60,6 +60,7 @@ import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -136,7 +137,7 @@ public class LtiLaunchService {
         }
 
         /* Extract the data we're interested in. (This is validated below) */
-        final LtiLaunchData ltiLaunchData = LtiOauthMessageUtilities.extractLtiLaunchData(oauthMessage);
+        final LtiLaunchData ltiLaunchData = LtiLaunchService.extractLtiLaunchData(oauthMessage);
         logger.info("Extracted LTI Launch data {}", ltiLaunchData);
 
         /* Make sure the OAuth consumer key has been provided */
@@ -147,7 +148,7 @@ public class LtiLaunchService {
         }
 
         /* Make sure this is a supported LTI launch message */
-        if (!LtiOauthMessageUtilities.isBasicLtiLaunchRequest(ltiLaunchData)) {
+        if (!LtiLaunchService.isBasicLtiLaunchRequest(ltiLaunchData)) {
             logger.warn("Unsupported LTI message type in {}", ltiLaunchData);
             return new DecodedLtiLaunch(ltiLaunchData, SC_BAD_REQUEST, "Unsupported LTI message type " + ltiLaunchData.getLtiMessageType());
         }
@@ -189,6 +190,48 @@ public class LtiLaunchService {
             logger.warn("OAuth message validation resulted in URISyntaxException", e);
             return new DecodedLtiLaunch(ltiLaunchData, SC_BAD_REQUEST, "Your LTI tool consumer sent QTIWorks a bad OAuth message.");
         }
+    }
+
+    public static boolean isBasicLtiLaunchRequest(final HttpServletRequest request) {
+        return "basic-lti-launch-request".equals(request.getParameter("lti_message_type"));
+    }
+
+    public static boolean isBasicLtiLaunchRequest(final LtiLaunchData ltiLaunchData) {
+        return "basic-lti-launch-request".equals(ltiLaunchData.getLtiMessageType());
+    }
+
+    public static LtiLaunchData extractLtiLaunchData(final OAuthMessage oauthMessage) throws IOException {
+        final LtiLaunchData result = new LtiLaunchData();
+        result.setLtiMessageType(oauthMessage.getParameter("lti_message_type")); /* Required */
+        result.setLtiVersion(oauthMessage.getParameter("lti_version")); /* Required */
+        result.setResourceLinkId(oauthMessage.getParameter("resource_link_id")); /* Required */
+        result.setResourceLinkTitle(oauthMessage.getParameter("resource_link_title")); /* Recommended */
+        result.setResourceLinkDescription(oauthMessage.getParameter("resource_link_description")); /* Recommended */
+        result.setUserId(oauthMessage.getParameter("user_id")); /* Recommended */
+        final String roles = oauthMessage.getParameter("roles"); /* Recommended, comma-separated */
+        if (roles!=null) {
+            result.setRoles(Arrays.asList(roles.split("\\s*,\\s*")));
+        }
+        result.setLisPersonNameFamily(oauthMessage.getParameter("lis_person_name_family")); /* Recommended but possibly suppressed */
+        result.setLisPersonNameFull(oauthMessage.getParameter("lis_person_name_full")); /* Recommended but possibly suppressed */
+        result.setLisPersonNameGiven(oauthMessage.getParameter("lis_person_name_given")); /* Recommended but possibly suppressed */
+        result.setLisPersonContactEmailPrimary(oauthMessage.getParameter("lis_person_contact_email_primary")); /* Recommended but possibly suppressed */
+        result.setContextId(oauthMessage.getParameter("context_id")); /* Recommended */
+        result.setContextLabel(oauthMessage.getParameter("context_label")); /* Recommended */
+        result.setContextTitle(oauthMessage.getParameter("context_title")); /* Recommended */
+        result.setLaunchPresentationReturnUrl(oauthMessage.getParameter("launch_presentation_return_url")); /* Recommended */
+        result.setToolConsumerInfoProductFamilyCode(oauthMessage.getParameter("tool_consumer_info_product_family_code")); /* Optional but recommended */
+        result.setToolConsumerInfoVersion(oauthMessage.getParameter("tool_consumer_info_version")); /* Optional but recommended */
+        result.setToolConsumerInstanceGuid(oauthMessage.getParameter("tool_consumer_instance_guid")); /* Optional but recommended */
+        result.setToolConsumerInstanceName(oauthMessage.getParameter("tool_consumer_instance_name")); /* Recommended */
+        result.setToolConsumerInstanceDescription(oauthMessage.getParameter("tool_consumer_instance_description")); /* Optional */
+        /* Result reporting parameters */
+        result.setLisResultSourcedid(oauthMessage.getParameter("lis_result_sourcedid"));
+        result.setLisOutcomeServiceUrl(oauthMessage.getParameter("lis_outcome_service_url"));
+        result.setLisPersonSourcedid(oauthMessage.getParameter("lis_person_sourcedid"));
+        result.setLisCourseOfferingSourcedid(oauthMessage.getParameter("lis_course_offering_sourcedid"));
+        result.setLisCourseSectionSourcedid(oauthMessage.getParameter("lis_course_section_sourcedid"));
+        return result;
     }
 
     private LtiUser handleDomainLaunch(final OAuthMessage oauthMessage, final LtiLaunchData ltiLaunchData, final LtiDomain ltiDomain)
