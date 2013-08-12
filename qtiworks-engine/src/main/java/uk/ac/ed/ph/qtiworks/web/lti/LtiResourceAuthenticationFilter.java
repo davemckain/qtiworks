@@ -56,10 +56,12 @@ import org.springframework.web.context.WebApplicationContext;
 
 /**
  * Authentication filter for gaining access to a particular {@link LtiResource}.
- * <p>
- * These resources exist in URLs paths of the form:
+ * Such resources exist in URLs paths of the form:
  *
  * <code>lti/resource/{lrid}</code>
+ *
+ * Note that this filter only works <em>strong</em> after the initial LTI launch URL has been
+ * accessed to set up the HTTP session correctly.
  *
  * @author David McKain
  */
@@ -132,7 +134,7 @@ public final class LtiResourceAuthenticationFilter extends AbstractWebAuthentica
         }
     }
 
-    public static void authenticatUserForResource(final HttpSession session, final LtiResource ltiResource, final LtiUser ltiUser) {
+    public static void authenticateUserForResource(final HttpSession session, final LtiResource ltiResource, final LtiUser ltiUser) {
         final Long lrid = ltiResource.getId();
         session.setAttribute(getLtiUserSessionKey(lrid), ltiUser);
     }

@@ -43,9 +43,8 @@ import uk.ac.ed.ph.qtiworks.domain.entities.LtiUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.UserRole;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.web.GlobalRouter;
-import uk.ac.ed.ph.qtiworks.web.lti.LtiLaunchData;
-import uk.ac.ed.ph.qtiworks.web.lti.LtiLaunchDecodingService;
 import uk.ac.ed.ph.qtiworks.web.lti.DecodedLtiLaunch;
+import uk.ac.ed.ph.qtiworks.web.lti.LtiLaunchData;
 import uk.ac.ed.ph.qtiworks.web.lti.LtiLaunchService;
 import uk.ac.ed.ph.qtiworks.web.lti.LtiResourceAuthenticationFilter;
 
@@ -73,9 +72,6 @@ public class LtiLaunchController {
     private CandidateSessionStarter candidateSessionStarter;
 
     @Resource
-    private LtiLaunchDecodingService ltiLaunchDecodingService;
-
-    @Resource
     private LtiLaunchService ltiLaunchService;
 
     /** Domain-level LTI launch */
@@ -83,7 +79,7 @@ public class LtiLaunchController {
     public String ltiDomainLevelLaunch(final HttpServletRequest request, final HttpServletResponse response)
             throws IOException {
         /* Decode LTI launch request, and bail out on error */
-        final DecodedLtiLaunch ltiLaunchResult = ltiLaunchDecodingService.extractLtiLaunchData(request, LtiLaunchType.DOMAIN);
+        final DecodedLtiLaunch ltiLaunchResult = ltiLaunchService.decodeLtiLaunchData(request, LtiLaunchType.DOMAIN);
         if (ltiLaunchResult.isError()) {
             response.sendError(ltiLaunchResult.getErrorCode(), ltiLaunchResult.getErrorMessage());
             return null;
@@ -104,7 +100,7 @@ public class LtiLaunchController {
         if (userRole==UserRole.INSTRUCTOR) {
             /* If user is an instructor, we'll forward to the LTI instructor MVC after
              * "authenticating" the user */
-            LtiResourceAuthenticationFilter.authenticatUserForResource(request.getSession(), ltiResource, ltiUser);
+            LtiResourceAuthenticationFilter.authenticateUserForResource(request.getSession(), ltiResource, ltiUser);
             return "redirect:/lti/resource/" + ltiResource.getId();
         }
         else if (userRole==UserRole.CANDIDATE) {
@@ -139,7 +135,7 @@ public class LtiLaunchController {
     public String ltiLinkLevelLaunch(final HttpServletRequest request, final HttpServletResponse response)
             throws IOException {
         /* Decode LTI launch request, and bail out on error */
-        final DecodedLtiLaunch ltiLaunchResult = ltiLaunchDecodingService.extractLtiLaunchData(request, LtiLaunchType.LINK);
+        final DecodedLtiLaunch ltiLaunchResult = ltiLaunchService.decodeLtiLaunchData(request, LtiLaunchType.LINK);
         if (ltiLaunchResult.isError()) {
             response.sendError(ltiLaunchResult.getErrorCode(), ltiLaunchResult.getErrorMessage());
             return null;
@@ -181,7 +177,7 @@ public class LtiLaunchController {
     /** LTI debugging and diagnostic help */
     @RequestMapping(value="/debug", method=RequestMethod.POST)
     public String ltiDebug(final HttpServletRequest httpRequest, final Model model) throws IOException {
-        final DecodedLtiLaunch ltiLaunchResult = ltiLaunchDecodingService.extractLtiLaunchData(httpRequest, LtiLaunchType.DOMAIN);
+        final DecodedLtiLaunch ltiLaunchResult = ltiLaunchService.decodeLtiLaunchData(httpRequest, LtiLaunchType.DOMAIN);
         model.addAttribute("object", ltiLaunchResult);
         return "ltiDebug";
     }

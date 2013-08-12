@@ -35,7 +35,7 @@ package uk.ac.ed.ph.qtiworks.domain.entities;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
-import uk.ac.ed.ph.qtiworks.web.lti.LtiLaunchDecodingService;
+import uk.ac.ed.ph.qtiworks.web.lti.LtiLaunchService;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -85,7 +85,7 @@ public class LtiUser extends User implements BaseEntity, Comparable<LtiUser> {
     /**
      * Logical key used for an LTI user.
      * <p>
-     * (See {@link LtiLaunchDecodingService} for details)
+     * (See {@link LtiLaunchService} for details)
      */
     @Basic(optional=false)
     @Column(name="logical_key", updatable=false, unique=true, length=DomainConstants.LTI_USER_LOGICAL_KEY_LENGTH)
