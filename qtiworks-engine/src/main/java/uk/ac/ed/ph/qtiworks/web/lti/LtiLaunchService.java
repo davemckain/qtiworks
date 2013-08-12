@@ -424,15 +424,15 @@ public class LtiLaunchService {
      * caller does not have {@link UserRole#INSTRUCTOR}.
      *
      * @param ltiDomain
-     * @param ltiLaunchResult
+     * @param decodedLtiLaunch
      * @return
      *
      * @throws IllegalArgumentException if the LTI launch is not a domain-level link.
      */
-    public LtiResource provideLtiResource(final DecodedLtiLaunch ltiLaunchResult) {
-        Assert.notNull(ltiLaunchResult, "ltiLaunchResult");
-        final LtiLaunchData ltiLaunchData = ltiLaunchResult.getLtiLaunchData();
-        final LtiUser ltiUser = ltiLaunchResult.getLtiUser();
+    public LtiResource provideLtiResource(final DecodedLtiLaunch decodedLtiLaunch) {
+        Assert.notNull(decodedLtiLaunch, "decodedLtiLaunch");
+        final LtiLaunchData ltiLaunchData = decodedLtiLaunch.getLtiLaunchData();
+        final LtiUser ltiUser = decodedLtiLaunch.getLtiUser();
 
         /* Make sure this a domain-level launch */
         final LtiDomain ltiDomain = ltiUser.getLtiDomain();

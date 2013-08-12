@@ -79,14 +79,14 @@ public class LtiLaunchController {
     public String ltiDomainLevelLaunch(final HttpServletRequest request, final HttpServletResponse response)
             throws IOException {
         /* Decode LTI launch request, and bail out on error */
-        final DecodedLtiLaunch ltiLaunchResult = ltiLaunchService.decodeLtiLaunchData(request, LtiLaunchType.DOMAIN);
-        if (ltiLaunchResult.isError()) {
-            response.sendError(ltiLaunchResult.getErrorCode(), ltiLaunchResult.getErrorMessage());
+        final DecodedLtiLaunch decodedLtiLaunch = ltiLaunchService.decodeLtiLaunchData(request, LtiLaunchType.DOMAIN);
+        if (decodedLtiLaunch.isError()) {
+            response.sendError(decodedLtiLaunch.getErrorCode(), decodedLtiLaunch.getErrorMessage());
             return null;
         }
 
         /* Make sure this is a domain launch */
-        final LtiUser ltiUser = ltiLaunchResult.getLtiUser();
+        final LtiUser ltiUser = decodedLtiLaunch.getLtiUser();
         final LtiDomain ltiDomain = ltiUser.getLtiDomain();
         if (ltiDomain==null) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "The tool consumer has attempted a domain-level launch using a link-level key");
@@ -94,7 +94,7 @@ public class LtiLaunchController {
         }
 
         /* Extract/create the corresponding LtiResource for this launch */
-        final LtiResource ltiResource = ltiLaunchService.provideLtiResource(ltiLaunchResult); /* (May be null for candidates) */
+        final LtiResource ltiResource = ltiLaunchService.provideLtiResource(decodedLtiLaunch); /* (May be null for candidates) */
         final UserRole userRole = ltiUser.getUserRole();
 
         if (userRole==UserRole.INSTRUCTOR) {
@@ -110,7 +110,7 @@ public class LtiLaunchController {
             }
 
             /* Extract relevant data */
-            final LtiLaunchData ltiLaunchData = ltiLaunchResult.getLtiLaunchData();
+            final LtiLaunchData ltiLaunchData = decodedLtiLaunch.getLtiLaunchData();
             final String exitUrl = ltiLaunchData.getLaunchPresentationReturnUrl();
             final String lisOutcomeServiceUrl = ltiLaunchData.getLisOutcomeServiceUrl();
             final String lisResultSourcedid = ltiLaunchData.getLisResultSourcedid();
@@ -135,20 +135,20 @@ public class LtiLaunchController {
     public String ltiLinkLevelLaunch(final HttpServletRequest request, final HttpServletResponse response)
             throws IOException {
         /* Decode LTI launch request, and bail out on error */
-        final DecodedLtiLaunch ltiLaunchResult = ltiLaunchService.decodeLtiLaunchData(request, LtiLaunchType.LINK);
-        if (ltiLaunchResult.isError()) {
-            response.sendError(ltiLaunchResult.getErrorCode(), ltiLaunchResult.getErrorMessage());
+        final DecodedLtiLaunch decodedLtiLaunch = ltiLaunchService.decodeLtiLaunchData(request, LtiLaunchType.LINK);
+        if (decodedLtiLaunch.isError()) {
+            response.sendError(decodedLtiLaunch.getErrorCode(), decodedLtiLaunch.getErrorMessage());
             return null;
         }
 
         /* Extract relevant data */
-        final LtiLaunchData ltiLaunchData = ltiLaunchResult.getLtiLaunchData();
+        final LtiLaunchData ltiLaunchData = decodedLtiLaunch.getLtiLaunchData();
         final String exitUrl = ltiLaunchData.getLaunchPresentationReturnUrl();
         final String lisOutcomeServiceUrl = ltiLaunchData.getLisOutcomeServiceUrl();
         final String lisResultSourcedid = ltiLaunchData.getLisResultSourcedid();
 
         /* Start/reuse candidate session */
-        final LtiUser ltiUser = ltiLaunchResult.getLtiUser();
+        final LtiUser ltiUser = decodedLtiLaunch.getLtiUser();
         try {
             final CandidateSession candidateSession = candidateSessionStarter.createLinkLevelLtiCandidateSession(ltiUser,
                     exitUrl, lisOutcomeServiceUrl, lisResultSourcedid);
@@ -177,8 +177,8 @@ public class LtiLaunchController {
     /** LTI debugging and diagnostic help */
     @RequestMapping(value="/debug", method=RequestMethod.POST)
     public String ltiDebug(final HttpServletRequest httpRequest, final Model model) throws IOException {
-        final DecodedLtiLaunch ltiLaunchResult = ltiLaunchService.decodeLtiLaunchData(httpRequest, LtiLaunchType.DOMAIN);
-        model.addAttribute("object", ltiLaunchResult);
+        final DecodedLtiLaunch decodedLtiLaunch = ltiLaunchService.decodeLtiLaunchData(httpRequest, LtiLaunchType.DOMAIN);
+        model.addAttribute("object", decodedLtiLaunch);
         return "ltiDebug";
     }
 }
