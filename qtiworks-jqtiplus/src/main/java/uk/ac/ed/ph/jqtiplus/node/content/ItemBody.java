@@ -36,18 +36,13 @@ package uk.ac.ed.ph.jqtiplus.node.content;
 import uk.ac.ed.ph.jqtiplus.group.content.BlockGroup;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Block;
-import uk.ac.ed.ph.jqtiplus.node.content.template.TemplateElement;
 import uk.ac.ed.ph.jqtiplus.node.content.variable.FeedbackBlock;
 import uk.ac.ed.ph.jqtiplus.node.content.variable.FeedbackElement;
 import uk.ac.ed.ph.jqtiplus.node.content.variable.FeedbackInline;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.Interaction;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
-import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.utils.QueryUtils;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -103,36 +98,6 @@ public final class ItemBody extends BodyElement {
      */
     public List<Interaction> findInteractions() {
         return QueryUtils.search(Interaction.class, getBlocks());
-    }
-
-    /**
-     * Computes a snapshot of all the templates within this itemBody.
-     * The returned list is unmodifiable and cannot be used for adding
-     * new templates to the itemBody.
-     *
-     * @return unmodifiable list of interactions in the itemBody.
-     */
-    @ToRefactor
-    public List<TemplateElement> findTemplateElements() {
-        return QueryUtils.search(TemplateElement.class, getBlocks());
-    }
-
-    /**
-     * Get the templates for a given templateIdentifier.
-     *
-     * @param templateIdentifier templateIdentifier to search with.
-     * @return unmodifiable list of templates with matching templateIdentifier, or null if not found.
-     */
-    @ToRefactor
-    public List<TemplateElement> findTemplateElements(final Identifier templateIdentifier) {
-        final List<TemplateElement> templates = new ArrayList<TemplateElement>();
-        for (final TemplateElement template : findTemplateElements()) {
-            if (template.getTemplateIdentifier() != null && template.getTemplateIdentifier().equals(templateIdentifier)) {
-                templates.add(template);
-            }
-        }
-    
-        return Collections.unmodifiableList(templates);
     }
 
     /**
