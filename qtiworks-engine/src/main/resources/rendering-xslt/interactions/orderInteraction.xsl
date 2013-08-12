@@ -75,7 +75,7 @@
 
   <xsl:template match="qti:orderInteraction/qti:simpleChoice">
     <li id="qtiworks_response_{@identifier}" class="ui-state-default">
-      <span class="ui-icon ui-icon-arrowthick2-n-s"></span>
+      <span class="ui-icon ui-icon-arrowthick-2-n-s"></span>
       <xsl:apply-templates/>
     </li>
   </xsl:template>

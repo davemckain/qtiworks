@@ -182,7 +182,7 @@ body {
   font-size: 1em;
 }
 
-.assessmentItem div.orderInteraction ul li span {
+.assessmentItem div.orderInteraction ul li span.ui-icon {
   position: absolute;
   margin-left: -1.3em;
 }
