@@ -12,6 +12,12 @@ All Rights Reserved
   </nav>
   <h2>QTIWorks Release Notes (Development)</h2>
 
+  <h3>1.0-DEV33 [Development] (12/08/2013)</h3>
+  <p>
+    Minor bug-fix release ahead of next release, which is currently scheduled to be BETA1.
+    No changes are needed to the database schema.
+  </p>
+
   <h3>1.0-DEV32 [Development] (17/07/2013)</h3>
   <p>
     This final snapshot brings the project to feature freeze in the context
