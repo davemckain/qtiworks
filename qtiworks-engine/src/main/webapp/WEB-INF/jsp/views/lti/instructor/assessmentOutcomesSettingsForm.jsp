@@ -21,7 +21,7 @@ outcomeDeclarationList
     </nav>
     <h2>
       <span class="assessmentLabel">Assessment&#xa0;${utils:formatAssessmentType(assessment)}</span>
-      <a href="${utils:escapeLink(assessmentRouting['show'])}">${fn:escapeXml(utils:formatAssessmentFileName(assessmentPackage))}</a>
+      <a href="${utils:escapeLink(assessmentRouting['show'])}">${fn:escapeXml(assessmentPackage.fileName)}</a>
       &#xbb; Set LTI outcomes
     </h2>
     <div class="hints">

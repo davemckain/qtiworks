@@ -16,7 +16,7 @@ Shows information about a particular Assessment
     </nav>
     <h2>
       <span class="assessmentLabel">Assessment&#xa0;${utils:formatAssessmentType(assessment)}</span>
-      ${fn:escapeXml(utils:formatAssessmentFileName(assessmentPackage))}
+      ${fn:escapeXml(assessmentPackage.fileName)}
       <span class="assessmentTitle"> [${fn:escapeXml(assessmentPackage.title)}]</span>
     </h2>
     <div class="hints">

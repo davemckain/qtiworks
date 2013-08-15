@@ -35,7 +35,6 @@ package uk.ac.ed.ph.qtiworks.web.view;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
-import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiContext;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiResource;
 import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
@@ -118,10 +117,6 @@ public final class ElFunctions {
             case ASSESSMENT_TEST: return "Test";
             default: return "";
         }
-    }
-
-    public static String formatAssessmentFileName(final AssessmentPackage assessmentPackage) {
-       return assessmentPackage.getFileName();
     }
 
     public static String formatLtiContextTitle(final LtiContext ltiContext) {

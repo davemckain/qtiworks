@@ -54,7 +54,7 @@ sampleAssessmentMap (SampleCategory -> List<AssessmentAndPackage>)
               </form>
             </div>
             <div class="grid_4">
-              <h4><c:out value="${utils:formatAssessmentFileName(assessmentPackage)}"/></h4>
+              <h4><c:out value="${assessmentPackage.fileName}"/></h4>
               <span class="title"><c:out value="${assessmentPackage.title}"/></span>
             </div>
           </li>
