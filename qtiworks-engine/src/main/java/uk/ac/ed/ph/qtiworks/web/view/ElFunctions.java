@@ -121,17 +121,17 @@ public final class ElFunctions {
     }
 
     public static String formatAssessmentFileName(final AssessmentPackage assessmentPackage) {
-       return escapeXml(assessmentPackage.getFileName());
+       return assessmentPackage.getFileName();
     }
 
     public static String formatLtiContextTitle(final LtiContext ltiContext) {
         final String title = ltiContext.getContextTitle();
-        return escapeXml(title!=null ? title : "This Course");
+        return title!=null ? title : "This Course";
     }
 
     public static String formatLtiResourceTitle(final LtiResource ltiResource) {
         final String title = ltiResource.getResourceLinkTitle();
-        return escapeXml(title!=null ? title : "This Launch");
+        return title!=null ? title : "This Launch";
     }
 
     private static String escapeXml(final String rawString) {
