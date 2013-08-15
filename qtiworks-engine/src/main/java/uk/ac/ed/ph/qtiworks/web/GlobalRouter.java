@@ -52,10 +52,14 @@ public final class GlobalRouter {
         redirectAttributes.addFlashAttribute(GlobalRouter.FLASH, message);
     }
 
-    public static String buildSessionStartRedirect(final CandidateSession candidateSession) {
+    public static String buildSessionStartWithinContextUrl(final CandidateSession candidateSession) {
         final boolean isItem = candidateSession.getDelivery().getAssessment().getAssessmentType()==AssessmentObjectType.ASSESSMENT_ITEM;
         final String subPath = isItem ? "session" : "testsession";
-        return "redirect:/candidate/" + subPath + "/" + candidateSession.getId()
+        return "/candidate/" + subPath + "/" + candidateSession.getId()
                 + "/" + candidateSession.getSessionToken();
+    }
+
+    public static String buildSessionStartRedirect(final CandidateSession candidateSession) {
+        return "redirect:" + buildSessionStartWithinContextUrl(candidateSession);
     }
 }
