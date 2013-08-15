@@ -21,7 +21,7 @@ Top page for public functionality
   <div class="boxes">
     <div class="grid_4">
       <div class="box">
-        <a href="${utils:internalLink(pageContext, '/web/anonymous/standalonerunner')}" class="boxButton run" title="Run">
+        <a href="${utils:internalLink(pageContext, '/anonymous/standalonerunner')}" class="boxButton run" title="Run">
           <h3>Quick Upload &amp; Run</h3>
           <div>Upload and try your own QTI 2.1 assessment items and tests</div>
         </a>
@@ -30,7 +30,7 @@ Top page for public functionality
 
     <div class="grid_4">
       <div class="box">
-        <a href="${utils:internalLink(pageContext, '/web/anonymous/samples/list')}" class="boxButton samples" title="Samples">
+        <a href="${utils:internalLink(pageContext, '/anonymous/samples')}" class="boxButton samples" title="Samples">
           <h3>QTI Examples</h3>
           <div>Browse and try out our selection of QTI 2.1 examples</div>
         </a>
@@ -39,7 +39,7 @@ Top page for public functionality
 
     <div class="grid_4">
       <div class="box">
-        <a href="${utils:internalLink(pageContext, '/web/anonymous/validator')}" class="boxButton validator" title="Validator">
+        <a href="${utils:internalLink(pageContext, '/anonymous/validator')}" class="boxButton validator" title="Validator">
           <h3>QTI Validator</h3>
           <div>Verify your QTI assessment items and tests</div>
         </a>

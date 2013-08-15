@@ -33,10 +33,10 @@
  */
 package uk.ac.ed.ph.qtiworks.config;
 
-import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.io.Charsets;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -51,7 +51,8 @@ import org.springframework.web.servlet.view.JstlView;
 import org.springframework.web.servlet.view.UrlBasedViewResolver;
 
 /**
- * Defines beans for the LTI MVC dispatcher
+ * Defines beans for the LTI MVC dispatcher, which is configured in web.xml to handle
+ * requests of the form <code>/lti/...</code>
  *
  * @author David McKain
  */
@@ -59,8 +60,6 @@ import org.springframework.web.servlet.view.UrlBasedViewResolver;
 @Configuration
 @ComponentScan(basePackages={"uk.ac.ed.ph.qtiworks.web.lti", "uk.ac.ed.ph.qtiworks.web.controller.lti"})
 public class LtiMvcConfiguration extends WebMvcConfigurerAdapter {
-
-    private static final Charset UTF8 = Charset.forName("UTF-8");
 
     /**
      * (I'm setting up message converters explicitly. One reason is that
@@ -72,8 +71,8 @@ public class LtiMvcConfiguration extends WebMvcConfigurerAdapter {
     public void configureMessageConverters(final List<HttpMessageConverter<?>> converters) {
       final StringHttpMessageConverter stringConverter = new StringHttpMessageConverter();
       stringConverter.setSupportedMediaTypes(Arrays.asList(new MediaType[] {
-              new MediaType("text", "html", UTF8),
-              new MediaType("text", "plain", UTF8),
+              new MediaType("text", "html", Charsets.UTF_8),
+              new MediaType("text", "plain", Charsets.UTF_8),
       }));
       converters.add(stringConverter);
       converters.add(new MappingJackson2HttpMessageConverter());

@@ -48,7 +48,7 @@ sampleAssessmentMap (SampleCategory -> List<AssessmentAndPackage>)
             </div>
             <div class="grid_1 launch">
               <%-- Play option TODO: Create template for this --%>
-              <c:url var="playUrl" value="/web/anonymous/samples/${sampleCategoryAnchor}/${assessment.id}"/>
+              <c:url var="playUrl" value="/anonymous/samples/${sampleCategoryAnchor}/${assessment.id}"/>
               <form action="${playUrl}" method="post">
                 <button type="submit" class="buttonLink">Try</button>
               </form>
