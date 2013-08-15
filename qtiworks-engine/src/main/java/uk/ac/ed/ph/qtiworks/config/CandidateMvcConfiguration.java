@@ -43,7 +43,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -69,13 +68,12 @@ public class CandidateMvcConfiguration extends WebMvcConfigurerAdapter {
      */
     @Override
     public void configureMessageConverters(final List<HttpMessageConverter<?>> converters) {
-      final StringHttpMessageConverter stringConverter = new StringHttpMessageConverter();
-      stringConverter.setSupportedMediaTypes(Arrays.asList(new MediaType[] {
-              new MediaType("text", "html", Charsets.UTF_8),
-              new MediaType("text", "plain", Charsets.UTF_8),
-      }));
-      converters.add(stringConverter);
-      converters.add(new MappingJackson2HttpMessageConverter());
+        final StringHttpMessageConverter stringConverter = new StringHttpMessageConverter();
+        stringConverter.setSupportedMediaTypes(Arrays.asList(new MediaType[] {
+                new MediaType("text", "html", Charsets.UTF_8),
+                new MediaType("text", "plain", Charsets.UTF_8),
+        }));
+        converters.add(stringConverter);
     }
 
     @Bean
