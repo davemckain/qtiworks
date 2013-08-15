@@ -41,6 +41,7 @@ All Rights Reserved
     <mysql-connector.version>5.1.23</mysql-connector.version>
     <postgresql-jdbc.version>9.1-901.jdbc4</postgresql-jdbc.version>
     <javacsv.version>2.0</javacsv.version>
+    <jackson.version>2.1.2</jackson.version>
     <commons-lang.version>3.1</commons-lang.version>
     <commons-codec.version>1.6</commons-codec.version>
     <commons-io.version>2.3</commons-io.version>
