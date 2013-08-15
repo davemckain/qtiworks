@@ -16,7 +16,7 @@ import javax.xml.transform.TransformerFactory;
 /**
  * Encapsulates options for serializing XML (using XSLT).
  *
- * (Refactored from SnuggleTeX)
+ * (Reused and refactored from SnuggleTeX)
  *
  * @author David McKain
  */

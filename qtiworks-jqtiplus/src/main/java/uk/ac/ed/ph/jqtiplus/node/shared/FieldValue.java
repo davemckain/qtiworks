@@ -61,7 +61,7 @@ import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 /**
- * A class that can represent A single value of any baseType in variable declarations and result reports.
+ * A class that can represent a single value of any baseType in variable declarations and result reports.
  * The base-type is defined by the baseType attribute of the declaration except in the case of variables
  * with record cardinality.
  * <p>
@@ -90,6 +90,11 @@ public final class FieldValue extends AbstractNode {
 
         getAttributes().add(new IdentifierAttribute(this, ATTR_FIELD_IDENTIFIER_NAME, false));
         getAttributes().add(new BaseTypeAttribute(this, ATTR_BASE_TYPE_NAME, false));
+    }
+
+    public FieldValue(final FieldValueParent parent, final SingleValue singleValue) {
+        this(parent);
+        setSingleValue(singleValue);
     }
 
     @Override
