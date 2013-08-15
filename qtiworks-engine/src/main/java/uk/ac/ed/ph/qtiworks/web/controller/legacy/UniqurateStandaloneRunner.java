@@ -48,8 +48,6 @@ import uk.ac.ed.ph.qtiworks.services.domain.EnumerableClientFailure;
 import uk.ac.ed.ph.qtiworks.web.GlobalRouter;
 import uk.ac.ed.ph.qtiworks.web.domain.StandaloneRunCommand;
 
-import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
-import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
 
 import javax.annotation.Resource;
@@ -63,11 +61,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
- * Controller allowing the public to upload and run an {@link AssessmentItem}
- * or {@link AssessmentTest}.
+ * This controller is used by the current version of Uniqurate only.
  * <p>
- * This provides a subset of functionality provided for instructor users, but
- * might be useful.
+ * DO NOT USE this legacy controller for any new systems!
  *
  * @author David McKain
  */
@@ -85,11 +81,6 @@ public class UniqurateStandaloneRunner {
 
     //--------------------------------------------------------------------
 
-    /**
-     * This is used by the current version of Uniqurate only.
-     * <p>
-     * DO NOT USE this legacy controller for any other systems!
-     */
     @RequestMapping(value="/standalonerunner", method=RequestMethod.POST)
     public String uniqurateUploadAndRun(final Model model,
             @Valid @ModelAttribute final StandaloneRunCommand command,
