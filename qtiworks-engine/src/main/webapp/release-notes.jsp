@@ -10,7 +10,7 @@ All Rights Reserved
   <nav class="breadcrumbs">
     <a href="${utils:internalLink(pageContext, '/about/')}">About QTIWorks</a> &#xbb;
   </nav>
-  <h2>QTIWorks Release Notes (Development)</h2>
+  <h2>QTIWorks Release Notes (Production)</h2>
 
   <h3>1.0-DEV33 [Development] (12/08/2013)</h3>
   <p>
@@ -176,6 +176,26 @@ All Rights Reserved
   </p>
   <p>
     See development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
+  </p>
+
+  <h3>1.0-M4b [Production] (11/07/2013)</h3>
+  <p>
+    Patch release that cherry-picks the new MathJax SSL CDN URL from the master branch.
+    (The old SSN CDN appears to have gone offline recently!)
+  </p>
+  <p>
+    See production releases at <a href="https://www2.ph.ed.ac.uk/qtiworks">https://www2.ph.ed.ac.uk/qtiworks</a>, and
+    development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
+  </p>
+
+  <h3>1.0-M4a [Production] (01/07/2013)</h3>
+  <p>
+    Patch release that cherry-picks the new Content Package handling code from the development branch. QTIWorks will
+    no longer complain about the odd MIME types sent by some browsers when uploading ZIP files.
+  </p>
+  <p>
+    See production releases at <a href="https://www2.ph.ed.ac.uk/qtiworks">https://www2.ph.ed.ac.uk/qtiworks</a>, and
+    development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
   </p>
 
   <h3>1.0-M4 [Production] (07/03/2013)</h3>
