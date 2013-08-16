@@ -38,6 +38,8 @@ import uk.ac.ed.ph.qtiworks.domain.entities.LtiDomain;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.UserRole;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -81,5 +83,11 @@ public class LtiUserDao extends GenericDao<LtiUser> {
         query.setParameter("delivery", delivery);
         query.setParameter("ltiUserId", ltiUserId);
         return extractNullableFindResult(query);
+    }
+
+    public List<LtiUser> getForUserRole(final UserRole userRole) {
+        final TypedQuery<LtiUser> query = em.createNamedQuery("LtiUser.getForUserRole", LtiUser.class);
+        query.setParameter("userRole", userRole);
+        return query.getResultList();
     }
 }

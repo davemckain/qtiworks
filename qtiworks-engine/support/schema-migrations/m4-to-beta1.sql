@@ -226,4 +226,14 @@ ALTER TABLE assessment_packages ALTER file_name SET NOT NULL;
 ALTER TABLE assessments DROP name;
 ALTER TABLE assessments DROP title;
 
+-- Finally, we delete ALL candidate session data from the database.
+-- (The filesystem site of things is deleted separately later...)
+DELETE FROM candidate_session_outcomes;
+DELETE FROM candidate_event_notifications;
+DELETE FROM candidate_string_response_items;
+DELETE FROM candidate_responses;
+DELETE FROM candidate_file_submissions;
+DELETE FROM candidate_events;
+DELETE FROM candidate_sessions;
+
 COMMIT WORK;

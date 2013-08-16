@@ -33,8 +33,6 @@
  */
 package uk.ac.ed.ph.qtiworks.manager;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
-import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.manager.services.ManagerServices;
 
 import java.util.List;
@@ -44,21 +42,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Deletes {@link AssessmentPackage}s that are not currently in use
- * by their owner.
- *
- * (This is intended to be temporary while introduce a simpler 1-1 link between
- * {@link Assessment}s and {@link AssessmentPackage}s between the M4 and M5 releases.)
+ * Special action to help with migration the QTIWorks domain from M4 to BETA1.
  *
  * @author David McKain
  */
-public final class M4M5UpdateAction extends ManagerAction {
+public final class M4ToBeta1UpdateAction extends ManagerAction {
 
-	private static final Logger logger = LoggerFactory.getLogger(M4M5UpdateAction.class);
+	private static final Logger logger = LoggerFactory.getLogger(M4ToBeta1UpdateAction.class);
 
 	@Override
 	public String getActionSummary() {
-		return "Fixes existing data after schema update for M4->M5 upgrade";
+		return "Fixes existing data after schema update for M4->BETA1 upgrade";
 	}
 
 	@Override
@@ -70,7 +64,10 @@ public final class M4M5UpdateAction extends ManagerAction {
 		managerServices.validateAllAssessmentPackages();
 		logger.info("Validated all remaining AssessmentPackages");
 
-		deletedCount = managerServices.deleteAllCandidateSessions();
-		logger.info("Deleted {} CandidateSessions", deletedCount);
+		managerServices.deleteAllCandidateSessionFilesystemData();
+        logger.info("Deleted candidate data from filesystem (DB data was deleted earlier during schema migration script)");
+
+		deletedCount = managerServices.deleteLtiCandidateUsers();
+		logger.info("Deleted {} LTI Candidate users", deletedCount);
     }
 }

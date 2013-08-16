@@ -76,7 +76,11 @@ import org.hibernate.annotations.Type;
             query="SELECT u"
                 + "  FROM LtiUser u"
                 + "  WHERE u.delivery = :delivery"
-                + "    AND u.ltiUserId = :ltiUserId")
+                + "    AND u.ltiUserId = :ltiUserId"),
+    @NamedQuery(name="LtiUser.getForUserRole",
+            query="SELECT u"
+                + "  FROM LtiUser u"
+                + "  WHERE  u.userRole = :userRole"),
 })
 public class LtiUser extends User implements BaseEntity, Comparable<LtiUser> {
 

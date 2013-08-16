@@ -36,17 +36,18 @@ package uk.ac.ed.ph.qtiworks.manager.services;
 import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksDeploymentSettings;
 import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiDomain;
+import uk.ac.ed.ph.qtiworks.domain.entities.LtiUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.SystemUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.domain.entities.UserRole;
 import uk.ac.ed.ph.qtiworks.services.AssessmentDataService;
 import uk.ac.ed.ph.qtiworks.services.DataDeletionService;
+import uk.ac.ed.ph.qtiworks.services.FilespaceManager;
 import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.dao.AssessmentPackageDao;
-import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.services.dao.LtiDomainDao;
+import uk.ac.ed.ph.qtiworks.services.dao.LtiUserDao;
 import uk.ac.ed.ph.qtiworks.services.dao.SystemUserDao;
 import uk.ac.ed.ph.qtiworks.services.dao.UserDao;
 
@@ -79,6 +80,9 @@ public class ManagerServices {
     private QtiWorksDeploymentSettings qtiWorksDeploymentSettings;
 
     @Resource
+    private FilespaceManager filespaceManager;
+
+    @Resource
     private DataDeletionService dataDeletionService;
 
     @Resource
@@ -91,10 +95,10 @@ public class ManagerServices {
     private UserDao userDao;
 
     @Resource
-    private AssessmentPackageDao assessmentPackageDao;
+    private LtiUserDao ltiUserDao;
 
     @Resource
-    private CandidateSessionDao candidateSessionDao;
+    private AssessmentPackageDao assessmentPackageDao;
 
     @Resource
     private LtiDomainDao ltiDomainDao;
@@ -242,7 +246,7 @@ public class ManagerServices {
     }
 
     //-------------------------------------------------
-    // Helpers for M4->M5 update
+    // Helpers for M4->Beta1 update
 
     public int deleteUnusedAssessmentPackages() {
         final List<AssessmentPackage> unusedPackages = assessmentPackageDao.getAllUnused();
@@ -258,11 +262,16 @@ public class ManagerServices {
     	}
     }
 
-    public int deleteAllCandidateSessions() {
-        final List<CandidateSession> candidateSessions = candidateSessionDao.getAll();
-        for (final CandidateSession candidatSession : candidateSessions) {
-            dataDeletionService.deleteCandidateSession(candidatSession);
+    public void deleteAllCandidateSessionFilesystemData() {
+        filespaceManager.deleteAllCandidateSessionData();
+        filespaceManager.deleteAllCandidateUploads();
+    }
+
+    public int deleteLtiCandidateUsers() {
+        final List<LtiUser> ltiCandidateUsers = ltiUserDao.getForUserRole(UserRole.CANDIDATE);
+        for (final LtiUser ltiCandidateUser : ltiCandidateUsers) {
+            dataDeletionService.deleteUser(ltiCandidateUser);
         }
-        return candidateSessions.size();
+        return ltiCandidateUsers.size();
     }
 }

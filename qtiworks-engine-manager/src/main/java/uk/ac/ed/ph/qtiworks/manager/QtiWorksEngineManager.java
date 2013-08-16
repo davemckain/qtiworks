@@ -82,7 +82,7 @@ public final class QtiWorksEngineManager {
     	actionMap.put("resetUsers", new ResetUsersAction());
     	actionMap.put("purgeTransientData", new PurgeTransientDataAction());
     	actionMap.put("sendQueuedLtiOutcomes", new SendQueuedLtiOutcomesAction());
-    	actionMap.put("update", new M4M5UpdateAction());
+    	actionMap.put("update", new M4ToBeta1UpdateAction());
     	actionMap.put("adhoc", new AdhocAction());
     }
 
