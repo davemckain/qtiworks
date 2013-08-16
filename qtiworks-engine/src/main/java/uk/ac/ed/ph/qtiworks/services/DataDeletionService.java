@@ -203,7 +203,6 @@ public class DataDeletionService {
         for (final Delivery delivery : deliveries) {
             delivery.setAssessment(null);
             deliveryDao.update(delivery);
-
         }
 
         /* Delete Assessment entity */
@@ -227,7 +226,7 @@ public class DataDeletionService {
         }
     }
 
-    public void deleteLtiResource(final LtiResource ltiResource) {
+    private void deleteLtiResource(final LtiResource ltiResource) {
         Assert.notNull(ltiResource, "ltiResource");
 
         /* Delete Delivery matched to this entity */
@@ -293,6 +292,7 @@ public class DataDeletionService {
      *
      * @param latestCreationTime cut-off creation time for deleting old {@link Delivery} entities
      */
+    @Transactional(propagation=Propagation.REQUIRES_NEW)
     public int deleteTransientDeliveries(final User user, final Date latestCreationTime) {
         int deleted = 0;
         for (final Delivery delivery : deliveryDao.getForOwnerAndTypeCreatedBefore(user, DeliveryType.USER_TRANSIENT, latestCreationTime)) {
@@ -310,6 +310,7 @@ public class DataDeletionService {
      *
      * @param latestCreationTime cut-off creation time for deleting old {@link Delivery} entities
      */
+    @Transactional(propagation=Propagation.REQUIRES_NEW)
     public int deleteTransientDeliveries(final Date latestCreationTime) {
         int deleted = 0;
         for (final Delivery delivery : deliveryDao.getForTypeCreatedBefore(DeliveryType.USER_TRANSIENT, latestCreationTime)) {
@@ -327,6 +328,7 @@ public class DataDeletionService {
      *
      * @param latestCreationTime cut-off creation time for deleting old {@link User} entities
      */
+    @Transactional(propagation=Propagation.REQUIRES_NEW)
     public int deleteAnonymousUsers(final Date latestCreationTime) {
         int deleted = 0;
         for (final AnonymousUser toDelete : anonymousUserDao.getCreatedBefore(latestCreationTime)) {
@@ -341,14 +343,14 @@ public class DataDeletionService {
      * {@link #deleteTransientDeliveries(Date)} to purge all anonymous users and transient
      * deliveries that were created before the given time, removing all associated data is removed.
      */
-    public void purgeAnonymousData(final Date creationTimeThreshold) {
-        final int transientDeliveriesDeleted = deleteTransientDeliveries(creationTimeThreshold);
-        if (transientDeliveriesDeleted > 0) {
-            logger.info("Purged {} transient deliveries from the system", transientDeliveriesDeleted);
-        }
+    public void purgeTransientData(final Date creationTimeThreshold) {
         final int usersDeleted = deleteAnonymousUsers(creationTimeThreshold);
         if (usersDeleted > 0) {
             logger.info("Purged {} anonymous users from the system", usersDeleted);
+        }
+        final int transientDeliveriesDeleted = deleteTransientDeliveries(creationTimeThreshold);
+        if (transientDeliveriesDeleted > 0) {
+            logger.info("Purged {} transient deliveries from the system", transientDeliveriesDeleted);
         }
     }
 }

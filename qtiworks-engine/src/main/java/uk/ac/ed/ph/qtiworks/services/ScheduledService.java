@@ -47,7 +47,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 /**
- * Houses all scheduled tasks performed within the system
+ * Houses all scheduled tasks performed within the QTIWorks engine
  *
  * @author David McKain
  */
@@ -56,12 +56,19 @@ import org.springframework.stereotype.Service;
 @Profile(QtiWorksProfiles.WEBAPP)
 public class ScheduledService {
 
-    public static final int ANONYMOUS_USER_KEEP_HOURS = 24;
+    private static final Logger logger = LoggerFactory.getLogger(ScheduledService.class);
+
+    /** One second (in milliseconds) */
+    public static final long ONE_SECOND = 1000L;
 
     /** One minute (in milliseconds) */
-    private static final long ONE_MINUTE = 1000L * 60;
+    private static final long ONE_MINUTE = ONE_SECOND * 60;
 
-    private static final Logger logger = LoggerFactory.getLogger(ScheduledService.class);
+    /** One hour (in milliseconds) */
+    private static final long ONE_HOUR = ONE_MINUTE * 60;
+
+    /** How long (in milliseconds) to keep transient data */
+    private static final long TRANSIENT_DATA_LIFETIME = 24 * ONE_HOUR;
 
     @Resource
     private DataDeletionService dataDeletionService;
@@ -71,21 +78,21 @@ public class ScheduledService {
 
     /**
      * Purges all anonymous users and transient deliveries that were created more than
-     * {@link #ANONYMOUS_USER_KEEP_HOURS} hours ago. All associated data is removed.
+     * {@link #TRANSIENT_DATA_LIFETIME} hours ago. All associated data is removed.
      */
     @Scheduled(fixedRate=60*ONE_MINUTE, initialDelay=ONE_MINUTE)
-    public void purgeAnonymousData() {
+    public void purgeTransientData() {
         logger.trace("purgeAnonymousData() invoked");
         final long currentTimestamp = System.currentTimeMillis();
-        final Date creationTimeThreshold = new Date(currentTimestamp - ANONYMOUS_USER_KEEP_HOURS * 60 * 60 * 1000);
-        dataDeletionService.purgeAnonymousData(creationTimeThreshold);
+        final Date creationTimeThreshold = new Date(currentTimestamp - TRANSIENT_DATA_LIFETIME);
+        dataDeletionService.purgeTransientData(creationTimeThreshold);
         logger.debug("pureAnonymousData() completed in {}ms", System.currentTimeMillis() - currentTimestamp);
     }
 
     /**
      * Attempts to send any queued LTI outcomes back to the relevant Tool Consumers.
      */
-    @Scheduled(fixedDelay=ONE_MINUTE, initialDelay=ONE_MINUTE)
+    @Scheduled(fixedDelay=10*ONE_SECOND, initialDelay=ONE_MINUTE)
     public void sendNextQueuedLtiOutcomes() {
         logger.trace("sendNextQueuedLtiOutcomes() invoked");
         final long currentTimestamp = System.currentTimeMillis();
