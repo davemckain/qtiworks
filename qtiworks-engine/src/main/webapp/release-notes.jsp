@@ -12,6 +12,37 @@ All Rights Reserved
   </nav>
   <h2>QTIWorks Release Notes (Production)</h2>
 
+  <h3>1.0-beta1 [Production] (19/08/2013)</h3>
+  <p>
+    This first beta release brings the production branch back in line with
+    the master (development) branch. It is essentially the same as 1.0-DEV33, but
+    contains a few final bug fixes made during final testing on the production
+    data hosted at Edinburgh.
+  </p>
+  <p>
+    If you have been hosting your own instance of QTIWorks 1.0-M4, then you need to
+    schedule and execute the upgrade to 1.0-beta1 quite carefully as there were
+    many changes to the data model, requiring all candidate data to be deleted when
+    applying this upgrade. You should upgrade as follows:
+  </p>
+  <ol>
+    <li>Take QTIWorks 1.0-M4 offline (and make a full backup of the filesystem and database).</li>
+    <li>Run the <tt>purgeAnonymousData</tt> engine manager action (on M4 binaries).</li>
+    <li>Run the SQL script <tt>qtiworks-engine/support/schema-migrations/m4-to-beta1.sql</tt> on your QTIWorks database to upgrade its schema
+      and delete the candidate data stored in the DB.</li>
+    <li>Perform a <code>git fetch</code> and <code>git merge origin/production</code> to bring your code up to beta1, then do a clean rebuild.</li>
+    <li>Run the <tt>update</tt> engine action to complete deleting data from the QTIWorks database and file store.</li>
+    <li>Update your <tt>qtiworks-deployment.properties</tt> against the newly-updated default version in the git tree.</li>
+    <li>
+      Deploy the QTIWorks 1.0-beta1 webapp. It should deploy and run without issues and all existing instructor users
+      should be able to access the system and all of their existing assessments.
+    </li>
+  </ol>
+  <p>
+    See production releases at <a href="https://www2.ph.ed.ac.uk/qtiworks">https://www2.ph.ed.ac.uk/qtiworks</a>, and
+    development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
+  </p>
+
   <h3>1.0-DEV33 [Development] (12/08/2013)</h3>
   <p>
     Minor bug-fix release ahead of next release, which is currently scheduled to be BETA1.
@@ -45,6 +76,16 @@ All Rights Reserved
     candidate data if upgrading from DEV31.
   </p>
 
+  <h3>1.0-M4b [Production] (11/07/2013)</h3>
+  <p>
+    Patch release that cherry-picks the new MathJax SSL CDN URL from the master branch.
+    (The old SSN CDN appears to have gone offline recently!)
+  </p>
+  <p>
+    See production releases at <a href="https://www2.ph.ed.ac.uk/qtiworks">https://www2.ph.ed.ac.uk/qtiworks</a>, and
+    development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
+  </p>
+
   <h3>1.0-DEV31 [Development] (09/07/2013)</h3>
   <p>
     This snapshot includes a working implementation of LTI instructor role
@@ -61,6 +102,16 @@ All Rights Reserved
     <code>qtiworks-engine/support/schema-migrations/dev30-to-dev31.sql</code>
     after compiling this version of the webapp. There is no need to delete
     candidate data if upgrading from DEV30.
+  </p>
+
+  <h3>1.0-M4a [Production] (01/07/2013)</h3>
+  <p>
+    Patch release that cherry-picks the new Content Package handling code from the development branch. QTIWorks will
+    no longer complain about the odd MIME types sent by some browsers when uploading ZIP files.
+  </p>
+  <p>
+    See production releases at <a href="https://www2.ph.ed.ac.uk/qtiworks">https://www2.ph.ed.ac.uk/qtiworks</a>, and
+    development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
   </p>
 
   <h3>1.0-DEV30 [Development] (01/07/2013)</h3>
@@ -176,26 +227,6 @@ All Rights Reserved
   </p>
   <p>
     See development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
-  </p>
-
-  <h3>1.0-M4b [Production] (11/07/2013)</h3>
-  <p>
-    Patch release that cherry-picks the new MathJax SSL CDN URL from the master branch.
-    (The old SSN CDN appears to have gone offline recently!)
-  </p>
-  <p>
-    See production releases at <a href="https://www2.ph.ed.ac.uk/qtiworks">https://www2.ph.ed.ac.uk/qtiworks</a>, and
-    development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
-  </p>
-
-  <h3>1.0-M4a [Production] (01/07/2013)</h3>
-  <p>
-    Patch release that cherry-picks the new Content Package handling code from the development branch. QTIWorks will
-    no longer complain about the odd MIME types sent by some browsers when uploading ZIP files.
-  </p>
-  <p>
-    See production releases at <a href="https://www2.ph.ed.ac.uk/qtiworks">https://www2.ph.ed.ac.uk/qtiworks</a>, and
-    development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
   </p>
 
   <h3>1.0-M4 [Production] (07/03/2013)</h3>
