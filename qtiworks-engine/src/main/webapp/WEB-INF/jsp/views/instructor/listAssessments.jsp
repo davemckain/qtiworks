@@ -46,7 +46,7 @@ primaryRouting (action -> URL)
           <td class="bigStatus">${loopStatus.index + 1}</td>
           <td align="center" class="actions">
             <c:if test="${assessmentPackage.launchable}">
-              <page:postLink path="${assessmentRouting['try']}" title="Quick Try"/>
+              <page:postLink path="${assessmentRouting['try']}" title="Quick&#xa0;Try"/>
             </c:if>
           </td>
           <td>
