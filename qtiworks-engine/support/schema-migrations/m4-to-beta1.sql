@@ -83,11 +83,15 @@ ALTER TABLE assessment_packages ALTER launchable SET NOT NULL;
 ALTER TABLE assessment_packages ALTER error_count SET NOT NULL;
 ALTER TABLE assessment_packages ALTER warning_count SET NOT NULL;
 
--- Some changes to event names
-UPDATE candidate_events SET test_event_type='EXIT_TEST' WHERE test_event_type='EXIT_MULTI_PART_TEST';
-UPDATE candidate_events SET item_event_type='EXIT' WHERE item_event_type='TERMINATE';
-UPDATE candidate_events SET item_event_type='END' WHERE item_event_type='CLOSE';
+-- Some changes to item and test candidate event names
+ALTER TABLE candidate_events ALTER item_event_type SET DATA TYPE VARCHAR(32);
+ALTER TABLE candidate_events ALTER test_event_type SET DATA TYPE VARCHAR(32);
 UPDATE candidate_events SET item_event_type='ENTER' WHERE item_event_type='INIT';
+UPDATE candidate_events SET item_event_type='END' WHERE item_event_type='CLOSE';
+UPDATE candidate_events SET item_event_type='EXIT' WHERE item_event_type='TERMINATE';
+UPDATE candidate_events SET test_event_type='ENTER_TEST' WHERE test_event_type='INIT';
+UPDATE candidate_events SET test_event_type='ADVANCE_TEST_PART' WHERE test_event_type='EXIT_TEST_PART';
+UPDATE candidate_events SET test_event_type='EXIT_TEST' WHERE test_event_type='EXIT_MULTI_PART_TEST';
 
 -- Addition of 'exploded' column to candidate_sessions
 ALTER TABLE candidate_sessions ADD exploded boolean;
@@ -215,6 +219,8 @@ ALTER TABLE assessment_packages ADD title VARCHAR(256);
 UPDATE assessment_packages ap SET
   title=(SELECT a.title FROM assessments a WHERE ap.apid=a.selected_apid),
   file_name=(SELECT a.name FROM assessments a WHERE ap.apid=a.selected_apid);
+UPDATE assessment_packages SET title='Title' WHERE title IS NULL; -- (This package will end up being deleted)
+UPDATE assessment_packages SET file_name='file_name' WHERE file_name IS NULL; -- (Ditto)
 ALTER TABLE assessment_packages ALTER title SET NOT NULL;
 ALTER TABLE assessment_packages ALTER file_name SET NOT NULL;
 ALTER TABLE assessments DROP name;
