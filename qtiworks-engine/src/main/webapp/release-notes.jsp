@@ -39,8 +39,8 @@ All Rights Reserved
     </li>
   </ol>
   <p>
-    See production releases at <a href="https://www2.ph.ed.ac.uk/qtiworks">https://www2.ph.ed.ac.uk/qtiworks</a>, and
-    development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
+    See production releases at <a href="https://webapps.ph.ed.ac.uk/qtiworks">https://webapps.ph.ed.ac.uk/qtiworks</a>, and
+    development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
   </p>
 
   <h3>1.0-DEV33 [Development] (12/08/2013)</h3>
@@ -82,8 +82,8 @@ All Rights Reserved
     (The old SSN CDN appears to have gone offline recently!)
   </p>
   <p>
-    See production releases at <a href="https://www2.ph.ed.ac.uk/qtiworks">https://www2.ph.ed.ac.uk/qtiworks</a>, and
-    development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
+    See production releases at <a href="https://webapps.ph.ed.ac.uk/qtiworks">https://webapps.ph.ed.ac.uk/qtiworks</a>, and
+    development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
   </p>
 
   <h3>1.0-DEV31 [Development] (09/07/2013)</h3>
@@ -110,8 +110,8 @@ All Rights Reserved
     no longer complain about the odd MIME types sent by some browsers when uploading ZIP files.
   </p>
   <p>
-    See production releases at <a href="https://www2.ph.ed.ac.uk/qtiworks">https://www2.ph.ed.ac.uk/qtiworks</a>, and
-    development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
+    See production releases at <a href="https://webapps.ph.ed.ac.uk/qtiworks">https://webapps.ph.ed.ac.uk/qtiworks</a>, and
+    development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
   </p>
 
   <h3>1.0-DEV30 [Development] (01/07/2013)</h3>
