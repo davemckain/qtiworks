@@ -33,25 +33,94 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.block;
 
+import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
+import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
+import uk.ac.ed.ph.jqtiplus.node.content.basic.TextRun;
+import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxDocumentFirer;
+import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
- * This block can contain arbitrary XML, including the contents of MathML islands.
- * 
+ * This Node represents arbitrary XML, including the contents of MathML islands.
+ * <p>
+ * (This is not defined in the QTI spec. The original JQTI included this and a superclass
+ * called ContainerBlock. I have joined these two together in JQTI+.)
+ *
  * @author Jonathon Hare
+ * @author David McKain (refactored)
  */
-public final class ForeignElement extends ContainerBlock {
+public final class ForeignElement extends AbstractNode {
 
     private static final long serialVersionUID = 474940437634236118L;
-    
+
+    /** Children of this block. */
+    private final List<QtiNode> children;
+
     private final String namespaceUri;
 
-    public ForeignElement(QtiNode parent, String qtiClassName, String namespaceUri) {
+    public ForeignElement(final QtiNode parent, final String qtiClassName, final String namespaceUri) {
         super(parent, qtiClassName);
+        this.children = new ArrayList<QtiNode>();
         this.namespaceUri = namespaceUri;
     }
-    
+
     public final String getNamespaceUri() {
         return namespaceUri;
     }
+
+    public List<QtiNode> getChildren() {
+        return children;
+    }
+
+    @Override
+    protected void loadChildren(final Element element, final LoadingContext context) {
+        children.clear();
+
+        final NodeList nodes = element.getChildNodes();
+        for (int i = 0; i < nodes.getLength(); i++) {
+            final Node node = nodes.item(i);
+            final short nodeType = node.getNodeType();
+            if (nodeType == Node.ELEMENT_NODE || nodeType == Node.TEXT_NODE) {
+                readChildNode(node, context);
+            }
+        }
+    }
+
+    private void readChildNode(final Node node, final LoadingContext context) {
+        if (node.getNodeType() == Node.ELEMENT_NODE) {
+            final ForeignElement foreignElement = new ForeignElement(this, node.getLocalName(), node.getNamespaceURI());
+            children.add(foreignElement);
+            foreignElement.load((Element) node, context);
+        }
+        else if (node.getNodeType() == Node.TEXT_NODE) {
+            final String textContent = node.getTextContent().trim();
+            if (textContent.length() > 0) {
+                final TextRun textRun = new TextRun(this, textContent);
+                children.add(textRun);
+            }
+        }
+    }
+
+    @Override
+    protected void fireBodySaxEvents(final QtiSaxDocumentFirer qtiSaxDocumentFirer) throws SAXException {
+        for (final QtiNode childNode : children) {
+            childNode.fireSaxEvents(qtiSaxDocumentFirer);
+        }
+    }
+
+    @Override
+    protected void validateChildren(final ValidationContext context) {
+        for (final QtiNode child : children) {
+            child.validate(context);
+        }
+    }
+
 }
