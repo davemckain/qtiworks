@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.group.item;
 
 import uk.ac.ed.ph.jqtiplus.group.SimpleMultipleNodeGroup;
-import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.item.Stylesheet;
 
 import java.util.List;
@@ -44,11 +44,11 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public final class StylesheetGroup extends SimpleMultipleNodeGroup<AssessmentItem,Stylesheet> {
+public final class StylesheetGroup extends SimpleMultipleNodeGroup<QtiNode,Stylesheet> {
 
     private static final long serialVersionUID = 5034925521089538183L;
 
-    public StylesheetGroup(final AssessmentItem parent) {
+    public StylesheetGroup(final QtiNode parent) {
         super(parent, Stylesheet.QTI_CLASS_NAME);
     }
 

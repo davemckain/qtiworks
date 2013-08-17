@@ -35,10 +35,12 @@ package uk.ac.ed.ph.jqtiplus.node.content.variable;
 
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.ViewMultipleAttribute;
 import uk.ac.ed.ph.jqtiplus.group.content.BlockGroup;
+import uk.ac.ed.ph.jqtiplus.group.item.StylesheetGroup;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.AbstractFlowBodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Block;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.SimpleBlock;
+import uk.ac.ed.ph.jqtiplus.node.item.Stylesheet;
 import uk.ac.ed.ph.jqtiplus.node.test.View;
 
 import java.util.List;
@@ -64,6 +66,7 @@ public final class RubricBlock extends AbstractFlowBodyElement implements Simple
 
         getAttributes().add(new ViewMultipleAttribute(this, ATTR_VIEWS_NAME, true));
 
+        getNodeGroups().add(new StylesheetGroup(this));
         getNodeGroups().add(new BlockGroup(this));
     }
 
@@ -80,4 +83,7 @@ public final class RubricBlock extends AbstractFlowBodyElement implements Simple
         return getNodeGroups().getBlockGroup().getBlocks();
     }
 
+    public List<Stylesheet> getStylesheets() {
+        return getNodeGroups().getStylesheetGroup().getStylesheets();
+    }
 }
