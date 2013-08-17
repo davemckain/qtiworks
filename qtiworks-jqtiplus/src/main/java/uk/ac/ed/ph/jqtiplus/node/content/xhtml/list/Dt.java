@@ -40,7 +40,7 @@ import uk.ac.ed.ph.jqtiplus.node.content.basic.Inline;
 import java.util.List;
 
 /**
- * dt
+ * Represents the <tt>dt</tt> QTI class
  *
  * @author Jonathon Hare
  */

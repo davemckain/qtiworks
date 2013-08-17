@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.jqtiplus.node.item.interaction;
 
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
-import uk.ac.ed.ph.jqtiplus.node.content.basic.Flow;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Inline;
 
 /**
@@ -42,7 +41,7 @@ import uk.ac.ed.ph.jqtiplus.node.content.basic.Inline;
  *
  * @author Jonathon Hare
  */
-public abstract class InlineInteraction extends FlowInteraction implements Inline, Flow {
+public abstract class InlineInteraction extends FlowInteraction implements Inline {
 
     private static final long serialVersionUID = -6106812031050904729L;
 

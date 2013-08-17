@@ -31,16 +31,9 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.node.content.mathml;
+package uk.ac.ed.ph.jqtiplus.node;
 
-import uk.ac.ed.ph.jqtiplus.exception.QtiIllegalChildException;
-import uk.ac.ed.ph.jqtiplus.node.ForeignElement;
-import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
-import uk.ac.ed.ph.jqtiplus.node.content.basic.AbstractFlowBodyElement;
-import uk.ac.ed.ph.jqtiplus.node.content.basic.BlockStatic;
-import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
-import uk.ac.ed.ph.jqtiplus.node.content.basic.InlineStatic;
+import uk.ac.ed.ph.jqtiplus.node.content.basic.TextRun;
 import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxDocumentFirer;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 
@@ -53,34 +46,41 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- * Implements a QTI MathML island. Only supports children in the form of {@link ForeignElement},
- * so validation of the content is left to the user. (Obviously xml schema validation
- * could help!)
+ * This Node represents arbitrary XML, including the contents of MathML islands.
+ * <p>
+ * (This is not defined in the QTI spec. The original JQTI included this and a superclass
+ * called ContainerBlock. I have joined these two together in JQTI+.)
  *
  * @author Jonathon Hare
+ * @author David McKain (refactored)
  */
-public final class Math extends AbstractFlowBodyElement implements BlockStatic, FlowStatic, InlineStatic {
+public final class ForeignElement extends AbstractNode {
 
-    private static final long serialVersionUID = 8090241210739302355L;
-
-    /** Name of this class in xml schema. */
-    public static final String QTI_CLASS_NAME = "math";
+    private static final long serialVersionUID = 474940437634236118L;
 
     /** Children of this block. */
-    private final List<ForeignElement> children;
+    private final List<QtiNode> children;
 
-    public Math(final QtiNode parent) {
-        super(parent, QTI_CLASS_NAME);
-        children = new ArrayList<ForeignElement>();
+    private final String namespaceUri;
+
+    public ForeignElement(final QtiNode parent, final String qtiClassName, final String namespaceUri) {
+        super(parent, qtiClassName);
+        this.children = new ArrayList<QtiNode>();
+        this.namespaceUri = namespaceUri;
     }
 
-    public List<ForeignElement> getContent() {
+    public final String getNamespaceUri() {
+        return namespaceUri;
+    }
+
+    public List<QtiNode> getChildren() {
         return children;
     }
 
     @Override
     protected void loadChildren(final Element element, final LoadingContext context) {
         children.clear();
+
         final NodeList nodes = element.getChildNodes();
         for (int i = 0; i < nodes.getLength(); i++) {
             final Node node = nodes.item(i);
@@ -100,20 +100,24 @@ public final class Math extends AbstractFlowBodyElement implements BlockStatic, 
         else if (node.getNodeType() == Node.TEXT_NODE) {
             final String textContent = node.getTextContent().trim();
             if (textContent.length() > 0) {
-                context.modelBuildingError(new QtiIllegalChildException(this, "<text>"), node);
+                final TextRun textRun = new TextRun(this, textContent);
+                children.add(textRun);
             }
         }
     }
 
     @Override
     protected void fireBodySaxEvents(final QtiSaxDocumentFirer qtiSaxDocumentFirer) throws SAXException {
-        for (final ForeignElement childNode : children) {
+        for (final QtiNode childNode : children) {
             childNode.fireSaxEvents(qtiSaxDocumentFirer);
         }
     }
 
     @Override
-    protected void validateThis(final ValidationContext context) {
-        /* Do nothing here - we rely on schema validation */
+    protected void validateChildren(final ValidationContext context) {
+        for (final QtiNode child : children) {
+            child.validate(context);
+        }
     }
+
 }

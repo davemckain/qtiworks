@@ -42,11 +42,7 @@ import uk.ac.ed.ph.jqtiplus.node.content.basic.AtomicInline;
 import java.net.URI;
 
 /**
- * Attribute : src [1]: uri
- * Attribute : alt [1]: string256
- * Attribute : longdesc [0..1]: uri
- * Attribute : height [0..1]: length
- * Attribute : width [0..1]: length
+ * Represents the <tt>img</tt> QTI class
  *
  * @author Jonathon Hare
  */

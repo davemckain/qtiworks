@@ -36,7 +36,6 @@ package uk.ac.ed.ph.jqtiplus.node.content.xhtml.text;
 import uk.ac.ed.ph.jqtiplus.attribute.value.UriAttribute;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.AbstractSimpleBlock;
-import uk.ac.ed.ph.jqtiplus.node.content.basic.SimpleBlock;
 
 import java.net.URI;
 
@@ -45,7 +44,7 @@ import java.net.URI;
  *
  * @author Jonathon Hare
  */
-public final class Blockquote extends AbstractSimpleBlock implements SimpleBlock {
+public final class Blockquote extends AbstractSimpleBlock {
 
     private static final long serialVersionUID = -5825718968041113996L;
 

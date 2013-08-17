@@ -40,7 +40,7 @@ import uk.ac.ed.ph.jqtiplus.node.content.basic.Flow;
 import java.util.List;
 
 /**
- * dd
+ * Represents the <tt>dd</tt> QTI class
  *
  * @author Jonathon Hare
  */

@@ -35,14 +35,13 @@ package uk.ac.ed.ph.jqtiplus.node.content.xhtml.text;
 
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.AbstractSimpleInline;
-import uk.ac.ed.ph.jqtiplus.node.content.basic.SimpleInline;
 
 /**
  * var
  *
  * @author Jonathon Hare
  */
-public final class Var extends AbstractSimpleInline implements SimpleInline {
+public final class Var extends AbstractSimpleInline {
 
     private static final long serialVersionUID = 9045153485959986131L;
 

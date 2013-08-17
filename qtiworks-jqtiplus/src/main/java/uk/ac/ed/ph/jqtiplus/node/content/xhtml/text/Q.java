@@ -36,7 +36,6 @@ package uk.ac.ed.ph.jqtiplus.node.content.xhtml.text;
 import uk.ac.ed.ph.jqtiplus.attribute.value.UriAttribute;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.AbstractSimpleInline;
-import uk.ac.ed.ph.jqtiplus.node.content.basic.SimpleInline;
 
 import java.net.URI;
 
@@ -45,7 +44,7 @@ import java.net.URI;
  *
  * @author Jonathon Hare
  */
-public final class Q extends AbstractSimpleInline implements SimpleInline {
+public final class Q extends AbstractSimpleInline {
 
     private static final long serialVersionUID = -4273454055675294757L;
 

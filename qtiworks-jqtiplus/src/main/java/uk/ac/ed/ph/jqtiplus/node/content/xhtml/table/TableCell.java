@@ -47,15 +47,7 @@ import uk.ac.ed.ph.jqtiplus.value.TableCellScope;
 import java.util.List;
 
 /**
- * In XHTML, table cells are represented by either th or td and these share
- * the following attributes and content model:
- * Attribute : headers [*]: identifier
- * Attribute : scope [0..1]: tableCellScope
- * Attribute : abbr [0..1]: string
- * Attribute : axis [0..1]: string
- * Attribute : rowspan [0..1]: integer
- * Attribute : colspan [0..1]: integer
- * Contains : flow [*]
+ * tableCell
  *
  * @author Jonathon Hare
  */

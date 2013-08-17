@@ -42,7 +42,7 @@ import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
 import java.util.List;
 
 /**
- * ol
+ * Represents the <tt>ol</tt> QTI class
  *
  * @author Jonathon Hare
  */

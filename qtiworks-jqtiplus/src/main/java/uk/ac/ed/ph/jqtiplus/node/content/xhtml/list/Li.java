@@ -41,7 +41,7 @@ import uk.ac.ed.ph.jqtiplus.node.content.basic.Flow;
 import java.util.List;
 
 /**
- * li
+ * Represents the <tt>li</tt> QTI class
  *
  * @author Jonathon Hare
  */

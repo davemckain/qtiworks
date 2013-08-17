@@ -151,11 +151,11 @@ public final class LoadModifyAndSaveQtiExample {
         prompt.getInlineStatics().add(new TextRun(prompt, "Pick the correct answer"));
         final SimpleChoice simpleChoice1 = new SimpleChoice(choiceInteraction);
         simpleChoice1.setIdentifier(Identifier.assumedLegal("CHOICE1"));
-        simpleChoice1.getChildren().add(new TextRun(simpleChoice1, "Choice 1"));
+        simpleChoice1.getFlowStatics().add(new TextRun(simpleChoice1, "Choice 1"));
         choiceInteraction.getSimpleChoices().add(simpleChoice1);
         final SimpleChoice simpleChoice2 = new SimpleChoice(choiceInteraction);
         simpleChoice2.setIdentifier(Identifier.assumedLegal("CHOICE2"));
-        simpleChoice2.getChildren().add(new TextRun(simpleChoice1, "Choice 2"));
+        simpleChoice2.getFlowStatics().add(new TextRun(simpleChoice1, "Choice 2"));
         choiceInteraction.getSimpleChoices().add(simpleChoice2);
 
         /* We'll add a reponseProcessing as well, using one of the default templates */

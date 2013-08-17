@@ -40,7 +40,7 @@ import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import java.util.List;
 
 /**
- * colgroup
+ * tbody
  *
  * @author Jonathon Hare
  */

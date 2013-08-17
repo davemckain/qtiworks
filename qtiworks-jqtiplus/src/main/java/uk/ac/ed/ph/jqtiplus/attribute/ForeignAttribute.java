@@ -33,8 +33,8 @@
  */
 package uk.ac.ed.ph.jqtiplus.attribute;
 
+import uk.ac.ed.ph.jqtiplus.node.ForeignElement;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
-import uk.ac.ed.ph.jqtiplus.node.block.ForeignElement;
 
 /**
  * An attribute for a {@link ForeignElement}, or any other unknown attribute. 

@@ -45,7 +45,7 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public class FeedbackBlock extends FeedbackElement implements SimpleBlock {
+public final class FeedbackBlock extends FeedbackElement implements SimpleBlock {
 
     private static final long serialVersionUID = 456106105509332955L;
 

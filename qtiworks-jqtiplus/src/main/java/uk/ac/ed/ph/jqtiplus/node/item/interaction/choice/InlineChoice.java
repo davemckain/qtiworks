@@ -70,7 +70,15 @@ public final class InlineChoice extends Choice {
         }
     }
 
-    public List<TextOrVariable> getChildren() {
+    public List<TextOrVariable> getTextOrVariables() {
         return getNodeGroups().getTextOrVariableGroup().getTextOrVariables();
+    }
+
+    /**
+     * @deprecated Please now use {@link #getTextOrVariables()}
+     */
+    @Deprecated
+    public List<TextOrVariable> getChildren() {
+        return getTextOrVariables();
     }
 }

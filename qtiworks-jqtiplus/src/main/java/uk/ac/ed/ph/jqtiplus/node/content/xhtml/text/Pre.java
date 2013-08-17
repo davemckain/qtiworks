@@ -35,7 +35,6 @@ package uk.ac.ed.ph.jqtiplus.node.content.xhtml.text;
 
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.AbstractAtomicBlock;
-import uk.ac.ed.ph.jqtiplus.node.content.basic.AtomicBlock;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.image.Img;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.object.Object;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.presentation.Big;
@@ -50,7 +49,7 @@ import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
  *
  * @author Jonathon Hare
  */
-public final class Pre extends AbstractAtomicBlock implements AtomicBlock {
+public final class Pre extends AbstractAtomicBlock {
 
     private static final long serialVersionUID = 6314971744269416971L;
 
