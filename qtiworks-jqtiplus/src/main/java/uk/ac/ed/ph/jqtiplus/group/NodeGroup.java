@@ -136,7 +136,7 @@ public interface NodeGroup<P extends QtiNode, C extends QtiNode> extends Seriali
      *
      * @param childNode
      * @param context
-     * @return true if this DOM Node can be loaded by this {@link NodeGroup},
+     * @return true if the childNode DOM Node was loaded into this {@link NodeGroup},
      *   false otherwise.
      */
     boolean loadChildIfSupported(final Node childNode, final LoadingContext context);

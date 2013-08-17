@@ -36,6 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.result;
 import uk.ac.ed.ph.jqtiplus.group.result.ContextGroup;
 import uk.ac.ed.ph.jqtiplus.group.result.ItemResultGroup;
 import uk.ac.ed.ph.jqtiplus.group.result.TestResultGroup;
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.RootNode;
 
@@ -104,15 +105,15 @@ public final class AssessmentResult extends AbstractNode implements RootNode, Re
      * Gets itemResult for given item.
      *
      * @param identifier identifier of requested itemResult
-     * @return itemResult for given item
+     * @return itemResult for given item, null if given item is not found.
      */
     public ItemResult getItemResult(final String identifier) {
+        Assert.notNull(identifier);
         for (final ItemResult itemResult : getItemResults()) {
-            if (itemResult.getIdentifier() != null && itemResult.getIdentifier().equals(identifier)) {
+            if (identifier.equals(itemResult.getIdentifier())) {
                 return itemResult;
             }
         }
-
         return null;
     }
 
@@ -122,39 +123,4 @@ public final class AssessmentResult extends AbstractNode implements RootNode, Re
                 + "(systemId=" + systemId
                 + ")";
     }
-
-    //    /**
-    //     * Shows how to use assessmentResult outside of library.
-    //     *
-    //     * @param args ignored
-    //     * @throws URISyntaxException ignored
-    //     */
-    //    public static void main(String[] args) throws URISyntaxException
-    //    {
-    //        // Only for this example. You don't need to do this in your code.
-    //        AssessmentResult result = new AssessmentResult();
-    //
-    //        // Call this to get assessmentResult.
-    //        // AssessmentResult result = test.getAssessmentResult();
-    //
-    //        { // You must set contex into assessmentResult.
-    //            Context context = new Context(result);
-    //            result.setContext(context);
-    //
-    //            // You should set sessionIdentifier into contex (it is not required according to current specification).
-    //            SessionIdentifier sessionIdentifier = new SessionIdentifier(context);
-    //            context.getSessionIdentifiers().add(sessionIdentifier);
-    //            sessionIdentifier.setSourceId(new URI("SOURCE_ID_URI"));
-    //            sessionIdentifier.setIdentifier("IDENTIFIER_OF_SESSION");
-    //        }
-    //
-    //        { // Do not forget to set this on assessmentItemRef.
-    //            AssessmentItemRef itemRef = new AssessmentItemRef(null); // Only for this example.
-    //
-    //            itemRef.setSessionStatus(SessionStatus.PENDING_RESPONSE_PROCESSING); // Set appropriate sessionStatus.
-    //            itemRef.setCandidateComment("Candidate comment"); // Set candidate's comment if required.
-    //        }
-    //
-    //        // That's it. You don't need to do anything else.
-    //    }
 }

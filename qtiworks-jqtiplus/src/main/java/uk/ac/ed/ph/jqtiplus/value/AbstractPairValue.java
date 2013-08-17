@@ -59,12 +59,6 @@ public abstract class AbstractPairValue extends SingleValue {
     /** Destination value. */
     protected Identifier destValue;
 
-    /**
-     * Constructs <code>AbstractPairValue</code> from given pair of identifiers.
-     *
-     * @param sourceValue source (first) identifier
-     * @param destValue destination (second) identifier
-     */
     public AbstractPairValue(final Identifier sourceValue, final Identifier destValue) {
         this.sourceValue = sourceValue;
         this.destValue = destValue;

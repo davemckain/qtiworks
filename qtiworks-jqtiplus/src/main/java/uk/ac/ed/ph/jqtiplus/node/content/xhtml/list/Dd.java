@@ -51,11 +51,6 @@ public final class Dd extends DlElement {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "dd";
 
-    /**
-     * Constructs object.
-     *
-     * @param parent parent of constructed object
-     */
     public Dd(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 

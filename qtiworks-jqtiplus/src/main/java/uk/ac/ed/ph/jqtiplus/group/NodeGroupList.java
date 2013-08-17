@@ -305,13 +305,14 @@ public final class NodeGroupList implements Serializable, Iterable<NodeGroup<?,?
     }
 
     /**
-     * Loads group's children from given source node.
+     * Loads group's children from given source DOM {@link Element}.
      * <ul>
      * <li>Unsupported (unknown) children are skipped.</li>
      * <li>Wrong order of children is ignored (children are loaded in correct order).</li>
      * </ul>
      *
-     * @param element source node
+     * @param element source DOM {@link Element}
+     * @param context current {@link LoadingContext} callback
      */
     public void load(final Element element, final LoadingContext context) {
         for (final NodeGroup<?,?> group : groups) {

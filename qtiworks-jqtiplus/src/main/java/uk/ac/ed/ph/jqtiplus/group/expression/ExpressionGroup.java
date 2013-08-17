@@ -57,22 +57,6 @@ public final class ExpressionGroup extends ComplexNodeGroup<ExpressionParent, Ex
         this(parent, minimum, Integer.valueOf(maximum));
     }
 
-    //    @Override
-    //    public List<String> getCurrentSupportedClasses(int index)
-    //    {
-    //        List<String> supportedClassess = new ArrayList<String>();
-    //
-    //        Cardinality[] requiredCardinalities = getParent().getRequiredCardinalities(context, index);
-    //        BaseType[] requiredBaseTypes = getParent().getRequiredBaseTypes(context, index);
-    //
-    //        ExpressionType[] supportedTypes = ExpressionType.getSupportedTypes(requiredCardinalities, requiredBaseTypes);
-    //
-    //        for (ExpressionType type : supportedTypes)
-    //            supportedClassess.add(type.getQtiClassName());
-    //
-    //        return supportedClassess;
-    //    }
-
     /**
      * Gets first child, or null if there are no children
      *

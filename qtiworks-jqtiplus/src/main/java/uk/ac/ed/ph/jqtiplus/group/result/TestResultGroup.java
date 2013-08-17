@@ -46,43 +46,19 @@ public final class TestResultGroup extends SimpleSingleNodeGroup<AssessmentResul
 
     private static final long serialVersionUID = 773881262969698055L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
     public TestResultGroup(final AssessmentResult parent) {
         super(parent, TestResult.QTI_CLASS_NAME, false);
     }
 
-    /**
-     * Gets child.
-     *
-     * @return child
-     * @see #setTestResult
-     */
     public TestResult getTestResult() {
         return getChild();
     }
 
-    /**
-     * Sets new child.
-     *
-     * @param testResult new child
-     * @see #getTestResult
-     */
     public void setTestResult(final TestResult testResult) {
         setChild(testResult);
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter qtiClassName is needed only if group can contain children with different QTI class names.
-     *
-     * @param qtiClassName QTI class name (this parameter is ignored)
-     * @return created child
-     */
+
     @Override
     public TestResult create() {
         return new TestResult(getParent());

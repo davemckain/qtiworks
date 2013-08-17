@@ -45,7 +45,7 @@ import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 /**
- * Base class for all QTI Nodes
+ * Base interface for all "nodes" in the QTI object model.
  *
  * @author Jiri Kajaba (original XmlNode/XmlObject interfaces in JQTI)
  * @author David McKain (refactored)

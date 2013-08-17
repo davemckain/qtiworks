@@ -69,11 +69,6 @@ public abstract class FeedbackElement extends AbstractFlowBodyElement {
     /** Name of identifier attribute in xml schema. */
     public static final String ATTR_IDENTIFIER_NAME = "identifier";
 
-    /**
-     * Constructs feedback element.
-     *
-     * @param parent parent of this element
-     */
     public FeedbackElement(final QtiNode parent, final String qtiClassName) {
         super(parent, qtiClassName);
 

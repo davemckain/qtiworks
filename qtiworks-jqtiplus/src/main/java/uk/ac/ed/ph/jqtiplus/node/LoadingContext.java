@@ -41,8 +41,8 @@ import org.w3c.dom.Node;
 
 /**
  * Callback interface passed to {@link AbstractNode#load(Element, LoadingContext)}
- * and related methods that provides access to JQTI extensions, and a way of reporting
- * model building errors.
+ * and related methods, providing access to JQTI extensions, and a mechanism
+ * for reporting model building errors.
  *
  * @author David McKain
  */

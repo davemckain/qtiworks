@@ -44,7 +44,7 @@ public abstract class SimpleMultipleNodeGroup<P extends QtiNode, C extends QtiNo
 
     private static final long serialVersionUID = 3006947671579885917L;
 
-    /** Constructor appropriate for when an arbtritrary number of children are permitted */
+    /** Constructor appropriate for when an arbitrary number of children are permitted */
     public SimpleMultipleNodeGroup(final P parent, final String childQtiClass) {
         super(parent, childQtiClass, 0, null);
     }

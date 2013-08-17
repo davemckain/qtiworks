@@ -56,12 +56,6 @@ public final class DurationValue extends SingleValue {
 
     private double doubleValue;
 
-    /**
-     * Constructs <code>DurationValue</code> from given <code>double</code>.
-     *
-     * @param value <code>double</code>
-     * @throws IllegalArgumentException if given <code>double</code> is negative
-     */
     public DurationValue(final double value) throws IllegalArgumentException {
         if (value < 0) {
             throw new IllegalArgumentException("Invalid duration '" + value + "'. Duration cannot be negative.");
