@@ -359,6 +359,7 @@ public final class QtiSaxDocumentFirer {
         else if (node instanceof ResultNode) {
             namespaceUri = QtiConstants.QTI_RESULT_21_NAMESPACE_URI;
         }
+        // TODO - handle APIP Accessibility related nodes
         else {
             namespaceUri = QtiConstants.QTI_21_NAMESPACE_URI;
         }
@@ -377,6 +378,7 @@ public final class QtiSaxDocumentFirer {
             /* (These Nodes have a different schema) */
             schemaLocation = QtiConstants.QTI_RESULT_21_SCHEMA_LOCATION;
         }
+        //TODO - handle APIP Accessibility related nodes
         else {
             /* (NB: We are *always* writing out QTI 2.1) */
             schemaLocation = QtiConstants.QTI_21_SCHEMA_LOCATION;

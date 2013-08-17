@@ -36,6 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.item;
 import uk.ac.ed.ph.jqtiplus.QtiConstants;
 import uk.ac.ed.ph.jqtiplus.attribute.value.BooleanAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.ApipAccessibilityGroup;
 import uk.ac.ed.ph.jqtiplus.group.item.ItemBodyGroup;
 import uk.ac.ed.ph.jqtiplus.group.item.ModalFeedbackGroup;
 import uk.ac.ed.ph.jqtiplus.group.item.StylesheetGroup;
@@ -49,6 +50,7 @@ import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.IdentifiableNode;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.ApipAccessibility;
 import uk.ac.ed.ph.jqtiplus.node.content.ItemBody;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
@@ -141,6 +143,7 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
         getNodeGroups().add(new ItemBodyGroup(this));             // itemBody [0..1]
         getNodeGroups().add(new ResponseProcessingGroup(this)); // responseProcessing [0..1]
         getNodeGroups().add(new ModalFeedbackGroup(this));         // modalFeedback [*]
+        getNodeGroups().add(new ApipAccessibilityGroup(this, false));
 
         /* create a special declaration for the internal completionStatus variable */
         completionStatusOutcomeDeclaration = new OutcomeDeclaration(this);
@@ -539,6 +542,16 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
      */
     public void setItemBody(final ItemBody itemBody) {
         getNodeGroups().getItemBodyGroup().setItemBody(itemBody);
+    }
+
+    /*
+     * Gets apipAccessibility child
+     *
+     * @return apipAccessibility child
+     * @see #setApipAccessibility
+     */
+    public ApipAccessibility getApipAccessibility() {
+    	return getNodeGroups().getApipAccessibilityGroup().getApipAccessibility();
     }
 
     @Override

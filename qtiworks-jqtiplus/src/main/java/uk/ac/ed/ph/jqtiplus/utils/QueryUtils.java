@@ -55,19 +55,19 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * This class will provide some utility methods to perform deep queries or searches
- * of a {@link QtiNode} tree.
+ * This class will provide some utility methods to perform deep queries or
+ * searches of a {@link QtiNode} tree.
  *
  * @author David McKain
  */
 public final class QueryUtils {
 
     /**
-     * Performs a deep search starting at the given {@link QtiNode}(s) for instances of
-     * the given target type.
+     * Performs a deep search starting at the given {@link QtiNode}(s) for
+     * instances of the given target type.
      * <p>
-     * (This used to be part of the {@link BodyElement} interface in JQTI, but didn't work
-     * correctly!)
+     * (This used to be part of the {@link BodyElement} interface in JQTI, but
+     * didn't work correctly!)
      *
      * @param searchClass type of descendant to search for
      * @param nodes {@link QtiNode}(s) to start searching from
@@ -89,8 +89,8 @@ public final class QueryUtils {
     }
 
     /**
-     * Performs a deep search starting at the children of given {@link QtiNode}(s) for the
-     * first instance of a node of the given searchType.
+     * Performs a deep search starting at the children of given {@link QtiNode}
+     * (s) for the first instance of a node of the given searchType.
      * <p>
      * Returns true if such a Node is found, false otherwise.
      *
@@ -130,17 +130,19 @@ public final class QueryUtils {
     }
 
     public static Set<JqtiExtensionPackage<?>> findExtensionsUsed(final JqtiExtensionManager jqtiExtensionManager, final ResolvedAssessmentItem resolvedItem) {
-        final Set<JqtiExtensionPackage<?>> resultSet = findExtensionsWithin(jqtiExtensionManager, resolvedItem.getItemLookup().extractAssumingSuccessful());
-        final RootNodeLookup<ResponseProcessing> rpTemplateLookup = resolvedItem.getResolvedResponseProcessingTemplateLookup();
-        if (rpTemplateLookup!=null) {
+        final Set<JqtiExtensionPackage<?>> resultSet = findExtensionsWithin(jqtiExtensionManager, resolvedItem
+                .getItemLookup().extractAssumingSuccessful());
+        final RootNodeLookup<ResponseProcessing> rpTemplateLookup = resolvedItem
+                .getResolvedResponseProcessingTemplateLookup();
+        if (rpTemplateLookup != null) {
             resultSet.addAll(findExtensionsWithin(jqtiExtensionManager, rpTemplateLookup.extractAssumingSuccessful()));
         }
         return resultSet;
     }
 
     /**
-     * Finds all {@link JqtiExtensionPackage}s used by the given {@link QtiNode}s and their
-     * child Nodes.
+     * Finds all {@link JqtiExtensionPackage}s used by the given {@link QtiNode}
+     * s and their child Nodes.
      *
      * @param node
      */
@@ -151,13 +153,14 @@ public final class QueryUtils {
             public boolean handleNode(final QtiNode node) {
                 if (node instanceof CustomOperator) {
                     final JqtiExtensionPackage<?> jqtiExtensionPackage = jqtiExtensionManager.getJqtiExtensionPackageImplementingOperator((CustomOperator<?>) node);
-                    if (jqtiExtensionPackage!=null) {
+                    if (jqtiExtensionPackage != null) {
                         resultSet.add(jqtiExtensionPackage);
                     }
                 }
                 else if (node instanceof CustomInteraction) {
-                    final JqtiExtensionPackage<?> jqtiExtensionPackage = jqtiExtensionManager.getJqtiExtensionPackageImplementingInteraction((CustomInteraction<?>) node);
-                    if (jqtiExtensionPackage!=null) {
+                    final JqtiExtensionPackage<?> jqtiExtensionPackage = jqtiExtensionManager
+                            .getJqtiExtensionPackageImplementingInteraction((CustomInteraction<?>) node);
+                    if (jqtiExtensionPackage != null) {
                         resultSet.add(jqtiExtensionPackage);
                     }
                 }
@@ -213,6 +216,47 @@ public final class QueryUtils {
                 }
             }
         }
+    }
+
+    /**
+     * Performs a shallow search of the supplied {@link QtiNode}(s), and
+     * produces a snapshot List of all found instances that match the
+     * searchClass.
+     *
+     * This utility function does not search within child or descendant nodes!
+     *
+     * @param searchClass
+     * @param nodes
+     * @return a snapshot List of matching instances
+     */
+    public static <E extends QtiNode> List<E> findShallowInstances(final Class<E> searchClass, final Iterable<? extends QtiNode> nodes) {
+        final ArrayList<E> results = new ArrayList<E>();
+        for (final QtiNode node : nodes) {
+            if (searchClass.isInstance(node)) {
+                results.add(searchClass.cast(node));
+            }
+        }
+        return results;
+    }
+
+    /**
+     * Performs a shallow search of the supplied {@link QtiNode}(s), and
+     * retrieves the first instance that matches the searchClass. Returns null
+     * if no such instance is found.
+     *
+     * This utility function does not search within child or descendant nodes!
+     *
+     * @param searchClass
+     * @param nodes
+     * @return a matching instance or null if none found
+     */
+    public static <E extends QtiNode> E findFirstShallowInstance(final Class<E> searchClass, final Iterable<? extends QtiNode> nodes) {
+        for (final QtiNode node : nodes) {
+            if (searchClass.isInstance(node)) {
+                return searchClass.cast(node);
+            }
+        }
+        return null;
     }
 
     private static void doWalkTree(final TreeWalkNodeHandler handler, final QtiNode currentNode) {
