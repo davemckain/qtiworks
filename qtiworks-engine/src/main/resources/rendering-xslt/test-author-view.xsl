@@ -45,7 +45,7 @@ Input document: doesn't matter
     <xsl:variable name="globalIndex" select="$components[2]" as="xs:string"/>
     <xsl:variable name="instance" select="$components[3]" as="xs:string"/>
     <xsl:sequence select="concat($identifier,
-      if ($instance!='1') then ('(Instance ', $instance, ')') else ())"/>
+      if ($instance!='1') then concat('&#xa0;(Instance&#xa0;', $instance, ')') else ())"/>
   </xsl:function>
 
   <!-- ************************************************************ -->
