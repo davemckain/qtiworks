@@ -77,6 +77,8 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -96,6 +98,8 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 @Transactional(propagation=Propagation.REQUIRED)
 public class CandidateTestDeliveryService {
+
+    private static final Logger logger = LoggerFactory.getLogger(CandidateTestDeliveryService.class);
 
     @Resource
     private RequestTimestampContext requestTimestampContext;
@@ -251,7 +255,7 @@ public class CandidateTestDeliveryService {
             return null;
         }
         catch (final RuntimeException e) {
-            return handleExplosion(candidateSession);
+            return handleExplosion(e, candidateSession);
         }
 
         /* Note any responses that failed to bind */
@@ -335,7 +339,7 @@ public class CandidateTestDeliveryService {
             return null;
         }
         catch (final RuntimeException e) {
-            return handleExplosion(candidateSession);
+            return handleExplosion(e, candidateSession);
         }
 
         /* Record and log event */
@@ -377,7 +381,7 @@ public class CandidateTestDeliveryService {
             return null;
         }
         catch (final RuntimeException e) {
-            return handleExplosion(candidateSession);
+            return handleExplosion(e, candidateSession);
         }
 
         /* Record and log event */
@@ -420,7 +424,7 @@ public class CandidateTestDeliveryService {
             return null;
         }
         catch (final RuntimeException e) {
-            return handleExplosion(candidateSession);
+            return handleExplosion(e, candidateSession);
         }
 
         /* Update state */
@@ -467,7 +471,7 @@ public class CandidateTestDeliveryService {
             return null;
         }
         catch (final RuntimeException e) {
-            return handleExplosion(candidateSession);
+            return handleExplosion(e, candidateSession);
         }
 
         /* Update state */
@@ -549,7 +553,7 @@ public class CandidateTestDeliveryService {
             return null;
         }
         catch (final RuntimeException e) {
-            return handleExplosion(candidateSession);
+            return handleExplosion(e, candidateSession);
         }
 
         /* Record and log event */
@@ -596,7 +600,7 @@ public class CandidateTestDeliveryService {
             return null;
         }
         catch (final RuntimeException e) {
-            return handleExplosion(candidateSession);
+            return handleExplosion(e, candidateSession);
         }
 
         /* Record and log event */
@@ -641,7 +645,7 @@ public class CandidateTestDeliveryService {
             return null;
         }
         catch (final RuntimeException e) {
-            return handleExplosion(candidateSession);
+            return handleExplosion(e, candidateSession);
         }
 
         CandidateTestEventType eventType;
@@ -708,7 +712,7 @@ public class CandidateTestDeliveryService {
             return null;
         }
         catch (final RuntimeException e) {
-            return handleExplosion(candidateSession);
+            return handleExplosion(e, candidateSession);
         }
 
         /* Update CandidateSession as appropriate */
@@ -728,7 +732,8 @@ public class CandidateTestDeliveryService {
 
     //----------------------------------------------------
 
-    private CandidateSession handleExplosion(final CandidateSession candidateSession) {
+    private CandidateSession handleExplosion(final RuntimeException e, final CandidateSession candidateSession) {
+        logger.error("Intercepted RuntimeException so marking candidate test session as exploded", e);
         candidateSession.setExploded(true);
         candidateSession.setTerminated(true);
         candidateAuditLogger.logExplosion(candidateSession);
