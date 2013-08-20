@@ -10,7 +10,23 @@ All Rights Reserved
   <nav class="breadcrumbs">
     <a href="${utils:internalLink(pageContext, '/about/')}">About QTIWorks</a> &#xbb;
   </nav>
-  <h2>QTIWorks Release Notes (Production)</h2>
+  <h2>QTIWorks Release Notes (Development)</h2>
+
+  <h3>1.0-DEV34 [Development] (20/08/2013)</h3>
+  <p>
+    Fixes a couple of bugs discovered after beta1 went live:
+  </p>
+  <ul>
+    <li>
+      There was a logic bug in the handling of global indices in the TestPlanner which
+      occurred in tests using selection/ordering. The unit tests didn't cover this so it
+      was missed. This is fixed now, with a slightly nicer implementation.
+    </li>
+    <li>
+      There had been a regression in the logic determining whether to display item feedback
+      in tests while the item session was still open. Nobody had noticed this before. Fixed here.
+    </li>
+  </ul>
 
   <h3>1.0-beta1 [Production] (19/08/2013)</h3>
   <p>
