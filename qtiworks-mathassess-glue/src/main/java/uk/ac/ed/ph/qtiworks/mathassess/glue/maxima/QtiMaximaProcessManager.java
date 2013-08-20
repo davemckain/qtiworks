@@ -38,15 +38,15 @@ package uk.ac.ed.ph.qtiworks.mathassess.glue.maxima;
  * I have added this level of indirection in order to support process pooling, as
  * well as the trivial case (implemented by {@link SimpleQtiMaximaProcessManager}) where
  * a new {@link QtiMaximaProcess} is created on demand and then thrown away once finished.
- * 
+ *
  * @see SimpleQtiMaximaProcessManager
  *
  * @author David McKain
  */
 public interface QtiMaximaProcessManager {
-    
+
     QtiMaximaProcess obtainProcess();
-    
+
     void returnProcess(QtiMaximaProcess process);
 
 }

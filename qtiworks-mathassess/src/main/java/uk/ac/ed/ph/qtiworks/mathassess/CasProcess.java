@@ -38,8 +38,10 @@ import static uk.ac.ed.ph.qtiworks.mathassess.MathAssessConstants.ATTR_SIMPLIFY_
 import static uk.ac.ed.ph.qtiworks.mathassess.MathAssessConstants.MATHASSESS_NAMESPACE_URI;
 
 import uk.ac.ed.ph.qtiworks.mathassess.attribute.ReturnTypeAttribute;
+import uk.ac.ed.ph.qtiworks.mathassess.glue.MathAssessBadCasCodeException;
 import uk.ac.ed.ph.qtiworks.mathassess.glue.MathsContentTooComplexException;
 import uk.ac.ed.ph.qtiworks.mathassess.glue.maxima.QtiMaximaProcess;
+import uk.ac.ed.ph.qtiworks.mathassess.glue.maxima.QtiMaximaTypeConversionException;
 import uk.ac.ed.ph.qtiworks.mathassess.glue.types.ValueWrapper;
 import uk.ac.ed.ph.qtiworks.mathassess.value.ReturnTypeType;
 
@@ -50,6 +52,7 @@ import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
+import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
@@ -135,7 +138,27 @@ public final class CasProcess extends MathAssessOperator {
             context.fireRuntimeError(this, "An unexpected problem occurred querying the result of CasProcess, so returning NULL");
             return NullValue.INSTANCE;
         }
-
+        catch (final MathAssessBadCasCodeException e) {
+            context.fireRuntimeError(this, "Your CasProcess code did not work as expected. The CAS input was '"
+                    + e.getMaximaInput()
+                    + "' and the CAS output was '"
+                    + e.getMaximaOutput()
+                    + "'. The failure reason was " + e.getReason());
+            return NullValue.INSTANCE;
+        }
+        catch (final QtiMaximaTypeConversionException e) {
+            context.fireRuntimeError(this, "Your CasProcess code did not produce a result that could be converted into the required QTI type. The CAS input was '"
+                    + e.getMaximaInput()
+                    + "' and the CAS output was '"
+                    + e.getMaximaOutput()
+                    + "'");
+            return NullValue.INSTANCE;
+        }
+        catch (final RuntimeException e) {
+            logger.warn("Unexpected Maxima failure", e);
+            context.fireRuntimeError(this, "An unexpected problem occurred while executing this CasProcess");
+            return BooleanValue.FALSE;
+        }
         /* Bind result */
         final Value result = GlueValueBinder.casToJqti(maximaResult);
         if (result==null) {

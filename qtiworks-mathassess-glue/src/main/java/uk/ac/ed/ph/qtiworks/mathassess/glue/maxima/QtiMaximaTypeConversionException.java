@@ -43,9 +43,9 @@ import uk.ac.ed.ph.qtiworks.mathassess.glue.types.ValueWrapper;
  * @author David McKain
  */
 public final class QtiMaximaTypeConversionException extends MathAssessCasAuthoringException {
-    
+
     private static final long serialVersionUID = 5940754810506417594L;
-    
+
     private final String maximaInput;
     private final String maximaOutput;
     private final Class<? extends ValueWrapper> badTypeClass;
@@ -59,11 +59,11 @@ public final class QtiMaximaTypeConversionException extends MathAssessCasAuthori
         this.maximaOutput = maximaOutput;
         this.badTypeClass = badTypeClass;
     }
-    
+
     public String getMaximaInput() {
         return maximaInput;
     }
-    
+
     public String getMaximaOutput() {
         return maximaOutput;
     }

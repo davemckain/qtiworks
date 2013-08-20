@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.qtiworks.mathassess.glue.maxima;
 
 import uk.ac.ed.ph.qtiworks.mathassess.glue.MathAssessCasException;
+
 import uk.ac.ed.ph.snuggletex.SnuggleRuntimeException;
 import uk.ac.ed.ph.snuggletex.internal.util.XMLUtilities;
 import uk.ac.ed.ph.snuggletex.utilities.MathMLUtilities;
@@ -61,42 +62,42 @@ import org.w3c.dom.Document;
 /**
  * Fixes up the raw MathML produced by Maxima output into a form roughly equivalent to the
  * Presentation MathML produced by SnuggleTeX.
- * 
+ *
  * (This is a blatant rip-off of the code that does the same for ASCIIMathML output in SnuggleTeX!)
- * 
+ *
  * FIXME: The Lisp module that generates the raw MathML is buggy and sometimes produces XML that
  * is not well formed. (For example, raw angle brackets in text.) In these cases, the approach taken
  * here is obviously not going to work. Ideally, I need to fix or write a more appropriate version
- * of the <tt>mathml.lisp</tt> module. 
- * 
+ * of the <tt>mathml.lisp</tt> module.
+ *
  * @author David McKain
  */
 final class MaximaMathmlFixer {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(MaximaMathmlFixer.class);
-    
+
     /** Package to load various resources from */
     private static final String RESOURCE_PACKAGE = "uk/ac/ed/ph/qtiworks/mathassess/glue/maxima";
-    
+
     /** "Base" location for the XSLT stylesheets used here */
     private static final String BASE_XSLT_URI = "classpath:/" + RESOURCE_PACKAGE;
-    
+
     /** Location of the initial XSLT for fixing up ASCIIMathML */
     private static final String FIXER_XSLT_URI = BASE_XSLT_URI + "/maxima-output-fixer.xsl";
-    
+
     /** Location of the resource providing {@link #entitySubstitutionProperties} */
     private static final String ENTITY_SUBSTITUTION_PROPERTIES_RESOURCE = RESOURCE_PACKAGE + "/maxima-entity-substitutions.properties";
-    
+
     /** XSLT stylesheet manager (from SnuggleTeX) */
     private final StylesheetManager stylesheetManager;
-    
-    /** 
+
+    /**
      * Properties mapping XML character entity names to substitutions.
      * (I'm doing it this way as that mathml.lisp module doesn't output a lot of entities
      * so it's not worth pulling in the various entity files that form part of the MathML DTD.)
      */
     private final Properties entitySubstitutionProperties;
-    
+
     /**
      * Creates a new up-converter using a simple internal cache.
      * <p>
@@ -106,7 +107,7 @@ final class MaximaMathmlFixer {
     public MaximaMathmlFixer() {
         this(new SimpleStylesheetCache());
     }
-    
+
     /**
      * Creates a new up-converter using the given {@link StylesheetCache} to cache internal XSLT
      * stylesheets.
@@ -118,10 +119,10 @@ final class MaximaMathmlFixer {
         this.stylesheetManager = new StylesheetManager(SaxonTransformerFactoryChooser.getInstance(), stylesheetCache);
         this.entitySubstitutionProperties = loadEntitySubstitutionProperties();
     }
-    
+
     private Properties loadEntitySubstitutionProperties() {
-        Properties result = new Properties();
-        InputStream resourceStream = getClass().getClassLoader().getResourceAsStream(ENTITY_SUBSTITUTION_PROPERTIES_RESOURCE);
+        final Properties result = new Properties();
+        final InputStream resourceStream = getClass().getClassLoader().getResourceAsStream(ENTITY_SUBSTITUTION_PROPERTIES_RESOURCE);
         if (resourceStream==null) {
             throw new MathAssessCasException("Could not locate entity substitutions resource within ClassPath at "
                     + ENTITY_SUBSTITUTION_PROPERTIES_RESOURCE);
@@ -129,36 +130,36 @@ final class MaximaMathmlFixer {
         try {
             result.load(resourceStream);
         }
-        catch (IOException e) {
+        catch (final IOException e) {
             throw new MathAssessCasException("Could not read in entity substitutions resource at "
                     + ENTITY_SUBSTITUTION_PROPERTIES_RESOURCE);
         }
         return result;
     }
-    
+
     private Document fixMaximaMathmlOutput(final Document document) {
-        Document resultDocument = XMLUtilities.createNSAwareDocumentBuilder().newDocument();
+        final Document resultDocument = XMLUtilities.createNSAwareDocumentBuilder().newDocument();
         try {
             /* Create required XSLT */
-            Templates upconverterStylesheet = stylesheetManager.getCompiledStylesheet(FIXER_XSLT_URI);
-            Transformer upconverter = upconverterStylesheet.newTransformer();
-            
+            final Templates upconverterStylesheet = stylesheetManager.getCompiledStylesheet(FIXER_XSLT_URI);
+            final Transformer upconverter = upconverterStylesheet.newTransformer();
+
             /* Do the transform */
             upconverter.transform(new DOMSource(document), new DOMResult(resultDocument));
         }
-        catch (TransformerException e) {
+        catch (final TransformerException e) {
             throw new SnuggleRuntimeException("Fixing failed", e);
         }
         return resultDocument;
     }
-    
+
     public Document fixMaximaMathmlOutput(final String maximaMathmlOutput) {
         /* The Maxima MathML module outputs certain characters as XML entities (e.g. &pi;),
          * while some are left in the same Maxima format (e.g. %alpha).
          * We'll replace these now */
-        Pattern searchPattern = Pattern.compile("(&\\w+;|%\\w+)");
-        Matcher searchMatcher = searchPattern.matcher(maximaMathmlOutput);
-        StringBuffer replacementBuilder = new StringBuffer();
+        final Pattern searchPattern = Pattern.compile("(&\\w+;|%\\w+)");
+        final Matcher searchMatcher = searchPattern.matcher(maximaMathmlOutput);
+        final StringBuffer replacementBuilder = new StringBuffer();
         String entityName, entityReplacement;
         while (searchMatcher.find()) {
             entityName = searchMatcher.group();
@@ -169,18 +170,18 @@ final class MaximaMathmlFixer {
             searchMatcher.appendReplacement(replacementBuilder, entityReplacement);
         }
         searchMatcher.appendTail(replacementBuilder);
-        
+
         /* Now parse the MathML */
-        String entityFreeMathmlString = replacementBuilder.toString();
+        final String entityFreeMathmlString = replacementBuilder.toString();
         Document mathmlDocument;
         try {
             mathmlDocument = MathMLUtilities.parseMathMLDocumentString(entityFreeMathmlString);
         }
-        catch (Exception e) {
+        catch (final Exception e) {
             logger.debug("Could not parse Maxima MathML output; raw output was {}; entity fixed was {}", maximaMathmlOutput, entityFreeMathmlString);
             throw new MathAssessCasException("Failed to parse raw MathML output from Maxima", e);
         }
-        
+
         /* The fix up */
         return fixMaximaMathmlOutput(mathmlDocument);
     }

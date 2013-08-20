@@ -49,22 +49,22 @@ import org.w3c.dom.Document;
  * @author David McKain
  */
 public final class MaximaMathmlUpConverter {
-    
+
     /** Used to fix up the MathML coming out of Maxima */
     private final MaximaMathmlFixer mathmlFixer;
-    
+
     /** SnuggleTeX MathML up-converter */
     private final MathMLUpConverter mathMLUpConverter;
-    
+
     public MaximaMathmlUpConverter() {
         this(new SimpleStylesheetCache());
     }
-    
-    public MaximaMathmlUpConverter(StylesheetCache stylesheetCache) {
+
+    public MaximaMathmlUpConverter(final StylesheetCache stylesheetCache) {
         this.mathmlFixer = new MaximaMathmlFixer(stylesheetCache);
         this.mathMLUpConverter = new MathMLUpConverter(stylesheetCache);
     }
-    
+
     /**
      * Takes raw MathML returned from Maxima via the <tt>mathml.lisp</tt> module and attempts to
      * up-convert it into annotated MathML, returning a DOM {@link Document} Object.
@@ -72,18 +72,18 @@ public final class MaximaMathmlUpConverter {
      * <strong>NOTE:</strong> If you are calling this directly, then it is your responsibility to
      * check the annotations to make sure there were no failures. (The corresponding higher-level
      * code in {@link QtiMaximaProcess} does this for you.)
-     * 
+     *
      * @param rawMaximaMathmlOutput MathML output from Maxima, which doesn't need to have been
      *   trimmed or tidied up.
      */
     public Document upconvertRawMaximaMathML(final String rawMaximaMathmlOutput) {
         /* First of all, trim off labels and other extraneous stuff */
-        String mathMLElementString = rawMaximaMathmlOutput.replaceFirst("(?s)^.+(<math)", "$1")
+        final String mathMLElementString = rawMaximaMathmlOutput.replaceFirst("(?s)^.+(<math)", "$1")
             .replaceFirst("(?s)(</math>).+$", "$1");
 
         /* Then fix up the MathML... */
-        Document fixedDocument = mathmlFixer.fixMaximaMathmlOutput(mathMLElementString);
-        
+        final Document fixedDocument = mathmlFixer.fixMaximaMathmlOutput(mathMLElementString);
+
         /* ...then up-convert */
         return mathMLUpConverter.upConvertSnuggleTeXMathML(fixedDocument, UpConversionConstants.UP_CONVERSION_OPTIONS);
     }
