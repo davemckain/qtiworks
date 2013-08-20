@@ -58,8 +58,8 @@ import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -119,25 +119,49 @@ public final class TestPlanner extends ListenerNotificationFirer {
     private final ResolvedAssessmentTest resolvedAssessmentTest;
     private final AssessmentTest test;
 
-    private final Map<Identifier, List<TestPlanNode>> testPlanNodesByIdentifierMap;
+    /** Root node for the resulting {@link TestPlan} */
     private final TestPlanNode testPlanRootNode;
+
+    /** List of {@link TestPlanNode}s created, starting at root node in depth-first search order */
+    private final List<TestPlanNode> testPlanNodeListBuilder;
+
+    /**
+     * Map of the {@link TestPlanNode}s, keyed on {@link TestPlanNodeKey}.
+     *
+     * (NB: The root Node is not included here as it has null key)
+     */
+    private final Map<TestPlanNodeKey, TestPlanNode> testPlanNodesByKeyMapBuilder;
+
+    /**
+     * Map of all {@link TestPlanNodes} corresponding to the {@link Identifier} of the
+     * {@link AbstractPart}
+     */
+    private final Map<Identifier, List<TestPlanNode>> testPlanNodesByIdentifierMapBuilder;
+
+    private boolean hasRun;
 
     public TestPlanner(final TestProcessingMap testProcessingMap) {
         this.testProcessingMap = testProcessingMap;
         this.resolvedAssessmentTest = testProcessingMap.getResolvedAssessmentTest();
         this.test = resolvedAssessmentTest.getTestLookup().extractIfSuccessful();
-        this.testPlanNodesByIdentifierMap = new LinkedHashMap<Identifier, List<TestPlanNode>>();
         this.testPlanRootNode = TestPlanNode.createRoot();
+        this.testPlanNodeListBuilder = new ArrayList<TestPlanNode>();
+        this.testPlanNodeListBuilder.add(testPlanRootNode);
+        this.testPlanNodesByKeyMapBuilder = new HashMap<TestPlanNodeKey, TestPlanNode>();
+        this.testPlanNodesByIdentifierMapBuilder = new HashMap<Identifier, List<TestPlanNode>>();
+        this.hasRun = false;
     }
 
     public TestPlan generateTestPlan() {
         if (test==null) {
             throw new IllegalStateException("Test lookup did not succeed, so test cannot be run");
         }
+        if (hasRun) {
+            throw new IllegalStateException("TestPlanner has already been run. It is not reusable");
+        }
+        hasRun = true;
         logger.debug("Creating a test plan for test {}", test.getIdentifier());
-        testPlanNodesByIdentifierMap.clear();
 
-        final List<TestPlanNode> testPlanNodes = new ArrayList<TestPlanNode>();
         for (final TestPart testPart : test.getTestParts()) {
             /* Process test part */
             final BuildTreeNode treeNode = doTestPart(testPart);
@@ -145,12 +169,12 @@ public final class TestPlanner extends ListenerNotificationFirer {
                 logger.trace("Result of processing testPart {} is {}", testPart.getIdentifier(), treeNode);
 
                 /* Build up tree */
-                final TestPlanNode testPlanNode = recordTestPartPlan(treeNode);
-                testPlanNodes.add(testPlanNode);
+                recordTestPartPlan(treeNode);
             }
         }
 
-        final TestPlan result = new TestPlan(testPlanRootNode, testPlanNodesByIdentifierMap);
+        /* Finally we build a TestPlan from all of the data we've gathered */
+        final TestPlan result = new TestPlan(testPlanRootNode, testPlanNodeListBuilder, testPlanNodesByKeyMapBuilder, testPlanNodesByIdentifierMapBuilder);
         logger.debug("Computed test plan for test {} is {}", test.getIdentifier(), result);
         return result;
     }
@@ -464,12 +488,12 @@ public final class TestPlanner extends ListenerNotificationFirer {
     private TestPlanNode recordTestPlanNode(final TestPlanNode parent, final BuildTreeNode buildTreeNode) {
         /* Compute instance number for this identifier */
         final AbstractPart abstractPart = buildTreeNode.getAbstractPart();
-        final Identifier identifier = buildTreeNode.getAbstractPart().getIdentifier();
+        final Identifier abstractPartIdentifier = buildTreeNode.getAbstractPart().getIdentifier();
         final int abstractPartGlobalIndex = buildTreeNode.getAbstractPartGlobalIndex();
-        final int instanceNumber = 1 + computeCurrentInstanceCount(identifier);
+        final int instanceNumber = 1 + computeCurrentInstanceCount(abstractPartIdentifier);
 
         /* Create resulting Node and add to tree */
-        final TestPlanNodeKey key = new TestPlanNodeKey(identifier, abstractPartGlobalIndex, instanceNumber);
+        final TestPlanNodeKey key = new TestPlanNodeKey(abstractPartIdentifier, abstractPartGlobalIndex, instanceNumber);
 
         TestPlanNode result;
         final EffectiveItemSessionControl effectiveItemSessionControl = testProcessingMap.getEffectiveItemSessionControlMap().get(abstractPart);
@@ -484,26 +508,33 @@ public final class TestPlanner extends ListenerNotificationFirer {
             else {
                 itemTitle = "[Unresolved assessmentItem at " + itemSystemId + "]";
             }
-            result = new TestPlanNode(TestNodeType.ASSESSMENT_ITEM_REF, key, effectiveItemSessionControl, itemTitle, itemSystemId);
+            result = new TestPlanNode(TestNodeType.ASSESSMENT_ITEM_REF, key,
+                    effectiveItemSessionControl, itemTitle, itemSystemId);
         }
         else if (abstractPart instanceof AssessmentSection) {
             final AssessmentSection assessmentSection = (AssessmentSection) abstractPart;
             final String sectionTitle = assessmentSection.getTitle();
-            result = new TestPlanNode(TestNodeType.ASSESSMENT_SECTION, key, effectiveItemSessionControl, sectionTitle, null);
+            result = new TestPlanNode(TestNodeType.ASSESSMENT_SECTION, key,
+                    effectiveItemSessionControl, sectionTitle, null);
         }
         else if (abstractPart instanceof TestPart) {
-            result = new TestPlanNode(TestNodeType.TEST_PART, key, effectiveItemSessionControl);
+            result = new TestPlanNode(TestNodeType.TEST_PART, key,
+                    effectiveItemSessionControl);
         }
         else {
             throw new QtiLogicException("Unexpected logic branch");
         }
         parent.addChild(result);
 
+        /* Add this Node to list and map */
+        testPlanNodeListBuilder.add(result);
+        testPlanNodesByKeyMapBuilder.put(key, result);
+
         /* Record nodes for this Identifier */
-        List<TestPlanNode> nodesForIdentifier = testPlanNodesByIdentifierMap.get(identifier);
+        List<TestPlanNode> nodesForIdentifier = testPlanNodesByIdentifierMapBuilder.get(abstractPartIdentifier);
         if (nodesForIdentifier == null) {
             nodesForIdentifier = new ArrayList<TestPlanNode>();
-            testPlanNodesByIdentifierMap.put(identifier, nodesForIdentifier);
+            testPlanNodesByIdentifierMapBuilder.put(abstractPartIdentifier, nodesForIdentifier);
         }
         nodesForIdentifier.add(result);
 
@@ -511,7 +542,7 @@ public final class TestPlanner extends ListenerNotificationFirer {
     }
 
     private int computeCurrentInstanceCount(final Identifier identifier) {
-        final List<TestPlanNode> nodesForIdentifier = testPlanNodesByIdentifierMap.get(identifier);
+        final List<TestPlanNode> nodesForIdentifier = testPlanNodesByIdentifierMapBuilder.get(identifier);
         return nodesForIdentifier!=null ? nodesForIdentifier.size() : 0;
     }
 }

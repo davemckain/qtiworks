@@ -45,16 +45,16 @@ import uk.ac.ed.ph.jqtiplus.node.test.Selection;
 import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
 import uk.ac.ed.ph.jqtiplus.running.TestPlanner;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNode.TestNodeType;
+import uk.ac.ed.ph.jqtiplus.state.marshalling.TestPlanXmlMarshaller;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TreeMap;
 
 /**
  * Represents the shape of an {@link AssessmentTest} once {@link Ordering} and
@@ -87,8 +87,15 @@ public final class TestPlan implements Serializable {
     /** Root of the {@link TestPlanNode} tree */
     private final TestPlanNode testPlanRootNode;
 
-    /** List of all {@link TestPlanNode}s, ordered by {@link TestPlanNodeKey#getGlobalIndex()} */
+    /** List of all {@link TestPlanNode}s, in depth-first search order starting at 0 */
     private final List<TestPlanNode> testPlanNodeList;
+
+    /**
+     * Map of the {@link TestPlanNode}s, keyed on {@link TestPlanNodeKey}.
+     *
+     * (NB: The root Node is not included here as it has null key)
+     */
+    private final Map<TestPlanNodeKey, TestPlanNode> testPlanNodesByKeyMap;
 
     /**
      * Map of the {@link TestPlanNode}s corresponding to the {@link Identifier}s of each
@@ -100,44 +107,24 @@ public final class TestPlan implements Serializable {
     private final Map<Identifier, List<TestPlanNode>> testPlanNodesByIdentifierMap;
 
     /**
-     * (This is the most efficient constructor)
-     *
-     * @param testPlanRootNode root Node for this {@link TestPlan}
-     * @param Map of Nodes in the {@link TestPlan}, keyed on {@link Identifier}, mapping to list of
-     *   all corresponding instances of the resulting {@link AbstractPart} (taking into account
-     *   selection rules). The value for each key must NOT be null.
+     * This general constructor is used by {@link TestPlanXmlMarshaller}. It performs a depth-first
+     * search starting at the given root node.
      */
-    public TestPlan(final TestPlanNode testPlanRootNode, final Map<Identifier, List<TestPlanNode>> testPlanNodesByIdentifierMap) {
-        this.testPlanRootNode = testPlanRootNode;
-        this.testPlanNodesByIdentifierMap = testPlanNodesByIdentifierMap;
-
-        final List<TestPlanNode> testPlanNodeListBuilder = new ArrayList<TestPlanNode>();
-        final TreeMap<TestPlanNodeKey, TestPlanNode> testPlanNodeMapBuilder = new TreeMap<TestPlanNodeKey, TestPlanNode>();
-        for (final Entry<Identifier, List<TestPlanNode>> testPlanNodesByIdentifierMapEntry : testPlanNodesByIdentifierMap.entrySet()) {
-            final Identifier identifier = testPlanNodesByIdentifierMapEntry.getKey();
-            final List<TestPlanNode> testPlanNodeList = testPlanNodesByIdentifierMapEntry.getValue();
-            if (testPlanNodeList==null) {
-                throw new IllegalArgumentException("Value for entry " + identifier + " must not be null");
-            }
-            for (final TestPlanNode testPlanNode : testPlanNodeList) {
-                testPlanNodeListBuilder.add(testPlanNode);
-                testPlanNodeMapBuilder.put(testPlanNode.getKey(), testPlanNode);
-            }
-        }
-        Collections.sort(testPlanNodeListBuilder);
-        this.testPlanNodeList = Collections.unmodifiableList(testPlanNodeListBuilder);
-    }
-
-    /** (Convenience constructor used only during XML unmarshalling. Do not use normally) */
     public TestPlan(final TestPlanNode testPlanRootNode) {
+        /* Do depth-first search */
+        this.testPlanRootNode = testPlanRootNode;
+        this.testPlanNodeList = testPlanRootNode.searchDescendantsOrSelf();
+
+        /* Need to populate testPlanNodesByIdentifier */
+        final Map<TestPlanNodeKey, TestPlanNode> testPlanNodeMapBuilder = new HashMap<TestPlanNodeKey, TestPlanNode>();
         final Map<Identifier, List<TestPlanNode>> testPlanNodesByIdentifierMapBuilder = new LinkedHashMap<Identifier, List<TestPlanNode>>();
-        final List<TestPlanNode> testPlanNodeListBuilder = new ArrayList<TestPlanNode>();
-        for (final TestPlanNode testPlanNode : testPlanRootNode.searchDescendants()) {
+        for (int i=1; i<testPlanNodeList.size(); i++) { /* (Not interested in root node, so starting at 1 here) */
+            final TestPlanNode testPlanNode = testPlanNodeList.get(i);
             final TestPlanNodeKey key = testPlanNode.getKey();
             if (key==null) {
                 throw new IllegalArgumentException("Did not expect to find a Node " + testPlanNode + " with null key");
             }
-            testPlanNodeListBuilder.add(testPlanNode);
+            testPlanNodeMapBuilder.put(key, testPlanNode);
             List<TestPlanNode> nodesByIdentifier = testPlanNodesByIdentifierMapBuilder.get(key.getIdentifier());
             if (nodesByIdentifier==null) {
                 nodesByIdentifier = new ArrayList<TestPlanNode>();
@@ -145,10 +132,21 @@ public final class TestPlan implements Serializable {
             }
             nodesByIdentifier.add(testPlanNode);
         }
-        Collections.sort(testPlanNodeListBuilder);
-        this.testPlanRootNode = testPlanRootNode;
+        this.testPlanNodesByKeyMap = Collections.unmodifiableMap(testPlanNodeMapBuilder);
         this.testPlanNodesByIdentifierMap = Collections.unmodifiableMap(testPlanNodesByIdentifierMapBuilder);
-        this.testPlanNodeList = Collections.unmodifiableList(testPlanNodeListBuilder);
+    }
+
+    /**
+     * (This constructor is used by the {@link TestPlanner}, which will have already computed all
+     * of the raw information being represented.)
+     */
+    public TestPlan(final TestPlanNode testPlanRootNode, final List<TestPlanNode> testPlanNodeList,
+            final Map<TestPlanNodeKey, TestPlanNode> testPlanNodesByKeyMap,
+            final Map<Identifier, List<TestPlanNode>> testPlanNodesByIdentifierMap) {
+        this.testPlanRootNode = testPlanRootNode;
+        this.testPlanNodeList = Collections.unmodifiableList(testPlanNodeList);
+        this.testPlanNodesByKeyMap = Collections.unmodifiableMap(testPlanNodesByKeyMap);
+        this.testPlanNodesByIdentifierMap = Collections.unmodifiableMap(testPlanNodesByIdentifierMap);
     }
 
     public TestPlanNode getTestPlanRootNode() {
@@ -169,9 +167,9 @@ public final class TestPlan implements Serializable {
     }
 
     /**
-     * Returns a flat {@link List} of all {@link TestPlanNode}s in global index order.
+     * Returns a flat {@link List} of all {@link TestPlanNode}s in global (depth-first) order
      */
-    public List<TestPlanNode> getNodeList() {
+    public List<TestPlanNode> getTestPlanNodeList() {
         return testPlanNodeList;
     }
 
@@ -183,20 +181,15 @@ public final class TestPlan implements Serializable {
      */
     public TestPlanNode getNode(final TestPlanNodeKey key) {
         Assert.notNull(key, "key");
-        final int globalIndex = key.getGlobalIndex();
-        if (globalIndex < 0 || globalIndex >= testPlanNodeList.size()) {
-            throw new IllegalArgumentException("Key has globalIndex " + key.getGlobalIndex() + " which is out of range of this TestPlan");
-        }
-        final TestPlanNode result = testPlanNodeList.get(key.getGlobalIndex());
-        if (!result.getKey().equals(key)) {
-            throw new IllegalArgumentException("Key at globalIndex " + key.getGlobalIndex() + " is " + key
-                    + " which does not match requested key " + key);
+        final TestPlanNode result = testPlanNodesByKeyMap.get(key);
+        if (result==null) {
+            throw new IllegalArgumentException("No TestPlanNode with " + key + " found in this TestPlan");
         }
         return result;
     }
 
     /**
-     * Returns the {@link TestPlanNode} at the required global index.
+     * Returns the {@link TestPlanNode} at the required global index (depth-first)
      *
      * @throws IllegalArgumentException if global index is out of range.
      */
@@ -205,6 +198,26 @@ public final class TestPlan implements Serializable {
             throw new IllegalArgumentException("GlobalIndex " + globalIndex + " is out of range of this TestPlan");
         }
         return testPlanNodeList.get(globalIndex);
+    }
+
+    /**
+     * Computes the global (depth-first) index of the given {@link TestPlanNode} in this {@link TestPlan},
+     * starting at 0 with the root node.
+     *
+     * @throws IllegalArgumentException if the given {@link TestPlanNode} is null or is not in this
+     *   {@link TestPlan}
+     */
+    public int getGlobalIndex(final TestPlanNode testPlanNode) {
+        Assert.notNull(testPlanNode, "testPlanNode");
+        final TestPlanNodeKey key = testPlanNode.getKey();
+        int index = 0;
+        for (final TestPlanNode searchNode : testPlanNodeList) {
+            if (key.equals(searchNode.getKey())) {
+                return index;
+            }
+            index++;
+        }
+        throw new IllegalArgumentException("No TestPlanNode with " + key + " found in this TestPlan");
     }
 
     /**

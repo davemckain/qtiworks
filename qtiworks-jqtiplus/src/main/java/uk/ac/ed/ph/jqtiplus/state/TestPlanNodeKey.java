@@ -50,15 +50,13 @@ import java.util.regex.Pattern;
  * This is a composite of the {@link Identifier} and global position of the corresponding
  * {@link AbstractPart} in the original test, plus the instance number for this {@link AbstractPart}
  * (taking into account selection with replacement).
- * <p>
- * This implements {@link Comparable}; ordering is via the {@link #globalIndex} property.
  *
  * @see AbstractPart
  * @see TestPlan
  *
  * @author David McKain
  */
-public final class TestPlanNodeKey implements Serializable, Comparable<TestPlanNodeKey> {
+public final class TestPlanNodeKey implements Serializable {
 
     private static final long serialVersionUID = 1928489721725826864L;
 
@@ -66,7 +64,7 @@ public final class TestPlanNodeKey implements Serializable, Comparable<TestPlanN
     private final Identifier identifier;
 
     /** Global index of the corresponding {@link AbstractPart} in the test, starting at 0 */
-    private final int globalIndex;
+    private final int abstractPartGlobalIndex;
 
     /**
      * Instance number of the corresponding {@link AbstractPart} within the {@link TestPlan},
@@ -81,11 +79,11 @@ public final class TestPlanNodeKey implements Serializable, Comparable<TestPlanN
 
     private static final Pattern keyPattern = Pattern.compile("(.+?):(\\d+):(\\d+)");
 
-    public TestPlanNodeKey(final Identifier identifier, final int globalIndex, final int instanceNumber) {
+    public TestPlanNodeKey(final Identifier identifier, final int abstractPartGlobalIndex, final int instanceNumber) {
         this.identifier = identifier;
-        this.globalIndex = globalIndex;
+        this.abstractPartGlobalIndex = abstractPartGlobalIndex;
         this.instanceNumber = instanceNumber;
-        this.stringRepresentation = identifier.toString() + ":" + globalIndex + ":" + instanceNumber;
+        this.stringRepresentation = identifier.toString() + ":" + abstractPartGlobalIndex + ":" + instanceNumber;
     }
 
     public static TestPlanNodeKey fromString(final String string) {
@@ -102,24 +100,24 @@ public final class TestPlanNodeKey implements Serializable, Comparable<TestPlanN
         catch (final QtiParseException e) {
             throw new IllegalArgumentException("Bad identfifier " + identifierString + " within " + string);
         }
-        final int globalIndex = Integer.valueOf(matcher.group(2));
-        if (globalIndex<0) {
-            throw new IllegalArgumentException("Expected global index " + globalIndex + " in " + string + " to be non-negative");
+        final int abstractPartGlobalIndex = Integer.valueOf(matcher.group(2));
+        if (abstractPartGlobalIndex<0) {
+            throw new IllegalArgumentException("Expected abstractPart global index " + abstractPartGlobalIndex + " in " + string + " to be non-negative");
         }
         final int instanceNumber = Integer.valueOf(matcher.group(3));
         if (instanceNumber<=0) {
             throw new IllegalArgumentException("Expected instance number " + instanceNumber + " in " + string + " to be strictly positive");
         }
 
-        return new TestPlanNodeKey(identifier, globalIndex, instanceNumber);
+        return new TestPlanNodeKey(identifier, abstractPartGlobalIndex, instanceNumber);
     }
 
     public Identifier getIdentifier() {
         return identifier;
     }
 
-    public int getGlobalIndex() {
-        return globalIndex;
+    public int getAbstractPartGlobalIndex() {
+        return abstractPartGlobalIndex;
     }
 
     public int getInstanceNumber() {
@@ -143,10 +141,5 @@ public final class TestPlanNodeKey implements Serializable, Comparable<TestPlanN
         }
         final TestPlanNodeKey other = (TestPlanNodeKey) obj;
         return stringRepresentation.equals(other.stringRepresentation);
-    }
-
-    @Override
-    public int compareTo(final TestPlanNodeKey o) {
-        return globalIndex - o.globalIndex;
     }
 }
