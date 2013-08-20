@@ -56,7 +56,7 @@ NB: This is used both while being presented, and during review.
   <xsl:variable name="itemFeedbackAllowed" as="xs:boolean"
     select="if ($reviewMode)
       then (/qti:assessentItem/@adaptive='true' or $showFeedback)
-      else ($solutionMode)"/>
+      else (not($solutionMode))"/>
 
   <xsl:variable name="provideItemSolutionButton" as="xs:boolean"
     select="$reviewMode and $showSolution and not($solutionMode)"/>
