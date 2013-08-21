@@ -151,6 +151,7 @@ public class SimpleRestRunner {
             /* Send redirect to candidate session */
             final String candidateSessionUrl = qtiWorksDeploymentSettings.getBaseUrl() + GlobalRouter.buildSessionStartWithinContextUrl(candidateSession);
             response.setHeader("Location", candidateSessionUrl);
+            response.sendError(HttpServletResponse.SC_SEE_OTHER);
             return;
         }
         catch (final PrivilegeException e) {
