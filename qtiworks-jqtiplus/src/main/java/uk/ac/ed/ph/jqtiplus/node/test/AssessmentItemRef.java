@@ -39,7 +39,11 @@ import uk.ac.ed.ph.jqtiplus.group.test.TemplateDefaultGroup;
 import uk.ac.ed.ph.jqtiplus.group.test.VariableMappingGroup;
 import uk.ac.ed.ph.jqtiplus.group.test.WeightGroup;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
+import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
+import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
+import uk.ac.ed.ph.jqtiplus.resolution.RootNodeLookup;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.validation.TestValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 
 import java.net.URI;
@@ -146,6 +150,29 @@ public final class AssessmentItemRef extends SectionPart {
     @Override
     public void validateThis(final ValidationContext context) {
         super.validateThis(context);
+
+        /* Issue a warning if the corresponding item is adaptive and we're in SIMULTAENOUS mode,
+         * as adaptive items can't work correctly in that case.
+         */
+        final TestPart testPart = getEnclosingTestPart();
+        if (testPart!=null && testPart.getSubmissionMode()==SubmissionMode.SIMULTANEOUS) {
+            final TestValidationContext testValidationContext = (TestValidationContext) context;
+            final ResolvedAssessmentTest resolvedAssessmentTest = testValidationContext.getResolvedAssessmentTest();
+            final ResolvedAssessmentItem resolvedAssessmentItem = resolvedAssessmentTest.getResolvedAssessmentItem(this);
+            if (resolvedAssessmentItem!=null) {
+                final RootNodeLookup<AssessmentItem> itemLookup = resolvedAssessmentItem.getItemLookup();
+                if (itemLookup.wasSuccessful()) {
+                    final AssessmentItem assessmentItem = itemLookup.extractAssumingSuccessful();
+                    if (assessmentItem.getAdaptive()) {
+                        context.fireValidationWarning(this,
+                                "Referenced assessmentItem is adaptive and won't work correctly in "
+                                + "this testPart having 'simultaneous' submissionMode");
+                    }
+                }
+            }
+        }
+
+        /* Check weights */
         for (int i = 0; i < getWeights().size(); i++) {
             final Weight weight = getWeights().get(i);
             final Identifier weightIdentifier = weight.getIdentifier();

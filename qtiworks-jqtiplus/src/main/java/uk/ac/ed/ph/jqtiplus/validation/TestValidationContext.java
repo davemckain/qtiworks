@@ -47,12 +47,12 @@ import uk.ac.ed.ph.jqtiplus.types.ComplexReferenceIdentifier;
 public interface TestValidationContext extends ValidationContext {
 
     /**
-     * Returns the {@link AssessmentTest} being handled
+     * Returns the {@link AssessmentTest} being handled, which will never be null.
      */
     AssessmentTest getSubjectTest();
 
     /**
-     * Returns the {@link ResolvedAssessmentTest} being handled
+     * Returns the {@link ResolvedAssessmentTest} being handled, which will never be null.
      */
     ResolvedAssessmentTest getResolvedAssessmentTest();
 
