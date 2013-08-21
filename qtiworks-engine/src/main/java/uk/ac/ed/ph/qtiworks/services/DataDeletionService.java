@@ -198,9 +198,10 @@ public class DataDeletionService {
             assessmentPackageDao.update(assessmentPackage);
         }
 
-        /* Unlink Assessment from attached Deliveries. */
+        /* Unlink Assessment from attached Deliveries, and delete any CandidateSessions for that Delivery. */
         final List<Delivery> deliveries = assessment.getDeliveries();
         for (final Delivery delivery : deliveries) {
+            deleteCandidateSessions(delivery);
             delivery.setAssessment(null);
             deliveryDao.update(delivery);
         }
@@ -208,20 +209,18 @@ public class DataDeletionService {
         /* Delete Assessment entity */
         assessmentDao.remove(assessment);
 
-        /* Finally delete each AssessmentPackage */
+        /* Now delete each AssessmentPackage */
         for (final AssessmentPackage assessmentPackage : assessmentPackages) {
             deleteAssessmentPackage(assessmentPackage);
         }
 
-        /* Then delete the Deliveries enumerated above.
+        /* Finally delete the Deliveries entities enumerated above.
          * (We excluding any LTI_RESOURCE Deliveries, as these ones have the Assessment attached
          * to the Delivery.)
          */
         for (final Delivery delivery : deliveries) {
             if (delivery.getDeliveryType()!=DeliveryType.LTI_RESOURCE) {
-                delivery.setAssessment(assessment); /* (Need to do this temporarily for FilespaceManager) */
-                deleteDelivery(delivery);
-                delivery.setAssessment(null);
+                deliveryDao.remove(delivery); /* (This will cascade) */
             }
         }
     }
