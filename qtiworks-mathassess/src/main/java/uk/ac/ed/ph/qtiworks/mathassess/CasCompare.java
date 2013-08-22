@@ -222,7 +222,7 @@ public final class CasCompare extends MathAssessOperator {
                     + e.getMaximaInput()
                     + "' and the CAS output was '"
                     + e.getMaximaOutput()
-                    + "'. The failure reason was " + e.getReason());
+                    + "'. The failure reason was: " + e.getReason());
             return NullValue.INSTANCE;
         }
         catch (final QtiMaximaTypeConversionException e) {
