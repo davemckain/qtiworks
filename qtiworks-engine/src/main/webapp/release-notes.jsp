@@ -10,7 +10,40 @@ All Rights Reserved
   <nav class="breadcrumbs">
     <a href="${utils:internalLink(pageContext, '/about/')}">About QTIWorks</a> &#xbb;
   </nav>
-  <h2>QTIWorks Release Notes (Development)</h2>
+  <h2>QTIWorks Release Notes (Production)</h2>
+
+  <h3>1.0-beta2 [Production] (22/08/2013)</h3>
+  <p>
+    This fixes a few bugs noted by people testing the production instance of QTIWorks:
+  </p>
+  <ul>
+    <li>
+      Fixed logic bug in the Test Plan's internal storage of nodes, arising in testParts
+      using selection and ordering, which could trigger a logic exception during the delivery
+      of the test.
+    </li>
+    <li>
+      Fixed silly bug in the new author view triggered if an assessmentItemRef has been selected multiple
+      times in the testPart.
+    </li<>
+    <li>
+      Fixed regression in the rendering stylesheets when determining whether feedback blocks should be
+      shown when rendering the current state of a test item.
+    </li>
+    <li>
+      MathAssess extensions should now intercept all possible cases where the assessment Maxima
+      code could cause something bad to happen in Maxima, converting all of these to runtime errors
+      rather than letting the candidate session explode.
+    </li>
+    <li>
+      Validation process now flags up warnings if adaptive items are used in testParts having
+      simultaneous submissionMode.
+    </li>
+  </ul>
+  <p>
+    See production releases at <a href="https://webapps.ph.ed.ac.uk/qtiworks">https://webapps.ph.ed.ac.uk/qtiworks</a>, and
+    development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
+  </p>
 
   <h3>1.0-DEV34 [Development] (20/08/2013)</h3>
   <p>
@@ -27,6 +60,10 @@ All Rights Reserved
       in tests while the item session was still open. Nobody had noticed this before. Fixed here.
     </li>
   </ul>
+  <p>
+    See production releases at <a href="https://webapps.ph.ed.ac.uk/qtiworks">https://webapps.ph.ed.ac.uk/qtiworks</a>, and
+    development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
+  </p>
 
   <h3>1.0-beta1 [Production] (19/08/2013)</h3>
   <p>
