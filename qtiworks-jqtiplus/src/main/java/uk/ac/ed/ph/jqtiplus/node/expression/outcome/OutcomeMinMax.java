@@ -98,7 +98,6 @@ public abstract class OutcomeMinMax extends ItemSubset {
     protected final Value handleSubset(final TestProcessingContext testProcessingContext, final List<TestPlanNode> matchedTestPlanNodes) {
         final List<SingleValue> resultValues = new ArrayList<SingleValue>();
         for (final TestPlanNode itemRefNode : matchedTestPlanNodes) {
-            /* TODO! Need to find a way to get an item outcome declaration out */
             final ItemProcessingContext itemProcessingContext = testProcessingContext.getItemProcessingContext(itemRefNode);
             final VariableDeclaration declaration = itemProcessingContext.checkLocalVariableReference(this, getOutcomeIdentifier());
             if (itemProcessingContext.checkVariableType(this, declaration, VariableType.OUTCOME)) {
