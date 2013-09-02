@@ -167,8 +167,10 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
      * <p>
      * A null URL will direct to a blank page afterwards.
      */
+    @Lob
+    @Type(type="org.hibernate.type.TextType")
     @Basic(optional=true)
-    @Column(name="exit_url", length=DomainConstants.CANDIDATE_SESSION_EXIT_URL_LENGTH)
+    @Column(name="exit_url")
     private String exitUrl;
 
     /** {@link Delivery} owning this session */
