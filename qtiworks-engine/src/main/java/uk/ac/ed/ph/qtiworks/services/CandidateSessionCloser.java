@@ -159,7 +159,8 @@ public class CandidateSessionCloser {
         if (normalizedScore==null) {
             recordLtiRecordingSkipped(candidateSession,
                     LisOutcomeReportingStatus.NO_NORMALIZATION,
-                    "Not enough data specified to normalize score for CandidateSession #"
+                    "Not enough data specified to normalize raw score "
+                    + rawScore + " for CandidateSession #"
                     + candidateSession.getId());
             return;
         }
@@ -167,7 +168,9 @@ public class CandidateSessionCloser {
         if (normalizedScore<0.0 || normalizedScore>1.0) {
             recordLtiRecordingSkipped(candidateSession,
                     LisOutcomeReportingStatus.BAD_NORMALIZED_SCORE,
-                    "Normalized score out of range for CandidateSession #"
+                    "Normalized score " + normalizedScore
+                    + " computed from raw score " + rawScore
+                    + " is out of range for CandidateSession #"
                     + candidateSession.getId());
             return;
         }
