@@ -343,7 +343,7 @@ public abstract class AbstractExpression extends AbstractNode implements Express
         Value result;
         final boolean thisIsValid = context.isSubjectValid() || isThisExpressionValid(context);
         if (thisIsValid) {
-            /* Expression is vaid, so evaluate it */
+            /* Expression is valid, so evaluate it */
             result =  evaluateValidSelfAndChildren(context, depth);
         }
         else {
