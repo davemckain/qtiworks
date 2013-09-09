@@ -279,6 +279,16 @@ public class AssessmentManagementService {
             throw new BindException(errors);
         }
 
+        /* Make sure maximum is greater than minimum.
+         * (Earlier validation will have ensured both were provided)
+         */
+        final double resultMaximum = template.getResultMaximum().doubleValue();
+        final double resultMinimum = template.getResultMinimum().doubleValue();
+        if (resultMaximum <= resultMinimum) {
+            errors.reject("assessmentLtiOutcomesSettingsTemplate.order");
+            throw new BindException(errors);
+        }
+
         /* Look up Assessment */
         final Assessment assessment = assessmentDao.requireFindById(aid);
         ensureCallerMayManage(assessment);
@@ -303,9 +313,9 @@ public class AssessmentManagementService {
         }
 
         /* Finally record the changes */
-        assessment.setLtiResultOutcomeIdentifier(template.getResultOutcomeIdentifier());
-        assessment.setLtiResultMinimum(template.getResultMinimum());
-        assessment.setLtiResultMaximum(template.getResultMaximum());
+        assessment.setLtiResultOutcomeIdentifier(resultOutcomeIdentifier);
+        assessment.setLtiResultMinimum(Double.valueOf(resultMinimum));
+        assessment.setLtiResultMaximum(Double.valueOf(resultMaximum));
         assessmentDao.update(assessment);
 
         auditLogger.recordEvent("LTI outcomes information updated for Assessment #" + aid);
