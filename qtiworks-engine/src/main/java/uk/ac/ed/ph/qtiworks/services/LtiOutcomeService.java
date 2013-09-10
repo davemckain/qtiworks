@@ -43,7 +43,6 @@ import uk.ac.ed.ph.qtiworks.domain.entities.LtiUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.QueuedLtiOutcome;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.domain.entities.UserType;
-import uk.ac.ed.ph.qtiworks.services.ScheduledService;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.services.dao.QueuedLtiOutcomeDao;
 
@@ -55,6 +54,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -85,8 +85,10 @@ import org.xml.sax.InputSource;
 /**
  * This service is responsible for sending outcome data back to LTI Tool Consumers.
  * <p>
- * The actual work of this service is performed asynchronously with some basic durability
- * provided by persisting the data to be sent within the entity model.
+ * The actual work of this service is performed asynchronously via {@link ScheduledService},
+ * with some basic durability provided by persisting the data to be sent within the entity model.
+ *
+ * @see ScheduledService
  *
  * @author David McKain
  */
@@ -149,36 +151,65 @@ public class LtiOutcomeService {
     //-------------------------------------------------
 
     /**
-     * Called by {@link ScheduledService} to attempt to send all queued outcomes deemed OK
-     * to send next, taking into account retry/failure logic.
+     * Attempts to send {@link QueuedLtiOutcome}s to the relevant LIS result services.
+     * <p>
+     * This will send all new {@link QueuedLtiOutcome}s and any previously failed ones if the
+     * current timestamp is greater than their retry time. This behaviour can be overridden,
+     * forcing ALL {@link QueuedLtiOutcome}s to be send by setting the ignoreRetryTimes argument
+     * to true.
+     * <p>
+     * The logic here will check for duplicate {@link QueuedLtiOutcome}s for a given
+     * {@link CandidateSession}, only sending the most recent outcomes back.
+     * <p>
+     * Usage note: This MUST be called serially.
+     * <p>
+     * @param ignoreRetryTimes set to true to ignore any retry times set after previous failures.
+     * @return number of outcomes that failed to return.
+     *
+     * @see ScheduledService#sendNextQueuedLtiOutcomes()
      */
-    public int sendNextQueuedLtiOutcomes() {
-        int failureCount = 0;
-        final List<QueuedLtiOutcome> pendingOutcomes = queuedLtiOutcomeDao.getNextQueuedOutcomes();
-        for (final QueuedLtiOutcome queuedLtiOutcome : pendingOutcomes) {
-            final boolean successful = sendQueuedLtiOutcome(queuedLtiOutcome);
-            if (!successful) {
-                failureCount++;
-            }
-        }
-        return failureCount;
-    }
-
-    /** Attempts to send ALL queued outcomes, regardless of their existing failure status
-     * @return */
-    public int sendAllQueuedLtiOutcomes() {
-        int failureCount = 0;
+    public int sendQueuedLtiOutcomes(final boolean ignoreRetryTimes) {
+        /* Look up all unsent outcomes */
         final List<QueuedLtiOutcome> pendingOutcomes = queuedLtiOutcomeDao.getAllQueuedOutcomes();
+
+        /* Eliminate any duplicate outcomes for the same CandidateSession, always taking the newest
+         * outcome over any earlier ones. (Duplicate outcomes can happen when delivering items,
+         * which can sometimes be re-opened by candidates.)
+         */
+        final LinkedHashMap<Long, QueuedLtiOutcome> outcomesBySessionMap = new LinkedHashMap<Long, QueuedLtiOutcome>();
         for (final QueuedLtiOutcome queuedLtiOutcome : pendingOutcomes) {
-            final boolean successful = sendQueuedLtiOutcome(queuedLtiOutcome);
-            if (!successful) {
-                failureCount++;
+            final CandidateSession candidateSession = queuedLtiOutcome.getCandidateSession();
+            final Long candidateSessionId = candidateSession.getId();
+            final QueuedLtiOutcome earlierQueuedOutcomeForSession = outcomesBySessionMap.get(candidateSessionId);
+            if (earlierQueuedOutcomeForSession!=null) {
+                /* Earlier outcome is queued up, so remove this in preference for this later outcome */
+                candidateSession.setLisOutcomeReportingStatus(LisOutcomeReportingStatus.TC_RETURN_SCHEDULED);
+                candidateSessionDao.update(candidateSession);
+                queuedLtiOutcomeDao.remove(earlierQueuedOutcomeForSession);
+                auditLogger.recordEvent("De-queued LTI outcome #" + earlierQueuedOutcomeForSession.getId()
+                        + " as a later one for the same CandidateSession is already queued up");
+                logger.info("De-queued LTI outcome #{} as a later one for the same CandidateSession is already queued up",
+                        earlierQueuedOutcomeForSession.getId());
+            }
+            outcomesBySessionMap.put(candidateSessionId, queuedLtiOutcome);
+        }
+
+        /* Now attempt to send remaining outcomes to relevant result services */
+        int failureCount = 0;
+        final Date timestamp = new Date();
+        for (final QueuedLtiOutcome queuedLtiOutcome : outcomesBySessionMap.values()) {
+            final Date retryTime = queuedLtiOutcome.getRetryTime();
+            if (ignoreRetryTimes || retryTime==null || retryTime.before(timestamp)) {
+                final boolean successful = handleQueuedLtiOutcome(queuedLtiOutcome);
+                if (!successful) {
+                    failureCount++;
+                }
             }
         }
         return failureCount;
     }
 
-    private boolean sendQueuedLtiOutcome(final QueuedLtiOutcome queuedLtiOutcome) {
+    private boolean handleQueuedLtiOutcome(final QueuedLtiOutcome queuedLtiOutcome) {
         final CandidateSession candidateSession = queuedLtiOutcome.getCandidateSession();
         final boolean successful = trySendQueuedLtiOutcome(queuedLtiOutcome);
         if (successful) {
@@ -222,6 +253,10 @@ public class LtiOutcomeService {
         return successful;
     }
 
+    /**
+     * Attempts to send the given {@link QueuedLtiOutcome} back to the corresponding LIS
+     * result service. Returns true if the result was successfully returned, false otherwise.
+     */
     private boolean trySendQueuedLtiOutcome(final QueuedLtiOutcome queuedLtiOutcome) {
         /* Extract relevant bits of info */
         final double score = queuedLtiOutcome.getScore();

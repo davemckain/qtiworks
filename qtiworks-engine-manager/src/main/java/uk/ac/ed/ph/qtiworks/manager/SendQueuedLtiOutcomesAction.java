@@ -58,7 +58,7 @@ public final class SendQueuedLtiOutcomesAction extends ManagerAction {
 	@Override
 	public void run(final ApplicationContext applicationContext, final List<String> parameters) {
 	    final LtiOutcomeService ltiOutcomeService = applicationContext.getBean(LtiOutcomeService.class);
-	    final int failureCount = ltiOutcomeService.sendAllQueuedLtiOutcomes();
+	    final int failureCount = ltiOutcomeService.sendQueuedLtiOutcomes(true);
 		logger.info("Sent all pending LTI outcomes back, with {} failure(s)", failureCount);
     }
 }

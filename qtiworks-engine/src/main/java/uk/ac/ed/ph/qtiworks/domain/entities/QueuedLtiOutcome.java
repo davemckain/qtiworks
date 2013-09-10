@@ -68,14 +68,7 @@ import javax.persistence.TemporalType;
 @Table(name="queued_lti_outcomes")
 @SequenceGenerator(name="queuedLtiOutcomeSequence", sequenceName="queued_lti_outcome_sequence", initialValue=1, allocationSize=1)
 @NamedQueries({
-    /* Retrieves all queued outcomes that should be sent next (according to failure logic) */
-    @NamedQuery(name="QueuedLtiOutcome.getNextQueuedOutcomes",
-            query="SELECT q"
-                + "  FROM QueuedLtiOutcome q"
-                + "  WHERE q.retryTime IS NULL"
-                + "    OR q.retryTime <= CURRENT_TIMESTAMP"
-                + "  ORDER BY q.id"),
-    /* Retrieves all queued outcomes */
+    /* Retrieves all queued outcomes, in insertion order */
     @NamedQuery(name="QueuedLtiOutcome.getAllQueuedOutcomes",
             query="SELECT q"
                 + "  FROM QueuedLtiOutcome q"

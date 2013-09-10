@@ -96,7 +96,7 @@ public class ScheduledService {
     public void sendNextQueuedLtiOutcomes() {
         logger.trace("sendNextQueuedLtiOutcomes() invoked");
         final long currentTimestamp = System.currentTimeMillis();
-        final int failureCount = ltiOutcomeService.sendNextQueuedLtiOutcomes();
+        final int failureCount = ltiOutcomeService.sendQueuedLtiOutcomes(false);
         logger.debug("sendNextQueuedLtiOutcomes() completed in {}ms with {} failure(s)", System.currentTimeMillis() - currentTimestamp, failureCount);
     }
 }
