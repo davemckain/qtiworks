@@ -47,6 +47,7 @@ import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.services.dao.QueuedLtiOutcomeDao;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
+import uk.ac.ed.ph.jqtiplus.internal.util.Pair;
 
 import java.io.StringReader;
 import java.security.MessageDigest;
@@ -164,11 +165,11 @@ public class LtiOutcomeService {
      * Usage note: This MUST be called serially.
      * <p>
      * @param ignoreRetryTimes set to true to ignore any retry times set after previous failures.
-     * @return number of outcomes that failed to return.
+     * @return Pair of integers: (number of outcome send failures, total outcomes sent)
      *
      * @see ScheduledService#sendNextQueuedLtiOutcomes()
      */
-    public int sendQueuedLtiOutcomes(final boolean ignoreRetryTimes) {
+    public Pair<Integer, Integer> sendQueuedLtiOutcomes(final boolean ignoreRetryTimes) {
         /* Look up all unsent outcomes */
         final List<QueuedLtiOutcome> pendingOutcomes = queuedLtiOutcomeDao.getAllQueuedOutcomes();
 
@@ -195,18 +196,19 @@ public class LtiOutcomeService {
         }
 
         /* Now attempt to send remaining outcomes to relevant result services */
-        int failureCount = 0;
+        final int totalSendCount = outcomesBySessionMap.size();
+        int failedSendCount = 0;
         final Date timestamp = new Date();
         for (final QueuedLtiOutcome queuedLtiOutcome : outcomesBySessionMap.values()) {
             final Date retryTime = queuedLtiOutcome.getRetryTime();
             if (ignoreRetryTimes || retryTime==null || retryTime.before(timestamp)) {
                 final boolean successful = handleQueuedLtiOutcome(queuedLtiOutcome);
                 if (!successful) {
-                    failureCount++;
+                    failedSendCount++;
                 }
             }
         }
-        return failureCount;
+        return new Pair<Integer, Integer>(Integer.valueOf(failedSendCount), Integer.valueOf(totalSendCount));
     }
 
     private boolean handleQueuedLtiOutcome(final QueuedLtiOutcome queuedLtiOutcome) {

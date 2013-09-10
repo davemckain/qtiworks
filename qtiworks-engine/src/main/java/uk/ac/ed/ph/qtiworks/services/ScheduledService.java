@@ -35,6 +35,8 @@ package uk.ac.ed.ph.qtiworks.services;
 
 import uk.ac.ed.ph.qtiworks.config.QtiWorksProfiles;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.Pair;
+
 import java.util.Date;
 
 import javax.annotation.Resource;
@@ -83,10 +85,14 @@ public class ScheduledService {
     @Scheduled(fixedRate=60*ONE_MINUTE, initialDelay=ONE_MINUTE)
     public void purgeTransientData() {
         logger.trace("purgeAnonymousData() invoked");
-        final long currentTimestamp = System.currentTimeMillis();
-        final Date creationTimeThreshold = new Date(currentTimestamp - TRANSIENT_DATA_LIFETIME);
+
+        final long beforeTimestamp = System.currentTimeMillis();
+        final Date creationTimeThreshold = new Date(beforeTimestamp - TRANSIENT_DATA_LIFETIME);
         dataDeletionService.purgeTransientData(creationTimeThreshold);
-        logger.debug("pureAnonymousData() completed in {}ms", System.currentTimeMillis() - currentTimestamp);
+        final long afterTimestamp = System.currentTimeMillis();
+        final long duration = afterTimestamp - beforeTimestamp;
+
+        logger.debug("pureAnonymousData() completed in {}ms", duration);
     }
 
     /**
@@ -95,8 +101,15 @@ public class ScheduledService {
     @Scheduled(fixedDelay=10*ONE_SECOND, initialDelay=ONE_MINUTE)
     public void sendNextQueuedLtiOutcomes() {
         logger.trace("sendNextQueuedLtiOutcomes() invoked");
-        final long currentTimestamp = System.currentTimeMillis();
-        final int failureCount = ltiOutcomeService.sendQueuedLtiOutcomes(false);
-        logger.debug("sendNextQueuedLtiOutcomes() completed in {}ms with {} failure(s)", System.currentTimeMillis() - currentTimestamp, failureCount);
+
+        final long beforeTimestamp = System.currentTimeMillis();
+        final Pair<Integer, Integer> result = ltiOutcomeService.sendQueuedLtiOutcomes(false);
+        final long afterTimestamp = System.currentTimeMillis();
+        final long duration = afterTimestamp - beforeTimestamp;
+
+        final int failureCount = result.getFirst().intValue();
+        final int sendCount = result.getSecond().intValue();
+        logger.debug("sendNextQueuedLtiOutcomes() completed in {}ms with {} failure(s) out of {} send(s)", duration,
+                 failureCount, sendCount);
     }
 }

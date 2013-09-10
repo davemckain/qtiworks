@@ -35,6 +35,8 @@ package uk.ac.ed.ph.qtiworks.manager;
 
 import uk.ac.ed.ph.qtiworks.services.LtiOutcomeService;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.Pair;
+
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -58,7 +60,11 @@ public final class SendQueuedLtiOutcomesAction extends ManagerAction {
 	@Override
 	public void run(final ApplicationContext applicationContext, final List<String> parameters) {
 	    final LtiOutcomeService ltiOutcomeService = applicationContext.getBean(LtiOutcomeService.class);
-	    final int failureCount = ltiOutcomeService.sendQueuedLtiOutcomes(true);
-		logger.info("Sent all pending LTI outcomes back, with {} failure(s)", failureCount);
+	    final Pair<Integer, Integer> result = ltiOutcomeService.sendQueuedLtiOutcomes(true);
+
+        final int failureCount = result.getFirst().intValue();
+        final int sendCount = result.getSecond().intValue();
+		logger.info("Sent {} pending LTI outcome(s) back, with {} failure(s)",
+		        sendCount, failureCount);
     }
 }
