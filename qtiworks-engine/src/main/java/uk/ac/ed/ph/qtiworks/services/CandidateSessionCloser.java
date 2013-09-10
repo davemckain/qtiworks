@@ -100,6 +100,10 @@ public class CandidateSessionCloser {
 
     private void closeCandidateSession(final CandidateSession candidateSession, final AssessmentResult assessmentResult) {
         candidateSession.setClosed(true);
+
+        /* Also nullify LIS result info for session. These will be updated later, if pre-conditions match for sending the result back */
+        candidateSession.setLisOutcomeReportingStatus(null);
+        candidateSession.setLisScore(null);
         candidateSessionDao.update(candidateSession);
         maybeScheduleLtiOutcomes(candidateSession, assessmentResult);
     }
