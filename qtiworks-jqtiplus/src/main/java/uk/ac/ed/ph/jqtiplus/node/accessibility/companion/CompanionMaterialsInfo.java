@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.accessibility.companion;
 
+import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.companion.CompanionMaterialGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
@@ -45,7 +46,7 @@ import java.util.List;
  *
  * @author Zack Pierce
  */
-public class CompanionMaterialsInfo extends AbstractNode {
+public class CompanionMaterialsInfo extends AbstractNode implements AccessibilityNode {
 
     private static final long serialVersionUID = -2322734469468312351L;
 

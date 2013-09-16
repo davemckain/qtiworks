@@ -39,6 +39,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.UriAttribute;
 import uk.ac.ed.ph.jqtiplus.group.outcome.declaration.LookupTableGroup;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
+import uk.ac.ed.ph.jqtiplus.node.RootNode;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.node.test.View;
@@ -50,9 +51,12 @@ import java.util.List;
 /**
  * Outcome variables are declared by outcome declarations.
  *
+ * May also optionally be used as a root node for independent outcome declaration resource
+ * files with associated standards metadata.
+ *
  * @author Jiri Kajaba
  */
-public final class OutcomeDeclaration extends VariableDeclaration {
+public final class OutcomeDeclaration extends VariableDeclaration implements RootNode {
 
     private static final long serialVersionUID = -5519664280437668195L;
 
@@ -76,6 +80,9 @@ public final class OutcomeDeclaration extends VariableDeclaration {
 
     /** Name of masteryValue attribute in xml schema. */
     public static final String ATTR_MASTERY_VALUE_NAME = "masteryValue";
+
+    /** System ID of this RootNode (optional) */
+    private URI systemId;
 
     public OutcomeDeclaration(final AssessmentObject parent) {
         super(parent, QTI_CLASS_NAME);
@@ -209,5 +216,22 @@ public final class OutcomeDeclaration extends VariableDeclaration {
                     + " cannot be lower than attribute "
                     + ATTR_NORMAL_MINIMUM_NAME);
         }
+    }
+
+    @Override
+    public URI getSystemId() {
+        return systemId;
+    }
+
+    @Override
+    public void setSystemId(final URI systemId) {
+        this.systemId = systemId;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString()
+                + "(systemId=" + systemId
+                + ")";
     }
 }

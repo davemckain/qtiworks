@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.accessibility.link;
 
+import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.accessibility.EmptyElement;
 
@@ -41,7 +42,7 @@ import uk.ac.ed.ph.jqtiplus.node.accessibility.EmptyElement;
  *
  * @author Zack Pierce
  */
-public class ObjectLink extends EmptyElement implements Link {
+public class ObjectLink extends EmptyElement implements Link, AccessibilityNode {
 
     private static final long serialVersionUID = 4938414147445323246L;
 

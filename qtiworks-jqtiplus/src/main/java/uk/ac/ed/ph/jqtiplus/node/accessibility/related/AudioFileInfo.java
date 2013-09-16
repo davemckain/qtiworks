@@ -34,14 +34,16 @@
 package uk.ac.ed.ph.jqtiplus.node.accessibility.related;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
+import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxDocumentFirer;
 import uk.ac.ed.ph.jqtiplus.types.DataTypeBinder;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlParseUtils;
 
-import java.util.Calendar;
-
+import org.joda.time.LocalTime;
 import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 /**
  * Container for the accessibility content contained in an external audio file.
@@ -51,7 +53,7 @@ import org.w3c.dom.Element;
  *
  * @author Zack Pierce
  */
-public class AudioFileInfo extends ObjectFileInfo implements ContentLinkIdentifierBearer {
+public class AudioFileInfo extends ObjectFileInfo implements ContentLinkIdentifierBearer, AccessibilityNode {
 
     private static final long serialVersionUID = -6758112561134526415L;
 
@@ -64,13 +66,19 @@ public class AudioFileInfo extends ObjectFileInfo implements ContentLinkIdentifi
 
     private VoiceSpeed voiceSpeed;
 
-    // TODO - consider using Joda-Time's LocalTime rather than Calendar, since xsd:time is date-less.
-    private Calendar startTime;
+    private LocalTime startTime;
 
-    private Calendar duration;
+    /**
+     * A duration, represented as a time-of-day to match the (odd) XML representation
+     */
+    private LocalTime duration;
 
     public AudioFileInfo(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME, true);
+    }
+
+    public AudioFileInfo(final QtiNode parent, final String localName) {
+        super(parent, localName, true);
     }
 
     @Override
@@ -109,7 +117,22 @@ public class AudioFileInfo extends ObjectFileInfo implements ContentLinkIdentifi
                 context.modelBuildingError(e, element);
             }
         }
+    }
 
+    /* (non-Javadoc)
+     * @see uk.ac.ed.ph.jqtiplus.node.accessibility.FileInfo#fireBodySaxEvents(uk.ac.ed.ph.jqtiplus.serialization.QtiSaxDocumentFirer)
+     */
+    @Override
+    protected void fireBodySaxEvents(final QtiSaxDocumentFirer qtiSaxDocumentFirer) throws SAXException {
+        super.fireBodySaxEvents(qtiSaxDocumentFirer);
+        qtiSaxDocumentFirer.fireSimpleElement(VoiceType.QTI_CLASS_NAME, this.voiceType.toQtiString());
+        qtiSaxDocumentFirer.fireSimpleElement(VoiceSpeed.QTI_CLASS_NAME, this.voiceSpeed.toQtiString());
+        if (startTime != null) {
+            qtiSaxDocumentFirer.fireSimpleElement("startTime", DataTypeBinder.toString(startTime));
+        }
+        if (duration != null) {
+            qtiSaxDocumentFirer.fireSimpleElement("duration", DataTypeBinder.toString(duration));
+        }
     }
 
     public VoiceType getVoiceType() {
@@ -128,19 +151,19 @@ public class AudioFileInfo extends ObjectFileInfo implements ContentLinkIdentifi
         this.voiceSpeed = voiceSpeed;
     }
 
-    public Calendar getStartTime() {
+    public LocalTime getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(final Calendar startTime) {
+    public void setStartTime(final LocalTime startTime) {
         this.startTime = startTime;
     }
 
-    public Calendar getDuration() {
+    public LocalTime getDuration() {
         return duration;
     }
 
-    public void setDuration(final Calendar duration) {
+    public void setDuration(final LocalTime duration) {
         this.duration = duration;
     }
 

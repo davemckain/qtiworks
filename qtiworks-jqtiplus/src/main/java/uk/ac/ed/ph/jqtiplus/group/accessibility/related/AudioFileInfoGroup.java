@@ -56,12 +56,12 @@ public class AudioFileInfoGroup extends SimpleMultipleNodeGroup<QtiNode, AudioFi
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see uk.ac.ed.ph.jqtiplus.group.SimpleMultipleNodeGroup#create()
      */
     @Override
     public AudioFileInfo create() {
-        return new AudioFileInfo(getParent());
+        return new AudioFileInfo(getParent(), getName());
     }
 
     public List<AudioFileInfo> getAudioFileInfos() {

@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.accessibility.related;
 
+import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
@@ -52,7 +53,7 @@ import org.xml.sax.SAXException;
  *
  * @author Zack Pierce
  */
-public class StructuredMask extends AbstractNode {
+public class StructuredMask extends AbstractNode implements AccessibilityNode {
 
     private static final long serialVersionUID = -3598197907209423743L;
 
@@ -75,8 +76,13 @@ public class StructuredMask extends AbstractNode {
 
     @Override
     protected void fireBodySaxEvents(final QtiSaxDocumentFirer qtiSaxDocumentFirer) throws SAXException {
-        // TODO : fire off elements for revealOrder and answerOption
-        super.fireBodySaxEvents(qtiSaxDocumentFirer);
+        if (revealOrder != null) {
+            qtiSaxDocumentFirer.fireSimpleElement("revealOrder", revealOrder.toString());
+        }
+        if (answerOption != null) {
+            qtiSaxDocumentFirer.fireSimpleElement("answerOption", answerOption.toString());
+        }
+
     }
 
     public Integer getRevealOrder() {

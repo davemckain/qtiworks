@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.accessibility.companion;
 
+import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.companion.CalculatorInfoGroup;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.companion.CalculatorTypeGroup;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.companion.DescriptionGroup;
@@ -43,7 +44,7 @@ import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
  *
  * @author Zack Pierce
  */
-public class Calculator extends AbstractNode implements CompanionMaterial {
+public class Calculator extends AbstractNode implements CompanionMaterial, AccessibilityNode {
 
     private static final long serialVersionUID = 1863389297633576964L;
 

@@ -33,12 +33,14 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.accessibility.companion;
 
+import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
+
 /**
  * FIXME: Document this type
  *
  * @author Zack Pierce
  */
-public class MinorIncrementRadialSI extends DecimalUnitElement<RadialUnitSI> {
+public class MinorIncrementRadialSI extends DecimalUnitElement<RadialUnitSI> implements AccessibilityNode {
 
     private static final long serialVersionUID = 8729041333872417927L;
 
@@ -50,7 +52,7 @@ public class MinorIncrementRadialSI extends DecimalUnitElement<RadialUnitSI> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see uk.ac.ed.ph.jqtiplus.node.accessibility.companion.DecimalUnitElement#parseUnit(java.lang.String)
      */
     @Override

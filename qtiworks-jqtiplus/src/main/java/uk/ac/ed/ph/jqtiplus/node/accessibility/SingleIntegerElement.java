@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.accessibility;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
@@ -49,7 +50,7 @@ import org.xml.sax.SAXException;
  *
  * @author Zack Pierce
  */
-public class SingleIntegerElement extends AbstractNode {
+public class SingleIntegerElement extends AbstractNode implements AccessibilityNode {
 
     private static final long serialVersionUID = -2288768722969592203L;
 
@@ -72,7 +73,7 @@ public class SingleIntegerElement extends AbstractNode {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see uk.ac.ed.ph.jqtiplus.node.AbstractNode#loadAttributes(org.w3c.dom.Element,
      * uk.ac.ed.ph.jqtiplus.node.LoadingContext)
      */
@@ -83,7 +84,7 @@ public class SingleIntegerElement extends AbstractNode {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see uk.ac.ed.ph.jqtiplus.node.AbstractNode#hasChildNodes()
      */
     @Override
@@ -93,7 +94,7 @@ public class SingleIntegerElement extends AbstractNode {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * uk.ac.ed.ph.jqtiplus.node.AbstractNode#fireBodySaxEvents(uk.ac.ed.ph.jqtiplus.serialization.QtiSaxDocumentFirer)
      */

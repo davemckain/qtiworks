@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.accessibility.related;
 
+import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.node.accessibility.EmptyElement;
 
 /**
@@ -40,7 +41,7 @@ import uk.ac.ed.ph.jqtiplus.node.accessibility.EmptyElement;
  *
  * @author Zack Pierce
  */
-public class Chunk extends EmptyElement {
+public class Chunk extends EmptyElement implements AccessibilityNode {
 
     private static final long serialVersionUID = -6305016529747908312L;
 

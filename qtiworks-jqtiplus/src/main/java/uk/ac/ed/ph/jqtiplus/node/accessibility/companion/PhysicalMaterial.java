@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.accessibility.companion;
 
+import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.accessibility.NormalizedStringElement;
 
@@ -42,7 +43,7 @@ import uk.ac.ed.ph.jqtiplus.node.accessibility.NormalizedStringElement;
  *
  * @author Zack Pierce
  */
-public class PhysicalMaterial extends NormalizedStringElement implements CompanionMaterial {
+public class PhysicalMaterial extends NormalizedStringElement implements CompanionMaterial, AccessibilityNode {
 
     private static final long serialVersionUID = 5563995507027859438L;
 

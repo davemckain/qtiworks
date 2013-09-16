@@ -89,8 +89,7 @@ import uk.ac.ed.ph.jqtiplus.testutils.UnitTestHelper;
 import java.math.BigDecimal;
 import java.util.List;
 
-import javax.xml.bind.DatatypeConverter;
-
+import org.joda.time.LocalTime;
 import org.junit.Test;
 
 /**
@@ -100,7 +99,7 @@ public class QtiObjectReaderTest {
 
     @Test
     public void testLookupRootNodeSimpleItem() throws Exception {
-        final QtiObjectReadResult<AssessmentItem> lookupRootNode = readAssessmentItemQtiObjectTest("reading/choice.xml");
+        final QtiObjectReadResult<AssessmentItem> lookupRootNode = UnitTestHelper.readAssessmentItemQtiObjectTest("reading/choice.xml");
         assertNotNull(lookupRootNode);
         final AssessmentItem item = lookupRootNode.getRootNode();
         assertNotNull(item);
@@ -113,7 +112,7 @@ public class QtiObjectReaderTest {
 
     @Test
     public void testLookupRootNodeWithAccessibilityInclusionOrder() throws Exception {
-        final QtiObjectReadResult<AssessmentItem> lookupRootNode = readAssessmentItemQtiObjectTest("reading/accessible-core-qti.xml");
+        final QtiObjectReadResult<AssessmentItem> lookupRootNode = UnitTestHelper.readAssessmentItemQtiObjectTest("reading/accessible-core-qti.xml");
         final AssessmentItem item = lookupRootNode.getRootNode();
         final ApipAccessibility apipAccessibility = item.getApipAccessibility();
 
@@ -138,8 +137,38 @@ public class QtiObjectReaderTest {
     }
 
     @Test
+    public void testLookupRootNodeWithAccessibilityInclusionOrderApipCore() throws Exception {
+        final QtiObjectReadResult<AssessmentItem> lookupRootNode = UnitTestHelper.readAssessmentItemQtiObjectTest("reading/minimal-core-apip.xml");
+        final AssessmentItem item = lookupRootNode.getRootNode();
+        final ApipAccessibility apipAccessibility = item.getApipAccessibility();
+
+        final InclusionOrder inclusionOrder = apipAccessibility.getInclusionOrder();
+        assertNotNull(inclusionOrder);
+        assertNull(inclusionOrder.getAslDefaultOrder());
+        assertNull(inclusionOrder.getAslOnDemandOrder());
+        assertNull(inclusionOrder.getGraphicsOnlyOnDemandOrder());
+        assertNull(inclusionOrder.getSignedEnglishDefaultOrder());
+        assertNull(inclusionOrder.getSignedEnglishOnDemandOrder());
+
+        final BrailleDefaultOrder brailleDefaultOrder = inclusionOrder.getBrailleDefaultOrder();
+        assertNotNull(brailleDefaultOrder);
+        assertEquals(2, brailleDefaultOrder.getElementOrders().size());
+        assertEquals(1, brailleDefaultOrder.getElementOrders().get(0).getOrder().intValue());
+        assertEquals("ae01", brailleDefaultOrder.getElementOrders().get(0).getIdentifierRef().toString());
+        assertEquals(2, brailleDefaultOrder.getElementOrders().get(1).getOrder().intValue());
+        assertEquals("ae02", brailleDefaultOrder.getElementOrders().get(1).getIdentifierRef().toString());
+        assertNull(inclusionOrder.getTextOnlyOnDemandOrder());
+
+        assertNotNull(inclusionOrder.getNonVisualDefaultOrder());
+        assertNotNull(inclusionOrder.getTextGraphicsDefaultOrder());
+        assertNotNull(inclusionOrder.getTextGraphicsOnDemandOrder());
+        assertNotNull(inclusionOrder.getTextOnlyDefaultOrder());
+        assertNull(inclusionOrder.getTextOnlyOnDemandOrder());
+    }
+
+    @Test
     public void testLookupRootNodeWithAccessibilityCompanionMaterials() throws Exception {
-        final QtiObjectReadResult<AssessmentItem> lookupRootNode = readAssessmentItemQtiObjectTest("reading/accessible-core-qti.xml");
+        final QtiObjectReadResult<AssessmentItem> lookupRootNode = UnitTestHelper.readAssessmentItemQtiObjectTest("reading/accessible-core-qti.xml");
         final AssessmentItem item = lookupRootNode.getRootNode();
         final ApipAccessibility apipAccessibility = item.getApipAccessibility();
         final CompanionMaterialsInfo cmi = apipAccessibility.getCompanionMaterialsInfo();
@@ -208,12 +237,29 @@ public class QtiObjectReaderTest {
         assertEquals(LinearUnitUS.MILE, ruleSystemUS.getMajorIncrementLinearUS().getUnit());
         assertEquals(new BigDecimal("1.0"), ruleSystemUS.getMajorIncrementLinearUS().getDecimal());
         assertNull(ruleUS.getRuleSystemSI());
+    }
+
+    @Test
+    public void testLookupRootNodeWithAccessibilityCompanionMaterialsApipCore() throws Exception {
+        final QtiObjectReadResult<AssessmentItem> lookupRootNode = UnitTestHelper.readAssessmentItemQtiObjectTest("reading/minimal-core-apip.xml");
+        final AssessmentItem item = lookupRootNode.getRootNode();
+        final ApipAccessibility apipAccessibility = item.getApipAccessibility();
+        final CompanionMaterialsInfo cmi = apipAccessibility.getCompanionMaterialsInfo();
+        assertNotNull(cmi);
+        assertEquals(0, cmi.findCalculators().size());
+        assertEquals(1, cmi.findDigitalMaterials().size());
+        assertEquals("refSheetA.txt", cmi.findDigitalMaterials().get(0).getFileHref());
+        assertEquals("text/plain", cmi.findDigitalMaterials().get(0).getMimeType());
+        assertEquals(0, cmi.findPhysicalMaterials().size());
+        assertEquals(0, cmi.findProtractors().size());
+        assertEquals(0, cmi.findReadingPassages().size());
+        assertEquals(0, cmi.findRules().size());
 
     }
 
     @Test
     public void testLookupRootNodeWithAccessibilityAccessElementsContentLinks() throws Exception {
-        final QtiObjectReadResult<AssessmentItem> lookupRootNode = readAssessmentItemQtiObjectTest("reading/accessible-core-qti.xml");
+        final QtiObjectReadResult<AssessmentItem> lookupRootNode = UnitTestHelper.readAssessmentItemQtiObjectTest("reading/accessible-core-qti.xml");
         final List<AccessElement> accessElements = lookupRootNode.getRootNode().getApipAccessibility().getAccessElements();
         assertEquals(18, accessElements.size());
 
@@ -280,7 +326,7 @@ public class QtiObjectReaderTest {
 
     @Test
     public void testLookupRootNodeWithAccessibilityCoreRelatedInfo() throws Exception {
-        final QtiObjectReadResult<AssessmentItem> lookupRootNode = readAssessmentItemQtiObjectTest("reading/accessible-core-qti.xml");
+        final QtiObjectReadResult<AssessmentItem> lookupRootNode = UnitTestHelper.readAssessmentItemQtiObjectTest("reading/accessible-core-qti.xml");
         final List<AccessElement> accessElements = lookupRootNode.getRootNode().getApipAccessibility().getAccessElements();
 
         final AccessElement ae01 = accessElements.get(0);
@@ -296,8 +342,8 @@ public class QtiObjectReaderTest {
         assertEquals("afi01.mp3", afi01.getFileHref());
         assertEquals(VoiceType.HUMAN, afi01.getVoiceType());
         assertEquals(VoiceSpeed.FAST, afi01.getVoiceSpeed());
-        assertEquals(DatatypeConverter.parseTime("00:00:10.5"), afi01.getStartTime());
-        assertEquals(DatatypeConverter.parseTime("00:01:00"), afi01.getDuration());
+        assertEquals(new LocalTime("00:00:10.5"), afi01.getStartTime());
+        assertEquals(new LocalTime("00:01:00"), afi01.getDuration());
 
         final AudioFileInfo afi02 = audioFileInfosA.get(1);
         assertEquals("audio/ogg", afi02.getMimeType());
@@ -334,7 +380,7 @@ public class QtiObjectReaderTest {
 
     @Test
     public void testLookupRootNodeWithAccessibilityBeyondCore() throws Exception {
-        final QtiObjectReadResult<AssessmentItem> lookupRootNode = readAssessmentItemQtiObjectTest("reading/accessible-core-qti.xml");
+        final QtiObjectReadResult<AssessmentItem> lookupRootNode = UnitTestHelper.readAssessmentItemQtiObjectTest("reading/accessible-core-qti.xml");
         final List<AccessElement> accessElements = lookupRootNode.getRootNode().getApipAccessibility().getAccessElements();
         final AccessElement ae01 = accessElements.get(0);
         assertFalse(ae01.getRelatedElementInfo().getChunk());
@@ -350,8 +396,8 @@ public class QtiObjectReaderTest {
         assertEquals("sfaslvfi01", aslVideo.getContentLinkIdentifier().toString());
         assertEquals("video/mpeg", aslVideo.getMimeType());
         assertEquals("doNotLeaveLuggage.mpeg", aslVideo.getFileHref());
-        assertEquals(DatatypeConverter.parseTime("00:00:01"), aslVideo.getStartCue());
-        assertEquals(DatatypeConverter.parseTime("00:00:20"), aslVideo.getEndCue());
+        assertEquals(new LocalTime("00:00:01"), aslVideo.getStartCue());
+        assertEquals(new LocalTime("00:00:20"), aslVideo.getEndCue());
 
         final ObjectFileInfo bavf = asl.getBoneAnimationVideoFile();
         assertEquals("sfaslbavf", bavf.getContentLinkIdentifier().toString());
@@ -452,18 +498,6 @@ public class QtiObjectReaderTest {
         assertEquals(2, removeTagGroupA.getRemoveTagGroupOrder().intValue());
         assertEquals(1, removeTagGroupA.getRemoveTagIdRefs().size());
         assertEquals("simpleChoiceA", removeTagGroupA.getRemoveTagIdRefs().get(0).getTextContent());
-    }
-
-    private static QtiObjectReadResult<AssessmentItem> readAssessmentItemQtiObjectTest(final String testFilePath)
-            throws Exception {
-        return createQtiObjectReader().lookupRootNode(UnitTestHelper.createTestResourceUri(testFilePath),
-                AssessmentItem.class);
-
-    }
-
-    private static QtiObjectReader createQtiObjectReader() {
-        return new QtiObjectReader(UnitTestHelper.createUnitTestQtiXmlReader(),
-                UnitTestHelper.createTestFileResourceLocator(), true);
     }
 
 }

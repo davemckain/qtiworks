@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.accessibility.related;
 
+import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.related.AudioFileInfoGroup;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.related.LabelledStringGroup;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.related.MarkupFileEmbeddedGroup;
@@ -48,7 +49,7 @@ import java.util.List;
  *
  * @author Zack Pierce
  */
-public class RevealAlternativeRepresentation extends AbstractNode {
+public class RevealAlternativeRepresentation extends AbstractNode implements AccessibilityNode {
 
     private static final String ELEM_MARKUP_FILE_INFO = "markupFileInfo";
     private static final String ELEM_EXECUTABLE_FILE_INFO = "executableFileInfo";

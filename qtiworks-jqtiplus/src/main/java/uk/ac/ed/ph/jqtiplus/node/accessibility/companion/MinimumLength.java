@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.accessibility.companion;
 
+import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.accessibility.SingleIntegerElement;
 
@@ -41,7 +42,7 @@ import uk.ac.ed.ph.jqtiplus.node.accessibility.SingleIntegerElement;
  *
  * @author Zack Pierce
  */
-public class MinimumLength extends SingleIntegerElement {
+public class MinimumLength extends SingleIntegerElement implements AccessibilityNode {
 
     private static final long serialVersionUID = -3099958433934984161L;
 

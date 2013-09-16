@@ -149,6 +149,7 @@ public final class QtiObjectReader implements RootNodeProvider {
         final Element rootElement = document.getDocumentElement();
         final String rootNamespaceUri = rootElement.getNamespaceURI();
         try {
+            // TODO - update system to allow the loading of arbitrary Qti Xml documents, as would be necessary for X:Include resolution.
             rootNode = RootNodeTypes.load(rootElement, systemId, loadingContext);
         }
         catch (final IllegalArgumentException e) {

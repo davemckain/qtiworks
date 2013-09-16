@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.accessibility.link;
 
+import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
@@ -47,7 +48,7 @@ import org.xml.sax.SAXException;
  *
  * @author Zack Pierce
  */
-public class CharacterStringLink extends AbstractNode implements StringLink {
+public class CharacterStringLink extends AbstractNode implements StringLink, AccessibilityNode {
 
     private static final long serialVersionUID = 4994298956888418294L;
 
@@ -63,7 +64,7 @@ public class CharacterStringLink extends AbstractNode implements StringLink {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see uk.ac.ed.ph.jqtiplus.node.AbstractNode#loadChildren(org.w3c.dom.Element,
      * uk.ac.ed.ph.jqtiplus.node.LoadingContext)
      */
@@ -75,14 +76,14 @@ public class CharacterStringLink extends AbstractNode implements StringLink {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * uk.ac.ed.ph.jqtiplus.node.AbstractNode#fireBodySaxEvents(uk.ac.ed.ph.jqtiplus.serialization.QtiSaxDocumentFirer)
      */
     @Override
     protected void fireBodySaxEvents(final QtiSaxDocumentFirer qtiSaxDocumentFirer) throws SAXException {
-        // TODO : Special handling for outputting our flattened simple elements, startCharacter and stopCharacter.
-        super.fireBodySaxEvents(qtiSaxDocumentFirer);
+        qtiSaxDocumentFirer.fireSimpleElement("startCharacter", this.startCharacter.toString());
+        qtiSaxDocumentFirer.fireSimpleElement("stopCharacter", this.stopCharacter.toString());
     }
 
     /**

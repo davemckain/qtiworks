@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.accessibility.link;
 
+import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.accessibility.EmptyElement;
 
@@ -41,7 +42,7 @@ import uk.ac.ed.ph.jqtiplus.node.accessibility.EmptyElement;
  *
  * @author Zack Pierce
  */
-public class FullString extends EmptyElement implements StringLink {
+public class FullString extends EmptyElement implements StringLink, AccessibilityNode {
 
     private static final long serialVersionUID = -1557676888910066274L;
 

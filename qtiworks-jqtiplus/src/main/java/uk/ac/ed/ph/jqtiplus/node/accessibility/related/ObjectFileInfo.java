@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.accessibility.related;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.accessibility.FileInfo;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
@@ -43,7 +44,7 @@ import uk.ac.ed.ph.jqtiplus.types.Identifier;
  *
  * @author Zack Pierce
  */
-public class ObjectFileInfo extends FileInfo implements ContentLinkIdentifierBearer {
+public class ObjectFileInfo extends FileInfo implements ContentLinkIdentifierBearer, AccessibilityNode {
 
     private static final long serialVersionUID = -4239752002593493052L;
 

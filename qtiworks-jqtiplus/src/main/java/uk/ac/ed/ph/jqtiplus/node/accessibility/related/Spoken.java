@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.accessibility.related;
 
+import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.related.AudioFileInfoGroup;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.related.LabelledStringGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
@@ -45,7 +46,7 @@ import java.util.List;
  *
  * @author Zack Pierce
  */
-public class Spoken extends AbstractNode {
+public class Spoken extends AbstractNode implements AccessibilityNode {
 
     private static final long serialVersionUID = 3704460079478676370L;
     public static final String QTI_CLASS_NAME = "spoken";

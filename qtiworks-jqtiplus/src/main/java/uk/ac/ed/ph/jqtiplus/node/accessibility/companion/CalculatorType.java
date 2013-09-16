@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.accessibility.companion;
 
+import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.accessibility.SingleEnumerateElement;
 
@@ -41,7 +42,7 @@ import uk.ac.ed.ph.jqtiplus.node.accessibility.SingleEnumerateElement;
  *
  * @author Zack Pierce
  */
-public class CalculatorType extends SingleEnumerateElement<CalculatorTypeType> {
+public class CalculatorType extends SingleEnumerateElement<CalculatorTypeType> implements AccessibilityNode {
 
     private static final long serialVersionUID = 1473701226676474701L;
 
@@ -53,7 +54,7 @@ public class CalculatorType extends SingleEnumerateElement<CalculatorTypeType> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see uk.ac.ed.ph.jqtiplus.node.accessibility.SingleEnumerateElement#parseQtiString(java.lang.String)
      */
     @Override

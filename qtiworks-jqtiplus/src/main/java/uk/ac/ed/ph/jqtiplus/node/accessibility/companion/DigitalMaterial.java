@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.accessibility.companion;
 
+import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.accessibility.FileInfo;
 
@@ -41,7 +42,7 @@ import uk.ac.ed.ph.jqtiplus.node.accessibility.FileInfo;
  *
  * @author Zack Pierce
  */
-public class DigitalMaterial extends FileInfo implements CompanionMaterial {
+public class DigitalMaterial extends FileInfo implements CompanionMaterial, AccessibilityNode{
 
     private static final long serialVersionUID = 4504325495092703478L;
 

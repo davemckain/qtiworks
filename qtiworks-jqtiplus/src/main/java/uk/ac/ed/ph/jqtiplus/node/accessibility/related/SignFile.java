@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.accessibility.related;
 
+import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.related.ObjectFileInfoGroup;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.related.VideoFileInfoGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
@@ -46,7 +47,7 @@ import uk.ac.ed.ph.jqtiplus.node.QtiNode;
  *
  * @author Zack Pierce
  */
-public class SignFile extends AbstractNode {
+public class SignFile extends AbstractNode implements AccessibilityNode {
 
     private static final String ELEM_BONE_ANIMATION_VIDEO_FILE = "boneAnimationVideoFile";
     private static final long serialVersionUID = -6661340513986646006L;

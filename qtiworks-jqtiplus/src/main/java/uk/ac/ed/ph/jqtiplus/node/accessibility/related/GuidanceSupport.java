@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.accessibility.related;
 
+import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.related.LabelledStringGroup;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.related.SingleIntegerElementGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
@@ -44,7 +45,7 @@ import uk.ac.ed.ph.jqtiplus.node.accessibility.inclusion.InclusionOrder;
  *
  * @author Zack Pierce
  */
-public class GuidanceSupport extends AbstractNode {
+public class GuidanceSupport extends AbstractNode implements AccessibilityNode {
 
     private static final String ELEM_TEXT_STRING = "textString";
     private static final String ELEM_SUPPORT_ORDER = "supportOrder";

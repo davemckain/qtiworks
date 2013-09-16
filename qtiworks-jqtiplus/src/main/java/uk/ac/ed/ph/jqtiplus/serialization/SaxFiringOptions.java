@@ -33,12 +33,13 @@
  */
 package uk.ac.ed.ph.jqtiplus.serialization;
 
+import uk.ac.ed.ph.jqtiplus.QtiProfile;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
 import java.io.Serializable;
 
 /**
- * Encapsulates options for serializing QTI Object by firing SAX events.
+ * Encapsulates immutable options for serializing QTI Object by firing SAX events.
  *
  * @see QtiSaxDocumentFirer
  *
@@ -49,30 +50,47 @@ public final class SaxFiringOptions implements Serializable {
     private static final long serialVersionUID = -7438651199833877599L;
 
     private final NamespacePrefixMappings preferredPrefixMappings;
-    private boolean omitSchemaLocation;
+    private final boolean omitSchemaLocation;
+    private final QtiProfile qtiProfile;
+
 
     public SaxFiringOptions() {
-        this.preferredPrefixMappings = new NamespacePrefixMappings();
-        this.omitSchemaLocation = false;
+        this(false, QtiProfile.QTI_21_CORE, null);
     }
 
+    public SaxFiringOptions(final QtiProfile qtiProfile) {
+        this(false, qtiProfile, null);
+    }
+
+    public SaxFiringOptions(final boolean omitSchemaLocation) {
+        this(omitSchemaLocation, QtiProfile.QTI_21_CORE, null);
+    }
+
+    public SaxFiringOptions(final boolean omitSchemaLocation, final QtiProfile qtiProfile) {
+        this(omitSchemaLocation, qtiProfile, null);
+    }
+
+    public SaxFiringOptions(final boolean omitSchemaLocation, final QtiProfile qtiProfile, final NamespacePrefixMappings namespacePrefixMappings) {
+        this.preferredPrefixMappings = new NamespacePrefixMappings(namespacePrefixMappings);
+        this.omitSchemaLocation = omitSchemaLocation;
+        this.qtiProfile = qtiProfile;
+    }
 
     public NamespacePrefixMappings getPreferredPrefixMappings() {
         return preferredPrefixMappings;
     }
 
-
     public boolean isOmitSchemaLocation() {
         return omitSchemaLocation;
     }
 
-    public void setOmitSchemaLocation(final boolean omitSchemaLocation) {
-        this.omitSchemaLocation = omitSchemaLocation;
+    public QtiProfile getQtiProfile() {
+        return qtiProfile;
     }
-
 
     @Override
     public String toString() {
         return ObjectUtilities.beanToString(this);
     }
+
 }

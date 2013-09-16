@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.accessibility;
 
 import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessElementGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
@@ -44,7 +45,7 @@ import java.util.List;
  *
  * @author Zack Pierce
  */
-public class AccessibilityInfo extends AbstractNode {
+public class AccessibilityInfo extends AbstractNode implements AccessibilityNode {
 
     private static final long serialVersionUID = 3607456133476499236L;
 

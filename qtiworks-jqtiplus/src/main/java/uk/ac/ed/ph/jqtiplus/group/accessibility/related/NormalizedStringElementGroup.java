@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.group.accessibility.related;
 
 import uk.ac.ed.ph.jqtiplus.group.SimpleMultipleNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.accessibility.NormalizedStringElement;
 
@@ -42,7 +43,8 @@ import java.util.List;
 /**
  * @author Zack Pierce
  */
-public class NormalizedStringElementGroup extends SimpleMultipleNodeGroup<QtiNode, NormalizedStringElement> {
+public class NormalizedStringElementGroup extends SimpleMultipleNodeGroup<QtiNode, NormalizedStringElement> implements
+        AccessibilityNode {
 
     private static final long serialVersionUID = 909398384463659441L;
 

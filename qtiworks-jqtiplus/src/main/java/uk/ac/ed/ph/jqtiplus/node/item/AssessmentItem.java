@@ -75,6 +75,7 @@ import javax.xml.XMLConstants;
  * @author Jonathon Hare
  * @author Jiri Kajaba
  * @author David McKain
+ * @author Zack Pierce
  */
 public class AssessmentItem extends AbstractNode implements AssessmentObject {
 
@@ -110,7 +111,7 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
     /** (Implicit) declaration for <code>numAttempts</code> */
     private final ResponseDeclaration numAttemptsResponseDeclaration;
 
-    /** (Implicit) declaraiton for <code>duration</code> */
+    /** (Implicit) declaration for <code>duration</code> */
     private final ResponseDeclaration durationResponseDeclaration;
 
     /** System ID of this RootNode (optional) */

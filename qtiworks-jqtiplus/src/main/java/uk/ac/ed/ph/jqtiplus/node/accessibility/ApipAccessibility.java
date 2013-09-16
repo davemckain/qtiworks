@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.accessibility;
 
 import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityInfoGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.companion.CompanionMaterialsInfoGroup;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.inclusion.InclusionOrderGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
@@ -48,7 +49,7 @@ import java.util.List;
  *
  * @author Zack Pierce
  */
-public class ApipAccessibility extends AbstractNode {
+public class ApipAccessibility extends AbstractNode implements AccessibilityNode {
     private static final long serialVersionUID = 624091309484859804L;
 
     /** Name of this class in xml schema. */

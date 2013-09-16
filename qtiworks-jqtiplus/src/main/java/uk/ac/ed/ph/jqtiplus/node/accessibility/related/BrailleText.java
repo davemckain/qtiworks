@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.accessibility.related;
 
+import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.related.LabelledStringGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
@@ -46,7 +47,7 @@ import uk.ac.ed.ph.jqtiplus.node.QtiNode;
  *
  * @author Zack Pierce
  */
-public class BrailleText extends AbstractNode {
+public class BrailleText extends AbstractNode implements AccessibilityNode {
 
     private static final long serialVersionUID = 5477136156238256916L;
 

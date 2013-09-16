@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.accessibility.related;
 
+import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.related.SignFileGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 
@@ -42,7 +43,7 @@ import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
  *
  * @author Zack Pierce
  */
-public class Signing extends AbstractNode {
+public class Signing extends AbstractNode implements AccessibilityNode {
 
     private static final long serialVersionUID = -8663009705465444076L;
 

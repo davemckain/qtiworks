@@ -39,8 +39,10 @@ import uk.ac.ed.ph.jqtiplus.group.test.OrderingGroup;
 import uk.ac.ed.ph.jqtiplus.group.test.RubricBlockGroup;
 import uk.ac.ed.ph.jqtiplus.group.test.SectionPartGroup;
 import uk.ac.ed.ph.jqtiplus.group.test.SelectionGroup;
+import uk.ac.ed.ph.jqtiplus.node.RootNode;
 import uk.ac.ed.ph.jqtiplus.node.content.variable.RubricBlock;
 
+import java.net.URI;
 import java.util.List;
 
 /**
@@ -49,7 +51,7 @@ import java.util.List;
  * @author Jiri Kajaba
  * @author Jonathon Hare
  */
-public final class AssessmentSection extends SectionPart {
+public final class AssessmentSection extends SectionPart implements RootNode {
 
     private static final long serialVersionUID = 371468215845203409L;
 
@@ -67,6 +69,9 @@ public final class AssessmentSection extends SectionPart {
 
     /** Default value of keepTogether attribute. */
     public static final boolean ATTR_KEEP_TOGETHER_DEFAULT_VALUE = true;
+
+    /** System ID of this RootNode (optional) */
+    private URI systemId;
 
     public AssessmentSection(final AbstractPart parent) {
         super(parent, QTI_CLASS_NAME);
@@ -137,5 +142,22 @@ public final class AssessmentSection extends SectionPart {
 
     public List<SectionPart> getSectionParts() {
         return getNodeGroups().getSectionPartGroup().getSectionParts();
+    }
+
+    @Override
+    public URI getSystemId() {
+        return systemId;
+    }
+
+    @Override
+    public void setSystemId(final URI systemId) {
+        this.systemId = systemId;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString()
+                + "(systemId=" + systemId
+                + ")";
     }
 }

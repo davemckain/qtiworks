@@ -34,21 +34,23 @@
 package uk.ac.ed.ph.jqtiplus.node.accessibility.related;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
+import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxDocumentFirer;
 import uk.ac.ed.ph.jqtiplus.types.DataTypeBinder;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlParseUtils;
 
-import java.util.Calendar;
-
+import org.joda.time.LocalTime;
 import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 /**
  * FIXME: Document this type
  *
  * @author Zack Pierce
  */
-public class VideoFileInfo extends ObjectFileInfo {
+public class VideoFileInfo extends ObjectFileInfo implements AccessibilityNode {
 
     public static final String QTI_CLASS_NAME = "videoFileInfo";
 
@@ -58,9 +60,9 @@ public class VideoFileInfo extends ObjectFileInfo {
 
     private static final long serialVersionUID = 5319846662148524016L;
 
-    private Calendar startCue;
+    private LocalTime startCue;
 
-    private Calendar endCue;
+    private LocalTime endCue;
 
     public VideoFileInfo(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME, true);
@@ -89,19 +91,36 @@ public class VideoFileInfo extends ObjectFileInfo {
         }
     }
 
-    public Calendar getStartCue() {
+    /*
+     * (non-Javadoc)
+     *
+     * @see uk.ac.ed.ph.jqtiplus.node.accessibility.FileInfo#fireBodySaxEvents(uk.ac.ed.ph.jqtiplus.serialization.
+     * QtiSaxDocumentFirer)
+     */
+    @Override
+    protected void fireBodySaxEvents(final QtiSaxDocumentFirer qtiSaxDocumentFirer) throws SAXException {
+        super.fireBodySaxEvents(qtiSaxDocumentFirer);
+        if (startCue != null) {
+            qtiSaxDocumentFirer.fireSimpleElement("startCue", DataTypeBinder.toString(startCue));
+        }
+        if (endCue != null) {
+            qtiSaxDocumentFirer.fireSimpleElement("endCue", DataTypeBinder.toString(endCue));
+        }
+    }
+
+    public LocalTime getStartCue() {
         return startCue;
     }
 
-    public void setStartCue(final Calendar startCue) {
+    public void setStartCue(final LocalTime startCue) {
         this.startCue = startCue;
     }
 
-    public Calendar getEndCue() {
+    public LocalTime getEndCue() {
         return endCue;
     }
 
-    public void setEndCue(final Calendar endCue) {
+    public void setEndCue(final LocalTime endCue) {
         this.endCue = endCue;
     }
 

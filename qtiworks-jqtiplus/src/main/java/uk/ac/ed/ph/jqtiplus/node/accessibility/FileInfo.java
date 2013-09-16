@@ -34,19 +34,22 @@
 package uk.ac.ed.ph.jqtiplus.node.accessibility;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
+import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxDocumentFirer;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlParseUtils;
 
 import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 /**
  * Base class for data objects containing a fileHref and a mimeType
  *
  * @author Zack Pierce
  */
-public abstract class FileInfo extends AbstractNode {
+public abstract class FileInfo extends AbstractNode implements AccessibilityNode {
 
     private static final long serialVersionUID = -1524033363125950739L;
 
@@ -59,13 +62,18 @@ public abstract class FileInfo extends AbstractNode {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see uk.ac.ed.ph.jqtiplus.node.AbstractNode#loadChildren(org.w3c.dom.Element,
      * uk.ac.ed.ph.jqtiplus.node.LoadingContext)
      */
     @Override
     protected void loadChildren(final Element element, final LoadingContext context) {
         fileHref = XmlParseUtils.getChildContent(element, "fileHref");
+    }
+
+    @Override
+    protected void fireBodySaxEvents(final QtiSaxDocumentFirer qtiSaxDocumentFirer) throws SAXException {
+        qtiSaxDocumentFirer.fireSimpleElement("fileHref", fileHref);
     }
 
     public String getFileHref() {

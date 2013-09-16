@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.accessibility;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
@@ -48,7 +49,8 @@ import org.xml.sax.SAXException;
  *
  * @author Zack Pierce
  */
-public abstract class SingleEnumerateElement<V extends Enum<V> & Stringifiable> extends AbstractNode {
+public abstract class SingleEnumerateElement<V extends Enum<V> & Stringifiable> extends AbstractNode implements
+        AccessibilityNode {
 
     private static final long serialVersionUID = -8448200082436631640L;
 
@@ -64,7 +66,7 @@ public abstract class SingleEnumerateElement<V extends Enum<V> & Stringifiable> 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see uk.ac.ed.ph.jqtiplus.node.AbstractNode#load(org.w3c.dom.Element, uk.ac.ed.ph.jqtiplus.node.LoadingContext)
      */
     @Override
@@ -74,7 +76,7 @@ public abstract class SingleEnumerateElement<V extends Enum<V> & Stringifiable> 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see uk.ac.ed.ph.jqtiplus.node.AbstractNode#loadChildren(org.w3c.dom.Element,
      * uk.ac.ed.ph.jqtiplus.node.LoadingContext)
      */
@@ -97,7 +99,7 @@ public abstract class SingleEnumerateElement<V extends Enum<V> & Stringifiable> 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see uk.ac.ed.ph.jqtiplus.node.AbstractNode#loadAttributes(org.w3c.dom.Element,
      * uk.ac.ed.ph.jqtiplus.node.LoadingContext)
      */
@@ -108,7 +110,7 @@ public abstract class SingleEnumerateElement<V extends Enum<V> & Stringifiable> 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see uk.ac.ed.ph.jqtiplus.node.AbstractNode#hasChildNodes()
      */
     @Override
@@ -118,7 +120,7 @@ public abstract class SingleEnumerateElement<V extends Enum<V> & Stringifiable> 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * uk.ac.ed.ph.jqtiplus.node.AbstractNode#fireBodySaxEvents(uk.ac.ed.ph.jqtiplus.serialization.QtiSaxDocumentFirer)
      */

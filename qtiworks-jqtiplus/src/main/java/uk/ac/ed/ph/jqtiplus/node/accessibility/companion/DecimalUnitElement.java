@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.accessibility.companion;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
@@ -54,7 +55,8 @@ import org.xml.sax.SAXException;
  *
  * @author Zack Pierce
  */
-public abstract class DecimalUnitElement<V extends Enum<V> & Stringifiable> extends AbstractNode {
+public abstract class DecimalUnitElement<V extends Enum<V> & Stringifiable> extends AbstractNode implements
+        AccessibilityNode {
 
     private static final long serialVersionUID = -90607178471563924L;
 
@@ -87,7 +89,7 @@ public abstract class DecimalUnitElement<V extends Enum<V> & Stringifiable> exte
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see uk.ac.ed.ph.jqtiplus.node.AbstractNode#loadAttributes(org.w3c.dom.Element ,
      * uk.ac.ed.ph.jqtiplus.node.LoadingContext)
      */
@@ -110,7 +112,7 @@ public abstract class DecimalUnitElement<V extends Enum<V> & Stringifiable> exte
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see uk.ac.ed.ph.jqtiplus.node.AbstractNode#loadChildren(org.w3c.dom.Element,
      * uk.ac.ed.ph.jqtiplus.node.LoadingContext)
      */
@@ -124,16 +126,12 @@ public abstract class DecimalUnitElement<V extends Enum<V> & Stringifiable> exte
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see uk.ac.ed.ph.jqtiplus.node.AbstractNode#fireSaxEvents(uk.ac.ed.ph.jqtiplus
-     * .serialization.QtiSaxDocumentFirer)
+    /* (non-Javadoc)
+     * @see uk.ac.ed.ph.jqtiplus.node.AbstractNode#fireBodySaxEvents(uk.ac.ed.ph.jqtiplus.serialization.QtiSaxDocumentFirer)
      */
     @Override
-    public void fireSaxEvents(final QtiSaxDocumentFirer qtiSaxDocumentFirer) throws SAXException {
-        // TODO : Requires some custom handling for direct value here.
-        super.fireSaxEvents(qtiSaxDocumentFirer);
+    protected void fireBodySaxEvents(final QtiSaxDocumentFirer qtiSaxDocumentFirer) throws SAXException {
+        qtiSaxDocumentFirer.fireText(this.decimal.toPlainString());
     }
 
 }

@@ -40,9 +40,9 @@ import uk.ac.ed.ph.jqtiplus.internal.util.Pair;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Calendar;
 
-import javax.xml.bind.DatatypeConverter;
+import org.joda.time.LocalTime;
+import org.joda.time.format.ISODateTimeFormat;
 
 /**
  * Helper class to bind certain QTI data types to and from Strings.
@@ -235,13 +235,24 @@ public final class DataTypeBinder {
      * @param iso8601Time A string containing the ISO 8601 representation of time used by the xsd:time datatype
      * @return
      */
-    public static Calendar parseTime(final String iso8601Time) throws QtiParseException {
+    public static LocalTime parseTime(final String iso8601Time) throws QtiParseException {
         try {
-            return DatatypeConverter.parseTime(iso8601Time);
+            return ISODateTimeFormat.localTimeParser().parseLocalTime(iso8601Time);
+        }
+        catch (final UnsupportedOperationException e) {
+            throw new QtiParseException("Invalid time '" + iso8601Time + "'", e);
         }
         catch (final IllegalArgumentException e) {
             throw new QtiParseException("Invalid time '" + iso8601Time + "'", e);
         }
+    }
+
+    /**
+     * @param localTime
+     * @return A string containing the ISO 8601 representation of the calendar's time used by the xsd:time datatype
+     */
+    public static String toString(final LocalTime localTime) {
+        return ISODateTimeFormat.time().print(localTime);
     }
 
 }

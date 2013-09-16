@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.accessibility.link;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierReferenceAttribute;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.link.LinkGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
@@ -45,7 +46,7 @@ import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
  *
  * @author Zack Pierce
  */
-public class ContentLinkInfo extends AbstractNode {
+public class ContentLinkInfo extends AbstractNode implements AccessibilityNode {
 
     private static final long serialVersionUID = -3814738853269263616L;
 
@@ -86,7 +87,7 @@ public class ContentLinkInfo extends AbstractNode {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see uk.ac.ed.ph.jqtiplus.node.AbstractNode#validateThis(uk.ac.ed.ph.jqtiplus.validation.ValidationContext)
      */
     @Override

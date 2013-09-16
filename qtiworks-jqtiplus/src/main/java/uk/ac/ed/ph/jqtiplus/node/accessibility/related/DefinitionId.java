@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.accessibility.related;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.related.LabelledStringGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
@@ -45,7 +46,7 @@ import javax.xml.XMLConstants;
  *
  * @author Zack Pierce
  */
-public class DefinitionId extends AbstractNode {
+public class DefinitionId extends AbstractNode implements AccessibilityNode {
 
     private static final long serialVersionUID = 5046067935847319414L;
 

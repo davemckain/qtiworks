@@ -34,10 +34,12 @@
 package uk.ac.ed.ph.jqtiplus.node;
 
 import uk.ac.ed.ph.jqtiplus.QtiConstants;
+import uk.ac.ed.ph.jqtiplus.QtiProfile;
 import uk.ac.ed.ph.jqtiplus.exception.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
 import uk.ac.ed.ph.jqtiplus.node.result.AssessmentResult;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentSection;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 
 import java.net.URI;
@@ -61,6 +63,13 @@ public enum RootNodeTypes {
      * @see AssessmentTest
      */
     ASSESSMENT_TEST(AssessmentTest.QTI_CLASS_NAME, AssessmentTest.class),
+
+    /**
+     * Creates assessmentSection root node.
+     *
+     * @see AssessmentSection
+     */
+    ASSESSMENT_SECTION(AssessmentSection.QTI_CLASS_NAME, AssessmentSection.class),
 
     /**
      * Creates assessmentItem root node.
@@ -154,17 +163,17 @@ public enum RootNodeTypes {
         /* Check namespaces */
         final String namespaceUri = sourceElement.getNamespaceURI();
         if (root instanceof AssessmentResult) {
-            if (!QtiConstants.QTI_RESULT_21_NAMESPACE_URI.equals(namespaceUri)) {
+            if (!(QtiProfile.QTI_21_CORE.getResultsNamespace().equals(namespaceUri) || QtiProfile.APIP_CORE.getResultsNamespace().equals(namespaceUri)) ) {
                 throw new IllegalArgumentException("Element {" + namespaceUri
                         + "}" + sourceElement.getLocalName()
-                        + " is not in the correct namespace " + QtiConstants.QTI_RESULT_21_NAMESPACE_URI);
+                        + " is not in a correct results namespace, typically " + QtiConstants.QTI_RESULT_21_NAMESPACE_URI);
             }
         }
         else {
-            if (!QtiConstants.QTI_21_NAMESPACE_URI.equals(namespaceUri) && !QtiConstants.QTI_20_NAMESPACE_URI.equals(namespaceUri)) {
+            if (!QtiProfile.getAllNamespaceUrisFromAllProfiles().contains(namespaceUri)) {
                 throw new IllegalArgumentException("Element {" + namespaceUri
                         + "}" + sourceElement.getLocalName()
-                        + " is not in either the QTI 2.1 or 2.0 namespaces");
+                        + " is not in either the QTI 2.1, QTI 2.0, or APIP 1.0 Core namespaces");
             }
         }
 

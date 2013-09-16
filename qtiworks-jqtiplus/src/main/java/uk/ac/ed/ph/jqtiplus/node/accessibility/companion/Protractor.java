@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.accessibility.companion;
 
+import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.companion.DescriptionGroup;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.companion.RadialIncrementSystemGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
@@ -43,7 +44,7 @@ import uk.ac.ed.ph.jqtiplus.node.QtiNode;
  *
  * @author Zack Pierce
  */
-public class Protractor extends AbstractNode implements CompanionMaterial {
+public class Protractor extends AbstractNode implements CompanionMaterial, AccessibilityNode {
 
     private static final long serialVersionUID = 862855054032106527L;
 

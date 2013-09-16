@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.accessibility.related;
 
+import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.related.AnswerReductionGroup;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.related.BrailleTextGroup;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.related.ChunkGroup;
@@ -53,7 +54,7 @@ import uk.ac.ed.ph.jqtiplus.node.QtiNode;
  *
  * @author Zack Pierce
  */
-public class RelatedElementInfo extends AbstractNode {
+public class RelatedElementInfo extends AbstractNode implements AccessibilityNode {
 
     private static final long serialVersionUID = -3694130873474050407L;
 

@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.accessibility.inclusion;
 
+import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 /**
@@ -40,7 +41,7 @@ import uk.ac.ed.ph.jqtiplus.node.QtiNode;
  *
  * @author Zack Pierce
  */
-public class TextGraphicsOnDemandOrder extends ElementOrderList {
+public class TextGraphicsOnDemandOrder extends ElementOrderList implements AccessibilityNode {
 
     private static final long serialVersionUID = -3675282225304964651L;
 

@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.accessibility.companion;
 
+import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 /**
@@ -40,7 +41,7 @@ import uk.ac.ed.ph.jqtiplus.node.QtiNode;
  *
  * @author Zack Pierce
  */
-public class MajorIncrementLinearUS extends DecimalUnitElement<LinearUnitUS> {
+public class MajorIncrementLinearUS extends DecimalUnitElement<LinearUnitUS> implements AccessibilityNode {
 
     private static final long serialVersionUID = 8729041333872417927L;
 
@@ -52,7 +53,7 @@ public class MajorIncrementLinearUS extends DecimalUnitElement<LinearUnitUS> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see uk.ac.ed.ph.jqtiplus.node.accessibility.companion.DecimalUnitElement#parseUnit(java.lang.String)
      */
     @Override

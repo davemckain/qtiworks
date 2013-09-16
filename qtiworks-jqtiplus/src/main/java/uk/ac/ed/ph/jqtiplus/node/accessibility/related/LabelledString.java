@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.accessibility.related;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
@@ -49,7 +50,7 @@ import org.xml.sax.SAXException;
  *
  * @author Zack Pierce
  */
-public class LabelledString extends AbstractNode implements ContentLinkIdentifierBearer {
+public class LabelledString extends AbstractNode implements ContentLinkIdentifierBearer, AccessibilityNode {
 
     private static final long serialVersionUID = 721887805676767346L;
 
@@ -85,7 +86,9 @@ public class LabelledString extends AbstractNode implements ContentLinkIdentifie
 
     @Override
     protected void fireBodySaxEvents(final QtiSaxDocumentFirer qtiSaxDocumentFirer) throws SAXException {
-        qtiSaxDocumentFirer.fireText(textContent);
+        if (textContent != null) {
+            qtiSaxDocumentFirer.fireText(textContent);
+        }
     }
 
     public String getTextContent() {

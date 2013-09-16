@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.accessibility.inclusion;
 
+import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.inclusion.ElementOrderGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
@@ -44,7 +45,7 @@ import java.util.List;
  *
  * @author Zack Pierce
  */
-public abstract class ElementOrderList extends AbstractNode {
+public abstract class ElementOrderList extends AbstractNode implements AccessibilityNode {
 
     private static final long serialVersionUID = 4302185581837683599L;
 

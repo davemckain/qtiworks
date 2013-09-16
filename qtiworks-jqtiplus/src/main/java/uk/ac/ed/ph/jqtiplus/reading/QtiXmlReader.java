@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.reading;
 
 import uk.ac.ed.ph.jqtiplus.ExtensionNamespaceInfo;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
-import uk.ac.ed.ph.jqtiplus.QtiConstants;
+import uk.ac.ed.ph.jqtiplus.QtiProfile;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.xmlutils.SchemaCache;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReadResult;
@@ -47,6 +47,7 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathHttpResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 
 import java.net.URI;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -101,14 +102,15 @@ public final class QtiXmlReader {
     public QtiXmlReader(final JqtiExtensionManager jqtiExtensionManager, final SchemaCache schemaCache) {
         Assert.notNull(jqtiExtensionManager, "jqtiExtensionManager");
 
-        /* Merge extension schemas with core QTI 2.0 and 2.1 schemas */
+        /* Merge extension schemas with core QTI 2.0 and 2.1 and Apip schemas */
         final Map<String, String> resultingSchemaMapTemplate = new HashMap<String, String>();
         for (final Entry<String, ExtensionNamespaceInfo> entry : jqtiExtensionManager.getExtensionNamepaceInfoMap().entrySet()) {
             resultingSchemaMapTemplate.put(entry.getKey(), entry.getValue().getSchemaLocationUri());
         }
-        resultingSchemaMapTemplate.put(QtiConstants.QTI_21_NAMESPACE_URI, QtiConstants.QTI_21_SCHEMA_LOCATION);
-        resultingSchemaMapTemplate.put(QtiConstants.QTI_RESULT_21_NAMESPACE_URI, QtiConstants.QTI_RESULT_21_SCHEMA_LOCATION);
-        resultingSchemaMapTemplate.put(QtiConstants.QTI_20_NAMESPACE_URI, QtiConstants.QTI_20_SCHEMA_LOCATION);
+
+        for (final SimpleEntry<String,String> pair : QtiProfile.getAllNamespaceUriToSchemaLocationPairs()) {
+            resultingSchemaMapTemplate.put(pair.getKey(), pair.getValue());
+        }
 
         this.jqtiExtensionManager = jqtiExtensionManager;
         this.xmlResourceReader = new XmlResourceReader(JQTIPLUS_PARSER_RESOURCE_LOCATOR, resultingSchemaMapTemplate, schemaCache);

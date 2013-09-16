@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.accessibility.companion;
 
+import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.accessibility.NormalizedStringElement;
 
@@ -41,7 +42,7 @@ import uk.ac.ed.ph.jqtiplus.node.accessibility.NormalizedStringElement;
  *
  * @author Zack Pierce
  */
-public class Description extends NormalizedStringElement {
+public class Description extends NormalizedStringElement implements AccessibilityNode {
 
     private static final long serialVersionUID = -5879465717015902371L;
 

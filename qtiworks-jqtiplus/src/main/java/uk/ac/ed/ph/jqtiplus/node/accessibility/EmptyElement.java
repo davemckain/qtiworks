@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.accessibility;
 
+import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
@@ -44,7 +45,7 @@ import org.w3c.dom.Element;
  *
  * @author Zack Pierce
  */
-public abstract class EmptyElement extends AbstractNode {
+public abstract class EmptyElement extends AbstractNode implements AccessibilityNode {
 
     private static final long serialVersionUID = -751561804207938794L;
 
@@ -54,7 +55,7 @@ public abstract class EmptyElement extends AbstractNode {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see uk.ac.ed.ph.jqtiplus.node.AbstractNode#hasChildNodes()
      */
     @Override
@@ -64,7 +65,7 @@ public abstract class EmptyElement extends AbstractNode {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see uk.ac.ed.ph.jqtiplus.node.AbstractNode#loadAttributes(org.w3c.dom.Element,
      * uk.ac.ed.ph.jqtiplus.node.LoadingContext)
      */
@@ -75,7 +76,7 @@ public abstract class EmptyElement extends AbstractNode {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see uk.ac.ed.ph.jqtiplus.node.AbstractNode#loadChildren(org.w3c.dom.Element,
      * uk.ac.ed.ph.jqtiplus.node.LoadingContext)
      */

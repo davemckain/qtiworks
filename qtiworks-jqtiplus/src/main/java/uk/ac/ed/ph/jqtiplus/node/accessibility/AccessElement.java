@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.accessibility;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.link.ContentLinkInfoGroup;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.related.RelatedElementInfoGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
@@ -49,7 +50,7 @@ import java.util.List;
  *
  * @author Zack Pierce
  */
-public class AccessElement extends AbstractNode {
+public class AccessElement extends AbstractNode implements AccessibilityNode {
 
     private static final long serialVersionUID = -7875203339228083764L;
 

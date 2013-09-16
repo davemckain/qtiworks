@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.accessibility.link;
 
+import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.accessibility.SingleIntegerElement;
 
@@ -41,7 +42,7 @@ import uk.ac.ed.ph.jqtiplus.node.accessibility.SingleIntegerElement;
  *
  * @author Zack Pierce
  */
-public class CharacterLink extends SingleIntegerElement implements StringLink {
+public class CharacterLink extends SingleIntegerElement implements StringLink, AccessibilityNode {
 
     private static final long serialVersionUID = 6422961217240087811L;
 

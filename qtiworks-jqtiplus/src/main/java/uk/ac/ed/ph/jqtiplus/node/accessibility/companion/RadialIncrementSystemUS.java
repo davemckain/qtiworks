@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.accessibility.companion;
 
+import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.companion.MajorIncrementRadialUSGroup;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.companion.MinorIncrementRadialUSGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
@@ -43,7 +44,7 @@ import uk.ac.ed.ph.jqtiplus.node.QtiNode;
  *
  * @author Zack Pierce
  */
-public class RadialIncrementSystemUS extends AbstractNode implements RadialIncrementSystem {
+public class RadialIncrementSystemUS extends AbstractNode implements RadialIncrementSystem, AccessibilityNode {
 
     private static final long serialVersionUID = 7573986330792238975L;
 

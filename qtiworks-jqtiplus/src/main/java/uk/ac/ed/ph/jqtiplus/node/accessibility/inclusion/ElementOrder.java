@@ -34,13 +34,16 @@
 package uk.ac.ed.ph.jqtiplus.node.accessibility.inclusion;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierReferenceAttribute;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
+import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxDocumentFirer;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlParseUtils;
 
 import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 /**
  * A reference to an accessElement by identifier, and the intended order that accessElement's
@@ -48,7 +51,7 @@ import org.w3c.dom.Element;
  *
  * @author Zack Pierce
  */
-public class ElementOrder extends AbstractNode {
+public class ElementOrder extends AbstractNode implements AccessibilityNode {
 
     private static final long serialVersionUID = -410983290920433202L;
 
@@ -64,6 +67,11 @@ public class ElementOrder extends AbstractNode {
     @Override
     protected void loadChildren(final Element element, final LoadingContext context) {
         order = XmlParseUtils.getChildContentAsInteger(element, "order");
+    }
+
+    @Override
+    protected void fireBodySaxEvents(final QtiSaxDocumentFirer qtiSaxDocumentFirer) throws SAXException {
+        qtiSaxDocumentFirer.fireSimpleElement("order", order.toString());
     }
 
     public Identifier getIdentifierRef() {

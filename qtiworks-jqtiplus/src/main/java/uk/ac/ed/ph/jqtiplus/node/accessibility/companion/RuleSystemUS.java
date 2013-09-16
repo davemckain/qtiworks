@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.accessibility.companion;
 
+import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.companion.MajorIncrementLinearUSGroup;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.companion.MinimumLengthGroup;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.companion.MinorIncrementLinearUSGroup;
@@ -44,7 +45,7 @@ import uk.ac.ed.ph.jqtiplus.node.QtiNode;
  *
  * @author Zack Pierce
  */
-public class RuleSystemUS extends AbstractNode implements LinearRuleSystem {
+public class RuleSystemUS extends AbstractNode implements LinearRuleSystem, AccessibilityNode {
 
     private static final long serialVersionUID = 3204093022466226633L;
 
