@@ -43,16 +43,18 @@ import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.node.test.TestFeedback;
 
 /**
- * A marker interface for the top-level elements that can contain presentation content.
+ * A marker interface for high-level elements that can contain presentation content.
  *
  * <p>Every top-level content container is associated with one possible {@link ApipAccessibility} node.</p>
  *
  * <ul>
  * <li>In {@link AssessmentItem} , the ContentContainers are {@link ItemBody} and {@link ModalFeedback}</li>
- * <li>In {@link AssessmentSection} , the only ContentContainer is {@link RubricBlock}</li>
- * <li>In {@link AssessmentTest}, the only ContentContainer is {@link TestFeedback}</li>
+ * <li>In {@link AssessmentSection}, each {@link RubricBlock} is a ContentContainer</li>
+ * <li>In {@link AssessmentTest}, each {@link TestFeedback} is a ContentContainer</li>
  * </ul>
  *
+ * <p>Since they may be treated as containers for content that may or may not be included in the main presentational flow,
+ * TemplateBlock and FeedbackBlock are also considered ContentContainers.</p>
  * @author Zack Pierce
  */
 public interface ContentContainer extends QtiNode {

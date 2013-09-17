@@ -33,10 +33,16 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.content.template;
 
+import uk.ac.ed.ph.jqtiplus.group.accessibility.ApipAccessibilityGroup;
 import uk.ac.ed.ph.jqtiplus.group.content.BlockStaticGroup;
+import uk.ac.ed.ph.jqtiplus.group.item.StylesheetGroup;
+import uk.ac.ed.ph.jqtiplus.node.ContentContainer;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.ApipAccessibility;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.ApipAccessibilityBearer;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.BlockStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
+import uk.ac.ed.ph.jqtiplus.node.item.Stylesheet;
 
 import java.util.List;
 
@@ -45,7 +51,7 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public final class TemplateBlock extends TemplateElement implements FlowStatic, BlockStatic {
+public final class TemplateBlock extends TemplateElement implements FlowStatic, BlockStatic, ContentContainer, ApipAccessibilityBearer {
 
     private static final long serialVersionUID = -7030953780473751904L;
 
@@ -55,9 +61,38 @@ public final class TemplateBlock extends TemplateElement implements FlowStatic, 
     public TemplateBlock(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
         getNodeGroups().add(new BlockStaticGroup(this));
+        getNodeGroups().add(new StylesheetGroup(this));
+        getNodeGroups().add(new ApipAccessibilityGroup(this, false));
     }
 
-    public List<BlockStatic> getChildren() {
+    public List<BlockStatic> getBlocks() {
         return getNodeGroups().getBlockStaticGroup().getBlockStatics();
+    }
+
+    /**
+     * Gets mutable list of stylesheet children.
+     *
+     * @return stylesheet children
+     */
+    public List<Stylesheet> getStylesheets() {
+        return getNodeGroups().getStylesheetGroup().getStylesheets();
+    }
+
+    /**
+     * Gets apipAccessibility child
+     *
+     * @return apipAccessibility child
+     * @see #setApipAccessibility
+     */
+    public ApipAccessibility getApipAccessibility() {
+        return getNodeGroups().getApipAccessibilityGroup().getApipAccessibility();
+    }
+
+    /**
+     * Sets apipAccessibility child
+     * @param apipAccessibility
+     */
+    public void setApipAccessibility(final ApipAccessibility apipAccessibility) {
+        getNodeGroups().getApipAccessibilityGroup().setApipAccessibility(apipAccessibility);
     }
 }

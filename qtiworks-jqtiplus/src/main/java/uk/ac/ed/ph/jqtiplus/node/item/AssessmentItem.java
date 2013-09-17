@@ -51,6 +51,7 @@ import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.IdentifiableNode;
 import uk.ac.ed.ph.jqtiplus.node.accessibility.ApipAccessibility;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.ApipAccessibilityBearer;
 import uk.ac.ed.ph.jqtiplus.node.content.ItemBody;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
@@ -77,7 +78,7 @@ import javax.xml.XMLConstants;
  * @author David McKain
  * @author Zack Pierce
  */
-public class AssessmentItem extends AbstractNode implements AssessmentObject {
+public class AssessmentItem extends AbstractNode implements AssessmentObject, ApipAccessibilityBearer {
 
     private static final long serialVersionUID = 4723748473878175232L;
 
@@ -349,7 +350,7 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
     }
 
     /**
-     * Gets stylesheet children.
+     * Gets mutable list of stylesheet children.
      *
      * @return stylesheet children
      */
@@ -545,7 +546,7 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
         getNodeGroups().getItemBodyGroup().setItemBody(itemBody);
     }
 
-    /*
+    /**
      * Gets apipAccessibility child
      *
      * @return apipAccessibility child
@@ -553,6 +554,10 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
      */
     public ApipAccessibility getApipAccessibility() {
     	return getNodeGroups().getApipAccessibilityGroup().getApipAccessibility();
+    }
+
+    public void setApipAccessibility(final ApipAccessibility apipAccessibility) {
+        getNodeGroups().getApipAccessibilityGroup().setApipAccessibility(apipAccessibility);
     }
 
     @Override

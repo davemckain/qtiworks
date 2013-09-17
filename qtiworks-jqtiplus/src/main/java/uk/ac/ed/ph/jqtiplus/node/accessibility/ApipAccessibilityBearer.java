@@ -27,37 +27,19 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * This software is derived from (and contains code from) QTItools and MathAssessEngine.
- * QTItools is (c) 2008, University of Southampton.
+ * This software is derived from (and contains code from) QTITools and MathAssessEngine.
+ * QTITools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.group.item;
-
-import uk.ac.ed.ph.jqtiplus.group.SimpleMultipleNodeGroup;
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
-import uk.ac.ed.ph.jqtiplus.node.item.Stylesheet;
-
-import java.util.List;
+package uk.ac.ed.ph.jqtiplus.node.accessibility;
 
 /**
- * Group of stylesheet children.
+ * Interface for elements that may contain an ApipAccessibility child
  *
- * @author Jonathon Hare
+ * @author Zack Pierce
  */
-public final class StylesheetGroup extends SimpleMultipleNodeGroup<QtiNode,Stylesheet> {
+public interface ApipAccessibilityBearer {
+    ApipAccessibility getApipAccessibility();
 
-    private static final long serialVersionUID = 5034925521089538183L;
-
-    public StylesheetGroup(final QtiNode parent) {
-        super(parent, Stylesheet.QTI_CLASS_NAME);
-    }
-
-    public List<Stylesheet> getStylesheets() {
-        return getChildren();
-    }
-
-    @Override
-    public Stylesheet create() {
-        return new Stylesheet(getParent());
-    }
+    void setApipAccessibility(ApipAccessibility apipAccessibility);
 }

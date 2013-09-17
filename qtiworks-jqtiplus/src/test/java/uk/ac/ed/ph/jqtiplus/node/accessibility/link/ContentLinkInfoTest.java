@@ -76,6 +76,7 @@ public class ContentLinkInfoTest {
         paragraph = new P(itemBody);
         itemBody.getNodeGroups().getBlockGroup().getChildren().add(paragraph);
         apipAccessibility = new ApipAccessibility(item);
+        item.setApipAccessibility(apipAccessibility);
         accessibilityInfo = new AccessibilityInfo(apipAccessibility);
         apipAccessibility.setAccessibilityInfo(accessibilityInfo);
         accessElement = new AccessElement(accessibilityInfo);

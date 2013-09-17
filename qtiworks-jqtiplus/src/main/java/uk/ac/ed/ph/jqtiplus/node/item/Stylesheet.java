@@ -37,12 +37,13 @@ package uk.ac.ed.ph.jqtiplus.node.item;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.UriAttribute;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 import java.net.URI;
 
 /**
- * Used to associate an external stylesheet with an assessmentItem.
- * 
+ * Used to associate an external stylesheet with an assessmentItem, assessmentTest, a rubricBlock within an assessmentSection, a feedback block, or a template block.
+ *
  * @author Jonathon Hare
  */
 public class Stylesheet extends AbstractNode {
@@ -64,7 +65,7 @@ public class Stylesheet extends AbstractNode {
     /** Name of title attribute in xml schema. */
     public static final String ATTR_TITLE_NAME = "title";
 
-    public Stylesheet(AssessmentItem parent) {
+    public Stylesheet(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new UriAttribute(this, ATTR_HREF_NAME, true));
@@ -75,7 +76,7 @@ public class Stylesheet extends AbstractNode {
 
     /**
      * Gets value of href attribute.
-     * 
+     *
      * @return value of href attribute
      * @see #setHref
      */
@@ -85,17 +86,17 @@ public class Stylesheet extends AbstractNode {
 
     /**
      * Sets new value of href attribute.
-     * 
+     *
      * @param href new value of href attribute
      * @see #getHref
      */
-    public void setHref(URI href) {
+    public void setHref(final URI href) {
         getAttributes().getUriAttribute(ATTR_HREF_NAME).setValue(href);
     }
 
     /**
      * Gets value of type attribute.
-     * 
+     *
      * @return value of type attribute
      * @see #setType
      */
@@ -105,17 +106,17 @@ public class Stylesheet extends AbstractNode {
 
     /**
      * Sets new value of type attribute.
-     * 
+     *
      * @param type new value of type attribute
      * @see #getType
      */
-    public void setType(String type) {
+    public void setType(final String type) {
         getAttributes().getStringAttribute(ATTR_TYPE_NAME).setValue(type);
     }
 
     /**
      * Gets value of media attribute.
-     * 
+     *
      * @return value of media attribute
      * @see #setMedia
      */
@@ -125,17 +126,17 @@ public class Stylesheet extends AbstractNode {
 
     /**
      * Sets new value of media attribute.
-     * 
+     *
      * @param media new value of media attribute
      * @see #getMedia
      */
-    public void setMedia(String media) {
+    public void setMedia(final String media) {
         getAttributes().getStringAttribute(ATTR_MEDIA_NAME).setValue(media);
     }
 
     /**
      * Gets value of title attribute.
-     * 
+     *
      * @return value of title attribute
      * @see #setTitle
      */
@@ -145,11 +146,11 @@ public class Stylesheet extends AbstractNode {
 
     /**
      * Sets new value of title attribute.
-     * 
+     *
      * @param title new value of title attribute
      * @see #getTitle
      */
-    public void setTitle(String title) {
+    public void setTitle(final String title) {
         getAttributes().getStringAttribute(ATTR_TITLE_NAME).setValue(title);
     }
 }
