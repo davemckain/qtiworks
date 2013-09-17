@@ -38,6 +38,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.group.content.FlowStaticGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
+import uk.ac.ed.ph.jqtiplus.node.ContentContainer;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
@@ -60,7 +61,7 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public class ModalFeedback extends AbstractNode {
+public class ModalFeedback extends AbstractNode implements ContentContainer {
 
     private static final long serialVersionUID = -3911613199124971014L;
 

@@ -38,7 +38,6 @@ import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.link.ContentLinkInfoGroup;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.related.RelatedElementInfoGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.accessibility.link.ContentLinkInfo;
 import uk.ac.ed.ph.jqtiplus.node.accessibility.related.RelatedElementInfo;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
@@ -58,7 +57,7 @@ public class AccessElement extends AbstractNode implements AccessibilityNode {
 
     public static final String ATTR_IDENTIFIER_NAME = "identifier";
 
-    public AccessElement(final QtiNode parent) {
+    public AccessElement(final AccessibilityInfo parent) {
         super(parent, QTI_CLASS_NAME);
         getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME, true));
         getNodeGroups().add(new ContentLinkInfoGroup(this));

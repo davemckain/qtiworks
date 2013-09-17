@@ -36,7 +36,6 @@ package uk.ac.ed.ph.jqtiplus.node.accessibility.related;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.related.LabelledStringGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 /**
  * Container for content relevant to the presentation of braille.
@@ -55,7 +54,7 @@ public class BrailleText extends AbstractNode implements AccessibilityNode {
 
     public static final String ELEM_BRAILLE_TEXT_STRING = "brailleTextString";
 
-    public BrailleText(final QtiNode parent) {
+    public BrailleText(final RelatedElementInfo parent) {
         super(parent, QTI_CLASS_NAME);
         getNodeGroups().add(new LabelledStringGroup(this, ELEM_BRAILLE_TEXT_STRING, true));
     }

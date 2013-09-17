@@ -34,19 +34,19 @@
 package uk.ac.ed.ph.jqtiplus.group.accessibility;
 
 import uk.ac.ed.ph.jqtiplus.group.SimpleMultipleNodeGroup;
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.accessibility.AccessElement;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.AccessibilityInfo;
 
 import java.util.List;
 
 /**
  * @author Zack Pierce
  */
-public class AccessElementGroup extends SimpleMultipleNodeGroup<QtiNode, AccessElement> {
+public class AccessElementGroup extends SimpleMultipleNodeGroup<AccessibilityInfo, AccessElement> {
 
     private static final long serialVersionUID = 8777385626698804683L;
 
-    public AccessElementGroup(final QtiNode parent, final int minimum, final Integer maximum) {
+    public AccessElementGroup(final AccessibilityInfo parent, final int minimum, final Integer maximum) {
         super(parent, AccessElement.QTI_CLASS_NAME, minimum, maximum);
     }
 

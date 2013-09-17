@@ -38,16 +38,23 @@ import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.QtiConstants;
 import uk.ac.ed.ph.jqtiplus.attribute.Attribute;
 import uk.ac.ed.ph.jqtiplus.attribute.ForeignAttribute;
+import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
+import uk.ac.ed.ph.jqtiplus.exception.QtiAttributeException;
 import uk.ac.ed.ph.jqtiplus.group.NodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
+import uk.ac.ed.ph.jqtiplus.node.ContentContainer;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.block.ForeignElement;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
+import uk.ac.ed.ph.jqtiplus.node.content.basic.Content;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.CustomOperator;
+import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.CustomInteraction;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.resolution.RootNodeLookup;
+import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -59,6 +66,7 @@ import java.util.Set;
  * searches of a {@link QtiNode} tree.
  *
  * @author David McKain
+ * @author Zack Pierce
  */
 public final class QueryUtils {
 
@@ -210,7 +218,18 @@ public final class QueryUtils {
         Assert.notNull(startNodes);
         Assert.notNull(handler);
         for (final QtiNode startNode : startNodes) {
-            for (final NodeGroup<?,?> nodeGroup : startNode.getNodeGroups()) {
+            for (final NodeGroup<?, ?> nodeGroup : startNode.getNodeGroups()) {
+                for (final QtiNode childNode : nodeGroup.getChildren()) {
+                    doWalkTree(handler, childNode);
+                }
+            }
+        }
+    }
+
+    private static void doWalkTree(final TreeWalkNodeHandler handler, final QtiNode currentNode) {
+        final boolean descend = handler.handleNode(currentNode);
+        if (descend) {
+            for (final NodeGroup<?, ?> nodeGroup : currentNode.getNodeGroups()) {
                 for (final QtiNode childNode : nodeGroup.getChildren()) {
                     doWalkTree(handler, childNode);
                 }
@@ -259,14 +278,80 @@ public final class QueryUtils {
         return null;
     }
 
-    private static void doWalkTree(final TreeWalkNodeHandler handler, final QtiNode currentNode) {
-        final boolean descend = handler.handleNode(currentNode);
-        if (descend) {
-            for (final NodeGroup<?,?> nodeGroup : currentNode.getNodeGroups()) {
-                for (final QtiNode childNode : nodeGroup.getChildren()) {
-                    doWalkTree(handler, childNode);
+    /**
+     * Finds the content container associated with the AccessibilityNode's ApipAccessibility data.
+     *
+     * @see ContentContainer
+     */
+    public static <A extends QtiNode & AccessibilityNode> ContentContainer findRelatedTopLevelContentContainer(final A accessibilityNode) {
+        Assert.notNull(accessibilityNode);
+        QtiNode parent = accessibilityNode.getParent();
+        while (parent != null) {
+            if (parent instanceof ContentContainer) {
+                return (ContentContainer) parent;
+            }
+            else if (parent instanceof AssessmentItem) {
+                return ((AssessmentItem) parent).getItemBody();
+            }
+            parent = parent.getParent();
+        }
+        return null;
+    }
+
+    /**
+     * Finds the QTI {@link Content} node with an "id" attribute that matches the supplied <tt>id</tt>.
+     * @param node
+     * @param id
+     * @return <tt>null</tt> if no matching element found.
+     */
+    public static Content findQtiDescendantOrSelf(final QtiNode node, final String id) {
+        Assert.notNull(node);
+        Assert.notNull(id);
+        final QtiContentIdDescendentSearchHandler handler = new QtiContentIdDescendentSearchHandler(id);
+        doWalkTree(handler, node);
+        return handler.getFoundNode();
+    }
+
+    private static final class QtiContentIdDescendentSearchHandler implements TreeWalkNodeHandler {
+
+        public QtiContentIdDescendentSearchHandler(final String searchId) {
+            this.searchId = searchId;
+        }
+
+        private final String searchId;
+        private Content found;
+
+        @Override
+        public boolean handleNode(final QtiNode node) {
+            if (found != null) {
+                // Target found elsewhere in tree already
+                return false;
+            }
+            if (node instanceof AccessibilityNode) {
+                // ZP : No need to search deeper within accessibility nodes, since we're looking for QTI content nodes
+                return false;
+            }
+            if (!(node instanceof Content)) {
+                return false;
+            }
+            final Content contentNode = (Content) node;
+            try {
+                final IdentifierAttribute idAttribute = contentNode.getAttributes().getIdentifierAttribute("id");
+                final Identifier identifier = idAttribute.getValue();
+                if (identifier != null && searchId.equals(identifier.toString())) {
+                    found = contentNode;
+                    return false;
                 }
             }
+            catch (final QtiAttributeException e) {
+                return true;
+            }
+            /* Keep searching deeper */
+            return true;
+        }
+
+        public Content getFoundNode() {
+            return found;
         }
     }
 

@@ -34,11 +34,14 @@
 package uk.ac.ed.ph.jqtiplus.node.accessibility.link;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierReferenceAttribute;
+import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.link.LinkGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
+import uk.ac.ed.ph.jqtiplus.node.ContentContainer;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.AccessElement;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.utils.QueryUtils;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 
 /**
@@ -56,19 +59,27 @@ public class ContentLinkInfo extends AbstractNode implements AccessibilityNode {
 
     private static final String ATTR_QTI_LINK_IDENTIFIER_REF = "qtiLinkIdentifierRef";
 
-    public ContentLinkInfo(final QtiNode parent) {
+    public ContentLinkInfo(final AccessElement parent) {
         super(parent, QTI_CLASS_NAME);
-        getAttributes().add(new IdentifierReferenceAttribute(this, ATTR_QTI_LINK_IDENTIFIER_REF, false));
+        getAttributes().add(new StringAttribute(this, ATTR_QTI_LINK_IDENTIFIER_REF, false));
         getAttributes().add(new IdentifierReferenceAttribute(this, ATTR_APIP_LINK_IDENTIFIER_REF, false));
         getNodeGroups().add(new LinkGroup(this));
     }
 
-    public Identifier getQtiLinkIdentifierRef() {
-        return getAttributes().getIdentifierRefAttribute(ATTR_QTI_LINK_IDENTIFIER_REF).getValue();
+    public String getQtiLinkIdentifierRef() {
+        return getAttributes().getStringAttribute(ATTR_QTI_LINK_IDENTIFIER_REF).getValue();
+    }
+
+    public void setQtiLinkIdentifierRef(final String identifier) {
+        getAttributes().getStringAttribute(ATTR_QTI_LINK_IDENTIFIER_REF).setValue(identifier);
     }
 
     public Identifier getApipLinkIdentifierRef() {
         return getAttributes().getIdentifierRefAttribute(ATTR_APIP_LINK_IDENTIFIER_REF).getValue();
+    }
+
+    public void setApipLinkIdentifierRef(final Identifier identifier) {
+        getAttributes().getIdentifierRefAttribute(ATTR_APIP_LINK_IDENTIFIER_REF).setValue(identifier);
     }
 
     /**
@@ -79,10 +90,30 @@ public class ContentLinkInfo extends AbstractNode implements AccessibilityNode {
     }
 
     /**
+     * Sets this ContentLink to have an ObjectLink, deleting or replacing any existent ObjectLink or TextLink child.
+     *
+     * If the supplied objectLink is null, any existing child will simply be deleted.
+     * @param objectLink
+     */
+    public void setObjectLink(final ObjectLink objectLink) {
+        getNodeGroups().getLinkGroup().setObjectLink(objectLink);
+    }
+
+    /**
      * @return the optional {@link TextLink} child, or null if it does not exist.
      */
     public TextLink getTextLink() {
         return getNodeGroups().getLinkGroup().getTextLink();
+    }
+
+    /**
+     * Sets this ContentLink to have an TextLink, deleting or replacing any existent ObjectLink or TextLink child.
+     *
+     * If the supplied textLink is null, any existing child will simply be deleted.
+     * @param textLink
+     */
+    public void setTextLink(final TextLink textLink) {
+        getNodeGroups().getLinkGroup().setTextLink(textLink);
     }
 
     /*
@@ -92,7 +123,29 @@ public class ContentLinkInfo extends AbstractNode implements AccessibilityNode {
      */
     @Override
     protected void validateThis(final ValidationContext context) {
-        // TODO : validate that either the qtiLinkIdentifierRef or the apipLinkIdentifierRef attribute has a value
         super.validateThis(context);
+        final String qtiIdRef = getQtiLinkIdentifierRef();
+        if (qtiIdRef == null && getApipLinkIdentifierRef() == null) {
+            context.fireValidationError(
+                    this,
+                    QTI_CLASS_NAME
+                            + " must have either the qtiLinkIdentifierRef or apipLinkIdentifierRef specified, but both are null.");
+        }
+        else if (qtiIdRef != null) {
+            if (getApipLinkIdentifierRef() != null) {
+                context.fireValidationError(
+                        this,
+                        QTI_CLASS_NAME
+                                + " must only have either qtiLinkIdentifierRef or apipLinkIdentifierRef specified, but not both.");
+            }
+            final ContentContainer container = QueryUtils.findRelatedTopLevelContentContainer(this);
+            if (container == null) {
+                context.fireValidationError(this, "No QTI content container found associated with this accessibility metadata");
+            }
+            else if (QueryUtils.findQtiDescendantOrSelf(container, qtiIdRef) == null) {
+                context.fireValidationError(this, QTI_CLASS_NAME + " with " + ATTR_QTI_LINK_IDENTIFIER_REF + " of '"
+                        + qtiIdRef + "' does not point to an extant Qti content element.");
+            }
+        }
     }
 }

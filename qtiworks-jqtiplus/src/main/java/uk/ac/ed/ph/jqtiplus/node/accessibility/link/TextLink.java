@@ -36,7 +36,6 @@ package uk.ac.ed.ph.jqtiplus.node.accessibility.link;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.link.StringLinkGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 /**
  * A link to the textual portion of the identifier-referenced content element.
@@ -55,7 +54,7 @@ public class TextLink extends AbstractNode implements Link, AccessibilityNode {
 
     public static final String QTI_CLASS_NAME = "textLink";
 
-    public TextLink(final QtiNode parent) {
+    public TextLink(final ContentLinkInfo parent) {
         super(parent, QTI_CLASS_NAME);
         getNodeGroups().add(new StringLinkGroup(this));
     }

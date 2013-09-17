@@ -38,7 +38,6 @@ import uk.ac.ed.ph.jqtiplus.group.accessibility.companion.MajorIncrementLinearUS
 import uk.ac.ed.ph.jqtiplus.group.accessibility.companion.MinimumLengthGroup;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.companion.MinorIncrementLinearUSGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 /**
  * FIXME: Document this type
@@ -51,7 +50,7 @@ public class RuleSystemUS extends AbstractNode implements LinearRuleSystem, Acce
 
     public static final String QTI_CLASS_NAME = "ruleSystemUS";
 
-    public RuleSystemUS(final QtiNode parent) {
+    public RuleSystemUS(final Rule parent) {
         super(parent, QTI_CLASS_NAME);
         getNodeGroups().add(new MinimumLengthGroup(this));
         getNodeGroups().add(new MinorIncrementLinearUSGroup(this));

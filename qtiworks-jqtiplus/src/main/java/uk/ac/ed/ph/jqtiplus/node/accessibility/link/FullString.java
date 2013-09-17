@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.jqtiplus.node.accessibility.link;
 
 import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.accessibility.EmptyElement;
 
 /**
@@ -48,7 +47,7 @@ public class FullString extends EmptyElement implements StringLink, Accessibilit
 
     public static final String QTI_CLASS_NAME = "fullString";
 
-    public FullString(final QtiNode parent) {
+    public FullString(final TextLink parent) {
         super(parent, QTI_CLASS_NAME);
     }
 

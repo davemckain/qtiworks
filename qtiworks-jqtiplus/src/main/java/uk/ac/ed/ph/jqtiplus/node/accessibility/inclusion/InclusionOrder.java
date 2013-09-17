@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.accessibility.inclusion;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.inclusion.StandardElementOrderListGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.ApipAccessibility;
 
 /**
  * FIXME: Document this type
@@ -49,7 +49,7 @@ public class InclusionOrder extends AbstractNode implements AccessibilityNode {
 
     public static final String QTI_CLASS_NAME = "inclusionOrder";
 
-    public InclusionOrder(final QtiNode parent) {
+    public InclusionOrder(final ApipAccessibility parent) {
         super(parent, QTI_CLASS_NAME);
         getNodeGroups().add(new StandardElementOrderListGroup(this));
         // TODO : extension point for 3rd party lists...

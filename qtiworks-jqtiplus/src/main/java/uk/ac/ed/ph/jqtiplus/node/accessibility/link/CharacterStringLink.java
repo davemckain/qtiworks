@@ -36,7 +36,6 @@ package uk.ac.ed.ph.jqtiplus.node.accessibility.link;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxDocumentFirer;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlParseUtils;
 
@@ -58,7 +57,7 @@ public class CharacterStringLink extends AbstractNode implements StringLink, Acc
 
     private Integer stopCharacter;
 
-    public CharacterStringLink(final QtiNode parent) {
+    public CharacterStringLink(final TextLink parent) {
         super(parent, QTI_CLASS_NAME);
     }
 

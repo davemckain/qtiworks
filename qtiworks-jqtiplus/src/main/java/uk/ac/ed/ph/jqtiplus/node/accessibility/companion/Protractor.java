@@ -37,7 +37,6 @@ import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.companion.DescriptionGroup;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.companion.RadialIncrementSystemGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 /**
  * FIXME: Document this type
@@ -50,7 +49,7 @@ public class Protractor extends AbstractNode implements CompanionMaterial, Acces
 
     public static final String QTI_CLASS_NAME = "protractor";
 
-    public Protractor(final QtiNode parent) {
+    public Protractor(final CompanionMaterialsInfo parent) {
         super(parent, QTI_CLASS_NAME);
         getNodeGroups().add(new DescriptionGroup(this, true));
         getNodeGroups().add(new RadialIncrementSystemGroup(this));

@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.jqtiplus.node.accessibility.companion;
 
 import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.accessibility.FileInfo;
 
 /**
@@ -48,7 +47,7 @@ public class DigitalMaterial extends FileInfo implements CompanionMaterial, Acce
 
     public static final String QTI_CLASS_NAME = "digitalMaterial";
 
-    public DigitalMaterial(final QtiNode parent) {
+    public DigitalMaterial(final CompanionMaterialsInfo parent) {
         super(parent, QTI_CLASS_NAME, false);
     }
 }

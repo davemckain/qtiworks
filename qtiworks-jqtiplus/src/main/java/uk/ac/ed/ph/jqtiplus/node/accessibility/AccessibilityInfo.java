@@ -36,7 +36,6 @@ package uk.ac.ed.ph.jqtiplus.node.accessibility;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessElementGroup;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 import java.util.List;
 
@@ -51,11 +50,15 @@ public class AccessibilityInfo extends AbstractNode implements AccessibilityNode
 
     public static final String QTI_CLASS_NAME = "accessibilityInfo";
 
-    public AccessibilityInfo(final QtiNode parent) {
+    public AccessibilityInfo(final ApipAccessibility parent) {
         super(parent, QTI_CLASS_NAME);
         getNodeGroups().add(new AccessElementGroup(this, 1, null));
     }
 
+    /**
+     *
+     * @return A mutable list of {@link AccessElement}s.
+     */
     public List<AccessElement> getAccessElements() {
         return getNodeGroups().getAccessElementGroup().getAccessElements();
     }

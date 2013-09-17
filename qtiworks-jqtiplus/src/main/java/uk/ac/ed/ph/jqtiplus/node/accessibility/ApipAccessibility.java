@@ -38,14 +38,28 @@ import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.companion.CompanionMaterialsInfoGroup;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.inclusion.InclusionOrderGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
+import uk.ac.ed.ph.jqtiplus.node.ContentContainer;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.accessibility.companion.CompanionMaterialsInfo;
 import uk.ac.ed.ph.jqtiplus.node.accessibility.inclusion.InclusionOrder;
+import uk.ac.ed.ph.jqtiplus.node.content.ItemBody;
+import uk.ac.ed.ph.jqtiplus.node.content.variable.RubricBlock;
+import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
+import uk.ac.ed.ph.jqtiplus.node.item.ModalFeedback;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentSection;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.node.test.TestFeedback;
+import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
+import uk.ac.ed.ph.jqtiplus.utils.QueryUtils;
 
 import java.util.List;
 
 /**
- * FIXME: Document this type
+ * Holds all of the accessibility metadata related to a given top-level {@link ContentContainer}
+ *
+ * <p>A given ApipAccessibility may be related to an {@link AssessmentItem}'s {@link ItemBody},
+ * {@link ModalFeedback}, one of an {@link AssessmentSection}'s {@link RubricBlock}s, or a
+ * {@link TestFeedback} element found within an {@link AssessmentTest} or its {@link TestPart}s.</p>
  *
  * @author Zack Pierce
  */
@@ -60,8 +74,6 @@ public class ApipAccessibility extends AbstractNode implements AccessibilityNode
         getNodeGroups().add(new CompanionMaterialsInfoGroup(this));
         getNodeGroups().add(new InclusionOrderGroup(this));
         getNodeGroups().add(new AccessibilityInfoGroup(this));
-
-        // TODO - XML namespace related serialization handling
     }
 
     public CompanionMaterialsInfo getCompanionMaterialsInfo() {
@@ -88,5 +100,16 @@ public class ApipAccessibility extends AbstractNode implements AccessibilityNode
     public List<AccessElement> getAccessElements() {
         final AccessibilityInfo accessibilityInfo = getAccessibilityInfo();
         return accessibilityInfo != null ? accessibilityInfo.getAccessElements() : null;
+    }
+
+    /**
+     * Searches through its ancestors and the root document to find the content container element
+     * which this accessibility data is intended to assist.
+     *
+     * @see ContentContainer
+     * @return
+     */
+    public ContentContainer getRelatedContentContainer() {
+        return QueryUtils.findRelatedTopLevelContentContainer(this);
     }
 }

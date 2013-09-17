@@ -36,7 +36,6 @@ package uk.ac.ed.ph.jqtiplus.node.accessibility.related;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.related.DefinitionIdGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 import java.util.List;
 
@@ -54,7 +53,7 @@ public class KeyWordTranslation extends AbstractNode implements AccessibilityNod
     private static final long serialVersionUID = -5539729363209564169L;
     public static final String QTI_CLASS_NAME = "keyWordTranslation";
 
-    public KeyWordTranslation(final QtiNode parent) {
+    public KeyWordTranslation(final RelatedElementInfo parent) {
         super(parent, QTI_CLASS_NAME);
         getNodeGroups().add(new DefinitionIdGroup(this));
     }

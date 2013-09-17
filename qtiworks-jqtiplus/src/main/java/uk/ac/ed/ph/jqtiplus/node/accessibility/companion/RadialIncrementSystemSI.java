@@ -37,7 +37,6 @@ import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.companion.MajorIncrementRadialSIGroup;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.companion.MinorIncrementRadialSIGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 /**
  * FIXME: Document this type
@@ -50,7 +49,7 @@ public class RadialIncrementSystemSI extends AbstractNode implements RadialIncre
 
     public static final String QTI_CLASS_NAME = "incrementSI";
 
-    public RadialIncrementSystemSI(final QtiNode parent) {
+    public RadialIncrementSystemSI(final Protractor parent) {
         super(parent, QTI_CLASS_NAME);
         getNodeGroups().add(new MinorIncrementRadialSIGroup(this));
         getNodeGroups().add(new MajorIncrementRadialSIGroup(this));

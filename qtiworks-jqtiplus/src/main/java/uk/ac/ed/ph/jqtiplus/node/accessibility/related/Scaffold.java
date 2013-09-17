@@ -37,7 +37,6 @@ import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.related.ScaffoldBehaviorGroup;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.related.SingleIntegerElementGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.accessibility.inclusion.InclusionOrder;
 
 /**
@@ -53,7 +52,7 @@ public class Scaffold extends AbstractNode implements AccessibilityNode {
 
     private static final String ELEM_REVEAL_ORDER = "revealOrder";
 
-    public Scaffold(final QtiNode parent) {
+    public Scaffold(final RelatedElementInfo parent) {
         super(parent, QTI_CLASS_NAME);
         getNodeGroups().add(new SingleIntegerElementGroup(this, ELEM_REVEAL_ORDER, true));
         getNodeGroups().add(new ScaffoldBehaviorGroup(this));

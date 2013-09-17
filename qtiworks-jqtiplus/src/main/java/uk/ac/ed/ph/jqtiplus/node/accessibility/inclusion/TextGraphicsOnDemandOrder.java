@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.jqtiplus.node.accessibility.inclusion;
 
 import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 /**
  * FIXME: Document this type
@@ -47,7 +46,7 @@ public class TextGraphicsOnDemandOrder extends ElementOrderList implements Acces
 
     public static final String QTI_CLASS_NAME = "textGraphicsOnDemandOrder";
 
-    public TextGraphicsOnDemandOrder(final QtiNode parent) {
+    public TextGraphicsOnDemandOrder(final InclusionOrder parent) {
         super(parent, QTI_CLASS_NAME);
     }
 

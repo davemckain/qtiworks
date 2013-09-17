@@ -35,6 +35,7 @@ package uk.ac.ed.ph.jqtiplus.node.content.variable;
 
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.ViewMultipleAttribute;
 import uk.ac.ed.ph.jqtiplus.group.content.BlockGroup;
+import uk.ac.ed.ph.jqtiplus.node.ContentContainer;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.AbstractFlowBodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Block;
@@ -49,7 +50,7 @@ import java.util.List;
  * @author Jonathon Hare
  * @author Jiri Kajaba
  */
-public final class RubricBlock extends AbstractFlowBodyElement implements SimpleBlock {
+public final class RubricBlock extends AbstractFlowBodyElement implements SimpleBlock, ContentContainer {
 
     private static final long serialVersionUID = -531414949035924206L;
 

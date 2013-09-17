@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.jqtiplus.node.accessibility.companion;
 
 import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.accessibility.SingleEnumerateElement;
 
 /**
@@ -48,7 +47,7 @@ public class CalculatorType extends SingleEnumerateElement<CalculatorTypeType> i
 
     public static final String QTI_CLASS_NAME = "calculatorType";
 
-    public CalculatorType(final QtiNode parent) {
+    public CalculatorType(final Calculator parent) {
         super(parent, QTI_CLASS_NAME, null);
     }
 

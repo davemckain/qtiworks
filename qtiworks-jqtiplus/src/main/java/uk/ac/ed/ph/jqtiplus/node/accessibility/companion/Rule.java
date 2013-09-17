@@ -37,7 +37,6 @@ import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.companion.DescriptionGroup;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.companion.LinearRuleSystemGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 /**
  * FIXME: Document this type
@@ -50,7 +49,7 @@ public class Rule extends AbstractNode implements CompanionMaterial, Accessibili
 
     public static final String QTI_CLASS_NAME = "rule";
 
-    public Rule(final QtiNode parent) {
+    public Rule(final CompanionMaterialsInfo parent) {
         super(parent, QTI_CLASS_NAME);
         getNodeGroups().add(new DescriptionGroup(this, true));
         getNodeGroups().add(new LinearRuleSystemGroup(this));

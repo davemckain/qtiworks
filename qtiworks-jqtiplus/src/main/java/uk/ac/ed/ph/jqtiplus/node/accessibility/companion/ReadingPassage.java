@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.jqtiplus.node.accessibility.companion;
 
 import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.accessibility.FileInfo;
 
 /**
@@ -48,7 +47,7 @@ public class ReadingPassage extends FileInfo implements CompanionMaterial, Acces
 
     public static final String QTI_CLASS_NAME = "readingPassage";
 
-    public ReadingPassage(final QtiNode parent) {
+    public ReadingPassage(final CompanionMaterialsInfo parent) {
         super(parent, QTI_CLASS_NAME, false);
     }
 

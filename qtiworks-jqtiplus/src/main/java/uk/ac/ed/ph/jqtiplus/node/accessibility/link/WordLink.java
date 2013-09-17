@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.jqtiplus.node.accessibility.link;
 
 import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.accessibility.SingleIntegerElement;
 
 /**
@@ -48,7 +47,7 @@ public class WordLink extends SingleIntegerElement implements StringLink, Access
 
     public static final String QTI_CLASS_NAME = "wordLink";
 
-    public WordLink(final QtiNode parent) {
+    public WordLink(final TextLink parent) {
         super(parent, QTI_CLASS_NAME);
     }
 

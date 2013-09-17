@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.group.accessibility.companion;
 
 import uk.ac.ed.ph.jqtiplus.group.SimpleSingleNodeGroup;
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.companion.LinearRuleSystem;
 import uk.ac.ed.ph.jqtiplus.node.accessibility.companion.MinimumLength;
 import uk.ac.ed.ph.jqtiplus.node.accessibility.companion.RuleSystemSI;
 import uk.ac.ed.ph.jqtiplus.node.accessibility.companion.RuleSystemUS;
@@ -45,17 +45,17 @@ import uk.ac.ed.ph.jqtiplus.node.accessibility.companion.RuleSystemUS;
  *
  * @author Zack Pierce
  */
-public class MinimumLengthGroup extends SimpleSingleNodeGroup<QtiNode, MinimumLength> {
+public class MinimumLengthGroup extends SimpleSingleNodeGroup<LinearRuleSystem, MinimumLength> {
 
     private static final long serialVersionUID = 8992512545348461072L;
 
-    public MinimumLengthGroup(final QtiNode parent) {
+    public MinimumLengthGroup(final LinearRuleSystem parent) {
         super(parent, MinimumLength.QTI_CLASS_NAME, true);
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see uk.ac.ed.ph.jqtiplus.group.SimpleSingleNodeGroup#create()
      */
     @Override

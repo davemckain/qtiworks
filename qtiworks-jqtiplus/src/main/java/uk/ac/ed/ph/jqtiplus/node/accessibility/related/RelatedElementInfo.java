@@ -47,7 +47,7 @@ import uk.ac.ed.ph.jqtiplus.group.accessibility.related.SpokenGroup;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.related.StructuredMaskGroup;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.related.TactileFileGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.AccessElement;
 
 /**
  * Container for all actual accessibility metacontent within a given accessElement
@@ -60,7 +60,7 @@ public class RelatedElementInfo extends AbstractNode implements AccessibilityNod
 
     public static final String QTI_CLASS_NAME = "relatedElementInfo";
 
-    public RelatedElementInfo(final QtiNode parent) {
+    public RelatedElementInfo(final AccessElement parent) {
         super(parent, QTI_CLASS_NAME);
         getNodeGroups().add(new SpokenGroup(this));
         getNodeGroups().add(new BrailleTextGroup(this));

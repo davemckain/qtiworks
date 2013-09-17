@@ -36,7 +36,6 @@ package uk.ac.ed.ph.jqtiplus.node.accessibility.inclusion;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.inclusion.ElementOrderGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 import java.util.List;
 
@@ -49,7 +48,7 @@ public abstract class ElementOrderList extends AbstractNode implements Accessibi
 
     private static final long serialVersionUID = 4302185581837683599L;
 
-    public ElementOrderList(final QtiNode parent, final String qtiClassName) {
+    public ElementOrderList(final InclusionOrder parent, final String qtiClassName) {
         super(parent, qtiClassName);
         getNodeGroups().add(new ElementOrderGroup(this));
     }

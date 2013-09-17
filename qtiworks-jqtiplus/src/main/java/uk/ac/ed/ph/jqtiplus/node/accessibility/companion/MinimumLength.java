@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.jqtiplus.node.accessibility.companion;
 
 import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.accessibility.SingleIntegerElement;
 
 /**
@@ -48,7 +47,7 @@ public class MinimumLength extends SingleIntegerElement implements Accessibility
 
     public static final String QTI_CLASS_NAME = "minimumLength";
 
-    public MinimumLength(final QtiNode parent) {
+    public MinimumLength(final LinearRuleSystem parent) {
         super(parent, QTI_CLASS_NAME);
     }
 

@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.jqtiplus.node.accessibility.companion;
 
 import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 /**
  * FIXME: Document this type
@@ -47,7 +46,7 @@ public class MajorIncrementLinearUS extends DecimalUnitElement<LinearUnitUS> imp
 
     public static final String QTI_CLASS_NAME = "majorIncrement";
 
-    public MajorIncrementLinearUS(final QtiNode parent) {
+    public MajorIncrementLinearUS(final RuleSystemUS parent) {
         super(parent, QTI_CLASS_NAME);
     }
 

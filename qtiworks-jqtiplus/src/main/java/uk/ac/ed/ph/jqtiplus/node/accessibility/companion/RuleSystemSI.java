@@ -38,7 +38,6 @@ import uk.ac.ed.ph.jqtiplus.group.accessibility.companion.MajorIncrementLinearSI
 import uk.ac.ed.ph.jqtiplus.group.accessibility.companion.MinimumLengthGroup;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.companion.MinorIncrementLinearSIGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 /**
  * Linear measurement system using SI standards for a Rule material.
@@ -51,7 +50,7 @@ public class RuleSystemSI extends AbstractNode implements LinearRuleSystem, Acce
 
     public static final String QTI_CLASS_NAME = "ruleSystemSI";
 
-    public RuleSystemSI(final QtiNode parent) {
+    public RuleSystemSI(final Rule parent) {
         super(parent, QTI_CLASS_NAME);
         getNodeGroups().add(new MinimumLengthGroup(this));
         getNodeGroups().add(new MinorIncrementLinearSIGroup(this));

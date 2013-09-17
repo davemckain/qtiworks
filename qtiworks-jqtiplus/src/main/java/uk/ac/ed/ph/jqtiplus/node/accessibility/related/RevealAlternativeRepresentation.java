@@ -40,7 +40,6 @@ import uk.ac.ed.ph.jqtiplus.group.accessibility.related.MarkupFileEmbeddedGroup;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.related.ObjectFileInfoGroup;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.related.VideoFileInfoGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 import java.util.List;
 
@@ -59,7 +58,7 @@ public class RevealAlternativeRepresentation extends AbstractNode implements Acc
     private static final long serialVersionUID = -9063030312836472390L;
     public static final String QTI_CLASS_NAME = "revealAlternativeRepresentation";
 
-    public RevealAlternativeRepresentation(final QtiNode parent) {
+    public RevealAlternativeRepresentation(final RelatedElementInfo parent) {
         super(parent, QTI_CLASS_NAME);
         getNodeGroups().add(new AudioFileInfoGroup(this, 1));
         getNodeGroups().add(new VideoFileInfoGroup(this, false));

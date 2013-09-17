@@ -37,7 +37,6 @@ import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.related.AudioFileInfoGroup;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.related.LabelledStringGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 import java.util.List;
 
@@ -56,7 +55,7 @@ public class TactileFile extends AbstractNode implements AccessibilityNode {
 
     public static final String ELEM_TACTILE_BRAILLE_TEXT = "tactileBrailleText";
 
-    public TactileFile(final QtiNode parent) {
+    public TactileFile(final RelatedElementInfo parent) {
         super(parent, QTI_CLASS_NAME);
         getNodeGroups().add(new AudioFileInfoGroup(this, ELEM_TACTILE_AUDIO_FILE, 1));
         getNodeGroups().add(new LabelledStringGroup(this, ELEM_TACTILE_AUDIO_TEXT, true));

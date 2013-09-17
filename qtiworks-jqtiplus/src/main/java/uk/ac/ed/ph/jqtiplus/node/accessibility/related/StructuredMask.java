@@ -36,7 +36,6 @@ package uk.ac.ed.ph.jqtiplus.node.accessibility.related;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxDocumentFirer;
 import uk.ac.ed.ph.jqtiplus.types.DataTypeBinder;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlParseUtils;
@@ -63,7 +62,7 @@ public class StructuredMask extends AbstractNode implements AccessibilityNode {
 
     private Boolean answerOption;
 
-    public StructuredMask(final QtiNode parent) {
+    public StructuredMask(final RelatedElementInfo parent) {
         super(parent, QTI_CLASS_NAME);
     }
 

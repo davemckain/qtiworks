@@ -74,7 +74,7 @@ public class StringLinkGroup extends ComplexNodeGroup<TextLink, StringLink> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see uk.ac.ed.ph.jqtiplus.group.NodeGroup#create(java.lang.String)
      */
     @Override

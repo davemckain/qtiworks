@@ -31,24 +31,30 @@
  * QTITools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.node.accessibility.link;
+package uk.ac.ed.ph.jqtiplus.node;
 
-import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
-import uk.ac.ed.ph.jqtiplus.node.accessibility.EmptyElement;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.ApipAccessibility;
+import uk.ac.ed.ph.jqtiplus.node.content.ItemBody;
+import uk.ac.ed.ph.jqtiplus.node.content.variable.RubricBlock;
+import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
+import uk.ac.ed.ph.jqtiplus.node.item.ModalFeedback;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentSection;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.node.test.TestFeedback;
 
 /**
- * A link to the entirety of the identifier-referenced content element.
+ * A marker interface for the top-level elements that can contain presentation content.
+ *
+ * <p>Every top-level content container is associated with one possible {@link ApipAccessibility} node.</p>
+ *
+ * <ul>
+ * <li>In {@link AssessmentItem} , the ContentContainers are {@link ItemBody} and {@link ModalFeedback}</li>
+ * <li>In {@link AssessmentSection} , the only ContentContainer is {@link RubricBlock}</li>
+ * <li>In {@link AssessmentTest}, the only ContentContainer is {@link TestFeedback}</li>
+ * </ul>
  *
  * @author Zack Pierce
  */
-public class ObjectLink extends EmptyElement implements Link, AccessibilityNode {
-
-    private static final long serialVersionUID = 4938414147445323246L;
-
-    public static final String QTI_CLASS_NAME = "objectLink";
-
-    public ObjectLink(final ContentLinkInfo parent) {
-        super(parent, QTI_CLASS_NAME);
-    }
+public interface ContentContainer extends QtiNode {
 
 }

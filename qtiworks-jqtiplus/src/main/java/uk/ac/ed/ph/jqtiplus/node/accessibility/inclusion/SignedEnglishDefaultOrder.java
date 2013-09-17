@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.jqtiplus.node.accessibility.inclusion;
 
 import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 /**
  * FIXME: Document this type
@@ -47,7 +46,7 @@ public class SignedEnglishDefaultOrder extends ElementOrderList implements Acces
 
     public static final String QTI_CLASS_NAME = "signedEnglishDefaultOrder";
 
-    public SignedEnglishDefaultOrder(final QtiNode parent) {
+    public SignedEnglishDefaultOrder(final InclusionOrder parent) {
         super(parent, QTI_CLASS_NAME);
     }
 

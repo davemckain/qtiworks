@@ -37,7 +37,6 @@ import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.related.AudioFileInfoGroup;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.related.LabelledStringGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 import java.util.List;
 
@@ -54,7 +53,7 @@ public class Spoken extends AbstractNode implements AccessibilityNode {
     public static final String ELEM_SPOKEN_TEXT = "spokenText";
     public static final String ELEM_TEXT_TO_SPEECH_PRONUNCIATION = "textToSpeechPronunciation";
 
-    public Spoken(final QtiNode parent) {
+    public Spoken(final RelatedElementInfo parent) {
         super(parent, QTI_CLASS_NAME);
         getNodeGroups().add(new AudioFileInfoGroup(this, null));
         getNodeGroups().add(new LabelledStringGroup(this, ELEM_SPOKEN_TEXT, false));

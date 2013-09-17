@@ -36,7 +36,6 @@ package uk.ac.ed.ph.jqtiplus.node.accessibility.related;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.group.accessibility.related.GuidanceSupportGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 /**
  * Container for the content to provide guidance through the original material.
@@ -54,7 +53,7 @@ public class Guidance extends AbstractNode implements AccessibilityNode {
 
     public static final String QTI_CLASS_NAME = "guidance";
 
-    public Guidance(final QtiNode parent) {
+    public Guidance(final RelatedElementInfo parent) {
         super(parent, QTI_CLASS_NAME);
         getNodeGroups().add(new GuidanceSupportGroup(this, ELEM_LANGUAGE_LEARNER_SUPPORT));
         getNodeGroups().add(new GuidanceSupportGroup(this, ELEM_COGNITIVE_GUIDANCE_SUPPORT));

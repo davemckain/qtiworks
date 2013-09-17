@@ -69,7 +69,7 @@ public class LinkGroup extends ComplexNodeGroup<ContentLinkInfo, Link> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see uk.ac.ed.ph.jqtiplus.group.NodeGroup#create(java.lang.String)
      */
     @Override
@@ -91,10 +91,36 @@ public class LinkGroup extends ComplexNodeGroup<ContentLinkInfo, Link> {
     }
 
     /**
+     * Sets the Link child to be an ObjectLink, deleting or replacing any existent child.
+     *
+     * If the supplied objectLink is null, any existing child will simply be deleted.
+     * @param objectLink
+     */
+    public void setObjectLink(final ObjectLink objectLink) {
+        children.clear();
+        if (objectLink != null) {
+            children.add(objectLink);
+        }
+    }
+
+    /**
      * @return {@link TextLink} child, or null if it does not exist.
      */
     public TextLink getTextLink() {
         return QueryUtils.findFirstShallowInstance(TextLink.class, children);
+    }
+
+    /**
+     * Sets the Link child to be a TextLink, deleting or replacing any existent child.
+     *
+     * If the supplied textLink is null, any existing child will simply be deleted.
+     * @param textLink
+     */
+    public void setTextLink(final TextLink textLink) {
+        children.clear();
+        if (textLink != null) {
+            children.add(textLink);
+        }
     }
 
 }

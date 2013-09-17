@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.jqtiplus.node.accessibility.link;
 
 import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.accessibility.SingleIntegerElement;
 
 /**
@@ -48,7 +47,7 @@ public class CharacterLink extends SingleIntegerElement implements StringLink, A
 
     public static final String QTI_CLASS_NAME = "characterLink";
 
-    public CharacterLink(final QtiNode parent) {
+    public CharacterLink(final TextLink parent) {
         super(parent, QTI_CLASS_NAME);
     }
 

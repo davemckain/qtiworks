@@ -366,9 +366,10 @@ public final class QtiSaxDocumentFirer {
      * @param content
      */
     public void fireSimpleElement(final String localName, final String content) throws SAXException {
-        this.fireStartElement(content, localName, lastOpenedNamespaceUri, null);
+        final String namespaceUri = lastOpenedNamespaceUri != null ? lastOpenedNamespaceUri : "";
+        this.fireStartElement(content, localName, namespaceUri, null);
         this.fireText(content);
-        this.fireEndElement(content, localName, lastOpenedNamespaceUri);
+        this.fireEndElement(content, localName, namespaceUri);
     }
 
     //-----------------------------------------------
