@@ -328,13 +328,24 @@ public class CandidateItemDeliveryService {
         }
 
         /* Record current result state, or close session */
+        return updateSessionClosedStatus(candidateSession, itemSessionController);
+    }
+
+    private CandidateSession updateSessionClosedStatus(final CandidateSession candidateSession,
+            final ItemSessionController itemSessionController) {
+        /* Record current result state, or close session */
+        final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
         if (itemSessionState.isEnded()) {
             candidateSessionCloser.closeCandidateItemSession(candidateSession, itemSessionController);
         }
         else {
             candidateDataService.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
+            if (candidateSession.isClosed()) {
+                /* (Change to session closed flag) */
+                candidateSession.setClosed(false);
+                candidateSessionDao.update(candidateSession);
+            }
         }
-
         return candidateSession;
     }
 
@@ -456,14 +467,7 @@ public class CandidateItemDeliveryService {
         candidateAuditLogger.logCandidateEvent(candidateEvent);
 
         /* Record current result state, or close session */
-        if (itemSessionState.isEnded()) {
-            candidateSessionCloser.closeCandidateItemSession(candidateSession, itemSessionController);
-        }
-        else {
-            candidateDataService.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
-        }
-
-        return candidateSession;
+        return updateSessionClosedStatus(candidateSession, itemSessionController);
     }
 
     //----------------------------------------------------
@@ -523,14 +527,7 @@ public class CandidateItemDeliveryService {
         candidateAuditLogger.logCandidateEvent(candidateEvent);
 
         /* Record current result state, or close session */
-        if (itemSessionState.isEnded()) {
-            candidateSessionCloser.closeCandidateItemSession(candidateSession, itemSessionController);
-        }
-        else {
-            candidateDataService.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
-        }
-
-        return candidateSession;
+        return updateSessionClosedStatus(candidateSession, itemSessionController);
     }
 
     //----------------------------------------------------
@@ -570,7 +567,7 @@ public class CandidateItemDeliveryService {
             return null;
         }
 
-        /* Ennd session if required */
+        /* End session if still open */
         final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
         boolean isEndingSession = false;
         if (!itemSessionState.isEnded()) {

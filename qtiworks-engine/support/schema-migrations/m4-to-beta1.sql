@@ -1,5 +1,4 @@
 -- Schema migration script for upgrading from 1.0-M4 to 1.0-M5.
--- (This is not complete yet. It incorporates a merger of DEV26->DEV32 at present)
 --
 -- NB: This has been written to work with PostgreSQL and will probably need
 -- tweaked slightly to work with other databases.

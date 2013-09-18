@@ -61,11 +61,6 @@ public class QueuedLtiOutcomeDao extends GenericDao<QueuedLtiOutcome> {
         super(QueuedLtiOutcome.class);
     }
 
-    public List<QueuedLtiOutcome> getNextQueuedOutcomes() {
-        final TypedQuery<QueuedLtiOutcome> query = em.createNamedQuery("QueuedLtiOutcome.getNextQueuedOutcomes", QueuedLtiOutcome.class);
-        return query.getResultList();
-    }
-
     public List<QueuedLtiOutcome> getAllQueuedOutcomes() {
         final TypedQuery<QueuedLtiOutcome> query = em.createNamedQuery("QueuedLtiOutcome.getAllQueuedOutcomes", QueuedLtiOutcome.class);
         return query.getResultList();
