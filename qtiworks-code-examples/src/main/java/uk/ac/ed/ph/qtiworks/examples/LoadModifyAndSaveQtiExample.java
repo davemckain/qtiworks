@@ -81,7 +81,7 @@ public final class LoadModifyAndSaveQtiExample {
         /* We'll be loading a bundled example file called minimal.xml, which you can find
          * in src/main/resources and is included in the ClassPath when this project is built.
          * We use a ClassPathResourceLocator to load this, using the <code>classpath:</code>
-         * pseudo-URL.
+         * pseudo-URI.
          */
         final ResourceLocator inputResourceLocator = new ClassPathResourceLocator();
         final URI inputUri = URI.create("classpath:/minimal.xml");
@@ -110,9 +110,10 @@ public final class LoadModifyAndSaveQtiExample {
         }
         catch (final QtiXmlInterpretationException e) {
             /* This is thrown if a JQTI+ Object model could not be constructed from the QTI XML,
-             * or the resulting model wasn't an AssessmetnItem.
+             * or the resulting model wasn't an AssessmentItem.
              *
-             * This shouldn't happen here, so I'll propagate this one up.
+             * This shouldn't happen here as the XML we've loaded should be good,
+             * so I'll propagate this one up.
              */
             throw e;
         }
