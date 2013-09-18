@@ -101,7 +101,7 @@ public abstract class AbstractExpression extends AbstractNode implements Express
      * @see #getRequiredCardinalities
      */
     @ToRefactor
-    protected Cardinality[] getRequiredSameCardinalities(final ValidationContext context, final int index, final boolean includeParent) {
+    protected final Cardinality[] getRequiredSameCardinalities(final ValidationContext context, final int index, final boolean includeParent) {
         Cardinality[] required = getType().getRequiredCardinalities(index);
 
         if (includeParent) {
@@ -133,14 +133,13 @@ public abstract class AbstractExpression extends AbstractNode implements Express
      * <p>
      * This method is used when same baseType is required (contains, delete, index, match, ...).
      *
-     * @param context TODO
      * @param index position of child expression in this parent
      * @param includeParent whether parent requirements should be used during calculation
      * @return list of all acceptable baseTypes which can child expression at given position produce
      * @see #getRequiredBaseTypes
      */
     @ToRefactor
-    protected BaseType[] getRequiredSameBaseTypes(final ValidationContext context, final int index, final boolean includeParent) {
+    protected final BaseType[] getRequiredSameBaseTypes(final ValidationContext context, final int index, final boolean includeParent) {
         BaseType[] required = getType().getRequiredBaseTypes(index);
 
         if (includeParent) {
@@ -189,7 +188,7 @@ public abstract class AbstractExpression extends AbstractNode implements Express
      * @see #getProducedBaseTypes
      */
     @ToRefactor
-    protected BaseType[] getProducedNumericalBaseTypes(final ValidationContext context) {
+    protected final BaseType[] getProducedNumericalBaseTypes(final ValidationContext context) {
         boolean floatFound = false;
         for (final Expression child : getChildren()) {
             final BaseType[] produced = child.getProducedBaseTypes(context);
@@ -223,7 +222,7 @@ public abstract class AbstractExpression extends AbstractNode implements Express
      * @param context TODO
      * @return list of all acceptable cardinalities for this expression from its parent
      */
-    protected Cardinality[] getParentRequiredCardinalities(final ValidationContext context) {
+    protected final Cardinality[] getParentRequiredCardinalities(final ValidationContext context) {
         if (getParent() != null) {
             final int index = getParent().getNodeGroups().getGroupSupporting(getQtiClassName()).getChildren().indexOf(this);
             return getParent().getRequiredCardinalities(context, index);
@@ -240,10 +239,10 @@ public abstract class AbstractExpression extends AbstractNode implements Express
      * If this expression doesn't have any parent (it is legal for testing, but not for real use case),
      * returns list of all baseTypes.
      *
-     * @param context TODO
      * @return list of all acceptable baseTypes for this expression from its parent
      */
-    protected BaseType[] getParentRequiredBaseTypes(final ValidationContext context) {
+    @ToRefactor
+    protected final BaseType[] getParentRequiredBaseTypes(final ValidationContext context) {
         if (getParent() != null) {
             final int index = getParent().getNodeGroups().getGroupSupporting(getQtiClassName()).getChildren().indexOf(this);
             return getParent().getRequiredBaseTypes(context, index);
@@ -313,7 +312,7 @@ public abstract class AbstractExpression extends AbstractNode implements Express
     /**
      * Returns true if any subexpression is NULL; false otherwise.
      */
-    protected boolean isAnyChildNull(final Value[] childValues) {
+    protected static boolean isAnyChildNull(final Value[] childValues) {
         for (final Value childValue : childValues) {
             if (childValue.isNull()) {
                 return true;
@@ -347,7 +346,7 @@ public abstract class AbstractExpression extends AbstractNode implements Express
             result =  evaluateValidSelfAndChildren(context, depth);
         }
         else {
-            /* Expression is not valid, so log an warning and return NULL */
+            /* Expression is not valid, so register a warning and return NULL */
             context.fireRuntimeWarning(this, "Expression is not valid and will not be evaluated. Returning NULL instead");
             result = NullValue.INSTANCE;
         }
