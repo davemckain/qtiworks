@@ -70,11 +70,6 @@ public final class BaseValue extends AbstractSimpleFunctionalExpression {
     /** Single value of this baseValue. */
     private SingleValue singleValue;
 
-    /**
-     * Constructs expression.
-     *
-     * @param parent parent of this expression
-     */
     public BaseValue(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
 

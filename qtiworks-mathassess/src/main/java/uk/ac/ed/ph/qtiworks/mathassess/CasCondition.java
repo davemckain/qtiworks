@@ -37,6 +37,7 @@ import static uk.ac.ed.ph.qtiworks.mathassess.MathAssessConstants.ATTR_CODE_NAME
 import static uk.ac.ed.ph.qtiworks.mathassess.MathAssessConstants.ATTR_SIMPLIFY_NAME;
 import static uk.ac.ed.ph.qtiworks.mathassess.MathAssessConstants.MATHASSESS_NAMESPACE_URI;
 
+import uk.ac.ed.ph.qtiworks.mathassess.glue.MathAssessBadCasCodeException;
 import uk.ac.ed.ph.qtiworks.mathassess.glue.maxima.QtiMaximaProcess;
 import uk.ac.ed.ph.qtiworks.mathassess.glue.types.ValueWrapper;
 
@@ -152,6 +153,19 @@ public final class CasCondition extends MathAssessOperator {
         catch (final MaximaTimeoutException e) {
             context.fireRuntimeError(this, "A timeout occurred executing the CasCondition logic. Returning NULL");
             return NullValue.INSTANCE;
+        }
+        catch (final MathAssessBadCasCodeException e) {
+            context.fireRuntimeError(this, "Your CasCondition code did not work as expected. The CAS input was '"
+                    + e.getMaximaInput()
+                    + "' and the CAS output was '"
+                    + e.getMaximaOutput()
+                    + "'. The failure reason was: " + e.getReason());
+            return NullValue.INSTANCE;
+        }
+        catch (final RuntimeException e) {
+            logger.warn("Unexpected Maxima failure", e);
+            context.fireRuntimeError(this, "An unexpected problem occurred while executing this CasCondition");
+            return BooleanValue.FALSE;
         }
     }
 

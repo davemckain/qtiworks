@@ -8,6 +8,6 @@ QTIWorks is a software suite for standards-based assessment delivery, supporting
 
 Find out more:
 
-* [QTIWorks Engine public demo instance](https://www2.ph.ed.ac.uk/qtiworks/)
+* [QTIWorks Engine public demo instance](https://webapps.ph.ed.ac.uk/qtiworks/)
 * [QTIWorks documentation wiki](https://github.com/davemckain/qtiworks/wiki)
-* [QTIWorks release notes](https://www2.ph.ed.ac.uk/qtiworks/release-notes.jsp)
+* [QTIWorks release notes](https://webapps.ph.ed.ac.uk/qtiworks/release-notes.jsp)

@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.expression;
 
+import uk.ac.ed.ph.jqtiplus.ToRefactor;
 import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
@@ -43,7 +44,6 @@ import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.util.Arrays;
 import java.util.List;
@@ -343,7 +343,7 @@ public abstract class AbstractExpression extends AbstractNode implements Express
         Value result;
         final boolean thisIsValid = context.isSubjectValid() || isThisExpressionValid(context);
         if (thisIsValid) {
-            /* Expression is vaid, so evaluate it */
+            /* Expression is valid, so evaluate it */
             result =  evaluateValidSelfAndChildren(context, depth);
         }
         else {

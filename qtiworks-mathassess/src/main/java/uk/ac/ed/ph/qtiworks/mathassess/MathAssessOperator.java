@@ -189,7 +189,13 @@ public abstract class MathAssessOperator extends CustomOperator<MathAssessExtens
         if (value != null) {
             final ValueWrapper valueWrapper = GlueValueBinder.jqtiToCas(value);
             if (valueWrapper != null) {
-                qtiMaximaProcess.passQtiVariableToMaxima(declaration.getIdentifier().toString(), valueWrapper);
+                try {
+                    qtiMaximaProcess.passQtiVariableToMaxima(declaration.getIdentifier().toString(), valueWrapper);
+                }
+                catch (final RuntimeException e) {
+                    context.fireRuntimeError(this, "An unexpected problem occurred when attempting to pass the Variable "
+                            + declaration.getIdentifier() + " to Maxima");
+                }
             }
             else {
                 context.fireRuntimeInfo(this, "Variable " + declaration.getIdentifier()

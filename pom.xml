@@ -12,7 +12,7 @@ All Rights Reserved
   <name>QTIWorks</name>
   <groupId>uk.ac.ed.ph.qtiworks</groupId>
   <artifactId>qtiworks</artifactId>
-  <version>1.0-DEV33</version>
+  <version>1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
     <module>qtiworks-jqtiplus</module>
@@ -35,8 +35,8 @@ All Rights Reserved
     <servlet-api.version>2.5</servlet-api.version>
     <jsp-api.version>2.1</jsp-api.version>
     <jstl.version>1.2</jstl.version>
-    <spring.version>3.2.3.RELEASE</spring.version>
-    <hibernate.version>4.1.9.Final</hibernate.version>
+    <spring.version>3.2.4.RELEASE</spring.version>
+    <hibernate.version>4.1.12.Final</hibernate.version>
     <hibernate-validator.version>4.3.1.Final</hibernate-validator.version>
     <mysql-connector.version>5.1.23</mysql-connector.version>
     <postgresql-jdbc.version>9.1-901.jdbc4</postgresql-jdbc.version>

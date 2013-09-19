@@ -44,12 +44,7 @@ import uk.ac.ed.ph.jqtiplus.node.content.basic.ObjectFlow;
 import java.util.List;
 
 /**
- * Contains : objectFlow [*]
- * Attribute : data [1]: string
- * The data attribute provides A URI for locating the data associated with the object.
- * Attribute : type [1]: mimeType
- * Attribute : width [0..1]: length
- * Attribute : height [0..1]: length
+ * Represents the <tt>object</tt> QTI class
  *
  * @author Jonathon Hare
  */
@@ -83,7 +78,15 @@ public final class Object extends AbstractFlowBodyElement implements InlineStati
         getNodeGroups().add(new ObjectFlowGroup(this));
     }
 
+    /**
+     * @deprecated Please now use {@link #getObjectFlows()}
+     */
+    @Deprecated
     public List<ObjectFlow> getChildren() {
+        return getObjectFlows();
+    }
+
+    public List<ObjectFlow> getObjectFlows() {
         return getNodeGroups().getObjectFlowGroup().getObjectFlows();
     }
 

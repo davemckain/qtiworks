@@ -46,11 +46,11 @@ primaryRouting (action -> URL)
           <td class="bigStatus">${loopStatus.index + 1}</td>
           <td align="center" class="actions">
             <c:if test="${assessmentPackage.launchable}">
-              <page:postLink path="${assessmentRouting['try']}" title="Quick Try"/>
+              <page:postLink path="${assessmentRouting['try']}" title="Quick&#xa0;Try"/>
             </c:if>
           </td>
           <td>
-            <h4><a href="${utils:escapeLink(assessmentRouting['show'])}"><c:out value="${utils:formatAssessmentFileName(assessmentPackage)}"/></a></h4>
+            <h4><a href="${utils:escapeLink(assessmentRouting['show'])}"><c:out value="${assessmentPackage.fileName}"/></a></h4>
             <span class="title"><c:out value="${assessmentPackage.title}"/></span>
           </td>
           <td class="center">

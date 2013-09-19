@@ -25,7 +25,7 @@ LTI resource dashboard (after domain-level launch)
           <div class="name">Selected Assessment:</div>
           <div class="value">
             <a href="${utils:escapeLink(thisAssessmentRouting['show'])}">
-              <c:out value="${utils:formatAssessmentFileName(thisAssessmentPackage)}"/>
+              <c:out value="${thisAssessmentPackage.fileName}"/>
             </a>
             <span class="assessmentTitle"> [${fn:escapeXml(thisAssessmentPackage.title)}]</span>
           </div>

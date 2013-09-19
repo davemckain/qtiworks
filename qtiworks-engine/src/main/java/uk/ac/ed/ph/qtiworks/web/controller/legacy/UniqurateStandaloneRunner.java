@@ -31,7 +31,7 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.web.controller.anonymous;
+package uk.ac.ed.ph.qtiworks.web.controller.legacy;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
@@ -48,8 +48,6 @@ import uk.ac.ed.ph.qtiworks.services.domain.EnumerableClientFailure;
 import uk.ac.ed.ph.qtiworks.web.GlobalRouter;
 import uk.ac.ed.ph.qtiworks.web.domain.StandaloneRunCommand;
 
-import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
-import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
 
 import javax.annotation.Resource;
@@ -63,16 +61,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
- * Controller allowing the public to upload and run an {@link AssessmentItem}
- * or {@link AssessmentTest}.
+ * This controller is used by the current version of Uniqurate only.
  * <p>
- * This provides a subset of functionality provided for instructor users, but
- * might be useful.
+ * DO NOT USE this legacy controller for any new systems!
  *
  * @author David McKain
  */
 @Controller
-public class AnonymousStandaloneRunner {
+public class UniqurateStandaloneRunner {
 
     @Resource
     private AssessmentManagementService assessmentManagementService;
@@ -83,21 +79,10 @@ public class AnonymousStandaloneRunner {
     @Resource
     private AssessmentDataService assessmentDataService;
 
-    @Resource
-    private AnonymousRouter anonymousRouter;
-
     //--------------------------------------------------------------------
 
-    @RequestMapping(value="/standalonerunner", method=RequestMethod.GET)
-    public String showUploadAndRunForm(final Model model) {
-        final StandaloneRunCommand command = new StandaloneRunCommand();
-
-        model.addAttribute(command);
-        return "standalonerunner/uploadForm";
-    }
-
     @RequestMapping(value="/standalonerunner", method=RequestMethod.POST)
-    public String handleUploadAndRunForm(final Model model,
+    public String uniqurateUploadAndRun(final Model model,
             @Valid @ModelAttribute final StandaloneRunCommand command,
             final BindingResult errors) {
         /* Catch any binding errors */
@@ -114,7 +99,7 @@ public class AnonymousStandaloneRunner {
                 return "standalonerunner/invalidUpload";
             }
             final Delivery delivery = assessmentManagementService.createDemoDelivery(assessment, null);
-            final String exitUrl = anonymousRouter.buildWithinContextUrl("/standalonerunner");
+            final String exitUrl = "/web/anonymous/standalonerunner";
             final CandidateSession candidateSession = candidateSessionStarter.createCandidateSession(delivery, true, exitUrl, null, null);
 
             /* Redirect to candidate dispatcher */

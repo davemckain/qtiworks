@@ -16,21 +16,12 @@ Shows a Delivery
     </nav>
     <h2>
       <span class="assessmentLabel">Assessment&#xa0;${utils:formatAssessmentType(assessment)}</span>
-      <a href="${utils:escapeLink(assessmentRouting['show'])}">${fn:escapeXml(utils:formatAssessmentFileName(assessmentPackage))}</a>
+      <a href="${utils:escapeLink(assessmentRouting['show'])}">${fn:escapeXml(assessmentPackage.fileName)}</a>
       &#xbb;
       <span class="deliveryLabel">Delivery</span>
       ${fn:escapeXml(delivery.title)}
     </h2>
   </header>
-
-  <c:choose>
-    <c:when test="${!assessmentPackage.launchable}">
-      <p class="errorMessage">The assessment corresponding to this Delivery is not launchable! You must fix this before you let candidates run it!</p>
-    </c:when>
-    <c:when test="${!assessmentPackage.valid}">
-      <p class="warningMessage">The assessment corresponding to this Delivery is not valid! You should fix this before you let candidates run it!</p>
-    </c:when>
-  </c:choose>
 
   <table class="dashboard">
     <tbody>

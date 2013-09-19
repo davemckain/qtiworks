@@ -45,7 +45,7 @@ import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.ContentContainer;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
-import uk.ac.ed.ph.jqtiplus.node.block.ForeignElement;
+import uk.ac.ed.ph.jqtiplus.node.ForeignElement;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Content;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.CustomOperator;

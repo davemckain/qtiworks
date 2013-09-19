@@ -45,7 +45,7 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public class FeedbackInline extends FeedbackElement implements SimpleInline {
+public final class FeedbackInline extends FeedbackElement implements SimpleInline {
 
     private static final long serialVersionUID = -5503044620142722718L;
 

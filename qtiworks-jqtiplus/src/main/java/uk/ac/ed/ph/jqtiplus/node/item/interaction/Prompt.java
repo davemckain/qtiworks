@@ -58,7 +58,15 @@ public final class Prompt extends BodyElement {
         getNodeGroups().add(new InlineStaticGroup(this));
     }
 
-    public List<InlineStatic> getChildren() {
+    public List<InlineStatic> getInlineStatics() {
         return getNodeGroups().getInlineStaticGroup().getInlineStatics();
+    }
+
+    /**
+     * @deprecated Please now use {@link #getInlineStatics()}
+     */
+    @Deprecated
+    public List<InlineStatic> getChildren() {
+        return getInlineStatics();
     }
 }

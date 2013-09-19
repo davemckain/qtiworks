@@ -37,15 +37,15 @@ import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 
 /**
- * dlElement
- * 
+ * Represents the <tt>dlElement</tt> abstract class
+ *
  * @author Jonathon Hare
  */
 public abstract class DlElement extends BodyElement {
 
     private static final long serialVersionUID = -1037128914556395698L;
 
-    public DlElement(QtiNode parent, String qtiClassName) {
+    public DlElement(final QtiNode parent, final String qtiClassName) {
         super(parent, qtiClassName);
     }
 }

@@ -76,7 +76,7 @@ public class AnonymousSamplesController {
     @Resource
     private AnonymousRouter anonymousRouter;
 
-    @RequestMapping(value="/samples/list", method=RequestMethod.GET)
+    @RequestMapping(value="/samples", method=RequestMethod.GET)
     public String listSamples(final Model model) {
         /* Look up all Assessments, grouped by SampleCategory. */
         final Map<SampleCategory, List<AssessmentAndPackage>> sampleAssessmentMap = new LinkedHashMap<SampleCategory, List<AssessmentAndPackage>>();
@@ -96,7 +96,7 @@ public class AnonymousSamplesController {
     @RequestMapping(value="/samples/{sampleCategoryAnchor}/{aid}", method=RequestMethod.POST)
     public String startItemSession(@PathVariable final String sampleCategoryAnchor, @PathVariable final long aid)
             throws PrivilegeException, DomainEntityNotFoundException {
-        final String exitUrl = anonymousRouter.buildWithinContextUrl("/samples/list") + "#" + sampleCategoryAnchor;
+        final String exitUrl = anonymousRouter.buildWithinContextUrl("/samples") + "#" + sampleCategoryAnchor;
 
         final CandidateSession candidateSession = candidateSessionStarter.createSystemSampleSession(aid, exitUrl);
         return GlobalRouter.buildSessionStartRedirect(candidateSession);

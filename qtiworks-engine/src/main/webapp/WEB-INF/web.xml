@@ -138,6 +138,10 @@ QTIWorks Delivery Engine web deployment descriptor
   </filter>
   <filter-mapping>
     <filter-name>AnonymousAuthenticationFilter</filter-name>
+    <url-pattern>/anonymous/*</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>AnonymousAuthenticationFilter</filter-name>
     <url-pattern>/web/anonymous/*</url-pattern>
   </filter-mapping>
 
@@ -157,6 +161,24 @@ QTIWorks Delivery Engine web deployment descriptor
   </servlet>
   <servlet-mapping>
     <servlet-name>AnonymousDispatcher</servlet-name>
+    <url-pattern>/anonymous/*</url-pattern>
+  </servlet-mapping>
+  <!-- (Legacy dispatcher - kept only for compatibility until Uniqurate is updated) -->
+  <servlet>
+    <servlet-name>LegacyAnonymousDispatcher</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <load-on-startup>0</load-on-startup>
+    <init-param>
+      <param-name>contextClass</param-name>
+      <param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
+    </init-param>
+    <init-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>uk.ac.ed.ph.qtiworks.config.LegacyAnonymousMvcConfiguration</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>LegacyAnonymousDispatcher</servlet-name>
     <url-pattern>/web/anonymous/*</url-pattern>
   </servlet-mapping>
 

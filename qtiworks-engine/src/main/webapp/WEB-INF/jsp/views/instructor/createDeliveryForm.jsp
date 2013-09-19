@@ -18,7 +18,7 @@ deliveryTemplate
       <a href="${utils:escapeLink(primaryRouting['dashboard'])}">QTIWorks Dashboard</a> &#xbb;
       <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Assessment Manager</a> &#xbb;
       <a href="${utils:escapeLink(assessmentRouting['show'])}">
-        ${fn:escapeXml(utils:formatAssessmentFileName(assessmentPackage))}
+        ${fn:escapeXml(assessmentPackage.fileName)}
         [${fn:escapeXml(assessmentPackage.title)}]
       </a> &#xbb;
     </nav>
@@ -26,7 +26,7 @@ deliveryTemplate
     <div class="hints">
       <p>
         This form lets you create a new Delivery of the Assessment
-        ${fn:escapeXml(utils:formatAssessmentFileName(assessmentPackage))}
+        ${fn:escapeXml(assessmentPackage.fileName)}
         [${fn:escapeXml(assessmentPackage.title)}].
       </p>
     </div>

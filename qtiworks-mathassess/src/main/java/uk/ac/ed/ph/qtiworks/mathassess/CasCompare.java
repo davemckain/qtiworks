@@ -39,7 +39,9 @@ import static uk.ac.ed.ph.qtiworks.mathassess.MathAssessConstants.ATTR_SIMPLIFY_
 import static uk.ac.ed.ph.qtiworks.mathassess.MathAssessConstants.MATHASSESS_NAMESPACE_URI;
 
 import uk.ac.ed.ph.qtiworks.mathassess.attribute.ActionAttribute;
+import uk.ac.ed.ph.qtiworks.mathassess.glue.MathAssessBadCasCodeException;
 import uk.ac.ed.ph.qtiworks.mathassess.glue.maxima.QtiMaximaProcess;
+import uk.ac.ed.ph.qtiworks.mathassess.glue.maxima.QtiMaximaTypeConversionException;
 import uk.ac.ed.ph.qtiworks.mathassess.glue.types.ValueWrapper;
 import uk.ac.ed.ph.qtiworks.mathassess.value.ActionType;
 
@@ -214,6 +216,27 @@ public final class CasCompare extends MathAssessOperator {
         catch (final MaximaTimeoutException e) {
             context.fireRuntimeError(this, "A timeout occurred executing the CasCompare logic. Returning NULL");
             return NullValue.INSTANCE;
+        }
+        catch (final MathAssessBadCasCodeException e) {
+            context.fireRuntimeError(this, "Your CasCompare code did not work as expected. The CAS input was '"
+                    + e.getMaximaInput()
+                    + "' and the CAS output was '"
+                    + e.getMaximaOutput()
+                    + "'. The failure reason was: " + e.getReason());
+            return NullValue.INSTANCE;
+        }
+        catch (final QtiMaximaTypeConversionException e) {
+            context.fireRuntimeError(this, "Your CasCompare code did not produce a result that could be converted into a QTI boolean. The CAS input was '"
+                    + e.getMaximaInput()
+                    + "' and the CAS output was '"
+                    + e.getMaximaOutput()
+                    + "'");
+            return NullValue.INSTANCE;
+        }
+        catch (final RuntimeException e) {
+            logger.warn("Unexpected Maxima failure", e);
+            context.fireRuntimeError(this, "An unexpected problem occurred while executing this CasCompare");
+            return BooleanValue.FALSE;
         }
     }
 

@@ -51,7 +51,7 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public class FeedbackBlock extends FeedbackElement implements SimpleBlock, ContentContainer, ApipAccessibilityBearer {
+public final class FeedbackBlock extends FeedbackElement implements SimpleBlock, ContentContainer, ApipAccessibilityBearer {
 
     private static final long serialVersionUID = 456106105509332955L;
 

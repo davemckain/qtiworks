@@ -37,8 +37,9 @@ package uk.ac.ed.ph.jqtiplus.node;
  * Marker interface for a Node with a unique identifier.
  * (This used to be an abstract class, but is no longer viable after fixing the
  * way identifiers work.)
- * 
+ *
  * @author Jiri Kajaba
+ * @author David McKain (refactored)
  */
 public interface UniqueNode<E> extends IdentifiableNode<E> {
 

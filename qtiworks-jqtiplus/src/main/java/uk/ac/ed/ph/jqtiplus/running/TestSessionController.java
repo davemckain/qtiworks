@@ -181,7 +181,7 @@ public final class TestSessionController extends TestProcessingController {
         resetOutcomeVariables();
 
         /* Initialise each testPart, assessmentSection and item instance */
-        for (final TestPlanNode testPlanNode : testSessionState.getTestPlan().getNodeList()) {
+        for (final TestPlanNode testPlanNode : testSessionState.getTestPlan().getTestPlanNodeList()) {
             final TestPlanNodeKey key = testPlanNode.getKey();
             switch (testPlanNode.getTestNodeType()) {
                 case TEST_PART:
@@ -200,6 +200,10 @@ public final class TestSessionController extends TestProcessingController {
 
                     final ItemSessionController itemSessionController = getItemSessionController(testPlanNode);
                     itemSessionController.initialize(timestamp);
+                    break;
+
+                case ROOT:
+                    /* Ignore this */
                     break;
 
                 default:
@@ -1123,7 +1127,7 @@ public final class TestSessionController extends TestProcessingController {
     private TestPlanNode walkToBranchTarget(final TestPlanNode startNode, final Identifier branchTargetIdentifier, final Date timestamp) {
         /* Find and check the target */
         final AbstractPart startPart = testProcessingMap.resolveAbstractPart(startNode);
-        final int currentGlobalIndex = startNode.getKey().getGlobalIndex();
+        final int currentGlobalIndex = startNode.getKey().getAbstractPartGlobalIndex();
         final TestPlan testPlan = testSessionState.getTestPlan();
         final List<TestPlanNode> branchTargetNodes = testPlan.getNodes(branchTargetIdentifier);
         if (branchTargetNodes==null) {
@@ -1133,7 +1137,7 @@ public final class TestSessionController extends TestProcessingController {
         }
         TestPlanNode branchTargetNode = null;
         for (final TestPlanNode branchTargetCandidateNode : branchTargetNodes) {
-            if (branchTargetCandidateNode.getKey().getGlobalIndex() > currentGlobalIndex) {
+            if (branchTargetCandidateNode.getKey().getAbstractPartGlobalIndex() > currentGlobalIndex) {
                 /* Found suitable target */
                 branchTargetNode = branchTargetCandidateNode;
                 break;
@@ -1197,8 +1201,10 @@ public final class TestSessionController extends TestProcessingController {
      */
     private void markIntermediateNodesAsJumped(final TestPlanNode branchStartNode, final TestPlanNode branchTargetNode) {
         final TestPlan testPlan = testSessionState.getTestPlan();
-        for (int globalIndex = branchStartNode.getAbstractPartGlobalIndex()+1; globalIndex < branchTargetNode.getAbstractPartGlobalIndex(); globalIndex++) {
-            final TestPlanNode testPlanNode = testPlan.getNodeAtGlobalIndex(globalIndex);
+        final int startIndex = testPlan.getGlobalIndex(branchStartNode);
+        final int targetIndex = testPlan.getGlobalIndex(branchTargetNode);
+        for (int index = startIndex+1; index < targetIndex; index++) {
+            final TestPlanNode testPlanNode = testPlan.getNodeAtGlobalIndex(index);
             markSectionPartNodeAsJumped(testPlanNode);
         }
     }
@@ -1210,8 +1216,10 @@ public final class TestSessionController extends TestProcessingController {
      */
     private void markRemainingNodesInTestPartAsJumped(final TestPlanNode branchStartNode) {
         final TestPlan testPlan = testSessionState.getTestPlan();
-        for (int globalIndex = branchStartNode.getAbstractPartGlobalIndex()+1; globalIndex < testPlan.getNodeList().size(); globalIndex++) {
-            final TestPlanNode testPlanNode = testPlan.getNodeAtGlobalIndex(globalIndex);
+        final int startIndex = testPlan.getGlobalIndex(branchStartNode);
+        final int endIndex = testPlan.getTestPlanNodeList().size();
+        for (int index = startIndex+1; index < endIndex; index++) {
+            final TestPlanNode testPlanNode = testPlan.getNodeAtGlobalIndex(index);
             if (testPlanNode.getTestNodeType()==TestNodeType.TEST_PART) {
                 break;
             }
@@ -1534,7 +1542,7 @@ public final class TestSessionController extends TestProcessingController {
 
         /* Record item results */
         final List<ItemResult> itemResults = result.getItemResults();
-        for (final TestPlanNode testPlanNode : testSessionState.getTestPlan().getNodeList()) {
+        for (final TestPlanNode testPlanNode : testSessionState.getTestPlan().getTestPlanNodeList()) {
             if (testPlanNode.getTestNodeType()==TestNodeType.ASSESSMENT_ITEM_REF) {
                 final ItemSessionController itemSessionController = getItemSessionController(testPlanNode);
                 final ItemResult itemResult = itemSessionController.computeItemResult(result, timestamp);

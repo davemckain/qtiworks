@@ -31,7 +31,7 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.xperimental;
+package uk.ac.ed.ph.jqtiplus;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -39,12 +39,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Temporary annotation for things that should be removed
- *
+ * Temporary annotation for things that are known to require further refactoring work
+ * 
  * @author David McKain
  */
 @Retention(RetentionPolicy.SOURCE)
 @Target({ ElementType.TYPE, ElementType.METHOD, ElementType.FIELD, ElementType.CONSTRUCTOR })
-public @interface ToRemove {
+public @interface ToRefactor {
 
 }

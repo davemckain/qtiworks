@@ -63,12 +63,6 @@ public final class PointValue extends SingleValue {
     private final int horizontalValue;
     private final int verticalValue;
 
-    /**
-     * Constructs <code>PointValue</code> from given horizontal and vertical values.
-     *
-     * @param horizontalValue horizontal value
-     * @param verticalValue vertical value
-     */
     public PointValue(final int horizontalValue, final int verticalValue) {
         this.horizontalValue = horizontalValue;
         this.verticalValue = verticalValue;

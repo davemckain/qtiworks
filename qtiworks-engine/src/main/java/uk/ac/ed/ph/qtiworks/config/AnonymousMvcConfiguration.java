@@ -33,17 +33,9 @@
  */
 package uk.ac.ed.ph.qtiworks.config;
 
-import java.nio.charset.Charset;
-import java.util.Arrays;
-import java.util.List;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.MediaType;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.StringHttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -51,7 +43,8 @@ import org.springframework.web.servlet.view.JstlView;
 import org.springframework.web.servlet.view.UrlBasedViewResolver;
 
 /**
- * Defines beans for the anonymous MVC dispatcher
+ * Defines beans for the anonymous MVC dispatcher, which is configured in web.xml to handle
+ * requests of the form <code>/anonymous/...</code>
  *
  * @author David McKain
  */
@@ -59,25 +52,6 @@ import org.springframework.web.servlet.view.UrlBasedViewResolver;
 @Configuration
 @ComponentScan(basePackages={"uk.ac.ed.ph.qtiworks.web.controller.anonymous"})
 public class AnonymousMvcConfiguration extends WebMvcConfigurerAdapter {
-
-    private static final Charset UTF8 = Charset.forName("UTF-8");
-
-    /**
-     * (I'm setting up message converters explicitly. One reason is that
-     * @ResponseBody doesn't allow you to set an explicit content type,
-     * which can lead to problems. I suppose it's nice and tidy being explicit, so
-     * here we are!)
-     */
-    @Override
-    public void configureMessageConverters(final List<HttpMessageConverter<?>> converters) {
-      final StringHttpMessageConverter stringConverter = new StringHttpMessageConverter();
-      stringConverter.setSupportedMediaTypes(Arrays.asList(new MediaType[] {
-              new MediaType("text", "html", UTF8),
-              new MediaType("text", "plain", UTF8),
-      }));
-      converters.add(stringConverter);
-      converters.add(new MappingJackson2HttpMessageConverter());
-    }
 
     @Bean
     ViewResolver viewResolver() {

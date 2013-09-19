@@ -54,11 +54,6 @@ public final class StringValue extends SingleValue {
 
     private final String stringValue;
 
-    /**
-     * Constructs <code>StringValue</code> from given <code>String</code> representation.
-     *
-     * @param value <code>String</code> representation of <code>StringValue</code>
-     */
     public StringValue(final String value) {
         Assert.notNull(value);
         this.stringValue = value;

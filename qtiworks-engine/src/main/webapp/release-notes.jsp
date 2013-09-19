@@ -10,7 +10,91 @@ All Rights Reserved
   <nav class="breadcrumbs">
     <a href="${utils:internalLink(pageContext, '/about/')}">About QTIWorks</a> &#xbb;
   </nav>
-  <h2>QTIWorks Release Notes (Development)</h2>
+  <h2>QTIWorks Release Notes (Production)</h2>
+
+  <h3>1.0-beta2 [Production] (22/08/2013)</h3>
+  <p>
+    This fixes a few bugs noted by people testing the production instance of QTIWorks:
+  </p>
+  <ul>
+    <li>
+      Fixed logic bug in the Test Plan's internal storage of nodes, arising in testParts
+      using selection and ordering, which could trigger a logic exception during the delivery
+      of the test.
+    </li>
+    <li>
+      Fixed silly bug in the new author view triggered if an assessmentItemRef has been selected multiple
+      times in the testPart.
+    </li<>
+    <li>
+      Fixed regression in the rendering stylesheets when determining whether feedback blocks should be
+      shown when rendering the current state of a test item.
+    </li>
+    <li>
+      MathAssess extensions should now intercept all possible cases where the assessment Maxima
+      code could cause something bad to happen in Maxima, converting all of these to runtime errors
+      rather than letting the candidate session explode.
+    </li>
+    <li>
+      Validation process now flags up warnings if adaptive items are used in testParts having
+      simultaneous submissionMode.
+    </li>
+  </ul>
+  <p>
+    See production releases at <a href="https://webapps.ph.ed.ac.uk/qtiworks">https://webapps.ph.ed.ac.uk/qtiworks</a>, and
+    development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
+  </p>
+
+  <h3>1.0-DEV34 [Development] (20/08/2013)</h3>
+  <p>
+    Fixes a couple of bugs discovered after beta1 went live:
+  </p>
+  <ul>
+    <li>
+      There was a logic bug in the handling of global indices in the TestPlanner which
+      occurred in tests using selection/ordering. The unit tests didn't cover this so it
+      was missed. This is fixed now, with a slightly nicer implementation.
+    </li>
+    <li>
+      There had been a regression in the logic determining whether to display item feedback
+      in tests while the item session was still open. Nobody had noticed this before. Fixed here.
+    </li>
+  </ul>
+  <p>
+    See production releases at <a href="https://webapps.ph.ed.ac.uk/qtiworks">https://webapps.ph.ed.ac.uk/qtiworks</a>, and
+    development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
+  </p>
+
+  <h3>1.0-beta1 [Production] (19/08/2013)</h3>
+  <p>
+    This first beta release brings the production branch back in line with
+    the master (development) branch. It is essentially the same as 1.0-DEV33, but
+    contains a few final bug fixes made during final testing on the production
+    data hosted at Edinburgh.
+  </p>
+  <p>
+    If you have been hosting your own instance of QTIWorks 1.0-M4, then you need to
+    schedule and execute the upgrade to 1.0-beta1 quite carefully as there were
+    many changes to the data model, requiring all candidate data to be deleted when
+    applying this upgrade. You should upgrade as follows:
+  </p>
+  <ol>
+    <li>Take QTIWorks 1.0-M4 offline (and make a full backup of the filesystem and database).</li>
+    <li>Run the <tt>purgeAnonymousData</tt> engine manager action (on M4 binaries).</li>
+    <li>Run the SQL script <tt>qtiworks-engine/support/schema-migrations/m4-to-beta1.sql</tt> on your QTIWorks database to upgrade its schema
+      and delete the candidate data stored in the DB.</li>
+    <li>Perform a <code>git fetch</code> and <code>git merge origin/production</code> to bring your code up to beta1, then do a clean rebuild.</li>
+    <li>Run the <tt>update</tt> engine action to complete deleting data from the QTIWorks database and file store.</li>
+    <li>Update your <tt>qtiworks-deployment.properties</tt> against the newly-updated default version in the git tree.</li>
+    <li>
+      Deploy the QTIWorks 1.0-beta1 webapp. It should deploy and run without issues and all existing instructor users
+      should be able to access the system and all of their existing assessments.
+    </li>
+  </ol>
+  <p>
+    See production releases at <a href="https://webapps.ph.ed.ac.uk/qtiworks">https://webapps.ph.ed.ac.uk/qtiworks</a>, and
+    development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
+  </p>
 
   <h3>1.0-DEV33 [Development] (12/08/2013)</h3>
   <p>
@@ -45,6 +129,16 @@ All Rights Reserved
     candidate data if upgrading from DEV31.
   </p>
 
+  <h3>1.0-M4b [Production] (11/07/2013)</h3>
+  <p>
+    Patch release that cherry-picks the new MathJax SSL CDN URL from the master branch.
+    (The old SSN CDN appears to have gone offline recently!)
+  </p>
+  <p>
+    See production releases at <a href="https://webapps.ph.ed.ac.uk/qtiworks">https://webapps.ph.ed.ac.uk/qtiworks</a>, and
+    development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
+  </p>
+
   <h3>1.0-DEV31 [Development] (09/07/2013)</h3>
   <p>
     This snapshot includes a working implementation of LTI instructor role
@@ -61,6 +155,16 @@ All Rights Reserved
     <code>qtiworks-engine/support/schema-migrations/dev30-to-dev31.sql</code>
     after compiling this version of the webapp. There is no need to delete
     candidate data if upgrading from DEV30.
+  </p>
+
+  <h3>1.0-M4a [Production] (01/07/2013)</h3>
+  <p>
+    Patch release that cherry-picks the new Content Package handling code from the development branch. QTIWorks will
+    no longer complain about the odd MIME types sent by some browsers when uploading ZIP files.
+  </p>
+  <p>
+    See production releases at <a href="https://webapps.ph.ed.ac.uk/qtiworks">https://webapps.ph.ed.ac.uk/qtiworks</a>, and
+    development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
   </p>
 
   <h3>1.0-DEV30 [Development] (01/07/2013)</h3>
@@ -114,7 +218,7 @@ All Rights Reserved
     candidate session data needs to be deleted here.)
   </p>
   <p>
-    See development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
+    See development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
   </p>
 
   <h3>1.0-DEV28 [Development] (05/05/2013)</h3>
@@ -130,7 +234,7 @@ All Rights Reserved
     There is a small schema fix required here. See <code>qtiworks-engine/support/schema-migrations/dev27-to-dev28.sql</code>.
   </p>
   <p>
-    See development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
+    See development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
   </p>
 
   <h3>1.0-DEV27 [Development] (30/04/2013)</h3>
@@ -158,7 +262,7 @@ All Rights Reserved
     You must also wipe all candiate session data as the internal XML state files have changed significantly.
   </p>
   <p>
-    See development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
+    See development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
   </p>
 
   <h3>1.0-DEV26 [Development] (07/03/2013)</h3>
@@ -175,7 +279,7 @@ All Rights Reserved
     behave correctly.
   </p>
   <p>
-    See development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
+    See development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
   </p>
 
   <h3>1.0-M4 [Production] (07/03/2013)</h3>
@@ -185,8 +289,8 @@ All Rights Reserved
     that much (such as the "playback" feature when running single items).
   </p>
   <p>
-    See production releases at <a href="https://www2.ph.ed.ac.uk/qtiworks">https://www2.ph.ed.ac.uk/qtiworks</a>, and
-    development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
+    See production releases at <a href="https://webapps.ph.ed.ac.uk/qtiworks">https://webapps.ph.ed.ac.uk/qtiworks</a>, and
+    development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
   </p>
 
   <h3>1.0-DEV25 [Development] (28/02/2013)</h3>
@@ -195,7 +299,7 @@ All Rights Reserved
     It also includes a number of minor fixes, but no real functional changes.
   </p>
   <p>
-    See development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
+    See development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
   </p>
 
   <h3>1.0-M3 [Production] (14/02/2013)</h3>
@@ -203,8 +307,8 @@ All Rights Reserved
     Third production milestone, equivalent to the 1.0-DEV24 development snapshot.
   </p>
   <p>
-    See production releases at <a href="https://www2.ph.ed.ac.uk/qtiworks">https://www2.ph.ed.ac.uk/qtiworks</a>, and
-    development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
+    See production releases at <a href="https://webapps.ph.ed.ac.uk/qtiworks">https://webapps.ph.ed.ac.uk/qtiworks</a>, and
+    development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
   </p>
 
   <h3>1.0-DEV24 [Development] (11/02/2013)</h3>
@@ -218,7 +322,7 @@ All Rights Reserved
     <li>Minor improvement to rendering of uploadInteraction</li>
   </ul>
   <p>
-    See development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
+    See development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
   </p>
 
   <h3>1.0-DEV23 [Development] (29/01/2013)</h3>
@@ -227,7 +331,7 @@ All Rights Reserved
     and Deliverables. (There is more back-end deletion functionality included too.)
   </p>
   <p>
-    See development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
+    See development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
   </p>
 
   <h3>1.0-DEV22 [Development] (11/01/2013)</h3>
@@ -240,7 +344,7 @@ All Rights Reserved
     showing of item solutions and the display of section/rubric information within test item rendering.
   </p>
   <p>
-    See development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
+    See development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
   </p>
 
   <h3>1.0-DEV21 [Development] (07/01/2013)</h3>
@@ -257,7 +361,7 @@ All Rights Reserved
     changed in the information model.
   </p>
   <p>
-    See development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
+    See development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
   </p>
 
   <h3>1.0-M2 [Production] (07/01/2013)</h3>
@@ -274,8 +378,8 @@ All Rights Reserved
     for "real" testing with students.
   </p>
   <p>
-    See production releases at <a href="https://www2.ph.ed.ac.uk/qtiworks">https://www2.ph.ed.ac.uk/qtiworks</a>, and
-    development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
+    See production releases at <a href="https://webapps.ph.ed.ac.uk/qtiworks">https://webapps.ph.ed.ac.uk/qtiworks</a>, and
+    development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
   </p>
 
   <h3>1.0-DEV20 [Development] (26/11/2012)</h3>
@@ -287,7 +391,7 @@ All Rights Reserved
     than always starting a new one.
   </p>
   <p>
-    See development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
+    See development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
   </p>
 
   <h3>1.0-DEV19 [Development] (17/11/2012)</h3>
@@ -299,7 +403,7 @@ All Rights Reserved
     ZIP bundle containing all <code>assessmentResult</code> files).
   </p>
   <p>
-    See development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
+    See development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
   </p>
 
   <h3>1.0-DEV18 [Development] (15/11/2012)</h3>
@@ -309,7 +413,7 @@ All Rights Reserved
     data for candidate sessions on a given delivery.
   </p>
   <p>
-    See development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
+    See development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
   </p>
 
   <h3>1.0-DEV17 [Development] (09/11/2012)</h3>
@@ -319,7 +423,7 @@ All Rights Reserved
     ready for discussion with project partners.
   </p>
   <p>
-    See development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
+    See development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
   </p>
 
   <h3>1.0-DEV16 [Development] (02/11/2012)</h3>
@@ -331,7 +435,7 @@ All Rights Reserved
     state (after template processing has run on each item).
   </p>
   <p>
-    See development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
+    See development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
   </p>
 
   <h3>1.0-DEV15 [Development] (25/10/2012)</h3>
@@ -382,7 +486,7 @@ All Rights Reserved
     </li>
   </ul>
   <p>
-    See development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
+    See development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
   </p>
 
   <h3>1.0-DEV14 [Development] (28/09/2012)</h3>
@@ -424,7 +528,7 @@ All Rights Reserved
     </li>
   </ul>
   <p>
-    See development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
+    See development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
   </p>
 
   <h3>1.0-M1 [Production] (27/09/2012)</h3>
@@ -436,9 +540,9 @@ All Rights Reserved
   </p>
   <p>
     The next milestone snapshot will be released once we have some of the test functionality implemented.
-    You can always see the latest production snapshot at <a href="https://www2.ph.ed.ac.uk/qtiworks">https://www2.ph.ed.ac.uk/qtiworks</a>.
+    You can always see the latest production snapshot at <a href="https://webapps.ph.ed.ac.uk/qtiworks">https://webapps.ph.ed.ac.uk/qtiworks</a>.
     For bleeding edge snapshots, please see the new DEV instance of QTIWorks at
-    <a href="https://www2.ph.ed.ac.uk/qtiworks-dev/">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
+    <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev/">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
   </p>
 
   <h3>1.0-DEV13 (04/09/2012)</h3>

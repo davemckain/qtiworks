@@ -43,7 +43,8 @@ import org.springframework.web.servlet.view.JstlView;
 import org.springframework.web.servlet.view.UrlBasedViewResolver;
 
 /**
- * Defines beans for the instructor web MVC layer
+ * Defines beans for the instructor web MVC dispatcher, which is configured in web.xml to handle
+ * requests of the form <code>/instructor/...</code>.
  *
  * @author David McKain
  */

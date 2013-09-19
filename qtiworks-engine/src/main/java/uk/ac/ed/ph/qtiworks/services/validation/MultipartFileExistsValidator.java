@@ -39,7 +39,7 @@ import javax.validation.ConstraintValidatorContext;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * FIXME: Document this type
+ * Constraint validator for {@link MultipartFile}s, making sure that the underlying file exists.
  *
  * @author David McKain
  */

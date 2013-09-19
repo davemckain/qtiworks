@@ -98,13 +98,16 @@ public class ModalFeedback extends AbstractNode implements ContentContainer, Api
         getNodeGroups().add(new ApipAccessibilityGroup(this, false));
     }
 
-    /**
-     * Gets the children of this element.
-     *
-     * @return the elements children.
-     */
-    public List<FlowStatic> getChildren() {
+    public List<FlowStatic> getFlowStatics() {
         return getNodeGroups().getFlowStaticGroup().getFlowStatics();
+    }
+
+    /**
+     * @deprecated Please now use {@link #getFlowStatics()}
+     */
+    @Deprecated
+    public List<FlowStatic> getChildren() {
+        return getFlowStatics();
     }
 
     /**

@@ -83,8 +83,15 @@ public final class Hottext extends Choice implements InlineStatic, FlowStatic {
         getAttributes().getUriAttribute(Flow.ATTR_BASE_URI_NAME, XMLConstants.XML_NS_URI).setValue(base);
     }
 
-
-    public List<InlineStatic> getChildren() {
+    public List<InlineStatic> getInlineStatics() {
         return getNodeGroups().getInlineStaticGroup().getInlineStatics();
+    }
+
+    /**
+     * @deprecated Please now use {@link #getInlineStatics()}
+     */
+    @Deprecated
+    public List<InlineStatic> getChildren() {
+        return getInlineStatics();
     }
 }

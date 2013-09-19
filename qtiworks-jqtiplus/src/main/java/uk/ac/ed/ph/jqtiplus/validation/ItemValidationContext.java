@@ -45,13 +45,14 @@ import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 public interface ItemValidationContext extends ValidationContext {
 
     /**
-     * Returns the {@link ResolvedAssessmentItem} being handled.
+     * Returns the {@link AssessmentItem} being handled, which will never be null.
+     */
+    AssessmentItem getSubjectItem();
+
+    /**
+     * Returns the {@link ResolvedAssessmentItem} being handled, which will never be null
      */
     ResolvedAssessmentItem getResolvedAssessmentItem();
 
-    /**
-     * Returns the {@link AssessmentItem} being handled.
-     */
-    AssessmentItem getSubjectItem();
 
 }

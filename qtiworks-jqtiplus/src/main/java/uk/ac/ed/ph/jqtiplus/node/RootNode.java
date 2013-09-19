@@ -42,7 +42,10 @@ import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import java.net.URI;
 
 /**
- * Marker interface for a "root" QTI Node.
+ * Interface for a "root" QTI Node.
+ * <p>
+ * This simply adds support for recording the
+ * systemId (URI) of this QTI model.
  *
  * @see RootNodeTypes
  * @see AssessmentItem
@@ -55,10 +58,10 @@ import java.net.URI;
  */
 public interface RootNode extends QtiNode {
 
-    /** Returns the systemId of this tree, if loaded from a URI, null otherwise */
+    /** Returns the systemId of this model, if loaded from a URI, null otherwise */
     URI getSystemId();
 
-    /** Sets the systemId for this tree */
+    /** Sets the systemId for this model */
     void setSystemId(URI systemId);
 
 }

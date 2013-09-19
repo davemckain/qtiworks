@@ -118,11 +118,6 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject, Ap
     /** System ID of this RootNode (optional) */
     private URI systemId;
 
-
-
-    /**
-     * Constructs assessmentItem.
-     */
     public AssessmentItem() {
         super(null, QTI_CLASS_NAME); // Item doesn't have any parent.
 
@@ -575,102 +570,4 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject, Ap
                 + "(systemId=" + systemId
                 + ")";
     }
-
-    //---------------------------------------------------------------
-
-    //    /**
-    //     * Returns true if this item reference was correctly responded;
-    //     * Correctly responded means ALL defined responseVars match their associated correctResponse.
-    //     * Returns null if any of the responseDeclarations don't have  correctResponses.
-    //     *
-    //     * @return true if this item reference was correctly responded; null if not all
-    //     * responseDeclarations contain correctResponses; false otherwise
-    //     * @see #isIncorrect
-    //     */
-    //    @ToRefactor
-    //    public Boolean isCorrect()
-    //    {
-    //        throw new QTILogicException("To be refactored");
-    //        for (ResponseDeclaration responseDeclaration : getResponseDeclarations())
-    //            if (responseDeclaration.getCorrectResponse() == null)
-    //                return null;
-    //
-    //        for (ResponseDeclaration responseDeclaration : getResponseDeclarations()) {
-    //            if (!responseDeclaration.isCorrectResponse()) {
-    //                return false;
-    //            }
-    //        }
-    //
-    //        return true;
-    //    }
-    //
-    //    /**
-    //     * Returns the number of correct responses
-    //     *
-    //     * @return the number of correct responses
-    //     * @see #countIncorrect
-    //     */
-    //    @ToRefactor
-    //    public int countCorrect()
-    //    {
-    //        throw new QTILogicException("To be refactored");
-    //        int count = 0;
-    //
-    //        for (ResponseDeclaration responseDeclaration : getResponseDeclarations()) {
-    //            if (responseDeclaration.isCorrectResponse() == Boolean.TRUE) {
-    //                count++;
-    //            }
-    //        }
-    //
-    //        return count;
-    //    }
-    //
-    //    /**
-    //     * Returns true if this item reference was incorrectly responded;
-    //     * Incorrectly responded means ANY defined responseVars didn't match their
-    //     * associated correctResponse.
-    //     *
-    //     * Returns null if any of the responseDeclarations don't have correctResponses.
-    //     *
-    //     * @return true if this item reference was incorrectly responded; null if not all
-    //     * responseDeclarations contain correctResponses; false otherwise
-    //     * @see #isCorrect
-    //     */
-    //    @ToRefactor
-    //    public Boolean isIncorrect()
-    //    {
-    //        throw new QTILogicException("To be refactored");
-    //        for (ResponseDeclaration responseDeclaration : getResponseDeclarations())
-    //            if (responseDeclaration.getCorrectResponse() == null)
-    //                return null;
-    //
-    //        for (ResponseDeclaration responseDeclaration : getResponseDeclarations()) {
-    //            if (!responseDeclaration.isCorrectResponse()) {
-    //                return true;
-    //            }
-    //        }
-    //
-    //        return false;
-    //    }
-    //
-    //    /**
-    //     * Returns the number of incorrect responses
-    //     *
-    //     * @return the number of incorrect responses
-    //     * @see #countIncorrect
-    //     */
-    //    @ToRefactor
-    //    public int countIncorrect()
-    //    {
-    //        throw new QTILogicException("To be refactored");
-    //        int count = 0;
-    //
-    //        for (ResponseDeclaration responseDeclaration : getResponseDeclarations()) {
-    //            if (responseDeclaration.isCorrectResponse() == Boolean.FALSE) {
-    //                count++;
-    //            }
-    //        }
-    //
-    //        return count;
-    //    }
 }

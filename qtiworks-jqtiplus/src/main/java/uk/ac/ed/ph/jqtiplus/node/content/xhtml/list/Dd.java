@@ -40,7 +40,7 @@ import uk.ac.ed.ph.jqtiplus.node.content.basic.Flow;
 import java.util.List;
 
 /**
- * dd
+ * Represents the <tt>dd</tt> QTI class
  *
  * @author Jonathon Hare
  */
@@ -51,11 +51,6 @@ public final class Dd extends DlElement {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "dd";
 
-    /**
-     * Constructs object.
-     *
-     * @param parent parent of constructed object
-     */
     public Dd(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 

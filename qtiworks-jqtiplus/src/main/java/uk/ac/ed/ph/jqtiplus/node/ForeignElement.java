@@ -31,11 +31,8 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.node.block;
+package uk.ac.ed.ph.jqtiplus.node;
 
-import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
-import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.TextRun;
 import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxDocumentFirer;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
@@ -49,31 +46,33 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- * FIXME: Clarify this Javadoc, cos this class doesn't do what it says!
- *
- * Container block. Contains other blocks and no text content (it can contain one or more TextBlocks).
+ * This Node represents arbitrary XML, including the contents of MathML islands.
+ * <p>
+ * (This is not defined in the QTI spec. The original JQTI included this and a superclass
+ * called ContainerBlock. I have joined these two together in JQTI+.)
  *
  * @author Jonathon Hare
- * @author Jiri Kajaba
+ * @author David McKain (refactored)
  */
-public abstract class ContainerBlock extends AbstractNode {
+public final class ForeignElement extends AbstractNode {
 
-    private static final long serialVersionUID = -577148022486574797L;
+    private static final long serialVersionUID = 474940437634236118L;
 
     /** Children of this block. */
     private final List<QtiNode> children;
 
-    public ContainerBlock(final QtiNode parent, final String qtiClassName) {
-        super(parent, qtiClassName);
+    private final String namespaceUri;
 
-        children = new ArrayList<QtiNode>();
+    public ForeignElement(final QtiNode parent, final String qtiClassName, final String namespaceUri) {
+        super(parent, qtiClassName);
+        this.children = new ArrayList<QtiNode>();
+        this.namespaceUri = namespaceUri;
     }
 
-    /**
-     * Gets children of this block.
-     *
-     * @return children of this block
-     */
+    public final String getNamespaceUri() {
+        return namespaceUri;
+    }
+
     public List<QtiNode> getChildren() {
         return children;
     }
@@ -120,4 +119,5 @@ public abstract class ContainerBlock extends AbstractNode {
             child.validate(context);
         }
     }
+
 }

@@ -34,9 +34,9 @@
 package uk.ac.ed.ph.jqtiplus.node.content.mathml;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiIllegalChildException;
+import uk.ac.ed.ph.jqtiplus.node.ForeignElement;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
-import uk.ac.ed.ph.jqtiplus.node.block.ForeignElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.AbstractFlowBodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.BlockStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;

@@ -185,17 +185,6 @@ public final class PrintedVariable extends AbstractFlowBodyElement implements Fl
             final VariableDeclaration variableDeclaration = context.checkLocalVariableReference(this, identifier);
             if (variableDeclaration!=null) {
                 context.checkVariableType(this, variableDeclaration, VariableType.TEMPLATE, VariableType.OUTCOME);
-
-                // (FIXME! The following is now out of date wrt latest QTI 2.1 draft!)
-                // DM: For MathAssess, we're relaxing the following test to allow record variables (which is how we encode MathsContent variables)
-                // to be used here as well. We perhaps ought to test whether the record really is a MathsContent as well, but I don't want to
-                // pollute this code with too much MathAssess-specfic stuff.
-                //            if (variableDeclaration != null && variableDeclaration.getCardinality() != null && !variableDeclaration.getCardinality().isSingle())
-                //                context.fireValidationError(this, "Invalid cardinality. Expected: " + Cardinality.SINGLE + ", but found: " + variableDeclaration.getCardinality());
-//                if (!(variableDeclaration.getCardinality().isSingle() || variableDeclaration.getCardinality().isRecord())) {
-//                    context.fireValidationError(this, "Invalid cardinality. Expected: " + Cardinality.SINGLE + ", but found: " + variableDeclaration.getCardinality()
-//                            + ". (Note that " + Cardinality.RECORD + " is also supported, even though this is not strictly compliant with the spec.)");
-//                }
             }
         }
     }

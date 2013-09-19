@@ -24,7 +24,7 @@ candidateSessionSummaryReport
     </nav>
     <h2>
       <span class="assessmentLabel">Assessment&#xa0;${utils:formatAssessmentType(assessment)}</span>
-      <a href="${utils:escapeLink(assessmentRouting['show'])}">${fn:escapeXml(utils:formatAssessmentFileName(assessmentPackage))}</a>
+      <a href="${utils:escapeLink(assessmentRouting['show'])}">${fn:escapeXml(assessmentPackage.fileName)}</a>
       &#xbb;
       <span class="deliveryLabel">Delivery</span>
       <a href="${utils:escapeLink(deliveryRouting['show'])}">${fn:escapeXml(delivery.title)}</a>

@@ -49,15 +49,7 @@ import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import java.util.List;
 
 /**
- * Attribute : summary [0..1]: string
- * Contains : caption [0..1]
- * Contains : col [*]
- * If A table directly contains A col then it must not contain any colgroup elements.
- * Contains : colgroup [*]
- * If A table contains A colgroup it must not directly contain any col elements.
- * Contains : thead [0..1]
- * Contains : tfoot [0..1]
- * Contains : tbody [1..*]
+ * table
  *
  * @author Jonathon Hare
  */

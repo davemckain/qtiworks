@@ -59,7 +59,7 @@ import java.util.List;
  *
  * @author David McKain
  */
-public final class TestPlanNode implements Serializable, Comparable<TestPlanNode> {
+public final class TestPlanNode implements Serializable {
 
     private static final long serialVersionUID = -1618684181224400175L;
 
@@ -120,7 +120,7 @@ public final class TestPlanNode implements Serializable, Comparable<TestPlanNode
             final String sectionPartTitle, final URI itemSystemId) {
         Assert.notNull(testNodeType, "TestNodeType");
         this.parentNode = null;
-        this.siblingIndex = -1;
+        this.siblingIndex = -1; // Must be set by addChild() later
         this.testNodeType = testNodeType;
         this.key = key;
         this.effectiveItemSessionControl = effectiveItemSessionControl;
@@ -170,7 +170,7 @@ public final class TestPlanNode implements Serializable, Comparable<TestPlanNode
 
     @BeanToStringOptions(PropertyOptions.IGNORE_PROPERTY)
     public int getAbstractPartGlobalIndex() {
-        return key!=null ? key.getGlobalIndex() : -1;
+        return key!=null ? key.getAbstractPartGlobalIndex() : -1;
     }
 
     @BeanToStringOptions(PropertyOptions.IGNORE_PROPERTY)
@@ -344,23 +344,5 @@ public final class TestPlanNode implements Serializable, Comparable<TestPlanNode
     @Override
     public int hashCode() {
         return key!=null ? key.hashCode() : super.hashCode();
-    }
-
-    @Override
-    public int compareTo(final TestPlanNode o) {
-        int result;
-        if (key!=null && o.key!=null) {
-            /* Both "proper" nodes */
-            result = key.compareTo(o.key);
-        }
-        else if (key==null && o.key==null) {
-            /* Both special root nodes */
-            result = 0;
-        }
-        else {
-            /* One root, one other */
-            result = key!=null ? 1 : -1;
-        }
-        return result;
     }
 }

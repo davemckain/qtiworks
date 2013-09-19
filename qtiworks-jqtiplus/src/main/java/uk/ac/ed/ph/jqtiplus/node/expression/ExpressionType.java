@@ -103,7 +103,6 @@ import uk.ac.ed.ph.jqtiplus.node.expression.outcome.TestVariables;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRemove;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -1386,60 +1385,18 @@ public enum ExpressionType {
         return expressionTypes.keySet();
     }
 
-    @ToRemove
-    //    /**
-    //     * Gets all supported expression types for given requirements.
-    //     * Every returned expression type produces at least on required object.
-    //     *
-    //     * @param requiredCardinalities required cardinalities
-    //     * @param requiredBaseTypes required baseTypes
-    //     * @return all supported expression types for given requirements
-    //     */
-    //    public static ExpressionType[] getSupportedTypes(Cardinality[] requiredCardinalities, BaseType[] requiredBaseTypes)
-    //    {
-    //        List<ExpressionType> types = new ArrayList<ExpressionType>();
-    //
-    //        for (ExpressionType type : ExpressionType.values())
-    //        {
-    //            boolean cardinalityFound = false;
-    //
-    //            for (Cardinality producedCardinality : type.getProducedCardinalities())
-    //                if (Arrays.binarySearch(requiredCardinalities, producedCardinality) >= 0)
-    //                {
-    //                    cardinalityFound = true;
-    //                    break;
-    //                }
-    //
-    //            boolean baseTypeFound = false;
-    //
-    //            for (BaseType producedBaseType : type.getProducedBaseTypes())
-    //                if (Arrays.binarySearch(requiredBaseTypes, producedBaseType) >= 0)
-    //                {
-    //                    baseTypeFound = true;
-    //                    break;
-    //                }
-    //
-    //            if (cardinalityFound && baseTypeFound)
-    //                types.add(type);
-    //        }
-    //
-    //        return types.toArray(new ExpressionType[] {});
-    //    }
-            /**
-             * Creates expression.
-             *
-             * @param parent parent of created expression
-             * @param qtiClassName QTI_CLASS_NAME of created expression
-             * @return created expression
-             */
-            public static
-            Expression getInstance(final ExpressionParent parent, final String qtiClassName) {
+    /**
+     * Creates expression.
+     *
+     * @param parent parent of created expression
+     * @param qtiClassName QTI_CLASS_NAME of created expression
+     * @return created expression
+     */
+    public static Expression getInstance(final ExpressionParent parent, final String qtiClassName) {
         final ExpressionType expressionType = expressionTypes.get(qtiClassName);
-
         if (expressionType == null) {
             throw new QtiIllegalChildException(parent, qtiClassName);
         }
-
         return expressionType.create(parent);
     }
 }

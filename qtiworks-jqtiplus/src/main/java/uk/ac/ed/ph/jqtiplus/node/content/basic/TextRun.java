@@ -48,7 +48,7 @@ import org.xml.sax.SAXException;
  *
  * @author Jonathon Hare
  */
-public class TextRun extends AbstractNode implements Content, FlowStatic, InlineStatic, TextOrVariable {
+public class TextRun extends AbstractNode implements FlowStatic, InlineStatic, TextOrVariable {
 
     private static final long serialVersionUID = -8609122687264674305L;
 

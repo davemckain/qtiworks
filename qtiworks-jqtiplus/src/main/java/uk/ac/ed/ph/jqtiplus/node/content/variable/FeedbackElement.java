@@ -69,16 +69,10 @@ public abstract class FeedbackElement extends AbstractFlowBodyElement {
     /** Name of identifier attribute in xml schema. */
     public static final String ATTR_IDENTIFIER_NAME = "identifier";
 
-    /**
-     * Constructs feedback element.
-     *
-     * @param parent parent of this element
-     */
     public FeedbackElement(final QtiNode parent, final String qtiClassName) {
         super(parent, qtiClassName);
 
-        getAttributes().add(
-                new VisibilityModeAttribute(this, ATTR_VISIBILITY_MODE_NAME, ATTR_VISIBILITY_MODE_DEFAULT_VALUE, true));
+        getAttributes().add(new VisibilityModeAttribute(this, ATTR_VISIBILITY_MODE_NAME, ATTR_VISIBILITY_MODE_DEFAULT_VALUE, true));
         getAttributes().add(new IdentifierAttribute(this, ATTR_OUTCOME_IDENTIFIER_NAME, true));
         getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME, true));
     }

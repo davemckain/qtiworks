@@ -35,14 +35,13 @@ package uk.ac.ed.ph.jqtiplus.node.content.xhtml.text;
 
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.AbstractAtomicBlock;
-import uk.ac.ed.ph.jqtiplus.node.content.basic.AtomicBlock;
 
 /**
  * p
  *
  * @author Jonathon Hare
  */
-public final class P extends AbstractAtomicBlock implements AtomicBlock {
+public final class P extends AbstractAtomicBlock {
 
     private static final long serialVersionUID = 4510020492307855741L;
 

@@ -36,7 +36,6 @@ package uk.ac.ed.ph.jqtiplus.node.item.interaction;
 import uk.ac.ed.ph.jqtiplus.group.item.interaction.PromptGroup;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Block;
-import uk.ac.ed.ph.jqtiplus.node.content.basic.Flow;
 
 import java.util.List;
 
@@ -45,7 +44,7 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public abstract class BlockInteraction extends FlowInteraction implements Block, Flow {
+public abstract class BlockInteraction extends FlowInteraction implements Block {
 
     private static final long serialVersionUID = 5487665806009713981L;
 

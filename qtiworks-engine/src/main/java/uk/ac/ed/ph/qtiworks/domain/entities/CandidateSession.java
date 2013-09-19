@@ -57,7 +57,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -167,8 +166,10 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
      * <p>
      * A null URL will direct to a blank page afterwards.
      */
+    @Lob
+    @Type(type="org.hibernate.type.TextType")
     @Basic(optional=true)
-    @Column(name="exit_url", length=DomainConstants.CANDIDATE_SESSION_EXIT_URL_LENGTH)
+    @Column(name="exit_url")
     private String exitUrl;
 
     /** {@link Delivery} owning this session */
@@ -277,8 +278,8 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
 
     /** (Currently used for cascading deletion only - upgrade if required) */
     @SuppressWarnings("unused")
-    @OneToOne(mappedBy="candidateSession", cascade=CascadeType.REMOVE)
-    private QueuedLtiOutcome queuedLtiOutcome;
+    @OneToMany(mappedBy="candidateSession", cascade=CascadeType.REMOVE)
+    private Set<QueuedLtiOutcome> queuedLtiOutcomes;
 
     //------------------------------------------------------------
 

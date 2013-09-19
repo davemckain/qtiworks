@@ -38,6 +38,8 @@ import java.net.URI;
 /**
  * flow marker interface
  *
+ * @see AbstractFlowBodyElement
+ *
  * @author Jonathon Hare
  */
 public interface Flow extends ObjectFlow {

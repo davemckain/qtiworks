@@ -99,7 +99,15 @@ public final class SimpleAssociableChoice extends AssociableChoice {
     }
 
 
-    public List<FlowStatic> getChildren() {
+    public List<FlowStatic> getFlowStatics() {
         return getNodeGroups().getFlowStaticGroup().getFlowStatics();
+    }
+
+    /**
+     * @deprecated Please now use {@link #getFlowStatics()}
+     */
+    @Deprecated
+    public List<FlowStatic> getChildren() {
+        return getFlowStatics();
     }
 }

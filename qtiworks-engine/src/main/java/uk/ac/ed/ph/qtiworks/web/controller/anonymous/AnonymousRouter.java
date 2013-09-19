@@ -49,7 +49,7 @@ public class AnonymousRouter {
     private String contextPath;
 
     public String buildWithinContextUrl(final String actionUrl) {
-        return "/web/anonymous" + actionUrl;
+        return "/anonymous" + actionUrl;
     }
 
     public String buildWebUrl(final String actionUrl) {

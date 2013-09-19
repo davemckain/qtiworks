@@ -59,7 +59,7 @@ import java.util.Map.Entry;
  * It uses the following conventions:
  * <ul>
  *   <li>
- *     Schema resources are loaded using {@link #JQTIPLUS_PARSER_RESOURCE_LOCATOR}.
+ *     Schema resources are loaded using the {@link #JQTIPLUS_PARSER_RESOURCE_LOCATOR}.
  *     Extensions can make schemas available by adding them to the ClassPath in the appropriate
  *     place.
  *   </li>
@@ -69,6 +69,7 @@ import java.util.Map.Entry;
  *     to be maintained internally for performance reasons, before using the standard input locator.
  *   </li>
  * </ul>
+ * An instance of this class may safely be used by multiple threads.
  *
  * @author David McKain
  */

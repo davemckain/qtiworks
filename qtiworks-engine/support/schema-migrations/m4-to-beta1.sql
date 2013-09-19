@@ -1,5 +1,4 @@
 -- Schema migration script for upgrading from 1.0-M4 to 1.0-M5.
--- (This is not complete yet. It incorporates a merger of DEV26->DEV32 at present)
 --
 -- NB: This has been written to work with PostgreSQL and will probably need
 -- tweaked slightly to work with other databases.
@@ -83,11 +82,15 @@ ALTER TABLE assessment_packages ALTER launchable SET NOT NULL;
 ALTER TABLE assessment_packages ALTER error_count SET NOT NULL;
 ALTER TABLE assessment_packages ALTER warning_count SET NOT NULL;
 
--- Some changes to event names
-UPDATE candidate_events SET test_event_type='EXIT_TEST' WHERE test_event_type='EXIT_MULTI_PART_TEST';
-UPDATE candidate_events SET item_event_type='EXIT' WHERE item_event_type='TERMINATE';
-UPDATE candidate_events SET item_event_type='END' WHERE item_event_type='CLOSE';
+-- Some changes to item and test candidate event names
+ALTER TABLE candidate_events ALTER item_event_type SET DATA TYPE VARCHAR(32);
+ALTER TABLE candidate_events ALTER test_event_type SET DATA TYPE VARCHAR(32);
 UPDATE candidate_events SET item_event_type='ENTER' WHERE item_event_type='INIT';
+UPDATE candidate_events SET item_event_type='END' WHERE item_event_type='CLOSE';
+UPDATE candidate_events SET item_event_type='EXIT' WHERE item_event_type='TERMINATE';
+UPDATE candidate_events SET test_event_type='ENTER_TEST' WHERE test_event_type='INIT';
+UPDATE candidate_events SET test_event_type='ADVANCE_TEST_PART' WHERE test_event_type='EXIT_TEST_PART';
+UPDATE candidate_events SET test_event_type='EXIT_TEST' WHERE test_event_type='EXIT_MULTI_PART_TEST';
 
 -- Addition of 'exploded' column to candidate_sessions
 ALTER TABLE candidate_sessions ADD exploded boolean;
@@ -215,9 +218,21 @@ ALTER TABLE assessment_packages ADD title VARCHAR(256);
 UPDATE assessment_packages ap SET
   title=(SELECT a.title FROM assessments a WHERE ap.apid=a.selected_apid),
   file_name=(SELECT a.name FROM assessments a WHERE ap.apid=a.selected_apid);
+UPDATE assessment_packages SET title='Title' WHERE title IS NULL; -- (This package will end up being deleted)
+UPDATE assessment_packages SET file_name='file_name' WHERE file_name IS NULL; -- (Ditto)
 ALTER TABLE assessment_packages ALTER title SET NOT NULL;
 ALTER TABLE assessment_packages ALTER file_name SET NOT NULL;
 ALTER TABLE assessments DROP name;
 ALTER TABLE assessments DROP title;
+
+-- Finally, we delete ALL candidate session data from the database.
+-- (The filesystem site of things is deleted separately later...)
+DELETE FROM candidate_session_outcomes;
+DELETE FROM candidate_event_notifications;
+DELETE FROM candidate_string_response_items;
+DELETE FROM candidate_responses;
+DELETE FROM candidate_file_submissions;
+DELETE FROM candidate_events;
+DELETE FROM candidate_sessions;
 
 COMMIT WORK;

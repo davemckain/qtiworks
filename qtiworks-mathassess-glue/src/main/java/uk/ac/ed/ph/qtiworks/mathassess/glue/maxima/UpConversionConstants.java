@@ -42,18 +42,18 @@ import uk.ac.ed.ph.snuggletex.upconversion.UpConversionOptions;
  * @author David McKain
  */
 public final class UpConversionConstants {
-    
+
     public static final UpConversionOptions UP_CONVERSION_OPTIONS;
-    
+
     static {
         UP_CONVERSION_OPTIONS = new UpConversionOptions();
         UP_CONVERSION_OPTIONS.setSpecifiedOption(UpConversionOptionDefinitions.MAXIMA_OPERATOR_FUNCTION_NAME, "maOperator");
         UP_CONVERSION_OPTIONS.setSpecifiedOption(UpConversionOptionDefinitions.MAXIMA_UNITS_FUNCTION_NAME, "maUnits");
-        
+
         /* We want bracketed PMathML for feedback */
         UP_CONVERSION_OPTIONS.setSpecifiedOption(UpConversionOptionDefinitions.DO_BRACKETED_PRESENTATION_MATHML, "true");
-        
+
         /* FIXME: Do we want any other things here? */
-        
+
     }
 }

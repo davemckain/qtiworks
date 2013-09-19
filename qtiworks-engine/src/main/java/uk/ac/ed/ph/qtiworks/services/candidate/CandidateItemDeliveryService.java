@@ -76,6 +76,8 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -96,6 +98,8 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 @Transactional(propagation=Propagation.REQUIRED)
 public class CandidateItemDeliveryService {
+
+    private static final Logger logger = LoggerFactory.getLogger(CandidateItemDeliveryService.class);
 
     @Resource
     private RequestTimestampContext requestTimestampContext;
@@ -265,7 +269,7 @@ public class CandidateItemDeliveryService {
                 return null;
             }
             catch (final RuntimeException e) {
-                return handleExplosion(candidateSession);
+                return handleExplosion(e, candidateSession);
             }
         }
 
@@ -306,7 +310,7 @@ public class CandidateItemDeliveryService {
             return null;
         }
         catch (final RuntimeException e) {
-            return handleExplosion(candidateSession);
+            return handleExplosion(e, candidateSession);
         }
 
         /* Record resulting attempt and event */
@@ -324,13 +328,24 @@ public class CandidateItemDeliveryService {
         }
 
         /* Record current result state, or close session */
+        return updateSessionClosedStatus(candidateSession, itemSessionController);
+    }
+
+    private CandidateSession updateSessionClosedStatus(final CandidateSession candidateSession,
+            final ItemSessionController itemSessionController) {
+        /* Record current result state, or close session */
+        final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
         if (itemSessionState.isEnded()) {
             candidateSessionCloser.closeCandidateItemSession(candidateSession, itemSessionController);
         }
         else {
             candidateDataService.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
+            if (candidateSession.isClosed()) {
+                /* (Change to session closed flag) */
+                candidateSession.setClosed(false);
+                candidateSessionDao.update(candidateSession);
+            }
         }
-
         return candidateSession;
     }
 
@@ -381,7 +396,7 @@ public class CandidateItemDeliveryService {
             return null;
         }
         catch (final RuntimeException e) {
-            return handleExplosion(candidateSession);
+            return handleExplosion(e, candidateSession);
         }
 
         /* Record and log event */
@@ -443,7 +458,7 @@ public class CandidateItemDeliveryService {
             return null;
         }
         catch (final RuntimeException e) {
-            return handleExplosion(candidateSession);
+            return handleExplosion(e, candidateSession);
         }
 
         /* Record and log event */
@@ -452,14 +467,7 @@ public class CandidateItemDeliveryService {
         candidateAuditLogger.logCandidateEvent(candidateEvent);
 
         /* Record current result state, or close session */
-        if (itemSessionState.isEnded()) {
-            candidateSessionCloser.closeCandidateItemSession(candidateSession, itemSessionController);
-        }
-        else {
-            candidateDataService.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
-        }
-
-        return candidateSession;
+        return updateSessionClosedStatus(candidateSession, itemSessionController);
     }
 
     //----------------------------------------------------
@@ -511,7 +519,7 @@ public class CandidateItemDeliveryService {
             return null;
         }
         catch (final RuntimeException e) {
-            return handleExplosion(candidateSession);
+            return handleExplosion(e, candidateSession);
         }
 
         /* Record and log event */
@@ -519,14 +527,7 @@ public class CandidateItemDeliveryService {
         candidateAuditLogger.logCandidateEvent(candidateEvent);
 
         /* Record current result state, or close session */
-        if (itemSessionState.isEnded()) {
-            candidateSessionCloser.closeCandidateItemSession(candidateSession, itemSessionController);
-        }
-        else {
-            candidateDataService.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
-        }
-
-        return candidateSession;
+        return updateSessionClosedStatus(candidateSession, itemSessionController);
     }
 
     //----------------------------------------------------
@@ -566,7 +567,7 @@ public class CandidateItemDeliveryService {
             return null;
         }
 
-        /* Ennd session if required */
+        /* End session if still open */
         final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
         boolean isEndingSession = false;
         if (!itemSessionState.isEnded()) {
@@ -579,7 +580,7 @@ public class CandidateItemDeliveryService {
                 return null;
             }
             catch (final RuntimeException e) {
-                return handleExplosion(candidateSession);
+                return handleExplosion(e, candidateSession);
             }
         }
 
@@ -630,7 +631,7 @@ public class CandidateItemDeliveryService {
                 itemSessionController.endItem(timestamp);
             }
             catch (final RuntimeException e) {
-                return handleExplosion(candidateSession);
+                return handleExplosion(e, candidateSession);
             }
             candidateSessionCloser.closeCandidateItemSession(candidateSession, itemSessionController);
         }
@@ -649,7 +650,8 @@ public class CandidateItemDeliveryService {
 
     //----------------------------------------------------
 
-    private CandidateSession handleExplosion(final CandidateSession candidateSession) {
+    private CandidateSession handleExplosion(final RuntimeException e, final CandidateSession candidateSession) {
+        logger.error("Intercepted RuntimeException so marking candidate test session as exploded", e);
         candidateSession.setExploded(true);
         candidateSession.setTerminated(true);
         candidateAuditLogger.logExplosion(candidateSession);

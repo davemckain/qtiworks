@@ -53,7 +53,7 @@ import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 /**
- * Parent of all xml nodes.
+ * Base implementation of {@link QtiNode}.
  *
  * @author Jiri Kajaba
  * @author Jonathon Hare
@@ -65,6 +65,7 @@ public abstract class AbstractNode implements QtiNode {
     /** Parent of this node. */
     private final QtiNode parent;
 
+    /** Name of this QTI class, as defined in the spec */
     private final String qtiClassName;
 
     /** Attributes of this node. */

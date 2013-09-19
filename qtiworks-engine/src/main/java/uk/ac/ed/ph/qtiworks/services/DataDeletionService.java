@@ -198,36 +198,34 @@ public class DataDeletionService {
             assessmentPackageDao.update(assessmentPackage);
         }
 
-        /* Unlink Assessment from attached Deliveries. */
+        /* Unlink Assessment from attached Deliveries, and delete any CandidateSessions for that Delivery. */
         final List<Delivery> deliveries = assessment.getDeliveries();
         for (final Delivery delivery : deliveries) {
+            deleteCandidateSessions(delivery);
             delivery.setAssessment(null);
             deliveryDao.update(delivery);
-
         }
 
         /* Delete Assessment entity */
         assessmentDao.remove(assessment);
 
-        /* Finally delete each AssessmentPackage */
+        /* Now delete each AssessmentPackage */
         for (final AssessmentPackage assessmentPackage : assessmentPackages) {
             deleteAssessmentPackage(assessmentPackage);
         }
 
-        /* Then delete the Deliveries enumerated above.
+        /* Finally delete the Deliveries entities enumerated above.
          * (We excluding any LTI_RESOURCE Deliveries, as these ones have the Assessment attached
          * to the Delivery.)
          */
         for (final Delivery delivery : deliveries) {
             if (delivery.getDeliveryType()!=DeliveryType.LTI_RESOURCE) {
-                delivery.setAssessment(assessment); /* (Need to do this temporarily for FilespaceManager) */
-                deleteDelivery(delivery);
-                delivery.setAssessment(null);
+                deliveryDao.remove(delivery); /* (This will cascade) */
             }
         }
     }
 
-    public void deleteLtiResource(final LtiResource ltiResource) {
+    private void deleteLtiResource(final LtiResource ltiResource) {
         Assert.notNull(ltiResource, "ltiResource");
 
         /* Delete Delivery matched to this entity */
@@ -293,6 +291,7 @@ public class DataDeletionService {
      *
      * @param latestCreationTime cut-off creation time for deleting old {@link Delivery} entities
      */
+    @Transactional(propagation=Propagation.REQUIRES_NEW)
     public int deleteTransientDeliveries(final User user, final Date latestCreationTime) {
         int deleted = 0;
         for (final Delivery delivery : deliveryDao.getForOwnerAndTypeCreatedBefore(user, DeliveryType.USER_TRANSIENT, latestCreationTime)) {
@@ -310,6 +309,7 @@ public class DataDeletionService {
      *
      * @param latestCreationTime cut-off creation time for deleting old {@link Delivery} entities
      */
+    @Transactional(propagation=Propagation.REQUIRES_NEW)
     public int deleteTransientDeliveries(final Date latestCreationTime) {
         int deleted = 0;
         for (final Delivery delivery : deliveryDao.getForTypeCreatedBefore(DeliveryType.USER_TRANSIENT, latestCreationTime)) {
@@ -327,6 +327,7 @@ public class DataDeletionService {
      *
      * @param latestCreationTime cut-off creation time for deleting old {@link User} entities
      */
+    @Transactional(propagation=Propagation.REQUIRES_NEW)
     public int deleteAnonymousUsers(final Date latestCreationTime) {
         int deleted = 0;
         for (final AnonymousUser toDelete : anonymousUserDao.getCreatedBefore(latestCreationTime)) {
@@ -341,14 +342,14 @@ public class DataDeletionService {
      * {@link #deleteTransientDeliveries(Date)} to purge all anonymous users and transient
      * deliveries that were created before the given time, removing all associated data is removed.
      */
-    public void purgeAnonymousData(final Date creationTimeThreshold) {
-        final int transientDeliveriesDeleted = deleteTransientDeliveries(creationTimeThreshold);
-        if (transientDeliveriesDeleted > 0) {
-            logger.info("Purged {} transient deliveries from the system", transientDeliveriesDeleted);
-        }
+    public void purgeTransientData(final Date creationTimeThreshold) {
         final int usersDeleted = deleteAnonymousUsers(creationTimeThreshold);
         if (usersDeleted > 0) {
             logger.info("Purged {} anonymous users from the system", usersDeleted);
+        }
+        final int transientDeliveriesDeleted = deleteTransientDeliveries(creationTimeThreshold);
+        if (transientDeliveriesDeleted > 0) {
+            logger.info("Purged {} transient deliveries from the system", transientDeliveriesDeleted);
         }
     }
 }

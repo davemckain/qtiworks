@@ -43,13 +43,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Purges all anonymous data from the system
+ * Purges all transient data from the system
  *
  * @author David McKain
  */
-public final class PurgeAnonymousDataAction extends ManagerAction {
+public final class PurgeTransientDataAction extends ManagerAction {
 
-	private static final Logger logger = LoggerFactory.getLogger(PurgeAnonymousDataAction.class);
+	private static final Logger logger = LoggerFactory.getLogger(PurgeTransientDataAction.class);
 
 	@Override
 	public String getActionSummary() {
@@ -59,7 +59,7 @@ public final class PurgeAnonymousDataAction extends ManagerAction {
 	@Override
 	public void run(final ApplicationContext applicationContext, final List<String> parameters) {
 	    final DataDeletionService dataDeletionService = applicationContext.getBean(DataDeletionService.class);
-	    dataDeletionService.purgeAnonymousData(new Date());
+	    dataDeletionService.purgeTransientData(new Date());
 		logger.info("Purged anonymous data from the system");
     }
 }

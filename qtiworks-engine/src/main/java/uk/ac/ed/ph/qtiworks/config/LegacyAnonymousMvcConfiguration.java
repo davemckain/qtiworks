@@ -31,21 +31,38 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.xperimental;
+package uk.ac.ed.ph.qtiworks.config;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.ViewResolver;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.view.JstlView;
+import org.springframework.web.servlet.view.UrlBasedViewResolver;
 
 /**
- * Temporary annotation for things from the original JQTI/QTIEngine that need
- * further investigation.
+ * Defines beans for the legacy anonymous MVC dispatcher, which is configured in web.xml to
+ * handle requests of the form <code>/web/anonymous/...</code>.
+ * <p>
+ * This is currently being kept purely for Uniqurate, which still uses the old URL schemes. Once
+ * it gets updated, this can be removed.
  *
  * @author David McKain
  */
-@Retention(RetentionPolicy.SOURCE)
-@Target({ ElementType.TYPE, ElementType.METHOD, ElementType.FIELD, ElementType.CONSTRUCTOR })
-public @interface ToCheck {
+@EnableWebMvc
+@Configuration
+@ComponentScan(basePackages={"uk.ac.ed.ph.qtiworks.web.controller.legacy"})
+public class LegacyAnonymousMvcConfiguration extends WebMvcConfigurerAdapter {
 
+    @Bean
+    ViewResolver viewResolver() {
+        final UrlBasedViewResolver result = new UrlBasedViewResolver();
+        result.setRedirectHttp10Compatible(false);
+        result.setViewClass(JstlView.class);
+        result.setPrefix("/WEB-INF/jsp/views/anonymous/");
+        result.setSuffix(".jsp");
+        return result;
+    }
 }

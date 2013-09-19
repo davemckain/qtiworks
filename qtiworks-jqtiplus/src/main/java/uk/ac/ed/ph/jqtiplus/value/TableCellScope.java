@@ -43,17 +43,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * row
- * <p>
- * col
- * <p>
- * rowgroup
- * <p>
- * colgroup
- * 
+ * Enumerates the values of the <tt>tableCellScope</tt> attribute.
+ *
  * @author Jiri Kajaba
  */
 public enum TableCellScope implements Stringifiable {
+
     /**
      * Row type.
      */
@@ -81,7 +76,6 @@ public enum TableCellScope implements Stringifiable {
 
     static {
         types = new HashMap<String, TableCellScope>();
-
         for (final TableCellScope type : TableCellScope.values()) {
             types.put(type.tableCellScope, type);
         }
@@ -89,13 +83,13 @@ public enum TableCellScope implements Stringifiable {
 
     private String tableCellScope;
 
-    private TableCellScope(String tableCellScopeType) {
+    private TableCellScope(final String tableCellScopeType) {
         this.tableCellScope = tableCellScopeType;
     }
 
     /**
      * Returns true if this tableCellScope is row; false otherwise.
-     * 
+     *
      * @return true if this tableCellScope is row; false otherwise
      */
     public boolean isRow() {
@@ -104,7 +98,7 @@ public enum TableCellScope implements Stringifiable {
 
     /**
      * Returns true if this tableCellScope is col; false otherwise.
-     * 
+     *
      * @return true if this tableCellScope is col; false otherwise
      */
     public boolean isCol() {
@@ -113,7 +107,7 @@ public enum TableCellScope implements Stringifiable {
 
     /**
      * Returns true if this tableCellScope is rowgroup; false otherwise.
-     * 
+     *
      * @return true if this tableCellScope is rowgroup; false otherwise
      */
     public boolean isRowgroup() {
@@ -122,7 +116,7 @@ public enum TableCellScope implements Stringifiable {
 
     /**
      * Returns true if this tableCellScope is colgroup; false otherwise.
-     * 
+     *
      * @return true if this tableCellScope is colgroup; false otherwise
      */
     public boolean isColgroup() {
@@ -136,37 +130,33 @@ public enum TableCellScope implements Stringifiable {
 
     /**
      * Returns parsed <code>TableCellScopeType</code> from given <code>String</code>.
-     * 
+     *
      * @param tableCellScope <code>String</code> representation of <code>TableCellScopeType</code>
      * @return parsed <code>TableCellScopeType</code> from given <code>String</code>
      * @throws QtiParseException if given <code>String</code> is not valid <code>TableCellScopeType</code>
      */
-    public static TableCellScope parseTableCellScope(String tableCellScope) {
+    public static TableCellScope parseTableCellScope(final String tableCellScope) {
         final TableCellScope result = types.get(tableCellScope);
-
         if (result == null) {
             throw new QtiParseException("Invalid " + QTI_CLASS_NAME + " '" + tableCellScope + "'.");
         }
-
         return result;
     }
 
     /**
      * Returns intersection of two given types sets (order is not important).
-     * 
+     *
      * @param firstSet first set of types
      * @param secondSet second set of types
      * @return intersection of two given types sets
      */
-    public static TableCellScope[] intersection(TableCellScope[] firstSet, TableCellScope[] secondSet) {
+    public static TableCellScope[] intersection(final TableCellScope[] firstSet, final TableCellScope[] secondSet) {
         final List<TableCellScope> paramTypes = new ArrayList<TableCellScope>();
-
         for (final TableCellScope type : firstSet) {
             if (Arrays.binarySearch(secondSet, type) >= 0) {
                 paramTypes.add(type);
             }
         }
-
         return paramTypes.toArray(new TableCellScope[] {});
     }
 }

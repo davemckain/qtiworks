@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.qtiworks.web.controller.anonymous;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
+import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksDeploymentSettings;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
@@ -42,37 +43,38 @@ import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.services.AssessmentDataService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
+import uk.ac.ed.ph.qtiworks.services.FilespaceManager;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
-import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException.APFIFailureReason;
-import uk.ac.ed.ph.qtiworks.services.domain.EnumerableClientFailure;
+import uk.ac.ed.ph.qtiworks.utils.MultipartFileWrapper;
 import uk.ac.ed.ph.qtiworks.web.GlobalRouter;
-import uk.ac.ed.ph.qtiworks.web.domain.StandaloneRunCommand;
 
-import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
-import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
-import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
+import java.io.File;
+import java.io.IOException;
 
 import javax.annotation.Resource;
-import javax.validation.Valid;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
- * Controller allowing the public to upload and run an {@link AssessmentItem}
- * or {@link AssessmentTest}.
- * <p>
- * This provides a subset of functionality provided for instructor users, but
- * might be useful.
+ * Very simple standalone REST-like runner.
  *
  * @author David McKain
  */
 @Controller
-public class AnonymousStandaloneRunner {
+public class SimpleRestRunner {
+
+    private static final Logger logger = LoggerFactory.getLogger(SimpleRestRunner.class);
+
+    /** HTTP header used for communicating errors back the client */
+    public static final String ERROR_HEADER = "X-QTIWorks-SimpleRestRunner-ErrorCode";
 
     @Resource
     private AssessmentManagementService assessmentManagementService;
@@ -84,50 +86,80 @@ public class AnonymousStandaloneRunner {
     private AssessmentDataService assessmentDataService;
 
     @Resource
+    private FilespaceManager filespaceManager;
+
+    @Resource
     private AnonymousRouter anonymousRouter;
+
+    @Resource
+    private QtiWorksDeploymentSettings qtiWorksDeploymentSettings;
 
     //--------------------------------------------------------------------
 
-    @RequestMapping(value="/standalonerunner", method=RequestMethod.GET)
-    public String showUploadAndRunForm(final Model model) {
-        final StandaloneRunCommand command = new StandaloneRunCommand();
-
-        model.addAttribute(command);
-        return "standalonerunner/uploadForm";
-    }
-
-    @RequestMapping(value="/standalonerunner", method=RequestMethod.POST)
-    public String handleUploadAndRunForm(final Model model,
-            @Valid @ModelAttribute final StandaloneRunCommand command,
-            final BindingResult errors) {
-        /* Catch any binding errors */
-        if (errors.hasErrors()) {
-            return "standalonerunner/uploadForm";
-        }
+    @RequestMapping(value="/simplerestrunner", method=RequestMethod.POST)
+    public void simpleRestRunner(final HttpServletRequest request, final HttpServletResponse response)
+            throws IOException {
+        /* Upload POST payload to temp file */
+        final String uploadContentType = request.getContentType();
+        final File uploadFile = filespaceManager.createTempFile();
         try {
-            final Assessment assessment = assessmentManagementService.importAssessment(command.getFile(), false);
-            final AssessmentObjectValidationResult<?> validationResult = assessmentDataService.validateAssessment(assessment);
+            FileUtils.copyInputStreamToFile(request.getInputStream(), uploadFile);
+        }
+        catch (final IOException e) {
+            response.setHeader(ERROR_HEADER, "post-read-error");
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            return;
+        }
+        final MultipartFile multipartFile = new MultipartFileWrapper(uploadFile, uploadContentType);
+
+        /* Import and validate this Assessment */
+        final Assessment assessment;
+        try {
+            assessment = assessmentManagementService.importAssessment(multipartFile, true);
+        }
+        catch (final AssessmentPackageFileImportException e) {
+            response.setHeader(ERROR_HEADER, "assessment-content-error (" + e.getFailure().getReason().toString() + ")");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+        catch (final PrivilegeException e) {
+            /* This should not happen if authentication logic has been done correctly */
+            throw QtiWorksRuntimeException.unexpectedException(e);
+        }
+        finally {
+            if (!uploadFile.delete()) {
+                logger.warn("Could not delete temp file {}", uploadFile);
+            }
+        }
+
+        try {
+            /* Check if assessment can be launched */
             final AssessmentPackage assessmentPackage = assessmentDataService.ensureSelectedAssessmentPackage(assessment);
             if (!assessmentPackage.isLaunchable()) {
-                /* Assessment isn't launchable */
-                model.addAttribute("validationResult", validationResult);
-                return "standalonerunner/invalidUpload";
+                /* Assessment isn't launchable.
+                 * (Client can examine header and subsequently choose to validate the assessment.) */
+                response.setHeader(ERROR_HEADER, "assessment-not-launchable");
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+                return;
             }
+
+            /* Try to launch candidate session */
             final Delivery delivery = assessmentManagementService.createDemoDelivery(assessment, null);
             final String exitUrl = anonymousRouter.buildWithinContextUrl("/standalonerunner");
             final CandidateSession candidateSession = candidateSessionStarter.createCandidateSession(delivery, true, exitUrl, null, null);
 
-            /* Redirect to candidate dispatcher */
-            return GlobalRouter.buildSessionStartRedirect(candidateSession);
-        }
-        catch (final AssessmentPackageFileImportException e) {
-            final EnumerableClientFailure<APFIFailureReason> failure = e.getFailure();
-            failure.registerErrors(errors, "assessmentPackageUpload");
-            return "standalonerunner/uploadForm";
+            /* Send redirect to candidate session */
+            final String candidateSessionUrl = qtiWorksDeploymentSettings.getBaseUrl() + GlobalRouter.buildSessionStartWithinContextUrl(candidateSession);
+            response.setHeader("Location", candidateSessionUrl);
+            response.sendError(HttpServletResponse.SC_SEE_OTHER);
+            return;
         }
         catch (final PrivilegeException e) {
             /* This should not happen if access control logic has been done correctly */
             throw QtiWorksRuntimeException.unexpectedException(e);
+        }
+        finally {
+            /* (Assessment will be deleted during the scheduled data cleanup operation */
         }
     }
 }

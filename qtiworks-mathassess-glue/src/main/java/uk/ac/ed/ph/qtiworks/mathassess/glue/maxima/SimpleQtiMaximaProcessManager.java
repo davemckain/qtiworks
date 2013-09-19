@@ -46,30 +46,30 @@ import uk.ac.ed.ph.snuggletex.utilities.StylesheetCache;
  * @author David McKain
  */
 public class SimpleQtiMaximaProcessManager implements QtiMaximaProcessManager {
-    
+
     private final StylesheetCache stylesheetCache;
     private final MaximaProcessLauncher maximaProcessLauncher;
-    
+
     public SimpleQtiMaximaProcessManager() {
         this(JacomaxSimpleConfigurator.configure());
     }
-    
-    public SimpleQtiMaximaProcessManager(MaximaConfiguration maximaConfiguration) {
+
+    public SimpleQtiMaximaProcessManager(final MaximaConfiguration maximaConfiguration) {
         this.maximaProcessLauncher = new MaximaProcessLauncher(maximaConfiguration);
         this.stylesheetCache = new SimpleStylesheetCache();
     }
-    
+
     @Override
     public QtiMaximaProcess obtainProcess() {
-        MaximaInteractiveProcess process = maximaProcessLauncher.launchInteractiveProcess();
-        QtiMaximaProcess session = new QtiMaximaProcess(process, stylesheetCache);
+        final MaximaInteractiveProcess process = maximaProcessLauncher.launchInteractiveProcess();
+        final QtiMaximaProcess session = new QtiMaximaProcess(process, stylesheetCache);
         session.init();
         session.setRandomState();
         return session;
     }
-    
+
     @Override
-    public void returnProcess(QtiMaximaProcess process) {
+    public void returnProcess(final QtiMaximaProcess process) {
         process.terminate();
     }
 }

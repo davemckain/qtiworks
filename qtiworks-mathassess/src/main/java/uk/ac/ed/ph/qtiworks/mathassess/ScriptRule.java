@@ -38,7 +38,6 @@ import static uk.ac.ed.ph.qtiworks.mathassess.MathAssessConstants.MATHASSESS_NAM
 
 import uk.ac.ed.ph.qtiworks.mathassess.glue.MathsContentTooComplexException;
 import uk.ac.ed.ph.qtiworks.mathassess.glue.maxima.QtiMaximaProcess;
-import uk.ac.ed.ph.qtiworks.mathassess.glue.maxima.QtiMaximaTypeConversionException;
 import uk.ac.ed.ph.qtiworks.mathassess.glue.types.ValueWrapper;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.BooleanAttribute;
@@ -115,6 +114,10 @@ public final class ScriptRule extends MathAssessOperator {
             context.fireRuntimeError(this, "A timeout occurred executing the ScriptRule logic. Not setting QTI variables and returing FALSE");
             return BooleanValue.FALSE;
         }
+        catch (final RuntimeException e) {
+            context.fireRuntimeError(this, "An unexpected problem occurred while trying to run the scriptRule logic. Not setting QTI variables and returing FALSE");
+            return BooleanValue.FALSE;
+        }
 
         /* Read variables back */
         logger.debug("Reading variables back from Maxima");
@@ -135,12 +138,13 @@ public final class ScriptRule extends MathAssessOperator {
                         context.fireRuntimeInfo(this, "Variable " + var.getIdentifier() + " remained undefined in Maxima at end of ScriptRule logic so is being set to NULL");
                     }
                 }
-                catch (final QtiMaximaTypeConversionException e) {
-                    logger.warn("Unexpected conversion failure", e);
-                    context.fireRuntimeError(this, "An unexpected problem occurred querying the value of " + var.getIdentifier() + ", so this variable was set to NULL");
-                }
                 catch (final MathsContentTooComplexException e) {
                     context.fireRuntimeError(this, "The value of the variable " + var.getIdentifier() + " was too complex to extract from Maxima, so it was set to NULL");
+                }
+                catch (final RuntimeException e) {
+                    logger.warn("Unexpected Maxima failure", e);
+                    context.fireRuntimeError(this, "An unexpected problem occurred while trying to extract the value of the variable " + var.getIdentifier()
+                            + " from Maxima. The variable has been set to NULL");
                 }
                 context.setVariableValue(var, resultValue);
             }

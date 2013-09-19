@@ -46,6 +46,7 @@ import uk.ac.ed.ph.qtiworks.mathassess.glue.types.ValueOrVariableWrapper;
 import uk.ac.ed.ph.qtiworks.mathassess.glue.types.ValueWrapper;
 import uk.ac.ed.ph.qtiworks.mathassess.glue.types.VariableWrapper;
 import uk.ac.ed.ph.qtiworks.mathassess.glue.types.WrapperUtilities;
+
 import uk.ac.ed.ph.snuggletex.internal.util.ConstraintUtilities;
 
 import java.util.ArrayList;
@@ -57,18 +58,18 @@ import java.util.regex.Pattern;
 /**
  * Helper class performing "data binding" tasks that establish mappings
  * between {@link ValueOrVariableWrapper}s and Maxima input/output.
- * 
+ *
  * @author David McKain
  */
 public final class MaximaDataBinder {
 
     //-------------------------------------------------------------------------------
     // Methods for converting QTI values to Maxima input forms
-    
+
     /**
      * Converts the given {@link ValueOrVariableWrapper} to a corresponding Maxima
      * form that can be used a part of an input expression.
-     * 
+     *
      * @throws IllegalArgumentException if the given wrapper is a
      *  {@link MathsContentValueWrapper} with a missing Maxima annotation, which indicates
      *  that the value passed hasn't been filled in correctly (or was maybe too complex, but
@@ -78,11 +79,11 @@ public final class MaximaDataBinder {
         ConstraintUtilities.ensureNotNull(argument, "variable or value");
         String result;
         if (argument instanceof VariableWrapper) {
-            VariableWrapper variable = (VariableWrapper) argument;
+            final VariableWrapper variable = (VariableWrapper) argument;
             result = variable.getIdentifier();
         }
         else if (argument instanceof ValueWrapper) {
-            ValueWrapper valueWrapper = (ValueWrapper) argument;
+            final ValueWrapper valueWrapper = (ValueWrapper) argument;
             result = toMaximaExpression(valueWrapper);
         }
         else {
@@ -90,102 +91,102 @@ public final class MaximaDataBinder {
         }
         return result;
     }
-    
+
     private String toMaximaExpression(final ValueWrapper valueWrapper) {
         ConstraintUtilities.ensureNotNull(valueWrapper, "value");
         switch (valueWrapper.getCardinality()) {
             case MATHS_CONTENT:
-                MathsContentValueWrapper mathsContent = (MathsContentValueWrapper) valueWrapper;
-                String maximaInput = mathsContent.getMaximaInput();
+                final MathsContentValueWrapper mathsContent = (MathsContentValueWrapper) valueWrapper;
+                final String maximaInput = mathsContent.getMaximaInput();
                 if (maximaInput==null) {
                     throw new IllegalArgumentException("The maximaInput field must not be empty");
                 }
                 return maximaInput;
-                
+
             case SINGLE:
                 return toMaximaExpression((SingleValueWrapper<?>) valueWrapper);
-                
+
             case MULTIPLE:
                 return toMaximaSet((MultipleValueWrapper<?,?>) valueWrapper);
 
             case ORDERED:
                 return toMaximaList((OrderedValueWrapper<?,?>) valueWrapper);
-                
+
             default:
                 throw new MathAssessSpecUnimplementedException("No current support for mapping values with cardinality "
                     + valueWrapper.getCardinality()
                     + " to Maxima input");
         }
     }
-    
+
     private <B> String toMaximaExpression(final SingleValueWrapper<B> valueWrapper) {
         ConstraintUtilities.ensureNotNull(valueWrapper, "value");
         return toMaximaItem(valueWrapper);
     }
-    
+
     private <B, S extends SingleValueWrapper<B>>
-    String toMaximaSet(MultipleValueWrapper<B,S> wrapperSet) {
+    String toMaximaSet(final MultipleValueWrapper<B,S> wrapperSet) {
         return makeComposite(wrapperSet, "{", "}");
     }
-    
+
     private <B, S extends SingleValueWrapper<B>>
-    String toMaximaList(OrderedValueWrapper<B,S> wrapperSet) {
+    String toMaximaList(final OrderedValueWrapper<B,S> wrapperSet) {
         return makeComposite(wrapperSet, "[", "]");
     }
-    
+
     private <B, S extends SingleValueWrapper<B>>
-    String makeComposite(Collection<S> collection, String opener, String closer) {
-        StringBuilder resultBuilder = new StringBuilder(opener);
+    String makeComposite(final Collection<S> collection, final String opener, final String closer) {
+        final StringBuilder resultBuilder = new StringBuilder(opener);
         String prefix = "";
-        for (S entry : collection) {
+        for (final S entry : collection) {
             resultBuilder.append(prefix).append(toMaximaItem(entry));
             prefix = ", ";
         }
         resultBuilder.append(closer);
         return resultBuilder.toString();
     }
-    
+
     private <B, S extends SingleValueWrapper<B>>
-    String toMaximaItem(S item) {
+    String toMaximaItem(final S item) {
         switch (item.getBaseType()) {
             case BOOLEAN:
             case FLOAT:
             case INTEGER:
                 return item.getValue().toString();
-                
+
 //            case POINT:
 //                PointValueWrapper pointValue = (PointValueWrapper) item;
 //                return toMaximaList(pointValue.toIntegerOrderedValueWrapper());
-               
+
             case STRING:
-                String itemString = ((StringValueWrapper) item).getValue();
+                final String itemString = ((StringValueWrapper) item).getValue();
                 return "\"" + itemString.replace("\"", "\\\"") + "\"";
-                
+
             default:
                 throw new MathAssessSpecUnimplementedException("No support for mapping single variables of baseType "
                         + item.getBaseType() + " to Maxima input");
         }
     }
-    
+
     //-------------------------------------------------------------------------------
     // General methods for getting results out of Maxima
-    
+
     /**
      * Parses the linear output from Maxima's <tt>string();</tt> or <tt>grind()$</tt> commands,
      * attempting to construct a {@link ValueWrapper} Object of the type specified in resultClass.
      * If the Maxima output is compatible with this type then an appropriately populated Object
      * is returned representing the Maxima output, otherwise null is returned.
-     * 
+     *
      * @param maximaLinearOutput linear output from <tt>string(expr);</tt> or <tt>grind(expr)$</tt>,
      *   which must not be null. (It is assumed you have pulled this out of the raw Maxima output
      *   and tidied up in advance.)
      * @param resultClass Class of the desired result type
      * @param <V> the desired result type
-     * 
+     *
      * @return instance of the required result type representing the linear output, or null if
      *   the output could not be converted into the given type. (E.g. if called requesting to
      *   return an integer when the linear output is an expression).
-     * 
+     *
      * @throws IllegalArgumentException if called with a {@link MathsContentValueWrapper} resultClass.
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -193,7 +194,7 @@ public final class MaximaDataBinder {
     V parseMaximaLinearOutput(final String maximaLinearOutput, final Class<V> resultClass) {
         ConstraintUtilities.ensureNotNull(maximaLinearOutput, "Maxima linear output");
         ConstraintUtilities.ensureNotNull(resultClass, "result Class");
-        
+
         /* Now parse */
         if (SingleValueWrapper.class.isAssignableFrom(resultClass)) {
             return (V) parseSingleLinearOutput(maximaLinearOutput, (Class<? extends SingleValueWrapper>) resultClass);
@@ -212,11 +213,11 @@ public final class MaximaDataBinder {
                     + " has not yet been implemented");
         }
     }
-    
+
     @SuppressWarnings("unchecked")
     private <B, S extends SingleValueWrapper<B>>
     S parseSingleLinearOutput(final String linearOutput, final Class<S> resultClass) {
-        S resultWrapper = WrapperUtilities.createSingleValue(resultClass);
+        final S resultWrapper = WrapperUtilities.createSingleValue(resultClass);
         B resultContent = null;
         switch (resultWrapper.getBaseType()) {
             case STRING:
@@ -233,7 +234,7 @@ public final class MaximaDataBinder {
                 }
                 resultContent = (B) resultString;
                 break;
-                
+
             case BOOLEAN:
                 if (linearOutput.equals("true")) {
                     resultContent = (B) Boolean.TRUE;
@@ -242,25 +243,25 @@ public final class MaximaDataBinder {
                     resultContent = (B) Boolean.FALSE;
                 }
                 break;
-                
+
             case INTEGER:
                 try {
-                    resultContent = (B) Integer.valueOf(linearOutput); 
+                    resultContent = (B) Integer.valueOf(linearOutput);
                 }
-                catch (NumberFormatException e) {
+                catch (final NumberFormatException e) {
                     /* Continue to catch-all below */
                 }
                 break;
-                
+
             case FLOAT:
                 try {
-                    resultContent = (B) Double.valueOf(linearOutput); 
+                    resultContent = (B) Double.valueOf(linearOutput);
                 }
-                catch (NumberFormatException e) {
+                catch (final NumberFormatException e) {
                     /* Continue to catch-all below */
                 }
                 break;
-                
+
             default:
                 throw new MathAssessSpecUnimplementedException("Support for parsing raw Maxima output fragments into "
                         + "single QTI values of baseType "
@@ -274,29 +275,29 @@ public final class MaximaDataBinder {
         resultWrapper.setValue(resultContent);
         return resultWrapper;
     }
-    
+
     private <B, S extends SingleValueWrapper<B>, C extends MultipleValueWrapper<B,S>>
     C parseMultipleLinearOutput(final String linearOutput, final Class<C> resultClass) {
         return parseCompoundLinearOutput(linearOutput, "{", "}", resultClass);
     }
-    
+
     private <B, S extends SingleValueWrapper<B>, C extends OrderedValueWrapper<B,S>>
     C parseOrderedLinearOutput(final String linearOutput, final Class<C> resultClass) {
         return parseCompoundLinearOutput(linearOutput, "[", "]", resultClass);
     }
-    
+
     private <B, S extends SingleValueWrapper<B>, C extends CompoundValueWrapper<B,S>>
     C parseCompoundLinearOutput(final String linearOutput, final String opener, final String closer,
             final Class<C> resultClass) {
-        C result = WrapperUtilities.createCompoundValue(resultClass);
-        
+        final C result = WrapperUtilities.createCompoundValue(resultClass);
+
         /* Bail out if not delimited appropriately */
         if (!(linearOutput.startsWith(opener) && linearOutput.endsWith(closer))) {
             return null;
         }
         String collectionContent = linearOutput.substring(opener.length(),
                 linearOutput.length() + 1 - opener.length() - closer.length());
-        
+
         /* Maxima's string outputs are a bit odd in that [] is output instead of [""],
          * [,] represents ["",""] etc. so we need to fix these up if that's the case
          */
@@ -309,13 +310,13 @@ public final class MaximaDataBinder {
                 collectionContent = collectionContent.replaceAll(",(,|$)", ",\"\"$1");
             }
         }
-        
+
         /* Do a safe CSV split on it */
-        List<String> itemStrings = splitCSVSafely(collectionContent);
-        for (String itemString : itemStrings) {
+        final List<String> itemStrings = splitCSVSafely(collectionContent);
+        for (final String itemString : itemStrings) {
             /* Parse each bit */
-            Class<S> itemClass = result.getItemClass();
-            S item = parseSingleLinearOutput(itemString, itemClass);
+            final Class<S> itemClass = result.getItemClass();
+            final S item = parseSingleLinearOutput(itemString, itemClass);
             if (item==null) {
                 /* Parsing failed, so reject the whole Collection */
                 return null;
@@ -324,7 +325,7 @@ public final class MaximaDataBinder {
         }
         return result;
     }
-    
+
     /**
      * Helper method to split up CSV that might delimit some fields inside double quotes, handling
      * commas correctly that might appear within these quotes.
@@ -334,14 +335,14 @@ public final class MaximaDataBinder {
      * @return
      */
     private static List<String> splitCSVSafely(final String collectionContent) {
-        Pattern p = Pattern.compile("([^,]*)(,\\s*)?");
-        Matcher m = p.matcher(collectionContent);
-        
-        List<String> result = new ArrayList<String>();
+        final Pattern p = Pattern.compile("([^,]*)(,\\s*)?");
+        final Matcher m = p.matcher(collectionContent);
+
+        final List<String> result = new ArrayList<String>();
         String contentGroup = null;
         String commaGroup = null;
         boolean quoted = false;
-        StringBuilder itemBuilder = new StringBuilder();
+        final StringBuilder itemBuilder = new StringBuilder();
         while (m.find()) {
             contentGroup = m.group(1);
             commaGroup = m.group(2);

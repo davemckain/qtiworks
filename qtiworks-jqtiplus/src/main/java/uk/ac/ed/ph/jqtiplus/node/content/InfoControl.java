@@ -36,8 +36,10 @@ package uk.ac.ed.ph.jqtiplus.node.content;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.group.content.FlowGroup;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
-import uk.ac.ed.ph.jqtiplus.node.content.basic.Block;
+import uk.ac.ed.ph.jqtiplus.node.content.basic.AbstractFlowBodyElement;
+import uk.ac.ed.ph.jqtiplus.node.content.basic.BlockStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Flow;
+import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
 
 import java.util.List;
 
@@ -46,7 +48,7 @@ import java.util.List;
  *
  * @author David McKain
  */
-public final class InfoControl extends BodyElement implements Block {
+public final class InfoControl extends AbstractFlowBodyElement implements BlockStatic, FlowStatic {
 
     private static final long serialVersionUID = -2306839345848098435L;
 

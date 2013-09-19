@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.notification;
 
 /**
- * FIXME: Document this type
+ * Interface for notification listeners.
  *
  * @author David McKain
  */

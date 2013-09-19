@@ -37,6 +37,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.enumerate.VisibilityModeAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.AbstractFlowBodyElement;
+import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.node.test.VisibilityMode;
@@ -51,6 +52,10 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
  * Abstract parent of template elements
+ *
+ * NB: This subclasses {@link AbstractFlowBodyElement} even though it should only really
+ * subclass {@link TemplateElement}. However, all concrete subclasses of this end up
+ * implementing {@link FlowStatic} so this makes no difference.
  *
  * @author Jonathon Hare
  */

@@ -634,6 +634,11 @@ public final class ItemSessionController extends ItemProcessingController implem
     public boolean bindResponses(final Date timestamp, final Map<Identifier, ResponseData> responseMap) {
         Assert.notNull(timestamp);
         Assert.notNull(responseMap, "responseMap");
+        for (final Entry<Identifier, ResponseData> responseEntry : responseMap.entrySet()) {
+            final Identifier responseIdentifier = responseEntry.getKey();
+            final ResponseData responseData = responseEntry.getValue();
+            Assert.notNull(responseData, "responseMap entry for key " + responseIdentifier);
+        }
         assertItemOpen();
         assertItemNotSuspended();
         logger.debug("Binding responses {} on item {}", responseMap, item.getSystemId());
@@ -668,7 +673,6 @@ public final class ItemSessionController extends ItemProcessingController implem
         for (final Entry<Identifier, ResponseData> responseEntry : responseMap.entrySet()) {
             final Identifier responseIdentifier = responseEntry.getKey();
             final ResponseData responseData = responseEntry.getValue();
-            Assert.notNull(responseData, "responseMap entry for key " + responseIdentifier);
             final Interaction interaction = interactionByResponseIdentifierMap.get(responseIdentifier);
             if (interaction != null) {
                 try {

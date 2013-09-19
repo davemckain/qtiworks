@@ -84,9 +84,9 @@ public final class UriValue extends SingleValue {
     }
 
     /**
-     * Returns the value of this <code>UriValue</code> as A <code>URI</code>.
+     * Returns the value of this <code>UriValue</code> as a <code>URI</code>.
      *
-     * @return the value of this <code>UriValue</code> as A <code>URI</code>
+     * @return the value of this <code>UriValue</code> as a <code>URI</code>
      */
     public URI uriValue() {
         return uriValue;

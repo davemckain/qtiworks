@@ -80,9 +80,9 @@ public final class QtiWorksEngineManager {
     	actionMap.put("exportLtiDomains", new ExportLtiDomainsAction());
     	actionMap.put("deleteUsers", new DeleteUsersAction());
     	actionMap.put("resetUsers", new ResetUsersAction());
-    	actionMap.put("purgeAnonymousData", new PurgeAnonymousDataAction());
+    	actionMap.put("purgeTransientData", new PurgeTransientDataAction());
     	actionMap.put("sendQueuedLtiOutcomes", new SendQueuedLtiOutcomesAction());
-    	actionMap.put("update", new M4M5UpdateAction());
+    	actionMap.put("update", new M4ToBeta1UpdateAction());
     	actionMap.put("adhoc", new AdhocAction());
     }
 

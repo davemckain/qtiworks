@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <!--
 
+Module containing some example code for using (mainly) JQTI+
+
 Copyright (c) 2012-2013, The University of Edinburgh
 All Rights Reserved
 
@@ -13,7 +15,7 @@ All Rights Reserved
   <parent>
     <groupId>uk.ac.ed.ph.qtiworks</groupId>
     <artifactId>qtiworks</artifactId>
-    <version>1.0-DEV33</version>
+    <version>1.0-SNAPSHOT</version>
   </parent>
   <dependencies>
     <dependency>

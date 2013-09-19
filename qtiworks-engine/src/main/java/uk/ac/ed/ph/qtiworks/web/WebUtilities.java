@@ -33,104 +33,15 @@
  */
 package uk.ac.ed.ph.qtiworks.web;
 
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
-
-import java.io.IOException;
-
 import javax.servlet.FilterConfig;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * Some general servlet-related utility methods.
  *
  * @author David McKain
  */
-@ToRefactor
 public final class WebUtilities {
-
-    /**
-     * Name of request Attribute that any custom error messages will be stored in when passing
-     * to error JSPs.
-     *
-     * @see #sendErrorMessagePage(ServletRequest, HttpServletResponse, int, String)
-     */
-    public static final String ERROR_MESSAGE_ATTRIBUTE_NAME = "uk.ac.ed.ph.qtiworks.web.errorMessage";
-
-    public static final String WITHIN_CONTEXT_REQUEST_URL_ATTRIBUTE_NAME = "uk.ac.ed.ph.qtiworks.web.WithinContextRequestUrl";
-
-    public static final String FULL_REQUEST_URL_ATTRIBUTE_NAME = "uk.ac.ed.ph.qtiworks.web.FullRequestUrl";
-
-    /**
-     * Returns the URL for the given request, starting from AFTER the context path and
-     * including path info and query parameters.
-     * <p>
-     * The result is stored in the {@link HttpServletRequest} as an Attribute for later
-     * retrieval so as to avoid needed recalculation.
-     *
-     * @param request
-     */
-    public static String getWithinContextRequestUrl(final HttpServletRequest request) {
-        String result = (String) request.getAttribute(WITHIN_CONTEXT_REQUEST_URL_ATTRIBUTE_NAME);
-        if (result==null) {
-            final StringBuilder builder = new StringBuilder(request.getServletPath());
-            if (request.getPathInfo()!=null) {
-                builder.append(request.getPathInfo());
-            }
-            if (request.getQueryString()!=null) {
-                builder.append("?").append(request.getQueryString());
-            }
-            result = builder.toString();
-            request.setAttribute(WITHIN_CONTEXT_REQUEST_URL_ATTRIBUTE_NAME, result);
-        }
-        return result;
-    }
-
-    /**
-     * Returns the URL for the given request, including context path and
-     * including path info and query parameters.
-     * <p>
-     * The result is stored in the {@link HttpServletRequest} as an Attribute for later
-     * retrieval so as to avoid needed recalculation.
-     *
-     * @param request
-     */
-    public static String getFullRequestUrl(final HttpServletRequest request) {
-        String result = (String) request.getAttribute(FULL_REQUEST_URL_ATTRIBUTE_NAME);
-        if (result==null) {
-            final StringBuilder builder = new StringBuilder(request.getContextPath())
-                .append(request.getServletPath());
-            if (request.getPathInfo()!=null) {
-                builder.append(request.getPathInfo());
-            }
-            if (request.getQueryString()!=null) {
-                builder.append("?").append(request.getQueryString());
-            }
-            result = builder.toString();
-            request.setAttribute(FULL_REQUEST_URL_ATTRIBUTE_NAME, result);
-        }
-        return result;
-    }
-
-    /**
-     * Wrapper round {@link ServletContext#getInitParameter(String)} that throws a
-     * {@link ServletException} if the parameter could not be found.
-     *
-     * @param context
-     * @param paramName
-     * @throws ServletException
-     */
-    public static String getRequiredInitParameter(final ServletContext context, final String paramName)
-            throws ServletException {
-        final String result = context.getInitParameter(paramName);
-        if (result==null) {
-            throw new ServletException("Could not look up servlet context <init-param/> " + paramName);
-        }
-        return result;
-    }
 
     /**
      * Wrapper round {@link FilterConfig#getInitParameter(String)} that throws a
@@ -148,24 +59,5 @@ public final class WebUtilities {
                     + " for filter " + config.getFilterName());
         }
         return result;
-    }
-
-    /**
-     * Convenience version of {@link HttpServletResponse#sendError(int, String)} that works when
-     * using custom error JSPs. (The message parameter is usually ignored in this case, which is
-     * annoying!) This method stores the required error message as a request attribute called
-     * {@link #ERROR_MESSAGE_ATTRIBUTE_NAME} which can then be picked up by the JSP.
-     *
-     * @see #ERROR_MESSAGE_ATTRIBUTE_NAME
-     *
-     * @param request
-     * @param response
-     * @param message
-     * @throws IOException
-     */
-    public static void sendErrorMessagePage(final ServletRequest request, final HttpServletResponse response,
-            final int responseCode, final String message) throws IOException {
-        request.setAttribute(ERROR_MESSAGE_ATTRIBUTE_NAME, message);
-        response.sendError(responseCode, message);
     }
 }
