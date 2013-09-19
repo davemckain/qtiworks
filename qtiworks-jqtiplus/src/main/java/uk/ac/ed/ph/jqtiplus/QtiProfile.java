@@ -35,9 +35,9 @@ package uk.ac.ed.ph.jqtiplus;
 
 import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
+import uk.ac.ed.ph.jqtiplus.node.ForeignElement;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.RootNode;
-import uk.ac.ed.ph.jqtiplus.node.block.ForeignElement;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
