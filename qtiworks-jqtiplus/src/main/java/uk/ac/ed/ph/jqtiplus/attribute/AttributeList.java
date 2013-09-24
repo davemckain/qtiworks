@@ -58,6 +58,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.FloatOrVariableRefAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.FloatOrVariableRefMultipleAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierMultipleAttribute;
+import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierReferenceAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerOrVariableRefAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.LongAttribute;
@@ -439,5 +440,9 @@ public final class AttributeList implements Serializable, Iterable<Attribute<?>>
 
     public StringOrVariableRefAttribute getStringOrVariableRefAttribute(final String name) {
         return (StringOrVariableRefAttribute) get(name);
+    }
+
+    public IdentifierReferenceAttribute getIdentifierRefAttribute(final String localName) {
+    	return (IdentifierReferenceAttribute) get(localName);
     }
 }

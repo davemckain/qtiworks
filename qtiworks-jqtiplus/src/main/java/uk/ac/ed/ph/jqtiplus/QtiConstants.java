@@ -45,16 +45,39 @@ public final class QtiConstants {
     public static final String QTI_20_NAMESPACE_URI = "http://www.imsglobal.org/xsd/imsqti_v2p0";
     public static final String QTI_21_NAMESPACE_URI = "http://www.imsglobal.org/xsd/imsqti_v2p1";
     public static final String QTI_RESULT_21_NAMESPACE_URI = "http://www.imsglobal.org/xsd/imsqti_result_v2p1";
+    public static final String QTI_METADATA_21_NAMESPACE_URI = "http://www.imsglobal.org/xsd/imsqti_metadata_v2p1";
 
     public static final String QTI_20_SCHEMA_LOCATION = "http://www.imsglobal.org/xsd/imsqti_v2p0.xsd";
     public static final String QTI_21_SCHEMA_LOCATION = "http://www.imsglobal.org/xsd/imsqti_v2p1.xsd";
     public static final String QTI_RESULT_21_SCHEMA_LOCATION = "http://www.imsglobal.org/xsd/imsqti_result_v2p1.xsd";
+    public static final String QTI_METADATA_21_SCHEMA_LOCATION = "http://www.imsglobal.org/xsd/qti/qtiv2p1/imsqti_metadata_v2p1.xsd";
 
     public static final String CP_11_NAMESPACE_URI = "http://www.imsglobal.org/xsd/imscp_v1p1";
     public static final String CP_12_NAMESPACE_URI = "http://www.imsglobal.org/xsd/imscp_v1p2";
 
     public static final String MATHML_NAMESPACE_URI = "http://www.w3.org/1998/Math/MathML";
     public static final String MATHML_SCHEMA_LOCATION = "http://www.w3.org/Math/XMLSchema/mathml2/mathml2.xsd";
+
+    public static final String APIP_CORE_ACCESSIBILITY_URI = "http://www.imsglobal.org/xsd/apip/apipv1p0/imsapip_qtiv1p0";
+    public static final String APIP_CORE_ACCESSIBILITY_SCHEMA_LOCATION = "http://www.imsglobal.org/xsd/apip/apipv1p0/apipv1p0_qtiextv2p1_v1p0.xsd";
+
+    public static final String APIP_CORE_ITEM_URI = "http://www.imsglobal.org/xsd/apip/apipv1p0/qtiitem/imsqti_v2p1";
+    public static final String APIP_CORE_ITEM_SCHEMA_LOCATION = "http://www.imsglobal.org/xsd/apip/apipv1p0/apipv1p0_qtiitemv2p1_v1p0.xsd";
+
+    public static final String APIP_CORE_SECTION_URI = "http://www.imsglobal.org/xsd/apip/apipv1p0/qtisection/imsqti_v2p1";
+    public static final String APIP_CORE_SECTION_SCHEMA_LOCATION = "http://www.imsglobal.org/xsd/apip/apipv1p0/apipv1p0_qtisectionv2p1_v1p0.xsd";
+
+    public static final String APIP_CORE_TEST_URI = "http://www.imsglobal.org/xsd/apip/apipv1p0/qtitest/imsqti_v2p1";
+    public static final String APIP_CORE_TEST_SCHEMA_LOCATION = "http://www.imsglobal.org/xsd/apip/apipv1p0/apipv1p0_qtitestv2p1_v1p0.xsd";
+
+    public static final String APIP_CORE_RESPONSE_PROCESSING_URI = "http://www.imsglobal.org/xsd/apip/apipv1p0/qtiresproc/imsqti_v2p1";
+    public static final String APIP_CORE_RESPONSE_PROCESSING_SCHEMA_LOCATION = "http://www.imsglobal.org/xsd/apip/apipv1p0/apipv1p0_qtiresprocessingv2p1_v1p0.xsd";
+
+    public static final String APIP_CORE_OUTCOMES_URI = "http://www.imsglobal.org/xsd/apip/apipv1p0/qtioutcomes/imsqti_v2p1";
+    public static final String APIP_CORE_OUTCOMES_SCHEMA_LOCATION = "http://www.imsglobal.org/xsd/apip/apipv1p0/apipv1p0_qtioutcomesv2p1_v1p0.xsd";
+
+    public static final String APIP_CORE_QTI_METADATA_URI = "http://www.imsglobal.org/xsd/apip/apipv1p0/qtimetadata/imsqti_v2p1";
+    public static final String APIP_CORE_QTI_METADATA_SCHEMA_LOCATION = "http://www.imsglobal.org/xsd/apip/apipv1p0/apipv1p0_qtimetadatav2p1_v1p0.xsd";
 
     /** Name of <code>duration</code> built-in variable. */
     public static final String VARIABLE_DURATION_NAME = "duration";

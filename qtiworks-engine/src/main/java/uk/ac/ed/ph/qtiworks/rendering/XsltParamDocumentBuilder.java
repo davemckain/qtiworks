@@ -80,8 +80,7 @@ public final class XsltParamDocumentBuilder {
             final SimpleDomBuilderHandler domBuilderHandler = new SimpleDomBuilderHandler(document);
 
             /* Create QTI SAX firer with suitable options */
-            final SaxFiringOptions saxFiringOptions = new SaxFiringOptions();
-            saxFiringOptions.setOmitSchemaLocation(true);
+            final SaxFiringOptions saxFiringOptions = new SaxFiringOptions(true);
             final QtiSaxDocumentFirer qtiSaxDocumentFirer = new QtiSaxDocumentFirer(jqtiExtensionManager, domBuilderHandler, saxFiringOptions);
 
             /* Register namespace for parameter XML */

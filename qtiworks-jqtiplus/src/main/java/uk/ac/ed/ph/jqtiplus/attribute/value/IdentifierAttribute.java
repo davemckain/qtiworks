@@ -70,7 +70,7 @@ public final class IdentifierAttribute extends SingleAttribute<Identifier> {
     public void validateBasic(final ValidationContext context) {
         super.validateBasic(context);
 
-        /* Spec suggests a maximum length for identnfiers. We don't enforce this, but will issue a validation warning */
+        /* Spec suggests a maximum length for identifiers. We don't enforce this, but will issue a validation warning */
         if (value!=null && value.toString().length() > QtiConstants.IDENTIFIER_MAX_LENGTH_RECOMMENDATION) {
             context.fireAttributeValidationWarning(this,
                     "Identifiers are recommended to be no more than "
