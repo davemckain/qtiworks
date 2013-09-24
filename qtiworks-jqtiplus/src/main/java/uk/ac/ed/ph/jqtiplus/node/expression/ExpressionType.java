@@ -198,7 +198,7 @@ public enum ExpressionType {
      */
     CONTAINS(Contains.QTI_CLASS_NAME, 2, 2
             , new Cardinality[] { Cardinality.MULTIPLE, Cardinality.ORDERED }
-            , BaseType.values(new BaseType[] { BaseType.DURATION })
+            , BaseType.except(new BaseType[] { BaseType.DURATION })
             , new Cardinality[] { Cardinality.SINGLE }
             , new BaseType[] { BaseType.BOOLEAN }) {
 
@@ -266,9 +266,9 @@ public enum ExpressionType {
      */
     DELETE(Delete.QTI_CLASS_NAME, 2, 2
             , new Cardinality[] { Cardinality.SINGLE, Cardinality.MULTIPLE, Cardinality.ORDERED }
-            , BaseType.values(new BaseType[] { BaseType.DURATION })
+            , BaseType.except(new BaseType[] { BaseType.DURATION })
             , new Cardinality[] { Cardinality.MULTIPLE, Cardinality.ORDERED }
-            , BaseType.values(new BaseType[] { BaseType.DURATION })) {
+            , BaseType.except(new BaseType[] { BaseType.DURATION })) {
 
         @Override
         public Expression create(final ExpressionParent parent) {
@@ -635,7 +635,7 @@ public enum ExpressionType {
      */
     MATCH(Match.QTI_CLASS_NAME, 2, 2
             , Cardinality.values()
-            , BaseType.values(new BaseType[] { BaseType.DURATION })
+            , BaseType.except(new BaseType[] { BaseType.DURATION })
             , new Cardinality[] { Cardinality.SINGLE }
             , new BaseType[] { BaseType.BOOLEAN }) {
 
@@ -720,7 +720,7 @@ public enum ExpressionType {
      */
     MEMBER(Member.QTI_CLASS_NAME, 2, 2
             , new Cardinality[] { Cardinality.SINGLE, Cardinality.MULTIPLE, Cardinality.ORDERED }
-            , BaseType.values(new BaseType[] { BaseType.DURATION })
+            , BaseType.except(new BaseType[] { BaseType.DURATION })
             , new Cardinality[] { Cardinality.SINGLE }
             , new BaseType[] { BaseType.BOOLEAN }) {
 

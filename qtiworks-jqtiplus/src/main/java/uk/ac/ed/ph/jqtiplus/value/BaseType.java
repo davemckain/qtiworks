@@ -382,7 +382,7 @@ public enum BaseType implements Stringifiable {
      * @param exclude excluded baseTypes
      * @return all supported baseTypes except of baseTypes in given parameter
      */
-    public static BaseType[] values(final BaseType[] exclude) {
+    public static BaseType[] except(final BaseType[] exclude) {
         final List<BaseType> baseTypes = new ArrayList<BaseType>();
 
         for (final BaseType baseType : BaseType.values()) {

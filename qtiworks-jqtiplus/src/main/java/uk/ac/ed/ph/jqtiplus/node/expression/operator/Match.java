@@ -85,7 +85,7 @@ public final class Match extends AbstractSimpleFunctionalExpression {
                 for (final Expression ex : expression.getChildren()) {
                     final BaseType[] baseTypes = ex.getProducedBaseTypes(context);
                     if (baseTypes.length == 1 && baseTypes[0].isDuration()) {
-                        final BaseType[] expected = BaseType.values(new BaseType[] { BaseType.DURATION });
+                        final BaseType[] expected = BaseType.except(new BaseType[] { BaseType.DURATION });
                         context.fireBaseTypeValidationError(this, expected, baseTypes);
                     }
                 }
