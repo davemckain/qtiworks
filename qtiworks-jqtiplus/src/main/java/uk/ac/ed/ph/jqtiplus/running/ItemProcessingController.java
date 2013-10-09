@@ -52,7 +52,10 @@ import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ItemValidationController;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
+import uk.ac.ed.ph.jqtiplus.value.FloatValue;
+import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
+import uk.ac.ed.ph.jqtiplus.value.Signature;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.util.Random;
@@ -322,6 +325,12 @@ public class ItemProcessingController extends ItemValidationController implement
             final DefaultValue defaultValue = declaration.getDefaultValue();
             if (defaultValue != null) {
                 result = defaultValue.evaluate();
+            }
+            else if (declaration.isType(VariableType.OUTCOME) && declaration.hasSignature(Signature.SINGLE_INTEGER)) {
+                result = IntegerValue.ZERO;
+            }
+            else if (declaration.isType(VariableType.OUTCOME) && declaration.hasSignature(Signature.SINGLE_FLOAT)) {
+                result = FloatValue.ZERO;
             }
             else {
                 result = NullValue.INSTANCE;

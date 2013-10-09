@@ -73,7 +73,10 @@ import uk.ac.ed.ph.jqtiplus.state.TestProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
+import uk.ac.ed.ph.jqtiplus.value.FloatValue;
+import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
+import uk.ac.ed.ph.jqtiplus.value.Signature;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.net.URI;
@@ -1501,16 +1504,24 @@ public final class TestSessionController extends TestProcessingController {
 
     private void resetOutcomeVariables() {
         for (final OutcomeDeclaration outcomeDeclaration : testProcessingMap.getValidOutcomeDeclarationMap().values()) {
-        	testSessionState.setOutcomeValue(outcomeDeclaration, computeDefaultValue(outcomeDeclaration));
+        	testSessionState.setOutcomeValue(outcomeDeclaration, computeInitialValue(outcomeDeclaration));
         }
     }
 
-    private Value computeDefaultValue(final OutcomeDeclaration declaration) {
+    private Value computeInitialValue(final OutcomeDeclaration declaration) {
         Assert.notNull(declaration);
         Value result;
         final DefaultValue defaultValue = declaration.getDefaultValue();
         if (defaultValue != null) {
             result = defaultValue.evaluate();
+        }
+        else if (declaration.hasSignature(Signature.SINGLE_INTEGER)) {
+            /* (5.2 says that the default for a [presumed single] integer outcome variable should be 0) */
+            result = IntegerValue.ZERO;
+        }
+        else if (declaration.hasSignature(Signature.SINGLE_FLOAT)) {
+            /* (5.2 says that the default for a [presumed single] float outcome variable should be 0) */
+            result = FloatValue.ZERO;
         }
         else {
             result = NullValue.INSTANCE;

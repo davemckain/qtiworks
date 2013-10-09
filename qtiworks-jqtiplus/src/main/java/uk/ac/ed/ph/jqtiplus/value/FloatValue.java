@@ -57,6 +57,8 @@ public final class FloatValue extends NumberValue {
 
     private static final long serialVersionUID = 3799071457858594877L;
 
+    public static final FloatValue ZERO = new FloatValue(0.0);
+
     private final double doubleValue;
 
     /**

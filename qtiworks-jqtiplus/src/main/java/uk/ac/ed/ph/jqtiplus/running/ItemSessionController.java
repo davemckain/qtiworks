@@ -64,6 +64,8 @@ import uk.ac.ed.ph.jqtiplus.node.result.SessionIdentifier;
 import uk.ac.ed.ph.jqtiplus.node.result.SessionStatus;
 import uk.ac.ed.ph.jqtiplus.node.result.TemplateVariable;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
+import uk.ac.ed.ph.jqtiplus.node.shared.declaration.DefaultValue;
 import uk.ac.ed.ph.jqtiplus.node.test.TemplateDefault;
 import uk.ac.ed.ph.jqtiplus.resolution.RootNodeLookup;
 import uk.ac.ed.ph.jqtiplus.state.ItemProcessingMap;
@@ -71,6 +73,9 @@ import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
+import uk.ac.ed.ph.jqtiplus.value.FloatValue;
+import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
+import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Signature;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
@@ -1048,13 +1053,34 @@ public final class ItemSessionController extends ItemProcessingController implem
         setVariableValue(declaration, computeInitialValue(declaration));
     }
 
-    private Value computeInitialValue(final VariableDeclaration declaration) {
+    /**
+     * Computes the initial value of the given {@link VariableDeclaration}.
+     * The result will be not null (though may be a {@link NullValue}).
+     *
+     * @param declaration declaration of the required variable, which must not be null.
+     * @return computed default value, which will not be null.
+     */
+    private final Value computeInitialValue(final VariableDeclaration declaration) {
         Assert.notNull(declaration);
-        return computeInitialValue(declaration.getIdentifier());
-    }
-
-    private Value computeInitialValue(final Identifier identifier) {
-        return computeDefaultValue(identifier);
+        Value result = itemSessionState.getOverriddenDefaultValue(declaration);
+        if (result==null) {
+            final DefaultValue defaultValue = declaration.getDefaultValue();
+            if (defaultValue != null) {
+                result = defaultValue.evaluate();
+            }
+            else if (declaration.isType(VariableType.OUTCOME) && declaration.hasSignature(Signature.SINGLE_INTEGER)) {
+                /* (5.2 says that the default for a [presumed single] integer outcome variable should be 0) */
+                result = IntegerValue.ZERO;
+            }
+            else if (declaration.isType(VariableType.OUTCOME) && declaration.hasSignature(Signature.SINGLE_FLOAT)) {
+                /* (5.2 says that the default for a [presumed single] float outcome variable should be 0) */
+                result = FloatValue.ZERO;
+            }
+            else {
+                result = NullValue.INSTANCE;
+            }
+        }
+        return result;
     }
 
     //-------------------------------------------------------------------
