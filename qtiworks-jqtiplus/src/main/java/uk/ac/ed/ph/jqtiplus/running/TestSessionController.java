@@ -1545,7 +1545,8 @@ public final class TestSessionController extends TestProcessingController {
         for (final TestPlanNode testPlanNode : testSessionState.getTestPlan().getTestPlanNodeList()) {
             if (testPlanNode.getTestNodeType()==TestNodeType.ASSESSMENT_ITEM_REF) {
                 final ItemSessionController itemSessionController = getItemSessionController(testPlanNode);
-                final ItemResult itemResult = itemSessionController.computeItemResult(result, timestamp);
+                final ItemResult itemResult = itemSessionController.computeItemResult(result,
+                        testPlanNode.getIdentifier().toString(), timestamp);
                 itemResult.setSequenceIndex(testPlanNode.getInstanceNumber());
                 itemResults.add(itemResult);
             }

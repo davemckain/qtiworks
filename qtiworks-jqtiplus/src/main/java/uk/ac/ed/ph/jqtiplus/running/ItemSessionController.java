@@ -923,13 +923,13 @@ public final class ItemSessionController extends ItemProcessingController implem
             context.getSessionIdentifiers().add(sessionIdentifierNode);
         }
 
-        result.getItemResults().add(computeItemResult(result, timestamp));
+        result.getItemResults().add(computeItemResult(result, item.getIdentifier(), timestamp));
         return result;
     }
 
-    ItemResult computeItemResult(final AssessmentResult owner, final Date timestamp) {
+    ItemResult computeItemResult(final AssessmentResult owner, final String identifier, final Date timestamp) {
         final ItemResult itemResult = new ItemResult(owner);
-        itemResult.setIdentifier(item.getIdentifier());
+        itemResult.setIdentifier(identifier);
         itemResult.setDateStamp(timestamp);
         itemResult.setSessionStatus(itemSessionState.getSessionStatus());
         recordItemVariables(itemResult);
