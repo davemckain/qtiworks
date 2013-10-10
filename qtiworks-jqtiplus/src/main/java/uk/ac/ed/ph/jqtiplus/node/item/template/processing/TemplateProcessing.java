@@ -68,6 +68,7 @@ public final class TemplateProcessing extends AbstractNode {
 
     @Override
     protected void validateThis(final ValidationContext context) {
+        super.validateThis(context);
         if (getTemplateProcessingRules().size() == 0) {
             context.fireValidationWarning(this, "Node " + QTI_CLASS_NAME + " should contain some rules.");
         }

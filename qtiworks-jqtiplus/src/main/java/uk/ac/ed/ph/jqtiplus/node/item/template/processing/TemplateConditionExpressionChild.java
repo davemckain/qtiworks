@@ -35,6 +35,7 @@ package uk.ac.ed.ph.jqtiplus.node.item.template.processing;
 
 import uk.ac.ed.ph.jqtiplus.exception.TemplateProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
+import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
@@ -43,6 +44,8 @@ import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.Value;
+
+import java.util.List;
 
 /**
  * Abstract parent for all templateCondition children with condition (IF, ELSE-IF).
@@ -57,6 +60,11 @@ public abstract class TemplateConditionExpressionChild extends TemplateCondition
         super(parent, qtiClassName);
 
         getNodeGroups().add(0, new ExpressionGroup(this, 1, 1));
+    }
+
+    @Override
+    public List<Expression> getExpressions() {
+        return getNodeGroups().getExpressionGroup().getExpressions();
     }
 
     public Expression getExpression() {
@@ -79,10 +87,16 @@ public abstract class TemplateConditionExpressionChild extends TemplateCondition
     }
 
     @Override
+    protected void validateThis(final ValidationContext context) {
+        super.validateThis(context);
+        AbstractExpression.validateChildExpressionSignatures(this, context);
+    }
+
+    @Override
     public boolean evaluate(final ItemProcessingContext context) throws TemplateProcessingInterrupt {
         final Value value = getExpression().evaluate(context);
 
-        if (value == null || value.isNull() || !((BooleanValue) value).booleanValue()) {
+        if (value.isNull() || !((BooleanValue) value).booleanValue()) {
             return false;
         }
 

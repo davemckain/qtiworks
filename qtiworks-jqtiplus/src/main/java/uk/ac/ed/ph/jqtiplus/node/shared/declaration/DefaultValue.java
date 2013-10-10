@@ -111,6 +111,7 @@ public final class DefaultValue extends AbstractNode implements FieldValueParent
 
     @Override
     protected void validateThis(final ValidationContext context) {
+        super.validateThis(context);
         if (getParent().hasCardinality(Cardinality.SINGLE) && getFieldValues().size() > 1) {
             context.fireValidationError(this, "Invalid values count. Expected: " + 1 + ". Found: " + getFieldValues().size());
         }

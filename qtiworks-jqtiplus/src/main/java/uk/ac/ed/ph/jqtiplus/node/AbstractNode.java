@@ -287,8 +287,8 @@ public abstract class AbstractNode implements QtiNode {
      * will *not* have been validated at the time this method is called, so
      * validation logic should be suitably defensive.
      */
-    protected void validateThis(final ValidationContext context) {
-        /* Subclasses should fill in as required */
+    protected void validateThis(@SuppressWarnings("unused") final ValidationContext context) {
+        /* Subclasses should override as required */
     }
 
     /**

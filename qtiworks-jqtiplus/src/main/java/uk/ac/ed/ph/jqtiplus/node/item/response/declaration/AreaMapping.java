@@ -127,6 +127,7 @@ public final class AreaMapping extends AbstractNode {
 
     @Override
     public void validateThis(final ValidationContext context) {
+        super.validateThis(context);
         final Double lowerBound = getLowerBound();
         final Double upperBound = getUpperBound();
 

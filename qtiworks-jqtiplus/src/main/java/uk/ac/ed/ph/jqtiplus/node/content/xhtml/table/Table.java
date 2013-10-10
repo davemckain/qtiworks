@@ -127,6 +127,7 @@ public final class Table extends AbstractFlowBodyElement implements BlockStatic,
 
     @Override
     public void validateThis(final ValidationContext context) {
+        super.validateThis(context);
         if (getColgroups().size() > 0 && getCols().size() > 0) {
             context.fireValidationError(this, QTI_CLASS_NAME + " cannot contain both " + Colgroup.QTI_CLASS_NAME + " and " + Col.QTI_CLASS_NAME + " children");
         }

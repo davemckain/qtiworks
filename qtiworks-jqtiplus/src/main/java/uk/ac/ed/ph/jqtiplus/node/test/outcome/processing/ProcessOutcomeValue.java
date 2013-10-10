@@ -36,10 +36,13 @@ package uk.ac.ed.ph.jqtiplus.node.test.outcome.processing;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
+import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
+
+import java.util.List;
 
 /**
  * Abstract parent for setOutcomeValue and lookupOutcomeValue classes.
@@ -80,6 +83,11 @@ public abstract class ProcessOutcomeValue extends OutcomeRule implements Express
     }
 
 
+    @Override
+    public List<Expression> getExpressions() {
+        return getNodeGroups().getExpressionGroup().getExpressions();
+    }
+
     public Expression getExpression() {
         return getNodeGroups().getExpressionGroup().getExpression();
     }
@@ -88,9 +96,11 @@ public abstract class ProcessOutcomeValue extends OutcomeRule implements Express
         getNodeGroups().getExpressionGroup().setExpression(expression);
     }
 
-
     @Override
     protected void validateThis(final ValidationContext context) {
+        super.validateThis(context);
+        AbstractExpression.validateChildExpressionSignatures(this, context);
+
         final Identifier referenceIdentifier = getIdentifier();
         if (referenceIdentifier!=null) {
              context.checkLocalVariableReference(this, referenceIdentifier);

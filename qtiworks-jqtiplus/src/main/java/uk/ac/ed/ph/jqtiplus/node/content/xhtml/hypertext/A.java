@@ -89,6 +89,7 @@ public final class A extends AbstractSimpleInline {
 
     @Override
     public void validateThis(final ValidationContext context) {
+        super.validateThis(context);
         /* Although a inherits from simpleInline it must not contain, either directly or indirectly, another a. */
         if (QueryUtils.hasDescendant(A.class, this)) {
             context.fireValidationError(this, "The " + QTI_CLASS_NAME + " class cannot contain " + QTI_CLASS_NAME + " children");

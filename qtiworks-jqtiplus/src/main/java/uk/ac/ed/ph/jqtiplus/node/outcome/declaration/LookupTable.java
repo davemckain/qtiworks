@@ -102,6 +102,7 @@ public abstract class LookupTable<N extends Number, E extends LookupTableEntry<N
 
     @Override
     protected void validateThis(final ValidationContext context) {
+        super.validateThis(context);
         final Cardinality cardinality = getParent().getCardinality();
         if (cardinality != null) {
             if (!cardinality.isSingle()) {

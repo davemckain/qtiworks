@@ -72,6 +72,7 @@ public final class OutcomeProcessing extends AbstractNode {
 
     @Override
     protected void validateThis(final ValidationContext context) {
+        super.validateThis(context);
         if (getOutcomeRules().size() == 0) {
             context.fireValidationWarning(this, "Node " + QTI_CLASS_NAME + " should contain some rules.");
         }

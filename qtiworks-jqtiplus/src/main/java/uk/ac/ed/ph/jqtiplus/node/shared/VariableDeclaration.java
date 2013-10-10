@@ -180,6 +180,7 @@ public abstract class VariableDeclaration extends AbstractNode implements Unique
 
     @Override
     protected void validateThis(final ValidationContext context) {
+        super.validateThis(context);
         final Identifier identifier = getIdentifier();
         if (identifier!=null) {
             /* Make sure identifier is unique */

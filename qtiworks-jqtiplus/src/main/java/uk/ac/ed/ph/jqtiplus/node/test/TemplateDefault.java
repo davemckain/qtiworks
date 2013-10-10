@@ -36,6 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.test;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
+import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
@@ -46,6 +47,8 @@ import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.Value;
+
+import java.util.List;
 
 /**
  * The default value of a template variable in an item can be overridden based on the test context in which the template
@@ -89,6 +92,11 @@ public final class TemplateDefault extends AbstractNode implements ExpressionPar
     }
 
 
+    @Override
+    public List<Expression> getExpressions() {
+        return getNodeGroups().getExpressionGroup().getExpressions();
+    }
+
     public Expression getExpression() {
         return getNodeGroups().getExpressionGroup().getExpression();
     }
@@ -120,6 +128,12 @@ public final class TemplateDefault extends AbstractNode implements ExpressionPar
             }
         }
         return BaseType.values();
+    }
+
+    @Override
+    protected void validateThis(final ValidationContext context) {
+        super.validateThis(context);
+        AbstractExpression.validateChildExpressionSignatures(this, context);
     }
 
     public Value evaluate(final ProcessingContext context) {

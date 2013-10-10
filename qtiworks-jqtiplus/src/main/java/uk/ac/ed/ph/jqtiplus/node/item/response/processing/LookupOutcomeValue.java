@@ -87,6 +87,7 @@ public final class LookupOutcomeValue extends ProcessResponseValue {
 
     @Override
     protected void validateThis(final ValidationContext context) {
+        super.validateThis(context);
         final Identifier outcomeIdentifier = getIdentifier();
         if (outcomeIdentifier!=null) {
             final VariableDeclaration declaration = context.checkLocalVariableReference(this, outcomeIdentifier);

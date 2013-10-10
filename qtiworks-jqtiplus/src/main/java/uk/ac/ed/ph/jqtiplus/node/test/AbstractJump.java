@@ -35,6 +35,7 @@ package uk.ac.ed.ph.jqtiplus.node.test;
 
 import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
+import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
@@ -43,6 +44,8 @@ import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.Value;
+
+import java.util.List;
 
 /**
  * Parent for all jump objects (preCondition and branchRule).
@@ -67,6 +70,10 @@ public abstract class AbstractJump extends AbstractNode implements ExpressionPar
         return (AbstractPart) super.getParent();
     }
 
+    @Override
+    public List<Expression> getExpressions() {
+        return getNodeGroups().getExpressionGroup().getExpressions();
+    }
 
     public Expression getExpression() {
         return getNodeGroups().getExpressionGroup().getExpression();
@@ -85,6 +92,12 @@ public abstract class AbstractJump extends AbstractNode implements ExpressionPar
     @Override
     public BaseType[] getRequiredBaseTypes(final ValidationContext context, final int index) {
         return new BaseType[] { BaseType.BOOLEAN };
+    }
+
+    @Override
+    protected void validateThis(final ValidationContext context) {
+        super.validateThis(context);
+        AbstractExpression.validateChildExpressionSignatures(this, context);
     }
 
     public boolean evaluatesTrue(final TestProcessingContext testProcessingContext) {

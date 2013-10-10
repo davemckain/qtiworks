@@ -33,10 +33,10 @@
  */
 package uk.ac.ed.ph.jqtiplus.notification;
 
+import uk.ac.ed.ph.jqtiplus.ToRefactor;
 import uk.ac.ed.ph.jqtiplus.attribute.Attribute;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
-import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 
 import java.util.Arrays;
 
@@ -108,6 +108,7 @@ public abstract class AbstractNotificationFirer implements NotificationFirer {
         fireNotification(notification);
     }
 
+    @ToRefactor
     @Override
     public final void fireBaseTypeValidationError(final QtiNode owner, final BaseType[] requiredBaseTypes, final BaseType[] actualBaseTypes) {
         final Notification notification = new Notification(owner, null, NotificationType.MODEL_VALIDATION, NotificationLevel.WARNING,
@@ -115,15 +116,6 @@ public abstract class AbstractNotificationFirer implements NotificationFirer {
                 + " but got " + Arrays.toString(actualBaseTypes));
         fireNotification(notification);
     }
-
-    @Override
-    public final void fireCardinalityValidationError(final QtiNode owner, final Cardinality[] requiredCardinalities, final Cardinality[] actualCardinalities) {
-        final Notification notification = new Notification(owner, null, NotificationType.MODEL_VALIDATION, NotificationLevel.WARNING,
-                "Cardinality validation error: expected " + Arrays.toString(requiredCardinalities)
-                + " but got " + Arrays.toString(actualCardinalities));
-        fireNotification(notification);
-    }
-
 
     @Override
     public final void fireRuntimeInfo(final QtiNode owner, final String message) {

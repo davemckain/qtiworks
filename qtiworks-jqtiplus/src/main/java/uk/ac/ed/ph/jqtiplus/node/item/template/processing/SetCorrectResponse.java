@@ -58,6 +58,7 @@ public final class SetCorrectResponse extends ProcessTemplateValue {
 
     @Override
     protected void validateThis(final ValidationContext context) {
+        super.validateThis(context);
         final Identifier referenceIdentifier = getIdentifier();
         if (referenceIdentifier!=null) {
             final VariableDeclaration variableDeclaration = context.checkLocalVariableReference(this, referenceIdentifier);

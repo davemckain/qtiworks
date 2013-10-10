@@ -93,6 +93,7 @@ public final class Selection extends AbstractNode {
 
     @Override
     protected void validateThis(final ValidationContext context) {
+        super.validateThis(context);
         final int select = getSelect();
         final AssessmentSection section = getParent();
         if (section != null) {

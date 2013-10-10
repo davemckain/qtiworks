@@ -60,14 +60,14 @@ public interface Expression extends ExpressionParent {
      * @return parent of this expression
      */
     @Override
-    public ExpressionParent getParent();
+    ExpressionParent getParent();
 
     /**
      * Gets expression type of this expression.
      *
      * @return expression type of this expression
      */
-    public ExpressionType getType();
+    ExpressionType getType();
 
     /**
      * Gets list of all possible produced cardinalities after evaluation (possible cardinalities of evaluated result).
@@ -80,10 +80,9 @@ public interface Expression extends ExpressionParent {
      * <p>
      * Null expression, empty containers (multiple, ordered, record), or NULL values produces all cardinalities. So they are compatible with anything.
      *
-     * @param context TODO
      * @return list of all possible produced cardinalities after evaluation
      */
-    public Cardinality[] getProducedCardinalities(ValidationContext context);
+    Cardinality[] getProducedCardinalities(ValidationContext context);
 
     /**
      * Gets list of all possible produced baseTypes after evaluation (possible baseTypes of evaluated result).
@@ -96,17 +95,19 @@ public interface Expression extends ExpressionParent {
      * <p>
      * Null expression, empty containers (multiple, ordered, record), or NULL values produces all baseTypes. So they are compatible with anything.
      *
-     * @param context TODO
      * @return list of all possible produced baseTypes after evaluation
      */
-    public BaseType[] getProducedBaseTypes(ValidationContext context);
+    BaseType[] getProducedBaseTypes(ValidationContext context);
 
     /**
      * Gets all children of this expression.
      *
+     * @deprecated Use {@link #getExpressions()}.
+     *
      * @return all children of this expression
      */
-    public List<Expression> getChildren();
+    @Deprecated
+    List<Expression> getChildren();
 
     /**
      * Evaluates this expression.
@@ -118,5 +119,5 @@ public interface Expression extends ExpressionParent {
      *
      * @return result of evaluation, which will not be null (but might be a {@link NullValue}!)
      */
-    public Value evaluate(ProcessingContext context);
+    Value evaluate(ProcessingContext context);
 }

@@ -33,10 +33,10 @@
  */
 package uk.ac.ed.ph.jqtiplus.notification;
 
+import uk.ac.ed.ph.jqtiplus.ToRefactor;
 import uk.ac.ed.ph.jqtiplus.attribute.Attribute;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
-import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 
 /**
  * Convenience API for firing off {@link Notification}s. Most of this is filled
@@ -61,9 +61,8 @@ public interface NotificationFirer {
 
     void fireAttributeValidationWarning(Attribute<?> attribute, String message);
 
+    @ToRefactor
     void fireBaseTypeValidationError(QtiNode owner, BaseType[] requiredBaseTypes, BaseType[] actualBaseTypes);
-
-    void fireCardinalityValidationError(QtiNode owner, Cardinality[] requiredCardinalities, Cardinality[] actualCardinalities);
 
     void fireRuntimeInfo(QtiNode owner, String message);
 

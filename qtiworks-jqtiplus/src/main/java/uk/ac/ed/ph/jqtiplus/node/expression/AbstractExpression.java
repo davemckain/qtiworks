@@ -43,6 +43,7 @@ import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
+import uk.ac.ed.ph.jqtiplus.value.Signature;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.util.Arrays;
@@ -94,7 +95,6 @@ public abstract class AbstractExpression extends AbstractNode implements Express
      * <p>
      * This method is used when same cardinality is required (contains, match).
      *
-     * @param context TODO
      * @param index position of child expression in this parent
      * @param includeParent whether parent requirements should be used during calculation
      * @return list of all acceptable cardinalities which can child expression at given position produce
@@ -183,7 +183,6 @@ public abstract class AbstractExpression extends AbstractNode implements Express
      * <li>otherwise result is set of integer and float</li>
      * </ol>
      *
-     * @param context TODO
      * @return list of all possible produced baseTypes after evaluation (possible baseTypes of evaluated result)
      * @see #getProducedBaseTypes
      */
@@ -219,7 +218,6 @@ public abstract class AbstractExpression extends AbstractNode implements Express
      * If this expression doesn't have any parent (it is legal for testing, but not for real use case),
      * returns list of all cardinalities.
      *
-     * @param context TODO
      * @return list of all acceptable cardinalities for this expression from its parent
      */
     protected final Cardinality[] getParentRequiredCardinalities(final ValidationContext context) {
@@ -267,18 +265,51 @@ public abstract class AbstractExpression extends AbstractNode implements Express
      */
     @Override
     protected void validateThis(final ValidationContext context) {
-        final Cardinality[] requiredCardinalities = getParentRequiredCardinalities(context);
-        final Cardinality[] producedCardinalities = getProducedCardinalities(context);
+        super.validateThis(context);
+        validateChildExpressionSignatures(this, context);
+    }
 
-        if (!check(requiredCardinalities, producedCardinalities)) {
-            context.fireCardinalityValidationError(this, requiredCardinalities, producedCardinalities);
-        }
+    /**
+     * Checks the produced {@link Signature}s of the children of the given {@link ExpressionParent}
+     * and matches them against those required by the {@link ExpressionParent}. Any mismatches are
+     * reported as validation errors.
+     * <p>
+     * This is a static helper method as this logic also needs to be used on the outer
+     * {@link ExpressionParent}s that aren't themselves {@link Expression}, and single inheritance
+     * makes this a bit messy.
+     * <p>
+     * This method is slightly refactored from the original JQTI, which reported validation errors
+     * as if they were problem with the child {@link Expression}, rather than the parent {@link ExpressionParent}.
+     * <p>
+     * NOTE: I'm not currently keen on the produced/required logic in this class, but don't have
+     * resources to refactor this any more at present!
+     */
+    public static void validateChildExpressionSignatures(final ExpressionParent expressionParent, final ValidationContext context) {
+        final List<Expression> childExpressions = expressionParent.getExpressions();
+        for (int index=0; index<childExpressions.size(); index++) {
+            final Expression child = childExpressions.get(index);
 
-        final BaseType[] requiredBaseTypes = getParentRequiredBaseTypes(context);
-        final BaseType[] producedBaseTypes = getProducedBaseTypes(context);
+            final Cardinality[] requiredCardinalities = expressionParent.getRequiredCardinalities(context, index);
+            final Cardinality[] childProducedCardinalities = child.getProducedCardinalities(context);
+            if (!checkCompatibility(requiredCardinalities, childProducedCardinalities)) {
+                context.fireValidationError(expressionParent, "Child expression " + child.getQtiClassName()
+                        + " at index " + index
+                        + " is required to evaluate to a value with cardinalities "
+                        + Arrays.toString(requiredCardinalities)
+                        + " but produces cardinalities "
+                        + Arrays.toString(childProducedCardinalities));
+            }
 
-        if (!check(requiredBaseTypes, producedBaseTypes)) {
-            context.fireBaseTypeValidationError(this, requiredBaseTypes, producedBaseTypes);
+            final BaseType[] requiredBaseTypes = expressionParent.getRequiredBaseTypes(context, index);
+            final BaseType[] childProducedBaseTypes = child.getProducedBaseTypes(context);
+            if (!checkCompatibility(requiredBaseTypes, childProducedBaseTypes)) {
+                context.fireValidationError(expressionParent, "Child expression " + child.getQtiClassName()
+                        + " at index " + index
+                        + " is required to evaluate to a value with baseTypes "
+                        + Arrays.toString(requiredBaseTypes)
+                        + " but produces baseTypes "
+                        + Arrays.toString(childProducedBaseTypes));
+            }
         }
     }
 
@@ -290,23 +321,26 @@ public abstract class AbstractExpression extends AbstractNode implements Express
      * @param produced list with produced objects
      * @return true if both lists are empty or intersection of these lists is not empty; false otherwise
      */
-    private boolean check(final Object[] required, final Object[] produced) {
+    private static boolean checkCompatibility(final Object[] required, final Object[] produced) {
         if (required.length == 0 && produced.length == 0) {
             return true;
         }
-
         for (final Object object : produced) {
             if (Arrays.binarySearch(required, object) >= 0) {
                 return true;
             }
         }
-
         return false;
     }
 
     @Override
-    public List<Expression> getChildren() {
+    public List<Expression> getExpressions() {
         return getNodeGroups().getExpressionGroup().getExpressions();
+    }
+
+    @Override
+    public List<Expression> getChildren() {
+        return getExpressions();
     }
 
     /**

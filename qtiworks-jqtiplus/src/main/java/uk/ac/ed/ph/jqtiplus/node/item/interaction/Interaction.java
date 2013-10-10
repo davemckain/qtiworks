@@ -109,6 +109,7 @@ public abstract class Interaction extends BodyElement {
 
     @Override
     protected final void validateThis(final ValidationContext context) {
+        super.validateThis(context);
         final Identifier responseIdentifier = getResponseIdentifier();
         ResponseDeclaration responseDeclaration = null;
         if (responseIdentifier!=null) {

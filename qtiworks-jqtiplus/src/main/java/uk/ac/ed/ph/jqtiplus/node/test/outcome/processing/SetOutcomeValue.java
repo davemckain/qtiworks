@@ -92,6 +92,7 @@ public final class SetOutcomeValue extends ProcessOutcomeValue {
 
     @Override
     public void validateThis(final ValidationContext context) {
+        super.validateThis(context);
         final Identifier referenceIdentifier = getIdentifier();
         if (referenceIdentifier!=null) {
             final OutcomeDeclaration declaration = (OutcomeDeclaration) context.checkLocalVariableReference(this, referenceIdentifier);

@@ -66,6 +66,7 @@ public final class ResponseProcessingFragment extends ResponseRule {
 
     @Override
     protected void validateThis(final ValidationContext context) {
+        super.validateThis(context);
         if (getResponseRules().size() == 0) {
             context.fireValidationWarning(this, "Node " + QTI_CLASS_NAME + " should contain some rules.");
         }

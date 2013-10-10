@@ -87,6 +87,7 @@ public final class BranchRule extends AbstractJump {
 
     @Override
     protected void validateThis(final ValidationContext context) {
+        super.validateThis(context);
         final Identifier targetIdentifier = getTarget();
         final AbstractPart owner = getParent();
         if (owner==null) {

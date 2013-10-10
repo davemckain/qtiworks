@@ -54,6 +54,7 @@ public final class PreCondition extends AbstractJump {
 
     @Override
 	protected void validateThis(final ValidationContext context) {
+        super.validateThis(context);
     	final AbstractPart parent = getParent();
     	if (parent==null) {
     	    return;

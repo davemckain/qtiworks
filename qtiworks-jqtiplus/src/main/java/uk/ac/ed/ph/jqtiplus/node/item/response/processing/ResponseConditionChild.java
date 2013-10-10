@@ -62,6 +62,7 @@ public abstract class ResponseConditionChild extends AbstractNode {
 
     @Override
     protected void validateThis(final ValidationContext context) {
+        super.validateThis(context);
         if (getResponseRules().size() == 0) {
             context.fireValidationWarning(this, "Node " + getQtiClassName() + " should contain some rules.");
         }
@@ -77,7 +78,6 @@ public abstract class ResponseConditionChild extends AbstractNode {
         for (final ResponseRule responseRule : getResponseRules()) {
             responseRule.evaluate(context);
         }
-
         return true;
     }
 }

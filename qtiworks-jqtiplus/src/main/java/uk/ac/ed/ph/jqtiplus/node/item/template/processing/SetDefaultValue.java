@@ -59,6 +59,7 @@ public final class SetDefaultValue extends ProcessTemplateValue {
 
     @Override
     protected void validateThis(final ValidationContext context) {
+        super.validateThis(context);
         final Identifier identifier = getIdentifier();
         if (identifier != null) {
             final VariableDeclaration declaration = context.checkLocalVariableReference(this, identifier);

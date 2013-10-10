@@ -35,6 +35,7 @@ package uk.ac.ed.ph.jqtiplus.node.item.response.processing;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
+import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
@@ -43,6 +44,8 @@ import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.Value;
+
+import java.util.List;
 
 /**
  * Abstract parent for all responseCondition children with condition (IF, ELSE-IF).
@@ -57,6 +60,11 @@ public abstract class ResponseConditionExpressionChild extends ResponseCondition
         super(parent, qtiClassName);
 
         getNodeGroups().add(0, new ExpressionGroup(this, 1, 1));
+    }
+
+    @Override
+    public List<Expression> getExpressions() {
+        return getNodeGroups().getExpressionGroup().getExpressions();
     }
 
     public Expression getExpression() {
@@ -76,6 +84,12 @@ public abstract class ResponseConditionExpressionChild extends ResponseCondition
     @Override
     public BaseType[] getRequiredBaseTypes(final ValidationContext context, final int index) {
         return new BaseType[] { BaseType.BOOLEAN };
+    }
+
+    @Override
+    protected void validateThis(final ValidationContext context) {
+        super.validateThis(context);
+        AbstractExpression.validateChildExpressionSignatures(this, context);
     }
 
     @Override

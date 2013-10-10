@@ -33,13 +33,16 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.item.response.processing;
 
-
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
+import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
+
+import java.util.List;
 
 /**
  * Abstract parent for setResponseValue and lookupResponseValue classes.
@@ -80,6 +83,11 @@ public abstract class ProcessResponseValue extends ResponseRule implements Expre
     }
 
 
+    @Override
+    public List<Expression> getExpressions() {
+        return getNodeGroups().getExpressionGroup().getExpressions();
+    }
+
     public Expression getExpression() {
         return getNodeGroups().getExpressionGroup().getExpression();
     }
@@ -87,4 +95,12 @@ public abstract class ProcessResponseValue extends ResponseRule implements Expre
     public void setExpression(final Expression expression) {
         getNodeGroups().getExpressionGroup().setExpression(expression);
     }
+
+
+    @Override
+    protected void validateThis(final ValidationContext context) {
+        super.validateThis(context);
+        AbstractExpression.validateChildExpressionSignatures(this, context);
+    }
+
 }

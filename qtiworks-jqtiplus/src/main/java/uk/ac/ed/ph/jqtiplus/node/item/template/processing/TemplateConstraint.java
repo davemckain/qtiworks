@@ -36,6 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.item.template.processing;
 import uk.ac.ed.ph.jqtiplus.exception.TemplateProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.exception.TemplateProcessingInterrupt.InterruptType;
 import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
+import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
@@ -44,6 +45,8 @@ import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.Value;
+
+import java.util.List;
 
 /**
  * Implements <tt>templateConstraint</tt>
@@ -59,6 +62,11 @@ public final class TemplateConstraint extends TemplateProcessingRule implements 
     public TemplateConstraint(final TemplateProcessing parent) {
         super(parent, QTI_CLASS_NAME);
         getNodeGroups().add(0, new ExpressionGroup(this, 1, 1));
+    }
+
+    @Override
+    public List<Expression> getExpressions() {
+        return getNodeGroups().getExpressionGroup().getExpressions();
     }
 
     public Expression getExpression() {
@@ -80,9 +88,15 @@ public final class TemplateConstraint extends TemplateProcessingRule implements 
     }
 
     @Override
+    protected void validateThis(final ValidationContext context) {
+        super.validateThis(context);
+        AbstractExpression.validateChildExpressionSignatures(this, context);
+    }
+
+    @Override
     public void evaluate(final ItemProcessingContext context) throws TemplateProcessingInterrupt {
         final Value value = getExpression().evaluate(context);
-        if (value == null || value.isNull() || !((BooleanValue) value).booleanValue()) {
+        if (value.isNull() || !((BooleanValue) value).booleanValue()) {
             throw new TemplateProcessingInterrupt(InterruptType.TEMPLATE_CONSTRAINT_FAILURE);
         }
     }

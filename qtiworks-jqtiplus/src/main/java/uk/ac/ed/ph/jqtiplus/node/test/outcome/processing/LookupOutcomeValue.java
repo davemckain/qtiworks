@@ -86,6 +86,7 @@ public final class LookupOutcomeValue extends ProcessOutcomeValue {
 
     @Override
     protected void validateThis(final ValidationContext context) {
+        super.validateThis(context);
         final Identifier outcomeIdentifier = getIdentifier();
         if (outcomeIdentifier!=null) {
             final OutcomeDeclaration declaration = (OutcomeDeclaration) context.checkLocalVariableReference(this, outcomeIdentifier);

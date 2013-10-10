@@ -162,6 +162,7 @@ public class ModalFeedback extends AbstractNode {
 
     @Override
     public void validateThis(final ValidationContext context) {
+        super.validateThis(context);
         final Identifier outcomeIdentifier = getOutcomeIdentifier();
         if (outcomeIdentifier!=null) {
             final VariableDeclaration declaration = context.checkLocalVariableReference(this, getOutcomeIdentifier());

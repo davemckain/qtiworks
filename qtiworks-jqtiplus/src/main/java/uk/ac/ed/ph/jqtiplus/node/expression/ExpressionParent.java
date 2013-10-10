@@ -38,13 +38,21 @@ import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 
+import java.util.List;
+
 /**
  * Every object which contains expression(s) must implement this interface.
+ * <p>
  * Expression contains (in general case) other expressions, so it must implement this interface too.
  *
  * @author Jiri Kajaba
  */
 public interface ExpressionParent extends QtiNode {
+
+    /**
+     * Gets the {@link Expression}(s) contained by this parent.
+     */
+    List<Expression> getExpressions();
 
     /**
      * Gets list of all acceptable cardinalities which can child expression at given position produce.
@@ -57,11 +65,10 @@ public interface ExpressionParent extends QtiNode {
      * <p>
      * Dynamic example is expression match. Expression match accepts any cardinality of its children, but this cardinality must be same for all its children.
      *
-     * @param context TODO
      * @param index position of child expression in this parent
      * @return list of all possible cardinalities which can child expression at given position produce
      */
-    public Cardinality[] getRequiredCardinalities(ValidationContext context, int index);
+    Cardinality[] getRequiredCardinalities(ValidationContext context, int index);
 
     /**
      * Gets list of all acceptable baseTypes which can child expression at given position produce.
@@ -72,9 +79,9 @@ public interface ExpressionParent extends QtiNode {
      * <p>
      * Dynamic example is expression match. Expression match accepts any baseType of its children. but this baseType must be same for all its children.
      *
-     * @param context TODO
      * @param index position of child expression in this parent
      * @return list of all acceptable baseTypes which can child expression at given position produce
      */
-    public BaseType[] getRequiredBaseTypes(ValidationContext context, int index);
+    BaseType[] getRequiredBaseTypes(ValidationContext context, int index);
+
 }

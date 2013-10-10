@@ -62,6 +62,7 @@ public final class Pre extends AbstractAtomicBlock {
 
     @Override
     public void validateThis(final ValidationContext context) {
+        super.validateThis(context);
         /*Although pre inherits from atomicBlock it must not contain, either directly or indirectly, any of the following objects: img, object, big, small, sub, sup. */
         if (QueryUtils.hasDescendant(Img.class, this)) {
             context.fireValidationError(this, "The " + QTI_CLASS_NAME + " class cannot contain " + Img.QTI_CLASS_NAME + " children");

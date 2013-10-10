@@ -154,6 +154,7 @@ public abstract class AbstractPart extends ControlObject<Identifier> implements 
 
     @Override
     protected void validateThis(final ValidationContext context) {
+        super.validateThis(context);
         final Identifier identifier = getIdentifier();
         if (identifier!=null) {
             final IdentifierAttribute identifierAttribute = getAttributes().getIdentifierAttribute(IdentifiableNode.ATTR_IDENTIFIER_NAME);

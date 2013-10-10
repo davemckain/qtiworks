@@ -188,6 +188,7 @@ public final class FieldValue extends AbstractNode {
 
     @Override
     protected void validateThis(final ValidationContext context) {
+        super.validateThis(context);
         final Cardinality cardinality = getParent().getCardinality();
         if (cardinality != null) {
             if (cardinality.isRecord() && getFieldIdentifier() == null) {
