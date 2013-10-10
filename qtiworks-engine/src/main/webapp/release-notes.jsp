@@ -12,6 +12,45 @@ All Rights Reserved
   </nav>
   <h2>QTIWorks Release Notes (Production)</h2>
 
+  <h3>1.0-beta3 [Production] (10/10/2013)</h3>
+  <p>
+    Bug-fix release addressing problems reported since beta2. This is likely to be the last beta before the
+    final 1.0 release. Issues fixed:
+  </p>
+  <ul>
+    <li>
+      <a href="https://github.com/davemckain/qtiworks/issues/30">#30</a>: Due
+      to a brain-related issue in my original implementation of LTI result
+      returning, errors were being generated when running single item
+      assessments with LTI result returning enabled if the item session was
+      able to close, reopen and then close again. This issue is now fixed.
+    </li>
+    <li>
+      <a href="https://github.com/davemckain/qtiworks/issues/31">#31</a>: There has
+      been a change to the validation logic to associate mistmatches in the
+      cardinality/baseType of the values produced by child expressions against what
+      is required by the parent. Mismatches are now reported as problems of the parent,
+      rather than the child. This makes issue #31 disappear.
+    </li>
+    <li>
+      <a href="https://github.com/davemckain/qtiworks/issues/33">#33</a>: The
+      <code>identifier</code> of an <code>itemResult</code> was not being computed
+      in the manner defined by the specification for items within tests. This is fixed here.
+    </li>
+    <li>
+      <a href="https://github.com/davemckain/qtiworks/issues/35">#35</a>: The intialisation
+      of outcome variables now correctly sets numeric OVs to 0 instead of NULL if there are no defaults provided.
+    </li>
+  </ul>
+  <p>
+    A small schema change is required. Please run <code>qtiworks-engine/support/schema-migrations/beta2-to-beta3.sql</code>
+    to upgrade your database if you have been running your own QTIWorks 1.0-beta2 installation.
+  </p>
+  <p>
+    See production releases at <a href="https://webapps.ph.ed.ac.uk/qtiworks">https://webapps.ph.ed.ac.uk/qtiworks</a>, and
+    development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
+  </p>
+
   <h3>1.0-beta2 [Production] (22/08/2013)</h3>
   <p>
     This fixes a few bugs noted by people testing the production instance of QTIWorks:
