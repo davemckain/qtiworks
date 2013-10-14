@@ -49,6 +49,7 @@ import uk.ac.ed.ph.qtiworks.services.dao.QueuedLtiOutcomeDao;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.internal.util.Pair;
 
+import java.io.IOException;
 import java.io.StringReader;
 import java.security.MessageDigest;
 import java.util.Arrays;
@@ -71,6 +72,7 @@ import net.oauth.OAuthMessage;
 import net.oauth.OAuthServiceProvider;
 import net.oauth.ParameterStyle;
 import net.oauth.client.OAuthClient;
+import net.oauth.client.OAuthResponseMessage;
 import net.oauth.client.httpclient4.HttpClient4;
 
 import org.apache.commons.codec.binary.Base64;
@@ -313,21 +315,41 @@ public class LtiOutcomeService {
         }
 
         /* Send message to TC result service endpoint */
-        String responseBody;
+        final OAuthResponseMessage oauthResponseMessage;
         try {
             logger.debug("Attempting to send OAuth message {}", oauthMessage);
             final HttpClient4 httpClient4 = new HttpClient4();
             final OAuthClient client = new OAuthClient(httpClient4);
-            final OAuthMessage result = client.invoke(oauthMessage, ParameterStyle.AUTHORIZATION_HEADER);
-            responseBody = result.readBodyAsString();
+            oauthResponseMessage = client.access(oauthMessage, ParameterStyle.AUTHORIZATION_HEADER);
         }
-        catch (final Exception e) {
+        catch (final IOException e) {
             logger.warn("Failed to send OAuthMessage {}", oauthMessage, e);
             return false;
         }
 
-        /* Extract status */
-        logger.debug("Received following result body from TP outcome service:\n{}", responseBody);
+        /* Read HTTP status code and response body  */
+        int responseStatusCode;
+        String responseBody;
+        try {
+            responseBody = oauthResponseMessage.readBodyAsString();
+            responseStatusCode = oauthResponseMessage.getHttpResponse().getStatusCode();
+        }
+        catch (final IOException e) {
+            logger.warn("IOException reading response {} to message {}", oauthResponseMessage, oauthMessage, e);
+            return false;
+        }
+
+        /* Let's log what we get as it helps with debugging the various different TCs */
+        logger.debug("Received HTTP status code {} and following result body from TP outcome service for message {}:\n{}",
+                responseStatusCode, oauthMessage, responseBody);
+
+        /* Make sure HTTP response code is as expected */
+        if (responseStatusCode<200 || responseStatusCode>=300) {
+            logger.warn("Got HTTP response code {} to message {} - expected a success result");
+            return false;
+        }
+
+        /* Extract POX message status */
         final XPathFactory xPathFactory = XPathFactory.newInstance();
         final XPath xPath = xPathFactory.newXPath();
         xPath.setNamespaceContext(new PoxNamespaceContext());
