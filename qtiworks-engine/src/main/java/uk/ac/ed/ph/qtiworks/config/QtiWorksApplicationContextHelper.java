@@ -58,7 +58,7 @@ import org.springframework.core.io.support.ResourcePropertySource;
  */
 public final class QtiWorksApplicationContextHelper {
 
-    /** Resoure URI for fixed QTIWorks properties */
+    /** Resource URI for fixed QTIWorks properties */
     public static final String QTIWORKS_PROPERTIES_URI = "classpath:/qtiworks.properties";
 
     private static final Logger logger = LoggerFactory.getLogger(QtiWorksApplicationContextHelper.class);
