@@ -77,6 +77,7 @@ import net.oauth.client.httpclient4.HttpClient4;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.input.CharSequenceInputStream;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
@@ -303,7 +304,7 @@ public class LtiOutcomeService {
         final OAuthMessage oauthMessage;
         try {
             final Map<String, String> parameters = new HashMap<String, String>();
-            parameters.put("Content-Type", "text/xml; charset=" + ENCODING);
+            parameters.put("Content-Type", "application/xml; charset=" + ENCODING);
             parameters.put("oauth_body_hash", bodyHash);
             oauthMessage = accessor.newRequestMessage("POST",
                     lisOutcomeServiceUrl, parameters.entrySet(),
@@ -345,7 +346,7 @@ public class LtiOutcomeService {
 
         /* Make sure HTTP response code is as expected */
         if (responseStatusCode<200 || responseStatusCode>=300) {
-            logger.warn("Got HTTP response code {} to message {} - expected a success result");
+            logger.warn("Got HTTP response code {} to message {} - expected a success result", responseStatusCode, oauthMessage);
             return false;
         }
 
@@ -374,7 +375,7 @@ public class LtiOutcomeService {
      */
     private String buildPoxMessage(final CandidateSession candidateSession, final double normalizedScore) {
         final String messageIdentifier = "QTIWORKS_RESULT_" + ServiceUtilities.createRandomAlphanumericToken(32);
-        final String lisResultSourceDid = candidateSession.getLisResultSourcedid();
+        final String lisResultSourceDid = candidateSession.getLisResultSourcedid(); /* (This isn't always an ID so needs escaped) */
         return "<?xml version='1.0' encoding='" + ENCODING + "'?>\n"
                 + "<imsx_POXEnvelopeRequest xmlns='http://www.imsglobal.org/services/ltiv1p1/xsd/imsoms_v1p0'>\n"
                 + "  <imsx_POXHeader>\n"
@@ -387,7 +388,7 @@ public class LtiOutcomeService {
                 + "    <replaceResultRequest>\n"
                 + "      <resultRecord>\n"
                 + "        <sourcedGUID>\n"
-                + "          <sourcedId>" + lisResultSourceDid + "</sourcedId>\n"
+                + "          <sourcedId>" + StringEscapeUtils.escapeXml(lisResultSourceDid) + "</sourcedId>\n"
                 + "        </sourcedGUID>\n"
                 + "        <result>\n"
                 + "          <resultScore>\n"
