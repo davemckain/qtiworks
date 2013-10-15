@@ -49,8 +49,10 @@ import uk.ac.ed.ph.qtiworks.services.dao.QueuedLtiOutcomeDao;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.internal.util.Pair;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.Date;
@@ -59,6 +61,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.annotation.Resource;
 import javax.xml.namespace.NamespaceContext;
@@ -66,6 +69,7 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import net.oauth.OAuth;
 import net.oauth.OAuthAccessor;
 import net.oauth.OAuthConsumer;
 import net.oauth.OAuthMessage;
@@ -76,7 +80,6 @@ import net.oauth.client.OAuthResponseMessage;
 import net.oauth.client.httpclient4.HttpClient4;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.io.input.CharSequenceInputStream;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -263,9 +266,11 @@ public class LtiOutcomeService {
      * result service. Returns true if the result was successfully returned, false otherwise.
      */
     private boolean trySendQueuedLtiOutcome(final QueuedLtiOutcome queuedLtiOutcome) {
-        /* Extract relevant bits of info */
-        final double score = queuedLtiOutcome.getScore();
+        /* Extract the information we need to send */
+        final double normalizedScore = queuedLtiOutcome.getScore();
         final CandidateSession candidateSession = queuedLtiOutcome.getCandidateSession();
+        final String lisResultSourcedid = candidateSession.getLisResultSourcedid();
+        final String lisOutcomeServiceUrl = candidateSession.getLisOutcomeServiceUrl();
         final User candidate = candidateSession.getCandidate();
         if (candidate.getUserType()!=UserType.LTI) {
             logger.warn("Candidate must be an LTI user - ignoring {}", queuedLtiOutcome);
@@ -290,30 +295,63 @@ public class LtiOutcomeService {
                 throw new QtiWorksLogicException("Unexpected switch case " + ltiCandidate.getLtiLaunchType());
         }
 
-        /* Create POX XML envelope around message */
-        final String poxMessage = buildPoxMessage(candidateSession, score);
+        /* Now send the result */
+        return sendLisResult(lisOutcomeServiceUrl, lisResultSourcedid,
+                ltiConsumerKey, ltiConsumerSecret, normalizedScore);
+    }
 
-        /* Compute hash for the message */
-        final String bodyHash = computeBodyHash(poxMessage);
+    /**
+     * Attempts to send an LIS result to an outcome service.
+     * <p>
+     * (This method may be called in a standalone fashion, which might be useful for debugging
+     * certain TCs outside the rest of the QTIWorks Engine machinery. It's recommended you log
+     * at debug level when testing. Also consider setting <code>org.apache.http</code> to debug
+     * as well.)
+     *
+     * @param lisOutcomeServiceUrl URL of the outcome service to send to
+     * @param lisResultSourcedid <code>lis_result_sourcedid</code> to send
+     * @param ltiConsumerKey consumer key for signing OAuth request
+     * @param ltiConsumerSecret secret corresponding to the consumer key
+     * @param normalizedScore score to be returned, in the range 0.0 to 1.0
+     * @return true on success, false otherwise.
+     */
+    public static boolean sendLisResult(final String lisOutcomeServiceUrl, final String lisResultSourcedid,
+            final String ltiConsumerKey, final String ltiConsumerSecret,
+            final double normalizedScore) {
+        /* Create POX XML message envelope */
+        final String poxMessage = buildPoxMessage(lisResultSourcedid, normalizedScore);
+        final byte[] poxMessageBytes;
+        try {
+            poxMessageBytes = poxMessage.getBytes(ENCODING);
+        }
+        catch (final UnsupportedEncodingException e1) {
+            throw new QtiWorksLogicException("Unexpected failure encoding POX message as Unicode byte array");
+        }
 
-        /* Wrap as OAuth message */
+        /* Compute body hash for the message */
+        final String bodyHash = computeBodyHash(poxMessageBytes);
+
+        /* Build OAuth message */
         final OAuthServiceProvider serviceProvider = new OAuthServiceProvider(null, null, null);
         final OAuthConsumer consumer = new OAuthConsumer(null, ltiConsumerKey, ltiConsumerSecret, serviceProvider);
         final OAuthAccessor accessor = new OAuthAccessor(consumer);
-        final String lisOutcomeServiceUrl = candidateSession.getLisOutcomeServiceUrl();
         final OAuthMessage oauthMessage;
         try {
             final Map<String, String> parameters = new HashMap<String, String>();
-            parameters.put("Content-Type", "application/xml; charset=" + ENCODING);
             parameters.put("oauth_body_hash", bodyHash);
             oauthMessage = accessor.newRequestMessage("POST",
                     lisOutcomeServiceUrl, parameters.entrySet(),
-                    new CharSequenceInputStream(poxMessage, ENCODING));
+                    new ByteArrayInputStream(poxMessageBytes));
         }
         catch (final Exception e) {
             logger.warn("Failed to construct OAuthMessage for reporting outcomes", e);
             return false;
         }
+
+        /* Add suitably nice HTTP headers */
+        final List<Entry<String, String>> httpHeaders = oauthMessage.getHeaders();
+        httpHeaders.add(new OAuth.Parameter("Content-Type", "application/xml"));
+        httpHeaders.add(new OAuth.Parameter("Content-Length", Integer.toString(poxMessageBytes.length)));
 
         /* Send message to TC result service endpoint */
         final OAuthResponseMessage oauthResponseMessage;
@@ -373,9 +411,8 @@ public class LtiOutcomeService {
     /**
      * Builds the appropriate POX message for sending the result back to the TC.
      */
-    private String buildPoxMessage(final CandidateSession candidateSession, final double normalizedScore) {
+    private static String buildPoxMessage(final String lisResultSourcedid, final double normalizedScore) {
         final String messageIdentifier = "QTIWORKS_RESULT_" + ServiceUtilities.createRandomAlphanumericToken(32);
-        final String lisResultSourceDid = candidateSession.getLisResultSourcedid(); /* (This isn't always an ID so needs escaped) */
         return "<?xml version='1.0' encoding='" + ENCODING + "'?>\n"
                 + "<imsx_POXEnvelopeRequest xmlns='http://www.imsglobal.org/services/ltiv1p1/xsd/imsoms_v1p0'>\n"
                 + "  <imsx_POXHeader>\n"
@@ -388,7 +425,7 @@ public class LtiOutcomeService {
                 + "    <replaceResultRequest>\n"
                 + "      <resultRecord>\n"
                 + "        <sourcedGUID>\n"
-                + "          <sourcedId>" + StringEscapeUtils.escapeXml(lisResultSourceDid) + "</sourcedId>\n"
+                + "          <sourcedId>" + StringEscapeUtils.escapeXml(lisResultSourcedid) + "</sourcedId>\n"
                 + "        </sourcedGUID>\n"
                 + "        <result>\n"
                 + "          <resultScore>\n"
@@ -408,13 +445,12 @@ public class LtiOutcomeService {
      * (The net.oauth library does not compute this for us!)
      *
      * @param poxMessage
-     * @return
      */
-    private String computeBodyHash(final String poxMessage) {
+    private static String computeBodyHash(final byte[] poxMessageBytes) {
         MessageDigest md;
         try {
             md = MessageDigest.getInstance("SHA1");
-            md.update(poxMessage.getBytes(ENCODING));
+            md.update(poxMessageBytes);
         }
         catch (final Exception e) {
             throw new QtiWorksLogicException("Unexpected failure computing body digest");
