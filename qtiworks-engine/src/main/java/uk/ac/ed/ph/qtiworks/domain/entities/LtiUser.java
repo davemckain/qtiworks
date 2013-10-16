@@ -80,7 +80,13 @@ import org.hibernate.annotations.Type;
     @NamedQuery(name="LtiUser.getForUserRole",
             query="SELECT u"
                 + "  FROM LtiUser u"
-                + "  WHERE  u.userRole = :userRole"),
+                + "  WHERE u.userRole = :userRole"),
+    @NamedQuery(name="LtiUser.getCandidatesForLinkDelivery",
+            query="SELECT u"
+                + "  FROM LtiUser u"
+                + "  WHERE u.delivery = :delivery"
+                + "    AND u.ltiLaunchType = 'LINK'"
+                + "    AND u.userRole = 'CANDIDATE'")
 })
 public class LtiUser extends User implements BaseEntity, Comparable<LtiUser> {
 

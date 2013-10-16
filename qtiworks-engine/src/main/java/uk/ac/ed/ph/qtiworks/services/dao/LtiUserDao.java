@@ -78,7 +78,7 @@ public class LtiUserDao extends GenericDao<LtiUser> {
         return extractNullableFindResult(query);
     }
 
-    public LtiUser findByDeliveryAndLtiUserId(final Delivery delivery ,final String ltiUserId) {
+    public LtiUser findByDeliveryAndLtiUserId(final Delivery delivery, final String ltiUserId) {
         final TypedQuery<LtiUser> query = em.createNamedQuery("LtiUser.findByDeliveryAndLtiUserId", LtiUser.class);
         query.setParameter("delivery", delivery);
         query.setParameter("ltiUserId", ltiUserId);
@@ -88,6 +88,12 @@ public class LtiUserDao extends GenericDao<LtiUser> {
     public List<LtiUser> getForUserRole(final UserRole userRole) {
         final TypedQuery<LtiUser> query = em.createNamedQuery("LtiUser.getForUserRole", LtiUser.class);
         query.setParameter("userRole", userRole);
+        return query.getResultList();
+    }
+
+    public List<LtiUser> getCandidatesForLinkDelivery(final Delivery delivery) {
+        final TypedQuery<LtiUser> query = em.createNamedQuery("LtiUser.getCandidatesForLinkDelivery", LtiUser.class);
+        query.setParameter("delivery", delivery);
         return query.getResultList();
     }
 }

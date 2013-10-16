@@ -41,6 +41,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiResource;
+import uk.ac.ed.ph.qtiworks.domain.entities.LtiUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.services.dao.AnonymousUserDao;
 import uk.ac.ed.ph.qtiworks.services.dao.AssessmentDao;
@@ -49,6 +50,7 @@ import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliveryDao;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliverySettingsDao;
 import uk.ac.ed.ph.qtiworks.services.dao.LtiResourceDao;
+import uk.ac.ed.ph.qtiworks.services.dao.LtiUserDao;
 import uk.ac.ed.ph.qtiworks.services.dao.UserDao;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentAndPackage;
 
@@ -118,6 +120,9 @@ public class DataDeletionService {
     @Resource
     private UserDao userDao;
 
+    @Resource
+    private LtiUserDao ltiUserDao;
+
     /**
      * Deletes the given {@link CandidateSession} and all data that was stored for it.
      * @param candidateSession
@@ -159,11 +164,14 @@ public class DataDeletionService {
     public void deleteDelivery(final Delivery delivery) {
         Assert.notNull(delivery, "delivery");
 
-        /* Delete all candidate sessions */
+        /* Delete all candidate sessions on this Delivery */
         deleteCandidateSessions(delivery);
 
+        /* Delete any LTI link candidate users created when launching this Delivery */
+        deleteLtiLinkCandidateUsers(delivery);
+
         /* Delete entities, taking advantage of cascading */
-        deliveryDao.remove(delivery); /* (This will cascade into CandidateSession entities) */
+        deliveryDao.remove(delivery);
     }
 
     public void deleteAssessmentPackage(final AssessmentPackage assessmentPackage) {
@@ -198,10 +206,12 @@ public class DataDeletionService {
             assessmentPackageDao.update(assessmentPackage);
         }
 
-        /* Unlink Assessment from attached Deliveries, and delete any CandidateSessions for that Delivery. */
+        /* Unlink Assessment from attached Deliveries, and delete any CandidateSessions and
+         * LTI link candidates created for that Delivery. */
         final List<Delivery> deliveries = assessment.getDeliveries();
         for (final Delivery delivery : deliveries) {
             deleteCandidateSessions(delivery);
+            deleteLtiLinkCandidateUsers(delivery);
             delivery.setAssessment(null);
             deliveryDao.update(delivery);
         }
@@ -236,6 +246,20 @@ public class DataDeletionService {
 
         /* Delete LTIResource entity */
         ltiResourceDao.remove(ltiResource);
+    }
+
+    /* NB: This method is called AFTER candidate session data is removed, so there's no need to
+     * repeat this here. This behaviour would need to change if this method was called at a
+     * different time.
+     */
+    private int deleteLtiLinkCandidateUsers(final Delivery delivery) {
+        Assert.notNull(delivery, "delivery");
+
+        final List<LtiUser> ltiUsers = ltiUserDao.getCandidatesForLinkDelivery(delivery);
+        for (final LtiUser ltiUser : ltiUsers) {
+            ltiUserDao.remove(ltiUser);
+        }
+        return ltiUsers.size();
     }
 
     /**
