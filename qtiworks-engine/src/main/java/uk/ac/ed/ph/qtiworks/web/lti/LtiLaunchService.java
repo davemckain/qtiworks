@@ -48,6 +48,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.LtiLaunchType;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiResource;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.UserRole;
+import uk.ac.ed.ph.qtiworks.services.LtiOauthUtilities;
 import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliveryDao;
 import uk.ac.ed.ph.qtiworks.services.dao.LtiContextDao;
@@ -69,14 +70,9 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import net.oauth.OAuth.Problems;
-import net.oauth.OAuthAccessor;
-import net.oauth.OAuthConsumer;
 import net.oauth.OAuthException;
 import net.oauth.OAuthMessage;
 import net.oauth.OAuthProblemException;
-import net.oauth.OAuthServiceProvider;
-import net.oauth.OAuthValidator;
-import net.oauth.SimpleOAuthValidator;
 import net.oauth.server.OAuthServlet;
 
 import org.slf4j.Logger;
@@ -137,7 +133,7 @@ public class LtiLaunchService {
         }
 
         /* Extract the data we're interested in. (This is validated below) */
-        final LtiLaunchData ltiLaunchData = LtiLaunchService.extractLtiLaunchData(oauthMessage);
+        final LtiLaunchData ltiLaunchData = extractLtiLaunchData(oauthMessage);
         logger.info("Extracted LTI Launch data {}", ltiLaunchData);
 
         /* Make sure the OAuth consumer key has been provided */
@@ -148,7 +144,7 @@ public class LtiLaunchService {
         }
 
         /* Make sure this is a supported LTI launch message */
-        if (!LtiLaunchService.isBasicLtiLaunchRequest(ltiLaunchData)) {
+        if (!isBasicLtiLaunchRequest(ltiLaunchData)) {
             logger.warn("Unsupported LTI message type in {}", ltiLaunchData);
             return new DecodedLtiLaunch(ltiLaunchData, SC_BAD_REQUEST, "Unsupported LTI message type " + ltiLaunchData.getLtiMessageType());
         }
@@ -238,7 +234,7 @@ public class LtiLaunchService {
             throws IOException, OAuthException, URISyntaxException {
         final String consumerKey = ltiDomain.getConsumerKey();
         final String consumerSecret = ltiDomain.getConsumerSecret();
-        validateOAuthMessage(oauthMessage, consumerKey, consumerSecret);
+        LtiOauthUtilities.validateOAuthMessage(oauthMessage, consumerKey, consumerSecret);
         return obtainDomainLevelLtiUser(ltiDomain, ltiLaunchData);
     }
 
@@ -246,17 +242,8 @@ public class LtiLaunchService {
             throws IOException, OAuthException, URISyntaxException {
         final String consumerKey = delivery.getLtiConsumerKeyToken();
         final String consumerSecret = delivery.getLtiConsumerSecret();
-        validateOAuthMessage(oauthMessage, consumerKey, consumerSecret);
+        LtiOauthUtilities.validateOAuthMessage(oauthMessage, consumerKey, consumerSecret);
         return obtainLinkLevelLtiUser(delivery, ltiLaunchData);
-    }
-
-    private void validateOAuthMessage(final OAuthMessage oauthMessage, final String consumerKey, final String consumerSecret)
-            throws IOException, OAuthException, URISyntaxException {
-        final OAuthValidator oAuthValidator = new SimpleOAuthValidator();
-        final OAuthServiceProvider serviceProvider = new OAuthServiceProvider(null, null, null);
-        final OAuthConsumer consumer = new OAuthConsumer(null, consumerKey, consumerSecret, serviceProvider);
-        final OAuthAccessor accessor = new OAuthAccessor(consumer);
-        oAuthValidator.validateMessage(oauthMessage, accessor);
     }
 
     private Delivery lookupDelivery(final String consumerKey) {
