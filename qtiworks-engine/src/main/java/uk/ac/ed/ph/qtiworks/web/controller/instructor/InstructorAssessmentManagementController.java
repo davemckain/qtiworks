@@ -354,7 +354,7 @@ public class InstructorAssessmentManagementController {
             throws PrivilegeException, DomainEntityNotFoundException {
         final Assessment assessment = assessmentManagementService.deleteDelivery(did);
         redirectAttributes.addFlashAttribute(GlobalRouter.FLASH, "Delivery has been deleted");
-        return instructorRouter.buildInstructorRedirect("/assessment/" + assessment.getId() + "/deliveries");
+        return instructorRouter.buildInstructorRedirect("/assessment/" + assessment.getId());
     }
 
     @RequestMapping(value="/delivery/{did}/toggle-availability", method=RequestMethod.POST)
