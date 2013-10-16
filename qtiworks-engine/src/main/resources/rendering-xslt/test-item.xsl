@@ -262,7 +262,8 @@ NB: This is used both while being presented, and during review.
   <xsl:template match="qti:itemBody">
     <div id="itemBody">
       <form method="post" action="{$webappContextPath}{$responseUrl}"
-        onsubmit="return QtiWorksRendering.submit()" enctype="multipart/form-data"
+        enctype="multipart/form-data" accept-charset="UTF-8"
+        onsubmit="return QtiWorksRendering.submit()"
         onreset="QtiWorksRendering.reset()" autocomplete="off">
 
         <xsl:apply-templates/>

@@ -182,7 +182,8 @@ Renders a standalone assessmentItem
   <xsl:template match="qti:itemBody">
     <div id="itemBody">
       <form method="post" action="{$webappContextPath}{$responseUrl}"
-        onsubmit="return QtiWorksRendering.submit()" enctype="multipart/form-data"
+        enctype="multipart/form-data" accept-charset="UTF-8"
+        onsubmit="return QtiWorksRendering.submit()"
         onreset="QtiWorksRendering.reset()" autocomplete="off">
 
         <xsl:apply-templates/>
