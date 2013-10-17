@@ -43,14 +43,11 @@ import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.security.MessageDigest;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.xml.namespace.NamespaceContext;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
@@ -239,13 +236,16 @@ public class LtiOauthUtilities {
             return false;
         }
 
-        /* Extract POX message status */
+        /* Extract POX message status. Do we this using a slightly-awkward XPath that completely
+         * ignores the namespace URI, therefore accepting results that are in a different NS from
+         * the one stated in the LTI specification. (Moodle is a culprit here!)
+         */
         final XPathFactory xPathFactory = XPathFactory.newInstance();
         final XPath xPath = xPathFactory.newXPath();
-        xPath.setNamespaceContext(new PoxNamespaceContext());
         String resultStatus;
         try {
-            resultStatus = xPath.evaluate("/x:imsx_POXEnvelopeResponse/x:imsx_POXHeader/x:imsx_POXResponseHeaderInfo/x:imsx_statusInfo/x:imsx_codeMajor",  new InputSource(new StringReader(responseBody)));
+            resultStatus = xPath.evaluate("/*/*[local-name()='imsx_POXHeader']/*[local-name()='imsx_POXResponseHeaderInfo']/*[local-name()='imsx_statusInfo']/*[local-name()='imsx_codeMajor']",
+                    new InputSource(new StringReader(responseBody)));
         }
         catch (final XPathExpressionException e) {
             throw QtiWorksLogicException.unexpectedException(e);
@@ -258,7 +258,6 @@ public class LtiOauthUtilities {
         }
         return successful;
     }
-
 
     /**
      * Combined {@link #createLisResultMessage(String, String, String, String, double)}
@@ -332,29 +331,4 @@ public class LtiOauthUtilities {
         final byte[] output = Base64.encodeBase64(md.digest());
         return new String(output);
     }
-
-    /**
-     * Trivial implementation of {@link NamespaceContext} to handle POX messages
-     */
-    static final class PoxNamespaceContext implements NamespaceContext {
-
-        public static final String POX_NAMESPACE_URI = "http://www.imsglobal.org/services/ltiv1p1/xsd/imsoms_v1p0";
-
-        @Override
-        public String getNamespaceURI(final String prefix) {
-            return POX_NAMESPACE_URI;
-        }
-
-        @Override
-        public String getPrefix(final String namespaceURI) {
-            return "";
-        }
-
-        @SuppressWarnings("rawtypes")
-        @Override
-        public Iterator getPrefixes(final String namespaceURI) {
-            return Arrays.asList("").iterator();
-        }
-    }
-
 }
