@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This example adapted from the PET Handbook, copyright University of 
+	Cambridge ESOL Examinations -->
+<assessmentItem
+	xmlns="http://www.imsglobal.org/xsd/apip/apipv1p0/qtiitem/imsqti_v2p1"
+	xmlns:apip="http://www.imsglobal.org/xsd/apip/apipv1p0/imsapip_qtiv1p0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.imsglobal.org/xsd/apip/apipv1p0/qtiitem/imsqti_v2p1 http://www.imsglobal.org/xsd/apip/apipv1p0/apipv1p0_qtiitemv2p1_v1p0.xsd"
+	identifier="minimalapip" title="Minimal Apip Profile item" adaptive="false"
+	timeDependent="false">
+	<itemBody>
+		<p id="p1">Look at the text in the picture</p>
+		<div>
+			<img id="signImg" alt="Bags are not to be unattended" src="hello.svg" />
+		</div>
+		<!-- Note the lack of an interaction. This item is for unit-testing purposes 
+			only, not demonstration. -->
+	</itemBody>
+	<apip:apipAccessibility>
+		<apip:companionMaterialsInfo>
+			<apip:digitalMaterial mimeType="text/plain">
+				<apip:fileHref>refSheetA.txt</apip:fileHref>
+			</apip:digitalMaterial>
+		</apip:companionMaterialsInfo>
+		<apip:inclusionOrder>
+			<apip:brailleDefaultOrder>
+				<apip:elementOrder identifierRef="ae01">
+					<apip:order>1</apip:order>
+				</apip:elementOrder>
+				<apip:elementOrder identifierRef="ae02">
+					<apip:order>2</apip:order>
+				</apip:elementOrder>
+			</apip:brailleDefaultOrder>
+			<apip:nonVisualDefaultOrder>
+				<apip:elementOrder identifierRef="ae01">
+					<apip:order>1</apip:order>
+				</apip:elementOrder>
+				<apip:elementOrder identifierRef="ae02">
+					<apip:order>2</apip:order>
+				</apip:elementOrder>
+			</apip:nonVisualDefaultOrder>
+			<apip:textGraphicsDefaultOrder>
+				<apip:elementOrder identifierRef="ae01">
+					<apip:order>1</apip:order>
+				</apip:elementOrder>
+			</apip:textGraphicsDefaultOrder>
+			<apip:textGraphicsOnDemandOrder>
+				<apip:elementOrder identifierRef="ae02">
+					<apip:order>1</apip:order>
+				</apip:elementOrder>
+			</apip:textGraphicsOnDemandOrder>
+			<apip:textOnlyDefaultOrder>
+				<apip:elementOrder identifierRef="ae01">
+					<apip:order>1</apip:order>
+				</apip:elementOrder>
+			</apip:textOnlyDefaultOrder>
+			<!-- Intentionally absent textOnlyOnDemandOrder -->
+		</apip:inclusionOrder>
+		<apip:accessibilityInfo>
+			<apip:accessElement identifier="ae01">
+				<apip:contentLinkInfo qtiLinkIdentifierRef="p1">
+					<apip:textLink>
+						<apip:fullString />
+					</apip:textLink>
+				</apip:contentLinkInfo>
+				<apip:relatedElementInfo>
+					<apip:spoken>
+						<apip:audioFileInfo contentLinkIdentifier="afi01"
+							mimeType="audio/mpeg">
+							<apip:fileHref>afi01.mp3</apip:fileHref>
+							<apip:voiceType>Human</apip:voiceType>
+							<apip:voiceSpeed>Fast</apip:voiceSpeed>
+							<apip:startTime>00:00:10.500</apip:startTime>
+							<apip:duration>00:01:00.000</apip:duration>
+						</apip:audioFileInfo>
+						<apip:audioFileInfo contentLinkIdentifier="afi02"
+							mimeType="audio/ogg">
+							<apip:fileHref>afi02.ogg</apip:fileHref>
+						</apip:audioFileInfo>
+						<apip:spokenText contentLinkIdentifier="st01">Look at the text in the picture.</apip:spokenText>
+						<apip:textToSpeechPronunciation
+							contentLinkIdentifier="ttsp01">Luhk at the text in the picture</apip:textToSpeechPronunciation>
+					</apip:spoken>
+					<apip:brailleText>
+						<apip:brailleTextString
+							contentLinkIdentifier="bts01">Look at the text in the picture</apip:brailleTextString>
+					</apip:brailleText>
+					<apip:tactileFile>
+						<apip:tactileAudioFile
+							contentLinkIdentifier="taf01" mimeType="audio/mpeg">
+							<apip:fileHref>taf01.mp3</apip:fileHref>
+						</apip:tactileAudioFile>
+						<apip:tactileAudioText
+							contentLinkIdentifier="tat01">Look at the picture and consider how it feels on the physical map.</apip:tactileAudioText>
+						<apip:tactileBrailleText
+							contentLinkIdentifier="tbt01">Look at the picture and consider how it feels on the physical map.</apip:tactileBrailleText>
+					</apip:tactileFile>
+				</apip:relatedElementInfo>
+			</apip:accessElement>
+			<apip:accessElement identifier="ae02">
+				<apip:contentLinkInfo qtiLinkIdentifierRef="signImg">
+					<apip:objectLink />
+				</apip:contentLinkInfo>
+				<apip:relatedElementInfo>
+					<apip:keyWordTranslation>
+						<apip:definitionId xml:lang="en-US">
+							<apip:textString contentLinkIdentifier="kwtd01">Never leave your bags alone.</apip:textString>
+						</apip:definitionId>
+						<apip:definitionId xml:lang="es-419">
+							<apip:textString contentLinkIdentifier="kwtd02">nunca deje el equipaje desatendido</apip:textString>
+						</apip:definitionId>
+					</apip:keyWordTranslation>
+				</apip:relatedElementInfo>
+			</apip:accessElement>
+			<apip:accessElement identifier="ae03">
+				<apip:contentLinkInfo qtiLinkIdentifierRef="promptA">
+					<apip:textLink>
+						<apip:characterLink>1</apip:characterLink>
+					</apip:textLink>
+				</apip:contentLinkInfo>
+				<apip:contentLinkInfo qtiLinkIdentifierRef="promptA">
+					<apip:textLink>
+						<apip:characterStringLink>
+							<apip:startCharacter>13</apip:startCharacter>
+							<apip:stopCharacter>15</apip:stopCharacter>
+						</apip:characterStringLink>
+					</apip:textLink>
+				</apip:contentLinkInfo>
+				<apip:contentLinkInfo qtiLinkIdentifierRef="promptA">
+					<apip:textLink>
+						<apip:wordLink>2</apip:wordLink>
+					</apip:textLink>
+				</apip:contentLinkInfo>
+				<apip:relatedElementInfo>
+				</apip:relatedElementInfo>
+			</apip:accessElement>
+			<apip:accessElement identifier="ae04">
+				<apip:contentLinkInfo apipLinkIdentifierRef="kwtd02">
+					<apip:textLink>
+						<apip:fullString />
+					</apip:textLink>
+				</apip:contentLinkInfo>
+				<apip:relatedElementInfo></apip:relatedElementInfo>
+			</apip:accessElement>
+		</apip:accessibilityInfo>
+	</apip:apipAccessibility>
+</assessmentItem>

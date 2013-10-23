@@ -37,14 +37,15 @@ import uk.ac.ed.ph.jqtiplus.ExtensionNamespaceInfo;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.QtiConstants;
+import uk.ac.ed.ph.jqtiplus.QtiProfile;
 import uk.ac.ed.ph.jqtiplus.attribute.Attribute;
 import uk.ac.ed.ph.jqtiplus.attribute.ForeignAttribute;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityNode;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.ForeignElement;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.CustomOperator;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.CustomInteraction;
-import uk.ac.ed.ph.jqtiplus.node.result.ResultNode;
 import uk.ac.ed.ph.jqtiplus.utils.QueryUtils;
 import uk.ac.ed.ph.jqtiplus.utils.TreeWalkNodeHandler;
 
@@ -91,14 +92,20 @@ public final class QtiSaxDocumentFirer {
      */
     private final Map<Object, String> defaultNamespaceChangeMap;
 
-    /** Current default namespace URI */
+    /** Current default namespace URI - used for prefix-less serialization in combination with defaultNamespaceChangeMap */
     private String currentDefaultNamespaceUri;
 
     /** Gets set once we have fired the document Element so that we know not to fire off xsi:schemaLocation again */
     private boolean doneStartDocumentElement;
 
-    /** Current QTI namespace being written */
-    private String currentQtiNamespace;
+    /** QTI namespace of document root*/
+    private String rootQtiNamespace;
+
+    /**
+     * The namespace Uri of the most recently started element.
+     */
+    private String lastOpenedNamespaceUri;
+
     private int currentQtiDepth;
 
     public QtiSaxDocumentFirer(final JqtiExtensionManager jqtiExtensionManager,
@@ -117,7 +124,7 @@ public final class QtiSaxDocumentFirer {
         this.defaultNamespaceChangeMap = new HashMap<Object, String>();
         this.currentDefaultNamespaceUri = null;
         this.doneStartDocumentElement = false;
-        this.currentQtiNamespace = null;
+        this.rootQtiNamespace = null;
         this.currentQtiDepth = 0;
     }
 
@@ -137,14 +144,14 @@ public final class QtiSaxDocumentFirer {
         final boolean omitSchemaLocation = saxFiringOptions.isOmitSchemaLocation();
 
         /* See if caller wants the NS for this node prefixed */
-        final String nodeNsUri = getNodeNamespaceUri(node);
-        final String nodePreferredPrefix = preferredPrefixMappings.getPrefix(nodeNsUri);
+        rootQtiNamespace = getNodeNamespaceUri(node);
+        final String nodePreferredPrefix = preferredPrefixMappings.getPrefix(rootQtiNamespace);
         if (nodePreferredPrefix!=null) {
-            requirePrefixMapping(nodeNsUri, nodePreferredPrefix);
+            requirePrefixMapping(rootQtiNamespace, nodePreferredPrefix);
         }
 
         /* Next traverse the JQTI model to work out what namespaces will be required in the resulting XML */
-        final NamespacePreparationHandler handler = new NamespacePreparationHandler();
+        final NamespacePreparationHandler handler = new NamespacePreparationHandler(getQtiProfile());
         QueryUtils.walkTree(handler, node);
 
         /* Put extension prefix mappings in scope */
@@ -176,10 +183,10 @@ public final class QtiSaxDocumentFirer {
 
         /* Record QTI schema information for this Node */
         if (!omitSchemaLocation) {
-            /* NB: We are *always* writing out QTI 2.1 */
-            final String schemaLocation = getSchemaLocation(node);
+            /* We are *always* writing out the location of the root namespace, usually QTI 2.1, but possibly a profile-specific URI */
+            final String schemaLocation = getSchemaLocation(rootQtiNamespace);
             if (schemaLocation!=null) {
-                schemaLocationMap.put(nodeNsUri, schemaLocation);
+                schemaLocationMap.put(rootQtiNamespace, schemaLocation);
             }
 
             /* Now record schema information for extensions */
@@ -233,12 +240,19 @@ public final class QtiSaxDocumentFirer {
         targetHandler.endDocument();
     }
 
+    /**
+     * Requires at least one previous call to {@link QtiSaxDocumentFirer#prepareFor(QtiNode)}
+     *
+     * @param node
+     * @throws SAXException
+     */
     public void fireStartQtiElement(final AbstractNode node) throws SAXException {
         /* Build up attributes */
         final AttributesImpl xmlAttributes = new AttributesImpl();
         for (final Attribute<?> attribute : node.getAttributes()) {
             if (attribute.isRequired() || attribute.isSet()) {
                 final String localName = attribute.getLocalName();
+                // TODO - handle potential mismatch between the namespace/prefixes used during read and the desired output serialization namespaces
                 final String namespaceUri = attribute.getNamespaceUri();
                 final String qName = requiredPrefixMappings.getQName(namespaceUri, localName);
                 xmlAttributes.addAttribute(namespaceUri, localName, qName,
@@ -246,9 +260,10 @@ public final class QtiSaxDocumentFirer {
             }
         }
 
+        // TODO : update to use more flexible profile namespace selection
         if (currentQtiDepth==0) {
             /* This is the opening a new QTI subtree. Decide on correct namespace for native QTI elements */
-            currentQtiNamespace = (node instanceof ResultNode) ? QtiConstants.QTI_RESULT_21_NAMESPACE_URI : QtiConstants.QTI_21_NAMESPACE_URI;
+            rootQtiNamespace = getQtiProfile().getNamespaceForInstance(node);
         }
 
         /* Decide on element namespace */
@@ -260,6 +275,8 @@ public final class QtiSaxDocumentFirer {
     }
 
     public void fireStartElement(final Object object, final String localName, final String namespaceUri, final AttributesImpl attributes) throws SAXException {
+        final AttributesImpl localAttributes = attributes != null ? attributes : new AttributesImpl();
+        lastOpenedNamespaceUri = namespaceUri;
         final String prefix = requiredPrefixMappings.getPrefix(namespaceUri);
         String qName;
         if (prefix!=null) {
@@ -283,13 +300,13 @@ public final class QtiSaxDocumentFirer {
         /* Maybe fire xsi:schemaLocation */
         if (!doneStartDocumentElement && !saxFiringOptions.isOmitSchemaLocation() && !schemaLocationMap.isEmpty()) {
             /* Add xsi:schemaLocation attribute */
-            attributes.addAttribute(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "schemaLocation",
+            localAttributes.addAttribute(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "schemaLocation",
                     requiredPrefixMappings.getQName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "schemaLocation"),
                     "CDATA", createSchemaLocationAttributeValue());
         }
 
         /* Start element */
-        targetHandler.startElement(namespaceUri, localName, qName, attributes);
+        targetHandler.startElement(namespaceUri, localName, qName, localAttributes);
         doneStartDocumentElement = true;
     }
 
@@ -335,7 +352,7 @@ public final class QtiSaxDocumentFirer {
     public void fireEndQtiElement(final AbstractNode node) throws SAXException {
         fireEndElement(node, node.getQtiClassName(), getNodeNamespaceUri(node));
         if (--currentQtiDepth==0) {
-            currentQtiNamespace = null;
+            rootQtiNamespace = null;
         }
     }
 
@@ -343,45 +360,34 @@ public final class QtiSaxDocumentFirer {
         targetHandler.characters(string.toCharArray(), 0, string.length());
     }
 
-    //-----------------------------------------------
-
-    private String getNodeNamespaceUri(final QtiNode node) {
-        String namespaceUri = "";
-        if (node instanceof ForeignElement) {
-            namespaceUri = ((ForeignElement) node).getNamespaceUri();
-        }
-        else if (node instanceof uk.ac.ed.ph.jqtiplus.node.content.mathml.Math) {
-            namespaceUri = QtiConstants.MATHML_NAMESPACE_URI;
-        }
-        else if (currentQtiNamespace!=null) {
-            namespaceUri = currentQtiNamespace;
-        }
-        else if (node instanceof ResultNode) {
-            namespaceUri = QtiConstants.QTI_RESULT_21_NAMESPACE_URI;
-        }
-        else {
-            namespaceUri = QtiConstants.QTI_21_NAMESPACE_URI;
-        }
-        return namespaceUri;
+    /**
+     * Fires a textual element, namespaced the same as the last opened XML tag.
+     * @param localName
+     * @param content
+     */
+    public void fireSimpleElement(final String localName, final String content) throws SAXException {
+        final String namespaceUri = lastOpenedNamespaceUri != null ? lastOpenedNamespaceUri : "";
+        this.fireStartElement(content, localName, namespaceUri, null);
+        this.fireText(content);
+        this.fireEndElement(content, localName, namespaceUri);
     }
 
-    private String getSchemaLocation(final QtiNode node) {
-        final String schemaLocation;
-        if (node instanceof ForeignElement) {
-            schemaLocation = null; /* Can't do anything here? */
+    //-----------------------------------------------
+
+    public QtiProfile getQtiProfile() {
+        return this.saxFiringOptions.getQtiProfile();
+    }
+
+    private String getNodeNamespaceUri(final QtiNode node) {
+        final QtiProfile profile = getQtiProfile();
+        if (rootQtiNamespace != null) {
+            profile.getNamespaceForInstance(node, rootQtiNamespace);
         }
-        else if (node instanceof uk.ac.ed.ph.jqtiplus.node.content.mathml.Math) {
-            schemaLocation = QtiConstants.MATHML_SCHEMA_LOCATION;
-        }
-        else if (node instanceof ResultNode) {
-            /* (These Nodes have a different schema) */
-            schemaLocation = QtiConstants.QTI_RESULT_21_SCHEMA_LOCATION;
-        }
-        else {
-            /* (NB: We are *always* writing out QTI 2.1) */
-            schemaLocation = QtiConstants.QTI_21_SCHEMA_LOCATION;
-        }
-        return schemaLocation;
+        return profile.getNamespaceForInstance(node);
+    }
+
+    private String getSchemaLocation(final String namespaceUri) {
+        return getQtiProfile().getSchemaLocationForNamespace(namespaceUri);
     }
 
     //-----------------------------------------------
@@ -397,6 +403,12 @@ public final class QtiSaxDocumentFirer {
         private final Set<JqtiExtensionPackage<?>> usedExtensionPackages = new HashSet<JqtiExtensionPackage<?>>();
         private final Set<String> nonQtiElementNamespaceUris = new HashSet<String>();
         private final Set<String> attributeNamespaceUris = new HashSet<String>();
+        private final QtiProfile qtiProfile;
+
+        private NamespacePreparationHandler(final QtiProfile qtiProfile) {
+            this.qtiProfile = qtiProfile;
+        }
+
 
         @Override
         public boolean handleNode(final QtiNode node) {
@@ -413,7 +425,9 @@ public final class QtiSaxDocumentFirer {
                     usedExtensionPackages.add(jqtiExtensionPackage);
                 }
             }
-            /* TODO: If we add support for apip:accessibility, check for it here */
+            if (node instanceof AccessibilityNode) {
+                nonQtiElementNamespaceUris.add(qtiProfile.getAccessibilityNamespace());
+            }
 
             /* Check for use of MathML */
             if (node instanceof uk.ac.ed.ph.jqtiplus.node.content.mathml.Math) {

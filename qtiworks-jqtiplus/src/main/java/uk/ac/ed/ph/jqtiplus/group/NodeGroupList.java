@@ -35,6 +35,56 @@ package uk.ac.ed.ph.jqtiplus.group;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiIllegalChildException;
 import uk.ac.ed.ph.jqtiplus.exception.QtiNodeGroupException;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessElementGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.AccessibilityInfoGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.ApipAccessibilityGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.companion.CalculatorInfoGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.companion.CalculatorTypeGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.companion.CompanionMaterialGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.companion.CompanionMaterialsInfoGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.companion.DescriptionGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.companion.LinearRuleSystemGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.companion.MajorIncrementLinearSIGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.companion.MajorIncrementLinearUSGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.companion.MajorIncrementRadialSIGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.companion.MajorIncrementRadialUSGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.companion.MinimumLengthGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.companion.MinorIncrementLinearSIGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.companion.MinorIncrementLinearUSGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.companion.MinorIncrementRadialSIGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.companion.MinorIncrementRadialUSGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.companion.RadialIncrementSystemGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.inclusion.ElementOrderGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.inclusion.InclusionOrderGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.inclusion.StandardElementOrderListGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.link.ContentLinkInfoGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.link.LinkGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.link.StringLinkGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.related.AnswerReductionGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.related.AudioFileInfoGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.related.BrailleTextGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.related.ChunkGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.related.DefinitionIdGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.related.GuidanceGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.related.GuidanceSupportGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.related.KeyWordEmphasisGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.related.KeyWordTranslationGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.related.LabelledStringGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.related.MarkupFileEmbeddedGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.related.NormalizedStringElementGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.related.ObjectFileInfoGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.related.RelatedElementInfoGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.related.RemoveTagGroupGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.related.RevealAlternativeRepresentationGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.related.ScaffoldBehaviorGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.related.ScaffoldGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.related.SignFileGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.related.SigningGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.related.SingleIntegerElementGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.related.SpokenGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.related.StructuredMaskGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.related.TactileFileGroup;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.related.VideoFileInfoGroup;
 import uk.ac.ed.ph.jqtiplus.group.block.InteractionGroup;
 import uk.ac.ed.ph.jqtiplus.group.content.BlockGroup;
 import uk.ac.ed.ph.jqtiplus.group.content.BlockStaticGroup;
@@ -121,6 +171,50 @@ import uk.ac.ed.ph.jqtiplus.group.test.VariableMappingGroup;
 import uk.ac.ed.ph.jqtiplus.group.test.WeightGroup;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.AccessElement;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.AccessibilityInfo;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.ApipAccessibility;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.companion.CalculatorInfo;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.companion.CalculatorType;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.companion.CompanionMaterial;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.companion.CompanionMaterialsInfo;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.companion.Description;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.companion.LinearRuleSystem;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.companion.MajorIncrementLinearSI;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.companion.MajorIncrementLinearUS;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.companion.MajorIncrementRadialSI;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.companion.MajorIncrementRadialUS;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.companion.MinimumLength;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.companion.MinorIncrementLinearSI;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.companion.MinorIncrementLinearUS;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.companion.MinorIncrementRadialSI;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.companion.MinorIncrementRadialUS;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.companion.RadialIncrementSystem;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.inclusion.ElementOrder;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.inclusion.ElementOrderListType;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.inclusion.InclusionOrder;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.link.ContentLinkInfo;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.link.Link;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.link.StringLink;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.related.AnswerReduction;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.related.AudioFileInfo;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.related.BrailleText;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.related.Chunk;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.related.DefinitionId;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.related.Guidance;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.related.KeyWordEmphasis;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.related.KeyWordTranslation;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.related.MarkupFileEmbedded;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.related.RelatedElementInfo;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.related.RemoveTagGroup;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.related.RevealAlternativeRepresentation;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.related.Scaffold;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.related.ScaffoldBehavior;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.related.Signing;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.related.Spoken;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.related.StructuredMask;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.related.TactileFile;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.related.VideoFileInfo;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.ItemBody;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Block;
@@ -216,11 +310,12 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * Container for all node groups contained (owned) by a particular {@link QtiNode}.
+ * Container for all node groups contained (owned) by a particular
+ * {@link QtiNode}.
  *
  * @author Jiri Kajaba
  */
-public final class NodeGroupList implements Serializable, Iterable<NodeGroup<?,?>> {
+public final class NodeGroupList implements Serializable, Iterable<NodeGroup<?, ?>> {
 
     private static final long serialVersionUID = 4649998181277985510L;
 
@@ -228,11 +323,11 @@ public final class NodeGroupList implements Serializable, Iterable<NodeGroup<?,?
     private final QtiNode parent;
 
     /** Children (groups) of this container. */
-    private final List<NodeGroup<?,?>> groups;
+    private final List<NodeGroup<?, ?>> groups;
 
     public NodeGroupList(final QtiNode parent) {
         this.parent = parent;
-        this.groups = new ArrayList<NodeGroup<?,?>>();
+        this.groups = new ArrayList<NodeGroup<?, ?>>();
     }
 
     /**
@@ -254,7 +349,7 @@ public final class NodeGroupList implements Serializable, Iterable<NodeGroup<?,?
     }
 
     @Override
-    public Iterator<NodeGroup<?,?>> iterator() {
+    public Iterator<NodeGroup<?, ?>> iterator() {
         return groups.iterator();
     }
 
@@ -267,7 +362,7 @@ public final class NodeGroupList implements Serializable, Iterable<NodeGroup<?,?
      *
      * @param group given group
      */
-    public void add(final NodeGroup<?,?> group) {
+    public void add(final NodeGroup<?, ?> group) {
         groups.add(group);
     }
 
@@ -279,7 +374,7 @@ public final class NodeGroupList implements Serializable, Iterable<NodeGroup<?,?
      * @param index position
      * @param group given group
      */
-    public void add(final int index, final NodeGroup<?,?> group) {
+    public void add(final int index, final NodeGroup<?, ?> group) {
         groups.add(index, group);
     }
 
@@ -292,10 +387,11 @@ public final class NodeGroupList implements Serializable, Iterable<NodeGroup<?,?
      * useful for someone adding a (non-standard) extension to the spec.
      *
      * @param group given group
-     * @throws QtiNodeGroupException if container already contains group with same name
+     * @throws QtiNodeGroupException if container already contains group with
+     *             same name
      */
-    public void addSafe(final int index, final NodeGroup<?,?> group) {
-        for (final NodeGroup<?,?> child : groups) {
+    public void addSafe(final int index, final NodeGroup<?, ?> group) {
+        for (final NodeGroup<?, ?> child : groups) {
             if (child.getName().equals(group.getName())) {
                 throw new QtiNodeGroupException("Duplicate node group name: " + group.computeXPath());
             }
@@ -308,21 +404,22 @@ public final class NodeGroupList implements Serializable, Iterable<NodeGroup<?,?
      * Loads group's children from given source DOM {@link Element}.
      * <ul>
      * <li>Unsupported (unknown) children are skipped.</li>
-     * <li>Wrong order of children is ignored (children are loaded in correct order).</li>
+     * <li>Wrong order of children is ignored (children are loaded in correct
+     * order).</li>
      * </ul>
      *
      * @param element source DOM {@link Element}
      * @param context current {@link LoadingContext} callback
      */
     public void load(final Element element, final LoadingContext context) {
-        for (final NodeGroup<?,?> group : groups) {
+        for (final NodeGroup<?, ?> group : groups) {
             group.getChildren().clear();
         }
         final NodeList childNodes = element.getChildNodes();
-        for (int i=0; i<childNodes.getLength(); i++) {
+        for (int i = 0; i < childNodes.getLength(); i++) {
             final Node childNode = childNodes.item(i);
             boolean childLoaded = false;
-            for (final NodeGroup<?,?> group : groups) {
+            for (final NodeGroup<?, ?> group : groups) {
                 if (group.loadChildIfSupported(childNode, context)) {
                     childLoaded = true;
                     break;
@@ -330,12 +427,13 @@ public final class NodeGroupList implements Serializable, Iterable<NodeGroup<?,?
             }
             if (!childLoaded) {
                 /* No NodeGroup supports this child */
-                if (childNode.getNodeType()==Node.TEXT_NODE && childNode.getNodeValue().trim().isEmpty()) {
+                if (childNode.getNodeType() == Node.TEXT_NODE && childNode.getNodeValue().trim().isEmpty()) {
                     /* Whitespace node, so we'll ignore this */
                 }
                 else {
                     /* Register error */
-                    final String childName = childNode.getNodeType()==Node.ELEMENT_NODE ? childNode.getLocalName() : "(text)";
+                    final String childName = childNode.getNodeType() == Node.ELEMENT_NODE ? childNode.getLocalName()
+                            : "(text)";
                     context.modelBuildingError(new QtiIllegalChildException(parent, childName), childNode);
                 }
             }
@@ -355,7 +453,7 @@ public final class NodeGroupList implements Serializable, Iterable<NodeGroup<?,?
      * @param index index of requested group
      * @return group at given index
      */
-    public NodeGroup<?,?> get(final int index) {
+    public NodeGroup<?, ?> get(final int index) {
         return groups.get(index);
     }
 
@@ -366,8 +464,8 @@ public final class NodeGroupList implements Serializable, Iterable<NodeGroup<?,?
      * @return group with given name
      * @throws QtiNodeGroupException if group is not found
      */
-    public NodeGroup<?,?> get(final String name) {
-        for (final NodeGroup<?,?> child : groups) {
+    public NodeGroup<?, ?> get(final String name) {
+        for (final NodeGroup<?, ?> child : groups) {
             if (child.getName().equals(name) || child.supportsQtiClass(name)) {
                 return child;
             }
@@ -382,8 +480,8 @@ public final class NodeGroupList implements Serializable, Iterable<NodeGroup<?,?
      * @return group with given name
      * @throws QtiNodeGroupException if group is not found
      */
-    public NodeGroup<?,?> getGroupSupporting(final String qtiClassName) {
-        for (final NodeGroup<?,?> child : groups) {
+    public NodeGroup<?, ?> getGroupSupporting(final String qtiClassName) {
+        for (final NodeGroup<?, ?> child : groups) {
             if (child.supportsQtiClass(qtiClassName)) {
                 return child;
             }
@@ -741,7 +839,6 @@ public final class NodeGroupList implements Serializable, Iterable<NodeGroup<?,?
         return (WeightGroup) get(Weight.QTI_CLASS_NAME);
     }
 
-
     /**
      * Gets templateElse group.
      *
@@ -901,7 +998,6 @@ public final class NodeGroupList implements Serializable, Iterable<NodeGroup<?,?
     public AreaMapEntryGroup getAreaMapEntryGroup() {
         return (AreaMapEntryGroup) get(AreaMapEntry.QTI_CLASS_NAME);
     }
-
 
     /**
      * Gets prompt group.
@@ -1231,5 +1327,250 @@ public final class NodeGroupList implements Serializable, Iterable<NodeGroup<?,?
      */
     public ModalFeedbackGroup getModalFeedbackGroup() {
         return (ModalFeedbackGroup) get(ModalFeedback.QTI_CLASS_NAME);
+    }
+
+    /**
+     * Gets apipAccessibility group.
+     *
+     * @return apipAccessibility group
+     * @throws QtiNodeGroupException if group is not found
+     */
+    public ApipAccessibilityGroup getApipAccessibilityGroup() {
+        return (ApipAccessibilityGroup) get(ApipAccessibility.QTI_CLASS_NAME);
+    }
+
+    /**
+     * Gets companionMaterialsInfo group
+     *
+     * @throws QtiNodeGroupException if group is not found
+     */
+    public CompanionMaterialsInfoGroup getCompanionMaterialsInfoGroup() {
+        return (CompanionMaterialsInfoGroup) get(CompanionMaterialsInfo.QTI_CLASS_NAME);
+    }
+
+    /**
+     * Gets inclusionOrder group
+     *
+     * @throws QtiNodeGroupException if group is not found
+     */
+    public InclusionOrderGroup getInclusionOrderGroup() {
+        return (InclusionOrderGroup) get(InclusionOrder.QTI_CLASS_NAME);
+    }
+
+    /**
+     * Gets accessibilityInfo group
+     *
+     * @throws QtiNodeGroupException if group is not found
+     */
+    public AccessibilityInfoGroup getAccessibilityInfoGroup() {
+        return (AccessibilityInfoGroup) get(AccessibilityInfo.QTI_CLASS_NAME);
+    }
+
+    public StandardElementOrderListGroup getStandardElementOrderListGroup() {
+        return (StandardElementOrderListGroup) get(ElementOrderListType.DISPLAY_NAME);
+    }
+
+    public ElementOrderGroup getElementOrderGroup() {
+        return (ElementOrderGroup) get(ElementOrder.QTI_CLASS_NAME);
+    }
+
+    public CalculatorTypeGroup getCalculatorTypeGroup() {
+        return (CalculatorTypeGroup) get(CalculatorType.QTI_CLASS_NAME);
+    }
+
+    public DescriptionGroup getDescriptionGroup() {
+        return (DescriptionGroup) get(Description.QTI_CLASS_NAME);
+    }
+
+    public CalculatorInfoGroup getCalculatorInfoGroup() {
+        return (CalculatorInfoGroup) get(CalculatorInfo.QTI_CLASS_NAME);
+    }
+
+    public MajorIncrementLinearSIGroup getMajorIncrementLinearSIGroup() {
+        return (MajorIncrementLinearSIGroup) get(MajorIncrementLinearSI.QTI_CLASS_NAME);
+    }
+
+    public MinorIncrementLinearSIGroup getMinorIncrementLinearSIGroup() {
+        return (MinorIncrementLinearSIGroup) get(MinorIncrementLinearSI.QTI_CLASS_NAME);
+    }
+
+    public MajorIncrementLinearUSGroup getMajorIncrementLinearUSGroup() {
+        return (MajorIncrementLinearUSGroup) get(MajorIncrementLinearUS.QTI_CLASS_NAME);
+    }
+
+    public MinorIncrementLinearUSGroup getMinorIncrementLinearUSGroup() {
+        return (MinorIncrementLinearUSGroup) get(MinorIncrementLinearUS.QTI_CLASS_NAME);
+    }
+
+    public MajorIncrementRadialSIGroup getMajorIncrementRadialSIGroup() {
+        return (MajorIncrementRadialSIGroup) get(MajorIncrementRadialSI.QTI_CLASS_NAME);
+    }
+
+    public MinorIncrementRadialSIGroup getMinorIncrementRadialSIGroup() {
+        return (MinorIncrementRadialSIGroup) get(MinorIncrementRadialSI.QTI_CLASS_NAME);
+    }
+
+    public MajorIncrementRadialUSGroup getMajorIncrementRadialUSGroup() {
+        return (MajorIncrementRadialUSGroup) get(MajorIncrementRadialUS.QTI_CLASS_NAME);
+    }
+
+    public MinorIncrementRadialUSGroup getMinorIncrementRadialUSGroup() {
+        return (MinorIncrementRadialUSGroup) get(MinorIncrementRadialUS.QTI_CLASS_NAME);
+    }
+
+    public MinimumLengthGroup getMinimumLengthGroup() {
+        return (MinimumLengthGroup) get(MinimumLength.QTI_CLASS_NAME);
+    }
+
+    public CompanionMaterialGroup getCompanionMaterialGroup() {
+        return (CompanionMaterialGroup) get(CompanionMaterial.DISPLAY_NAME);
+    }
+
+    public LinearRuleSystemGroup getLinearRuleSystemGroup() {
+        return (LinearRuleSystemGroup) get(LinearRuleSystem.DISPLAY_NAME);
+    }
+
+    public RadialIncrementSystemGroup getRadialIncrementSystemGroup() {
+        return (RadialIncrementSystemGroup) get(RadialIncrementSystem.DISPLAY_NAME);
+    }
+
+    public AccessElementGroup getAccessElementGroup() {
+        return (AccessElementGroup) get(AccessElement.QTI_CLASS_NAME);
+    }
+
+    public ContentLinkInfoGroup getContentLinkInfoGroup() {
+        return (ContentLinkInfoGroup) get(ContentLinkInfo.QTI_CLASS_NAME);
+    }
+
+    public RelatedElementInfoGroup getRelatedElementInfoGroup() {
+        return (RelatedElementInfoGroup) get(RelatedElementInfo.QTI_CLASS_NAME);
+    }
+
+    public LinkGroup getLinkGroup() {
+        return (LinkGroup) get(Link.DISPLAY_NAME);
+    }
+
+    public StringLinkGroup getStringLinkGroup() {
+        return (StringLinkGroup) get(StringLink.DISPLAY_NAME);
+    }
+
+    public SpokenGroup getSpokenGroup() {
+        return (SpokenGroup) get(Spoken.QTI_CLASS_NAME);
+    }
+
+    public AudioFileInfoGroup getAudioFileInfoGroup() {
+        return (AudioFileInfoGroup) get(AudioFileInfo.QTI_CLASS_NAME);
+    }
+
+    public AudioFileInfoGroup getAudioFileInfoGroup(final String localName) {
+        return (AudioFileInfoGroup) get(localName);
+    }
+
+    public LabelledStringGroup getLabelledStringGroup(final String localName) {
+        return (LabelledStringGroup) get(localName);
+    }
+
+    public LabelledStringGroup getSpokenTextGroup() {
+        return getLabelledStringGroup(Spoken.ELEM_SPOKEN_TEXT);
+    }
+
+    public LabelledStringGroup getTextToSpeechPronunciationGroup() {
+        return getLabelledStringGroup(Spoken.ELEM_TEXT_TO_SPEECH_PRONUNCIATION);
+    }
+
+    public BrailleTextGroup getBrailleTextGroup() {
+        return (BrailleTextGroup) get(BrailleText.QTI_CLASS_NAME);
+    }
+
+    public LabelledStringGroup getBrailleTextStringGroup() {
+        return getLabelledStringGroup(BrailleText.ELEM_BRAILLE_TEXT_STRING);
+    }
+
+    public LabelledStringGroup getTactileAudioTextGroup() {
+        return getLabelledStringGroup(TactileFile.ELEM_TACTILE_AUDIO_TEXT);
+    }
+
+    public LabelledStringGroup getTactileBrailleTextGroup() {
+        return getLabelledStringGroup(TactileFile.ELEM_TACTILE_BRAILLE_TEXT);
+    }
+
+    public TactileFileGroup getTactileFileGroup() {
+        return (TactileFileGroup) get(TactileFile.QTI_CLASS_NAME);
+    }
+
+    public KeyWordEmphasisGroup getKeyWordEmphasisGroup() {
+        return (KeyWordEmphasisGroup) get(KeyWordEmphasis.QTI_CLASS_NAME);
+    }
+
+    public ChunkGroup getChunkGroup() {
+        return (ChunkGroup) get(Chunk.QTI_CLASS_NAME);
+    }
+
+    public SignFileGroup getSignFileGroup(final String localName) {
+        return (SignFileGroup) get(localName);
+    }
+
+    public ObjectFileInfoGroup getObjectFileInfoGroup(final String localName) {
+        return (ObjectFileInfoGroup) get(localName);
+    }
+
+    public VideoFileInfoGroup getVideoFileInfoGroup() {
+        return (VideoFileInfoGroup) get(VideoFileInfo.QTI_CLASS_NAME);
+    }
+
+    public SigningGroup getSigningGroup() {
+        return (SigningGroup) get(Signing.QTI_CLASS_NAME);
+    }
+
+    public KeyWordTranslationGroup getKeyWordTranslationGroup() {
+        return (KeyWordTranslationGroup) get(KeyWordTranslation.QTI_CLASS_NAME);
+    }
+
+    public DefinitionIdGroup getDefinitionIdGroup() {
+        return (DefinitionIdGroup) get(DefinitionId.QTI_CLASS_NAME);
+    }
+
+    public RevealAlternativeRepresentationGroup getRevealAlternativeRepresentationGroup() {
+        return (RevealAlternativeRepresentationGroup) get(RevealAlternativeRepresentation.QTI_CLASS_NAME);
+    }
+
+    public MarkupFileEmbeddedGroup getMarkupFileEmbeddedGroup() {
+        return (MarkupFileEmbeddedGroup) get(MarkupFileEmbedded.QTI_CLASS_NAME);
+    }
+
+    public GuidanceGroup getGuidanceGroup() {
+        return (GuidanceGroup) get(Guidance.QTI_CLASS_NAME);
+    }
+
+    public GuidanceSupportGroup getGuidanceSupportGroup(final String localName) {
+        return (GuidanceSupportGroup) get(localName);
+    }
+
+    public SingleIntegerElementGroup getSingleIntegerElementGroup(final String localName){
+        return (SingleIntegerElementGroup) get(localName);
+    }
+
+    public StructuredMaskGroup getStructuredMaskGroup() {
+        return (StructuredMaskGroup) get(StructuredMask.QTI_CLASS_NAME);
+    }
+
+    public ScaffoldGroup getScaffoldGroup() {
+        return (ScaffoldGroup) get(Scaffold.QTI_CLASS_NAME);
+    }
+
+    public ScaffoldBehaviorGroup getScaffoldBehaviorGroup() {
+        return (ScaffoldBehaviorGroup) get(ScaffoldBehavior.QTI_CLASS_NAME);
+    }
+
+    public AnswerReductionGroup getAnswerReductionGroup() {
+        return (AnswerReductionGroup) get(AnswerReduction.QTI_CLASS_NAME);
+    }
+
+    public RemoveTagGroupGroup getRemoveTagGroupGroup() {
+        return (RemoveTagGroupGroup) get(RemoveTagGroup.QTI_CLASS_NAME);
+    }
+
+    public NormalizedStringElementGroup getNormalizedStringElementGroup(final String localName) {
+        return (NormalizedStringElementGroup) get(localName);
     }
 }

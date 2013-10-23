@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.content;
 
 import uk.ac.ed.ph.jqtiplus.group.content.BlockGroup;
+import uk.ac.ed.ph.jqtiplus.node.ContentContainer;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Block;
 import uk.ac.ed.ph.jqtiplus.node.content.variable.FeedbackBlock;
@@ -71,7 +72,7 @@ import java.util.List;
  * @author Jonathon Hare
  * @author Jiri Kajaba
  */
-public final class ItemBody extends BodyElement {
+public final class ItemBody extends BodyElement implements ContentContainer {
 
     private static final long serialVersionUID = 5141415636417548133L;
 

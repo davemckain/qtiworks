@@ -36,6 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
 import uk.ac.ed.ph.jqtiplus.node.result.AssessmentResult;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentSection;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 
 import java.net.URI;
@@ -48,6 +49,7 @@ import java.net.URI;
  *
  * @see RootNodeTypes
  * @see AssessmentItem
+ * @see AssessmentSection
  * @see AssessmentTest
  * @see AssessmentResult
  * @see ResponseProcessing

@@ -38,9 +38,15 @@ import uk.ac.ed.ph.jqtiplus.attribute.enumerate.VisibilityModeAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.exception.QtiLogicException;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.ApipAccessibilityGroup;
 import uk.ac.ed.ph.jqtiplus.group.content.FlowStaticGroup;
+import uk.ac.ed.ph.jqtiplus.group.item.StylesheetGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
+import uk.ac.ed.ph.jqtiplus.node.ContentContainer;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.ApipAccessibility;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.ApipAccessibilityBearer;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
+import uk.ac.ed.ph.jqtiplus.node.item.Stylesheet;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
@@ -59,8 +65,9 @@ import java.util.List;
  * @see TestFeedbackAccess
  * @see VisibilityMode
  * @author Jiri Kajaba
+ * @author Zack Pierce
  */
-public final class TestFeedback extends AbstractNode {
+public final class TestFeedback extends AbstractNode implements ContentContainer, ApipAccessibilityBearer {
 
     private static final long serialVersionUID = 6567681516055125776L;
 
@@ -92,6 +99,8 @@ public final class TestFeedback extends AbstractNode {
         getAttributes().add(new StringAttribute(this, ATTR_TITLE_NAME, false));
 
         getNodeGroups().add(new FlowStaticGroup(this));
+        getNodeGroups().add(new StylesheetGroup(this));
+        getNodeGroups().add(new ApipAccessibilityGroup(this, false));
     }
 
 
@@ -196,5 +205,32 @@ public final class TestFeedback extends AbstractNode {
                 throw new QtiLogicException("Unsupported " + getVisibilityMode().getClass().getSimpleName() +
                         ": " + getVisibilityMode());
         }
+    }
+
+    /**
+     * Gets mutable list of stylesheet children.
+     *
+     * @return stylesheet children
+     */
+    public List<Stylesheet> getStylesheets() {
+        return getNodeGroups().getStylesheetGroup().getStylesheets();
+    }
+
+    /**
+     * Gets apipAccessibility child
+     *
+     * @return apipAccessibility child
+     * @see #setApipAccessibility
+     */
+    public ApipAccessibility getApipAccessibility() {
+        return getNodeGroups().getApipAccessibilityGroup().getApipAccessibility();
+    }
+
+    /**
+     * Sets apipAccessibility child
+     * @param apipAccessibility
+     */
+    public void setApipAccessibility(final ApipAccessibility apipAccessibility) {
+        getNodeGroups().getApipAccessibilityGroup().setApipAccessibility(apipAccessibility);
     }
 }

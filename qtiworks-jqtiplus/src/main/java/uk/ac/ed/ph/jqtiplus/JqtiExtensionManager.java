@@ -88,9 +88,7 @@ public final class JqtiExtensionManager {
         for (final JqtiExtensionPackage<?> extensionPackage : jqtiExtensionPackages) {
             for (final Entry<String, ExtensionNamespaceInfo> entry : extensionPackage.getNamespaceInfoMap().entrySet()) {
                 final String namespaceUri = entry.getKey();
-                if (QtiConstants.QTI_21_NAMESPACE_URI.equals(namespaceUri)
-                        || QtiConstants.QTI_20_NAMESPACE_URI.equals(namespaceUri)
-                        || QtiConstants.QTI_RESULT_21_NAMESPACE_URI.equals(namespaceUri)) {
+                if (QtiProfile.getAllNamespaceUrisFromAllProfiles().contains(namespaceUri)) {
                     throw new IllegalArgumentException("Namespace URI " + namespaceUri
                             + " is reserved for QTI and may not be used for extensions");
                 }

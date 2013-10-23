@@ -42,7 +42,7 @@ import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import java.net.URI;
 
 /**
- * Used to associate an external stylesheet with an assessmentItem or rubricBlock.
+ * Used to associate an external stylesheet with an assessmentItem, assessmentTest, a rubricBlock within an assessmentSection, a feedback block, or a template block.
  *
  * @author Jonathon Hare
  */

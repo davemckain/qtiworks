@@ -33,10 +33,16 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.content.variable;
 
+import uk.ac.ed.ph.jqtiplus.group.accessibility.ApipAccessibilityGroup;
 import uk.ac.ed.ph.jqtiplus.group.content.BlockGroup;
+import uk.ac.ed.ph.jqtiplus.group.item.StylesheetGroup;
+import uk.ac.ed.ph.jqtiplus.node.ContentContainer;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.ApipAccessibility;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.ApipAccessibilityBearer;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Block;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.SimpleBlock;
+import uk.ac.ed.ph.jqtiplus.node.item.Stylesheet;
 
 import java.util.List;
 
@@ -45,7 +51,7 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public final class FeedbackBlock extends FeedbackElement implements SimpleBlock {
+public final class FeedbackBlock extends FeedbackElement implements SimpleBlock, ContentContainer, ApipAccessibilityBearer {
 
     private static final long serialVersionUID = 456106105509332955L;
 
@@ -56,10 +62,40 @@ public final class FeedbackBlock extends FeedbackElement implements SimpleBlock 
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new BlockGroup(this));
+        getNodeGroups().add(new StylesheetGroup(this));
+        getNodeGroups().add(new ApipAccessibilityGroup(this, false));
     }
 
     @Override
     public List<Block> getBlocks() {
         return getNodeGroups().getBlockGroup().getBlocks();
+    }
+
+    /**
+     * Gets mutable list of stylesheet children.
+     *
+     * @return stylesheet children
+     */
+    public List<Stylesheet> getStylesheets() {
+        return getNodeGroups().getStylesheetGroup().getStylesheets();
+    }
+
+    /**
+     * Gets apipAccessibility child
+     *
+     * @return apipAccessibility child
+     * @see #setApipAccessibility
+     */
+    @Override
+    public ApipAccessibility getApipAccessibility() {
+        return getNodeGroups().getApipAccessibilityGroup().getApipAccessibility();
+    }
+
+    /**
+     * Sets apipAccessibility child
+     * @param apipAccessibility
+     */
+    public void setApipAccessibility(final ApipAccessibility apipAccessibility) {
+        getNodeGroups().getApipAccessibilityGroup().setApipAccessibility(apipAccessibility);
     }
 }

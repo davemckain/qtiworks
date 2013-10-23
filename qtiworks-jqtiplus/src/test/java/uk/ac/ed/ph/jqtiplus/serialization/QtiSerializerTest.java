@@ -35,6 +35,7 @@ package uk.ac.ed.ph.jqtiplus.serialization;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.QtiConstants;
+import uk.ac.ed.ph.jqtiplus.QtiProfile;
 import uk.ac.ed.ph.jqtiplus.node.ForeignElement;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.ItemBody;
@@ -42,6 +43,8 @@ import uk.ac.ed.ph.jqtiplus.node.content.mathml.Math;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.P;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.result.AssessmentResult;
+import uk.ac.ed.ph.jqtiplus.reading.QtiObjectReadResult;
+import uk.ac.ed.ph.jqtiplus.testutils.UnitTestHelper;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltSerializationOptions;
 
 import java.io.IOException;
@@ -57,6 +60,7 @@ import org.xml.sax.SAXException;
  * Tests the serialization package.
  *
  * @author David McKain
+ * @author Zack Pierce
  */
 public class QtiSerializerTest {
 
@@ -72,17 +76,41 @@ public class QtiSerializerTest {
     }
 
     @Test
+    public void testEmptyItemSerializationApipCore() throws SAXException, IOException {
+        final AssessmentItem item = new AssessmentItem();
+        final String expectedXml = "<assessmentItem xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"
+                + " xmlns='http://www.imsglobal.org/xsd/apip/apipv1p0/qtiitem/imsqti_v2p1'"
+                + " xsi:schemaLocation='http://www.imsglobal.org/xsd/apip/apipv1p0/qtiitem/imsqti_v2p1 http://www.imsglobal.org/xsd/apip/apipv1p0/apipv1p0_qtiitemv2p1_v1p0.xsd'"
+                + " identifier='' title='' adaptive='' timeDependent=''/>";
+
+        serializeAndCompare(item, expectedXml, new SaxFiringOptions(QtiProfile.APIP_CORE));
+    }
+
+    @Test
     public void testEmptyItemSerializationWithoutSchemaLocation() throws SAXException, IOException {
         final AssessmentItem item = new AssessmentItem();
 
-        final SaxFiringOptions saxFiringOptions = new SaxFiringOptions();
-        saxFiringOptions.setOmitSchemaLocation(true);
+        final SaxFiringOptions saxFiringOptions = new SaxFiringOptions(true);
 
         final String expectedXml = "<assessmentItem xmlns='http://www.imsglobal.org/xsd/imsqti_v2p1'"
                 + " identifier='' title='' adaptive='' timeDependent=''/>";
 
         serializeAndCompare(item, expectedXml, saxFiringOptions);
     }
+
+    @Test
+    public void testEmptyItemSerializationWithoutSchemaLocationApipCore() throws SAXException, IOException {
+        final AssessmentItem item = new AssessmentItem();
+
+        final SaxFiringOptions saxFiringOptions = new SaxFiringOptions(true, QtiProfile.APIP_CORE);
+
+        final String expectedXml = "<assessmentItem xmlns='http://www.imsglobal.org/xsd/apip/apipv1p0/qtiitem/imsqti_v2p1'"
+                + " identifier='' title='' adaptive='' timeDependent=''/>";
+
+        serializeAndCompare(item, expectedXml, saxFiringOptions);
+    }
+
+
 
     @Test
     public void testEmptyItemSerializationWithPrefix() throws SAXException, IOException {
@@ -96,6 +124,20 @@ public class QtiSerializerTest {
                 + " xsi:schemaLocation='http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd'"
                 + " identifier='' title='' adaptive='' timeDependent=''/>";
 
+        serializeAndCompare(item, expectedXml, saxFiringOptions);
+    }
+
+    @Test
+    public void testEmptyItemSerializationWithPrefixApipCore() throws SAXException, IOException {
+        final AssessmentItem item = new AssessmentItem();
+
+        final SaxFiringOptions saxFiringOptions = new SaxFiringOptions(QtiProfile.APIP_CORE);
+        saxFiringOptions.getPreferredPrefixMappings().registerStrict(QtiConstants.APIP_CORE_ITEM_URI, "q");
+
+        final String expectedXml = "<q:assessmentItem xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"
+                + " xmlns:q='http://www.imsglobal.org/xsd/apip/apipv1p0/qtiitem/imsqti_v2p1'"
+                + " xsi:schemaLocation='http://www.imsglobal.org/xsd/apip/apipv1p0/qtiitem/imsqti_v2p1 http://www.imsglobal.org/xsd/apip/apipv1p0/apipv1p0_qtiitemv2p1_v1p0.xsd'"
+                + " identifier='' title='' adaptive='' timeDependent=''/>";
 
         serializeAndCompare(item, expectedXml, saxFiringOptions);
     }
@@ -114,11 +156,8 @@ public class QtiSerializerTest {
         final String expectedXml = "<assessmentItem xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"
                 + " xmlns='http://www.imsglobal.org/xsd/imsqti_v2p1'"
                 + " xsi:schemaLocation='http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd'"
-                + " identifier='' title='' adaptive='' timeDependent=''>"
-                + "<itemBody>"
-                + "<p xml:base='urn:test'/>"
-                + "</itemBody>"
-                + "</assessmentItem>";
+                + " identifier='' title='' adaptive='' timeDependent=''>" + "<itemBody>" + "<p xml:base='urn:test'/>"
+                + "</itemBody>" + "</assessmentItem>";
 
         serializeAndCompare(item, expectedXml, saxFiringOptions);
     }
@@ -137,10 +176,8 @@ public class QtiSerializerTest {
         final String expectedXml = "<assessmentItem xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"
                 + " xmlns='http://www.imsglobal.org/xsd/imsqti_v2p1'"
                 + " xsi:schemaLocation='http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd'"
-                + " identifier='' title='' adaptive='' timeDependent=''>"
-                + "<itemBody>"
-                + "<math xmlns='http://www.w3.org/1998/Math/MathML'><mrow/></math>"
-                + "</itemBody>"
+                + " identifier='' title='' adaptive='' timeDependent=''>" + "<itemBody>"
+                + "<math xmlns='http://www.w3.org/1998/Math/MathML'><mrow/></math>" + "</itemBody>"
                 + "</assessmentItem>";
 
         serializeAndCompare(item, expectedXml, saxFiringOptions);
@@ -162,11 +199,8 @@ public class QtiSerializerTest {
                 + " xmlns='http://www.imsglobal.org/xsd/imsqti_v2p1'"
                 + " xmlns:m='http://www.w3.org/1998/Math/MathML'"
                 + " xsi:schemaLocation='http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd'"
-                + " identifier='' title='' adaptive='' timeDependent=''>"
-                + "<itemBody>"
-                + "<m:math><m:mrow/></m:math>"
-                + "</itemBody>"
-                + "</assessmentItem>";
+                + " identifier='' title='' adaptive='' timeDependent=''>" + "<itemBody>" + "<m:math><m:mrow/></m:math>"
+                + "</itemBody>" + "</assessmentItem>";
 
         serializeAndCompare(item, expectedXml, saxFiringOptions);
     }
@@ -181,18 +215,22 @@ public class QtiSerializerTest {
         math.getContent().add(new ForeignElement(math, "mrow", QtiConstants.MATHML_NAMESPACE_URI));
 
         final SaxFiringOptions saxFiringOptions = new SaxFiringOptions();
-        saxFiringOptions.getPreferredPrefixMappings().registerLax(QtiConstants.QTI_21_NAMESPACE_URI, "m"); /* This prefix will win */
-        saxFiringOptions.getPreferredPrefixMappings().registerLax(QtiConstants.MATHML_NAMESPACE_URI, "m"); /* Will become m0: */
+        saxFiringOptions.getPreferredPrefixMappings().registerLax(QtiConstants.QTI_21_NAMESPACE_URI, "m"); /*
+                                                                                                            * This
+                                                                                                            * prefix
+                                                                                                            * will win
+                                                                                                            */
+        saxFiringOptions.getPreferredPrefixMappings().registerLax(QtiConstants.MATHML_NAMESPACE_URI, "m"); /*
+                                                                                                            * Will
+                                                                                                            * become m0:
+                                                                                                            */
 
         final String expectedXml = "<m:assessmentItem xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"
                 + " xmlns:m='http://www.imsglobal.org/xsd/imsqti_v2p1'"
                 + " xmlns:m0='http://www.w3.org/1998/Math/MathML'"
                 + " xsi:schemaLocation='http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd'"
-                + " identifier='' title='' adaptive='' timeDependent=''>"
-                + "<m:itemBody>"
-                + "<m0:math><m0:mrow/></m0:math>"
-                + "</m:itemBody>"
-                + "</m:assessmentItem>";
+                + " identifier='' title='' adaptive='' timeDependent=''>" + "<m:itemBody>"
+                + "<m0:math><m0:mrow/></m0:math>" + "</m:itemBody>" + "</m:assessmentItem>";
 
         serializeAndCompare(item, expectedXml, saxFiringOptions);
     }
@@ -211,13 +249,9 @@ public class QtiSerializerTest {
         final String expectedXml = "<assessmentItem xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"
                 + " xmlns='http://www.imsglobal.org/xsd/imsqti_v2p1'"
                 + " xsi:schemaLocation='http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd'"
-                + " identifier='' title='' adaptive='' timeDependent=''>"
-                + "<itemBody>"
-                + "<math xmlns='http://www.w3.org/1998/Math/MathML'>"
-                + "<silly xmlns='urn:silly'/>"
-                + "</math>"
-                + "</itemBody>"
-                + "</assessmentItem>";
+                + " identifier='' title='' adaptive='' timeDependent=''>" + "<itemBody>"
+                + "<math xmlns='http://www.w3.org/1998/Math/MathML'>" + "<silly xmlns='urn:silly'/>" + "</math>"
+                + "</itemBody>" + "</assessmentItem>";
 
         serializeAndCompare(item, expectedXml, saxFiringOptions);
     }
@@ -233,7 +267,23 @@ public class QtiSerializerTest {
         serializeAndCompare(result, expectedXml, new SaxFiringOptions());
     }
 
-    //---------------------------------------------------------------------------
+    // TODO - test AssessmentTest serialization for QTI and APIP profiles
+    // TODO - test AssessmentSection serialization for QTI and APIP profiles
+    // TODO - test read-as-QTI, write-as-APIP
+    // TODO - test read-as-APIP, write-as-QTI
+
+    @Test
+    public void testRoundTripReadAndSerialization() throws SAXException, IOException, Exception {
+        final String resourcePath = "serialization/roundtrippable-core-apip.xml";
+        final QtiObjectReadResult<AssessmentItem> lookupRootNode = UnitTestHelper.readAssessmentItemQtiObjectTest(resourcePath);
+        final AssessmentItem item = lookupRootNode.getRootNode();
+        final NamespacePrefixMappings prefixes = new NamespacePrefixMappings();
+        prefixes.registerStrict(QtiProfile.APIP_CORE.getAccessibilityNamespace(), "apip");
+        final SaxFiringOptions options = new SaxFiringOptions(false, QtiProfile.APIP_CORE, prefixes);
+        serializeAndCompare(item, UnitTestHelper.getResourceAsString(resourcePath), options);
+    }
+
+    // ---------------------------------------------------------------------------
 
     private void serializeAndCompare(final QtiNode node, final String expectedXml, final SaxFiringOptions saxFiringOptions)
             throws SAXException, IOException {

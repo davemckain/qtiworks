@@ -35,7 +35,9 @@ package uk.ac.ed.ph.jqtiplus.testutils;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
+import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.reading.AssessmentObjectXmlLoader;
+import uk.ac.ed.ph.jqtiplus.reading.QtiObjectReadResult;
 import uk.ac.ed.ph.jqtiplus.reading.QtiObjectReader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
@@ -60,6 +62,8 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceNotFoundException;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.List;
 
@@ -125,7 +129,8 @@ public final class UnitTestHelper {
         assertSuccessfulResolution(resolvedAssessmentItem);
 
         final ItemSessionControllerSettings itemSessionControllerSettings = new ItemSessionControllerSettings();
-        final ItemProcessingMap itemProcessingMap = new ItemProcessingInitializer(resolvedAssessmentItem, isValid).initialize();
+        final ItemProcessingMap itemProcessingMap = new ItemProcessingInitializer(resolvedAssessmentItem, isValid)
+                .initialize();
         final ItemSessionState itemSessionState = new ItemSessionState();
         return new ItemSessionController(createJqtiExtensionManager(), itemSessionControllerSettings,
                 itemProcessingMap, itemSessionState);
@@ -136,7 +141,8 @@ public final class UnitTestHelper {
         assertSuccessfulResolution(resolvedAssessmentTest);
 
         final TestSessionControllerSettings testSessionControllerSettings = new TestSessionControllerSettings();
-        final TestProcessingMap testProcessingMap = new TestProcessingInitializer(resolvedAssessmentTest, isValid).initialize();
+        final TestProcessingMap testProcessingMap = new TestProcessingInitializer(resolvedAssessmentTest, isValid)
+                .initialize();
         final TestPlanner testPlanner = new TestPlanner(testProcessingMap);
         final TestPlan testPlan = testPlanner.generateTestPlan();
         final TestSessionState testSessionState = new TestSessionState(testPlan);
@@ -146,8 +152,10 @@ public final class UnitTestHelper {
 
     private static void assertSuccessfulResolution(final ResolvedAssessmentObject<?> resolvedAssessmentObject) {
         if (!resolvedAssessmentObject.getRootNodeLookup().wasSuccessful()) {
-            logger.error(ObjectDumper.dumpObject(resolvedAssessmentObject.getRootNodeLookup().getBadResourceException()));
-            Assert.fail("Failed to load and resolve unit test resource " + resolvedAssessmentObject.getRootNodeLookup().getSystemId());
+            logger.error(ObjectDumper
+                    .dumpObject(resolvedAssessmentObject.getRootNodeLookup().getBadResourceException()));
+            Assert.fail("Failed to load and resolve unit test resource "
+                    + resolvedAssessmentObject.getRootNodeLookup().getSystemId());
         }
     }
 
@@ -156,5 +164,25 @@ public final class UnitTestHelper {
         Assert.assertNotNull("Failed lookup for identifier " + identifier, nodes);
         Assert.assertEquals("Expected 1 match for identifier " + identifier, 1, nodes.size());
         return nodes.get(0);
+    }
+
+    public static QtiObjectReadResult<AssessmentItem> readAssessmentItemQtiObjectTest(final String testFilePath)
+            throws Exception {
+        return createQtiObjectReader().lookupRootNode(createTestResourceUri(testFilePath), AssessmentItem.class);
+
+    }
+
+    public static QtiObjectReader createQtiObjectReader() {
+        return createUnitTestQtiXmlReader().createQtiObjectReader(createTestFileResourceLocator(), true);
+    }
+
+    public static String getResourceAsString(final String resourcePath) throws Exception {
+        // TODO : use more idiomatic approach to loading
+        final StringBuffer sb = new StringBuffer();
+        final BufferedReader br = new BufferedReader(new InputStreamReader(new ClassPathResourceLocator().getClass()
+                .getClassLoader().getResourceAsStream(resourcePath), "UTF-8"));
+        for (int c = br.read(); c != -1; c = br.read())
+            sb.append((char) c);
+        return sb.toString();
     }
 }

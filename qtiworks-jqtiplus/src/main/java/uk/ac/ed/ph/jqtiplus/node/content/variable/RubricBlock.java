@@ -34,9 +34,13 @@
 package uk.ac.ed.ph.jqtiplus.node.content.variable;
 
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.ViewMultipleAttribute;
+import uk.ac.ed.ph.jqtiplus.group.accessibility.ApipAccessibilityGroup;
 import uk.ac.ed.ph.jqtiplus.group.content.BlockGroup;
 import uk.ac.ed.ph.jqtiplus.group.item.StylesheetGroup;
+import uk.ac.ed.ph.jqtiplus.node.ContentContainer;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.ApipAccessibility;
+import uk.ac.ed.ph.jqtiplus.node.accessibility.ApipAccessibilityBearer;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.AbstractFlowBodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Block;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.SimpleBlock;
@@ -50,8 +54,9 @@ import java.util.List;
  *
  * @author Jonathon Hare
  * @author Jiri Kajaba
+ * @author Zack Pierce
  */
-public final class RubricBlock extends AbstractFlowBodyElement implements SimpleBlock {
+public final class RubricBlock extends AbstractFlowBodyElement implements SimpleBlock, ContentContainer, ApipAccessibilityBearer {
 
     private static final long serialVersionUID = -531414949035924206L;
 
@@ -66,8 +71,10 @@ public final class RubricBlock extends AbstractFlowBodyElement implements Simple
 
         getAttributes().add(new ViewMultipleAttribute(this, ATTR_VIEWS_NAME, true));
 
-        getNodeGroups().add(new StylesheetGroup(this));
         getNodeGroups().add(new BlockGroup(this));
+
+        getNodeGroups().add(new StylesheetGroup(this));
+        getNodeGroups().add(new ApipAccessibilityGroup(this, false));
     }
 
     public List<View> getViews() {
@@ -83,7 +90,31 @@ public final class RubricBlock extends AbstractFlowBodyElement implements Simple
         return getNodeGroups().getBlockGroup().getBlocks();
     }
 
+    /**
+     * Gets mutable list of stylesheet children.
+     *
+     * @return stylesheet children
+     */
     public List<Stylesheet> getStylesheets() {
         return getNodeGroups().getStylesheetGroup().getStylesheets();
     }
+
+    /**
+     * Gets apipAccessibility child
+     *
+     * @return apipAccessibility child
+     * @see #setApipAccessibility
+     */
+    public ApipAccessibility getApipAccessibility() {
+        return getNodeGroups().getApipAccessibilityGroup().getApipAccessibility();
+    }
+
+    /**
+     * Sets apipAccessibility child
+     * @param apipAccessibility
+     */
+    public void setApipAccessibility(final ApipAccessibility apipAccessibility) {
+        getNodeGroups().getApipAccessibilityGroup().setApipAccessibility(apipAccessibility);
+    }
+
 }
