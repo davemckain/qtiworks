@@ -56,7 +56,12 @@ public final class IdentityService {
     }
 
     public void setCurrentThreadUser(final User user) {
-        currentUserThreadLocal.set(user);
+        if (user!=null) {
+            currentUserThreadLocal.set(user);
+        }
+        else {
+            currentUserThreadLocal.remove();
+        }
     }
 
 
@@ -65,9 +70,13 @@ public final class IdentityService {
     }
 
     public void setCurrentThreadLtiResource(final LtiResource ltiResource) {
-        currentLtiResourceThreadLocal.set(ltiResource);
+        if (ltiResource!=null) {
+            currentLtiResourceThreadLocal.set(ltiResource);
+        }
+        else {
+            currentLtiResourceThreadLocal.remove();
+        }
     }
-
 
     public LtiResource ensureCurrentThreadLtiResource() {
         final LtiResource result = getCurrentThreadLtiResource();
