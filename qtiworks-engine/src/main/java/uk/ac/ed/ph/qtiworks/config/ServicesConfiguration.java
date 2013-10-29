@@ -152,7 +152,7 @@ public class ServicesConfiguration {
     }
 
     @Bean
-    public XsltStylesheetCache stylesheetCache() {
+    public XsltStylesheetCache xsltStylesheetCache() {
         return new SimpleXsltStylesheetCache();
     }
 
@@ -163,7 +163,7 @@ public class ServicesConfiguration {
         /* Enable MathAssess extensions if requested */
         if (qtiWorksDeploymentSettings.isEnableMathAssessExtension()) {
             logger.info("Enabling the MathAssess extensions");
-            extensionPackages.add(new MathAssessExtensionPackage(stylesheetCache()));
+            extensionPackages.add(new MathAssessExtensionPackage(xsltStylesheetCache()));
         }
 
         return new JqtiExtensionManager(extensionPackages);
