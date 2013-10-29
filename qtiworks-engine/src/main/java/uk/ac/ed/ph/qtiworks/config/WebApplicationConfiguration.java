@@ -36,6 +36,7 @@ package uk.ac.ed.ph.qtiworks.config;
 import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksDeploymentSettings;
 import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksProperties;
 import uk.ac.ed.ph.qtiworks.web.LoggingHandlerExceptionResolver;
+import uk.ac.ed.ph.qtiworks.web.ThreadLocalCleaner;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -82,6 +83,11 @@ public class WebApplicationConfiguration {
         servletContext.setAttribute("qtiWorksProperties", qtiWorksProperties);
         servletContext.setAttribute("qtiWorksDeploymentSettings", qtiWorksDeploymentSettings);
         logger.info("Stashed configuration beans {} and {} into ServletContext", qtiWorksProperties, qtiWorksDeploymentSettings);
+    }
+
+    @Bean(destroyMethod="purgeBlacklistedThreadLocals")
+    public ThreadLocalCleaner threadLocalCleaner() {
+        return new ThreadLocalCleaner();
     }
 
     @Bean
