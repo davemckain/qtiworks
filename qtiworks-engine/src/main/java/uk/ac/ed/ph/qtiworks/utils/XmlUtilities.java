@@ -66,7 +66,6 @@ public final class XmlUtilities {
             parserFactory.setNamespaceAware(true);
             parserFactory.setValidating(validating);
             return parserFactory.newSAXParser().getXMLReader();
-
         }
         catch (final Exception e) {
             throw new QtiWorksRuntimeException("Could not create NS-aware SAXParser with validating=" + validating + ". Check deployment/runtime ClassPath", e);
