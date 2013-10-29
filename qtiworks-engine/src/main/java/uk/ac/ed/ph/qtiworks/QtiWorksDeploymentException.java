@@ -34,12 +34,12 @@
 package uk.ac.ed.ph.qtiworks;
 
 /**
- * Used to indicate a proplem with the deployment or configuration of the
+ * Used to indicate a problem with the deployment or configuration of the
  * QTIWorks webapp.
  *
  * @author David McKain
  */
-public final class QtiWorksDeploymentException extends RuntimeException {
+public final class QtiWorksDeploymentException extends QtiWorksRuntimeException {
 
     private static final long serialVersionUID = -5546235740058464377L;
 
