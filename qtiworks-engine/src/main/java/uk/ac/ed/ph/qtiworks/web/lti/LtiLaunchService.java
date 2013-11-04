@@ -48,7 +48,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.LtiLaunchType;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiResource;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.UserRole;
-import uk.ac.ed.ph.qtiworks.services.LtiOauthUtilities;
+import uk.ac.ed.ph.qtiworks.services.LtiOauthValidationService;
 import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliveryDao;
 import uk.ac.ed.ph.qtiworks.services.dao.LtiContextDao;
@@ -96,6 +96,9 @@ public class LtiLaunchService {
     private RequestTimestampContext requestTimestampContext;
 
     @Resource
+    private LtiOauthValidationService ltiOauthValidationService;
+
+    @Resource
     private DeliveryDao deliveryDao;
 
     @Resource
@@ -118,7 +121,6 @@ public class LtiLaunchService {
      *
      * @param request
      * @param ltiLaunchType
-     * @return
      * @throws IOException
      */
     public DecodedLtiLaunch decodeLtiLaunchData(final HttpServletRequest request, final LtiLaunchType ltiLaunchType)
@@ -234,7 +236,7 @@ public class LtiLaunchService {
             throws IOException, OAuthException, URISyntaxException {
         final String consumerKey = ltiDomain.getConsumerKey();
         final String consumerSecret = ltiDomain.getConsumerSecret();
-        LtiOauthUtilities.validateOAuthMessage(oauthMessage, consumerKey, consumerSecret);
+        ltiOauthValidationService.validateOAuthMessage(oauthMessage, consumerKey, consumerSecret);
         return obtainDomainLevelLtiUser(ltiDomain, ltiLaunchData);
     }
 
@@ -242,7 +244,7 @@ public class LtiLaunchService {
             throws IOException, OAuthException, URISyntaxException {
         final String consumerKey = delivery.getLtiConsumerKeyToken();
         final String consumerSecret = delivery.getLtiConsumerSecret();
-        LtiOauthUtilities.validateOAuthMessage(oauthMessage, consumerKey, consumerSecret);
+        ltiOauthValidationService.validateOAuthMessage(oauthMessage, consumerKey, consumerSecret);
         return obtainLinkLevelLtiUser(delivery, ltiLaunchData);
     }
 
@@ -412,7 +414,6 @@ public class LtiLaunchService {
      *
      * @param ltiDomain
      * @param decodedLtiLaunch
-     * @return
      *
      * @throws IllegalArgumentException if the LTI launch is not a domain-level link.
      */

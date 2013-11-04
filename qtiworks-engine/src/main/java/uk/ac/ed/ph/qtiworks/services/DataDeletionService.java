@@ -49,6 +49,7 @@ import uk.ac.ed.ph.qtiworks.services.dao.AssessmentPackageDao;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliveryDao;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliverySettingsDao;
+import uk.ac.ed.ph.qtiworks.services.dao.LtiNonceDao;
 import uk.ac.ed.ph.qtiworks.services.dao.LtiResourceDao;
 import uk.ac.ed.ph.qtiworks.services.dao.LtiUserDao;
 import uk.ac.ed.ph.qtiworks.services.dao.UserDao;
@@ -122,6 +123,9 @@ public class DataDeletionService {
 
     @Resource
     private LtiUserDao ltiUserDao;
+
+    @Resource
+    private LtiNonceDao ltiNonceDao;
 
     /**
      * Deletes the given {@link CandidateSession} and all data that was stored for it.
@@ -376,4 +380,10 @@ public class DataDeletionService {
             logger.info("Purged {} transient deliveries from the system", transientDeliveriesDeleted);
         }
     }
+
+    public void purgeOldNonces(final Date nonceThreshold) {
+        final int noncesDeleted = ltiNonceDao.deleteOldNonces(nonceThreshold);
+        logger.info("Deleted {} LTI nonces", noncesDeleted);
+    }
+
 }

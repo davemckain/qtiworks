@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.qtiworks.services;
 
 import uk.ac.ed.ph.qtiworks.config.QtiWorksProfiles;
+import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Pair;
 
@@ -78,13 +79,19 @@ public class ScheduledService {
     @Resource
     private LtiOutcomeService ltiOutcomeService;
 
+    /** Routine maintenance jobs */
+    @Scheduled(fixedRate=ONE_HOUR, initialDelay=ONE_MINUTE)
+    public void maintenanceJobs() {
+        purgeTransientData();
+        purgeOldNonces();
+    }
+
     /**
      * Purges all anonymous users and transient deliveries that were created more than
      * {@link #TRANSIENT_DATA_LIFETIME} hours ago. All associated data is removed.
      */
-    @Scheduled(fixedRate=60*ONE_MINUTE, initialDelay=ONE_MINUTE)
-    public void purgeTransientData() {
-        logger.trace("purgeAnonymousData() invoked");
+    private void purgeTransientData() {
+        logger.trace("purgeTransientData() invoked");
 
         final long beforeTimestamp = System.currentTimeMillis();
         final Date creationTimeThreshold = new Date(beforeTimestamp - TRANSIENT_DATA_LIFETIME);
@@ -92,7 +99,12 @@ public class ScheduledService {
         final long afterTimestamp = System.currentTimeMillis();
         final long duration = afterTimestamp - beforeTimestamp;
 
-        logger.debug("pureAnonymousData() completed in {}ms", duration);
+        logger.debug("pureTransientData() completed in {}ms", duration);
+    }
+
+    private void purgeOldNonces() {
+        final Date nonceThreshold = new Date(System.currentTimeMillis() - DomainConstants.OAUTH_TIMESTAMP_MAX_AGE);
+        dataDeletionService.purgeOldNonces(nonceThreshold);
     }
 
     /**

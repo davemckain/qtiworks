@@ -41,7 +41,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
-import java.net.URISyntaxException;
 import java.security.MessageDigest;
 import java.util.HashMap;
 import java.util.List;
@@ -55,12 +54,9 @@ import javax.xml.xpath.XPathFactory;
 import net.oauth.OAuth;
 import net.oauth.OAuthAccessor;
 import net.oauth.OAuthConsumer;
-import net.oauth.OAuthException;
 import net.oauth.OAuthMessage;
 import net.oauth.OAuthServiceProvider;
-import net.oauth.OAuthValidator;
 import net.oauth.ParameterStyle;
-import net.oauth.SimpleOAuthValidator;
 import net.oauth.client.OAuthClient;
 import net.oauth.client.OAuthResponseMessage;
 import net.oauth.client.httpclient4.HttpClient4;
@@ -81,39 +77,12 @@ import org.xml.sax.InputSource;
  *
  * @author David McKain
  */
-public class LtiOauthUtilities {
+public final class LtiOauthUtilities {
 
     private static final Logger logger = LoggerFactory.getLogger(LtiOutcomeService.class);
 
     /** Encoding to use when sending LIS results */
     private static final String LIS_RESULT_ENCODING = "UTF-8";
-
-    /**
-     * Trivial wrapper around {@link OAuthValidator} and friends that validates the provided OAuth
-     * message against the given consumerKey and consumerSecret.
-     * <p>
-     * The method will complete successfully if the message is valid. If the message is invalid,
-     * one of {@link IOException}, {@link OAuthException} or {@link URISyntaxException}
-     * will be propagated up from {@link OAuthValidator}.
-     *
-     * @param oauthMessage
-     * @param consumerKey
-     * @param consumerSecret
-     * @throws IOException
-     * @throws OAuthException
-     * @throws URISyntaxException
-     */
-    public static void validateOAuthMessage(final OAuthMessage oauthMessage, final String consumerKey, final String consumerSecret)
-            throws IOException, OAuthException, URISyntaxException {
-        Assert.notNull(oauthMessage, "oauthMessage");
-        Assert.notNull(consumerKey, "consumerKey");
-        Assert.notNull(consumerSecret, "consumerSecret");
-        final OAuthValidator oAuthValidator = new SimpleOAuthValidator();
-        final OAuthServiceProvider serviceProvider = new OAuthServiceProvider(null, null, null);
-        final OAuthConsumer consumer = new OAuthConsumer(null, consumerKey, consumerSecret, serviceProvider);
-        final OAuthAccessor accessor = new OAuthAccessor(consumer);
-        oAuthValidator.validateMessage(oauthMessage, accessor);
-    }
 
     /**
      * Creates an OAuth message for sending the given LIS result data to an outcome service.
