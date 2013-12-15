@@ -336,8 +336,8 @@ public enum BaseType implements Stringifiable {
         return this == URI;
     }
 
-    public boolean isOneOf(final BaseType... baseTypes) {
-        for (final BaseType other : baseTypes) {
+    public boolean isOneOf(final BaseType... testBaseTypes) {
+        for (final BaseType other : testBaseTypes) {
             if (this==other) {
                 return true;
             }
@@ -383,15 +383,15 @@ public enum BaseType implements Stringifiable {
      * @return all supported baseTypes except of baseTypes in given parameter
      */
     public static BaseType[] except(final BaseType[] exclude) {
-        final List<BaseType> baseTypes = new ArrayList<BaseType>();
+        final List<BaseType> result = new ArrayList<BaseType>();
 
         for (final BaseType baseType : BaseType.values()) {
             if (Arrays.binarySearch(exclude, baseType) < 0) {
-                baseTypes.add(baseType);
+                result.add(baseType);
             }
         }
 
-        return baseTypes.toArray(new BaseType[] {});
+        return result.toArray(new BaseType[] {});
     }
 
     /**
@@ -402,14 +402,14 @@ public enum BaseType implements Stringifiable {
      * @return intersection of two given baseTypes sets
      */
     public static BaseType[] intersection(final BaseType[] firstSet, final BaseType[] secondSet) {
-        final List<BaseType> baseTypes = new ArrayList<BaseType>();
+        final List<BaseType> result = new ArrayList<BaseType>();
 
         for (final BaseType baseType : firstSet) {
             if (Arrays.binarySearch(secondSet, baseType) >= 0) {
-                baseTypes.add(baseType);
+                result.add(baseType);
             }
         }
 
-        return baseTypes.toArray(new BaseType[] {});
+        return result.toArray(new BaseType[] {});
     }
 }
