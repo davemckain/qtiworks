@@ -67,7 +67,7 @@ public final class SystemUserFakeAuthenticator extends AbstractSystemUserAuthent
     private SystemUser lookupFakeUser() {
         final SystemUser user = systemUserDao.findByLoginName(fakeLoginName);
         if (user==null) {
-            logger.warn("Could not find specified fake SystemUser with loginName {}" + fakeLoginName);
+            logger.warn("Could not find specified fake SystemUser with loginName {}", fakeLoginName);
             return null;
         }
         else if (user.isLoginDisabled()) {

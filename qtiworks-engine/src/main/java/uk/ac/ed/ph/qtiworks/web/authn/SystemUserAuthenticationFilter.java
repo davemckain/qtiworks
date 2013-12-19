@@ -69,7 +69,7 @@ import org.springframework.web.context.WebApplicationContext;
  *
  * Tomcat's AccessLogValve logs the <strong>original</strong> request, which will only contain
  * user ID information if there is some kind of front-end authentication going on. In this case,
- * you will want to log the {@link #EFFECTIVE_IDENTITY_ATTRIBUTE_NAME} request attribute instead.
+ * you will want to log the {@link #SYSTEM_USER_IDENTITY_ATTRIBUTE_NAME} request attribute instead.
  *
  * @author David McKain
  */
