@@ -39,6 +39,9 @@ import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
 
 /**
  * Force processing to stop and the text to exit
+ * <p>
+ * FIXME: This is not documented in the final QTI 2.1 spec and does not work as described in
+ * JQTI+
  *
  * @author Jonathon Hare
  */
