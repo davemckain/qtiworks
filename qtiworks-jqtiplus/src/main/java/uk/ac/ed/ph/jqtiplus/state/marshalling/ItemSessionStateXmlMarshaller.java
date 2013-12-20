@@ -213,7 +213,7 @@ public final class ItemSessionStateXmlMarshaller {
                             stringResponseBuilder.add(XmlMarshallerCore.expectTextContent(responseElement));
                         }
                         else {
-                            throw new XmlUnmarshallingException("Expeted 1 <file> or multiple <string> children");
+                            throw new XmlUnmarshallingException("Expected 1 <file> or multiple <string> children");
                         }
                     }
                     result.setRawResponseData(identifier, new StringResponseData(stringResponseBuilder));
