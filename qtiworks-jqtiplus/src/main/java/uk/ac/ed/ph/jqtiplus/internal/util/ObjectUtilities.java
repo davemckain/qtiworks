@@ -104,8 +104,6 @@ public final class ObjectUtilities {
 
     /**
      * Safely clones a {@link Date} Object, returning null for a null input.
-     *
-     * @param object
      */
     public static Date safeClone(final Date date) {
         return date!=null ? (Date) date.clone() : null;
@@ -114,8 +112,6 @@ public final class ObjectUtilities {
     /**
      * Convenience toString() method that can be applied safely to a null
      * Object, yielding null.
-     *
-     * @param object
      */
     public static String safeToString(final Object object) {
         return object != null ? object.toString() : null;
@@ -126,8 +122,6 @@ public final class ObjectUtilities {
      * to return true. The equals() method on o2 should be compatible with
      * equality.
      *
-     * @param o1
-     * @param o2
      * @return true if either o1==o2 or (o1!=null and o1.equals(o2))
      */
     public static boolean nullSafeEquals(final Object o1, final Object o2) {

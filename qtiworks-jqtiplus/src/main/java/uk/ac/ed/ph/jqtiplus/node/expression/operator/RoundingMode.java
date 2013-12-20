@@ -165,9 +165,6 @@ public enum RoundingMode implements Stringifiable {
 
     /**
      * Validates figures attribute.
-     *
-     * @param attribute attribute to be validated
-     * @param figures attribute's value to be validated
      */
     public abstract void validateFigures(ValidationContext context, IntegerOrVariableRefAttribute attribute);
 
@@ -178,6 +175,7 @@ public enum RoundingMode implements Stringifiable {
      *
      * @param number number
      * @param figures number of figures
+     *
      * @return rounded number
      */
     public abstract BigDecimal round(double number, int figures);
@@ -188,6 +186,7 @@ public enum RoundingMode implements Stringifiable {
      * @param firstNumber first number to compare
      * @param secondNumber second number to compare
      * @param figures rounding figures
+     *
      * @return true if given two numbers are equal after rounding; false otherwise
      */
     public boolean isEqual(final double firstNumber, final double secondNumber, final int figures) {

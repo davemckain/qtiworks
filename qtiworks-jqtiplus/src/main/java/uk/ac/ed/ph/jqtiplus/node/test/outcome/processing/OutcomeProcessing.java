@@ -80,8 +80,6 @@ public final class OutcomeProcessing extends AbstractNode {
 
     /**
      * Evaluates all child outcomeRules.
-     *
-     * @throws RuntimeValidationException
      */
     public void evaluate(final TestProcessingContext context) {
         try {

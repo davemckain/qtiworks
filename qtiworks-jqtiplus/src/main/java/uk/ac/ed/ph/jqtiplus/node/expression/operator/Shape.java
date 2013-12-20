@@ -315,7 +315,6 @@ public enum Shape implements Stringifiable {
      * Validates coords attribute.
      *
      * @param attribute attribute to be validated
-     * @param result TODO
      * @param coords attribute's value to be validated
      */
     public abstract void validateCoords(final ValidationContext context, CoordsAttribute attribute, int[] coords);
@@ -324,7 +323,6 @@ public enum Shape implements Stringifiable {
      * Validates length of coords attribute (number of coordinates).
      *
      * @param attribute attribute to be validated
-     * @param result TODO
      * @param coords attribute's value to be validated
      * @param expectedLength expected length of coords attribute (number of coordinates)
      */

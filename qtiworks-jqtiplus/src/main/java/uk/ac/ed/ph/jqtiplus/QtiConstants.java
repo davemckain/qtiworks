@@ -63,16 +63,16 @@ public final class QtiConstants {
     public static final Identifier VARIABLE_DURATION_IDENTIFIER = Identifier.assumedLegal(VARIABLE_DURATION_NAME);
 
     /** Name of <code>numAttempts</code> built-in variable. */
-    public static final String VARIABLE_NUMBER_OF_ATTEMPTS = "numAttempts";
+    public static final String VARIABLE_NUMBER_OF_ATTEMPTS_NAME = "numAttempts";
 
     /** Identifier of <code>numAttempts</code> built-in variable. */
-    public static final Identifier VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER = Identifier.assumedLegal(VARIABLE_NUMBER_OF_ATTEMPTS);
+    public static final Identifier VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER = Identifier.assumedLegal(VARIABLE_NUMBER_OF_ATTEMPTS_NAME);
 
     /** Name of <code>completionStatus</code> built-in variable. */
-    public static final String VARIABLE_COMPLETION_STATUS = "completionStatus";
+    public static final String VARIABLE_COMPLETION_STATUS_NAME = "completionStatus";
 
     /** Identifier of <code>completionStatus</code> built-in variable. */
-    public static final Identifier VARIABLE_COMPLETION_STATUS_IDENTIFIER = Identifier.assumedLegal("completionStatus");
+    public static final Identifier VARIABLE_COMPLETION_STATUS_IDENTIFIER = Identifier.assumedLegal(VARIABLE_COMPLETION_STATUS_NAME);
 
     /** Value of completion status built-in variable. */
     public static final String COMPLETION_STATUS_NOT_ATTEMPTED = "not_attempted";

@@ -141,8 +141,6 @@ public final class QueryUtils {
     /**
      * Finds all {@link JqtiExtensionPackage}s used by the given {@link QtiNode}s and their
      * child Nodes.
-     *
-     * @param node
      */
     public static Set<JqtiExtensionPackage<?>> findExtensionsWithin(final JqtiExtensionManager jqtiExtensionManager, final Iterable<? extends QtiNode> nodes) {
         final Set<JqtiExtensionPackage<?>> resultSet = new HashSet<JqtiExtensionPackage<?>>();

@@ -895,7 +895,7 @@ public final class ItemSessionController extends ItemProcessingController implem
      * Postcondition: Candidate comment will be changed.
      *
      * @param timestamp timestamp for this event, which must not be null
-     * @param comment comment to record, which may be null. An empty or blank comment will be
+     * @param candidateComment comment to record, which may be null. An empty or blank comment will be
      *   treated in the same way as a null comment.
      */
     public void setCandidateComment(final Date timestamp, final String candidateComment) {

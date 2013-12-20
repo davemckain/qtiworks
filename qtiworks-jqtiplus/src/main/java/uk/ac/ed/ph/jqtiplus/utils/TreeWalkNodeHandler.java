@@ -37,15 +37,15 @@ import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 /**
  * Call-back interface to handle each Node when walking an {@link QtiNode}
- * (sub)tree using {@link QueryUtils#walkTree(TreeWalkNodeHandler, QtiNode)}
+ * (sub)tree using {@link QueryUtils#walkTree(TreeWalkNodeHandler, Iterable)}
  *
  * @author David McKain
  */
 public interface TreeWalkNodeHandler {
-    
+
     /**
      * Callback to handle the given {@link QtiNode}.
-     * 
+     *
      * Return true to continue descending the tree, false to terminate the process.
      */
     boolean handleNode(QtiNode node);

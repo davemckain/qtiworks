@@ -82,7 +82,7 @@ public final class Match extends AbstractSimpleFunctionalExpression {
         for (final Expression expression : getChildren()) {
             final Cardinality[] cardinalities = expression.getProducedCardinalities(context);
             if (cardinalities.length == 1 && cardinalities[0].isRecord()) {
-                for (final Expression ex : expression.getChildren()) {
+                for (final Expression ex : expression.getExpressions()) {
                     final BaseType[] baseTypes = ex.getProducedBaseTypes(context);
                     if (baseTypes.length == 1 && baseTypes[0].isDuration()) {
                         final BaseType[] expected = BaseType.except(new BaseType[] { BaseType.DURATION });
