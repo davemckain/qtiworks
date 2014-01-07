@@ -40,7 +40,6 @@ import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.services.AssessmentProctoringService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentReportingService;
 import uk.ac.ed.ph.qtiworks.services.IdentityService;
-import uk.ac.ed.ph.qtiworks.services.domain.CandidateSessionSummaryReport;
 import uk.ac.ed.ph.qtiworks.services.domain.DeliveryCandidateSummaryReport;
 import uk.ac.ed.ph.qtiworks.web.GlobalRouter;
 
@@ -143,8 +142,6 @@ public class LtiInstructorAssessmentReportingController {
     @RequestMapping(value="/candidate-session/{xid}", method=RequestMethod.GET)
     public String showCandidateSession(@PathVariable final long xid, final Model model)
             throws PrivilegeException, DomainEntityNotFoundException {
-        final CandidateSessionSummaryReport candidateSessionSummaryReport = assessmentReportingService.buildCandidateSessionSummaryReport(xid);
-        model.addAttribute(candidateSessionSummaryReport);
         ltiInstructorModelHelper.setupModelForCandidateSession(xid, model);
         return "instructor/showCandidateSession";
     }
