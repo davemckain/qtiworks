@@ -61,6 +61,8 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -117,15 +119,22 @@ public class AssessmentReportingService {
         return buildCandidateSessionSummaryReport(candidateSession);
     }
 
+    /**
+     * Builds a {@link CandidateSessionSummaryReport} for the given {@link CandidateSession}
+     *
+     * @param candidateSession {@link CandidateSession} to report on, which must not be null
+     */
     public CandidateSessionSummaryReport buildCandidateSessionSummaryReport(final CandidateSession candidateSession) {
         Assert.notNull(candidateSession, "candidateSession");
 
+        /* Look up stored outcomes for this session */
         final List<CandidateSessionOutcome> candidateSessionOutcomes = candidateSessionOutcomeDao.getForSession(candidateSession);
+
         /* Convert outcomes into an easy form for manipulating */
-        final LinkedHashSet<String> numericOutcomeIdentifiers = new LinkedHashSet<String>();
-        final LinkedHashSet<String> otherOutcomeIdentifiers = new LinkedHashSet<String>();
-        final LinkedHashSet<String> numericOutcomeValues = new LinkedHashSet<String>();
-        final LinkedHashSet<String> otherOutcomeValues = new LinkedHashSet<String>();
+        final List<String> numericOutcomeIdentifiers = new ArrayList<String>();
+        final List<String> otherOutcomeIdentifiers = new ArrayList<String>();
+        final List<String> numericOutcomeValues = new ArrayList<String>();
+        final List<String> otherOutcomeValues = new ArrayList<String>();
         for (final CandidateSessionOutcome candidateSessionOutcome : candidateSessionOutcomes) {
             final String outcomeIdentifier = candidateSessionOutcome.getOutcomeIdentifier();
             final String outcomeValue = candidateSessionOutcome.getStringValue();
@@ -206,59 +215,67 @@ public class AssessmentReportingService {
 
     public DeliveryCandidateSummaryReport buildDeliveryCandidateSummaryReport(final Delivery delivery) {
         Assert.notNull(delivery, "delivery");
-        final List<CandidateSession> candidateSessions = candidateSessionDao.getForDelivery(delivery);
+
+        /* Look up all outcomes for all sessions associated with this delivery */
         final List<CandidateSessionOutcome> candidateSessionOutcomes = candidateSessionOutcomeDao.getForDelivery(delivery);
 
-        /* Convert outcomes into an easy form for manipulating */
+        /* Group results by each individual CandidateSession, also building up lists (ordered sets) of unique outcome identifiers */
+        final TreeMap<Long, CandidateSession> candidateSessionByIdMap = new TreeMap<Long, CandidateSession>();
         final Map<Long, Map<String, String>> numericOutcomesBySessionIdMap = new HashMap<Long, Map<String,String>>();
         final Map<Long, Map<String, String>> otherOutcomesBySessionIdMap = new HashMap<Long, Map<String,String>>();
-        final LinkedHashSet<String> numericOutcomeIdentifiers = new LinkedHashSet<String>();
-        final LinkedHashSet<String> otherOutcomeIdentifiers = new LinkedHashSet<String>();
+        final LinkedHashSet<String> numericOutcomeIdentifiers = new LinkedHashSet<String>(); /* (Ordered avoiding duplicates) */
+        final LinkedHashSet<String> otherOutcomeIdentifiers = new LinkedHashSet<String>(); /* (Ordered avoiding duplicates) */
         for (final CandidateSessionOutcome candidateSessionOutcome : candidateSessionOutcomes) {
+            /* Do grouping first */
+            final Map<String, String> numericOutcomesForSession, otherOutcomesForSession;
             final CandidateSession candidateSession = candidateSessionOutcome.getCandidateSession();
+            final Long xid = candidateSession.getId();
+            if (!candidateSessionByIdMap.containsKey(xid)) {
+                /* First outcome for this session, so set up appropriate map values */
+                candidateSessionByIdMap.put(xid, candidateSession);
+                numericOutcomesForSession = new HashMap<String, String>();
+                otherOutcomesForSession = new HashMap<String, String>();
+                numericOutcomesBySessionIdMap.put(xid, numericOutcomesForSession);
+                otherOutcomesBySessionIdMap.put(xid, otherOutcomesForSession);
+            }
+            else {
+                numericOutcomesForSession = numericOutcomesBySessionIdMap.get(xid);
+                otherOutcomesForSession = otherOutcomesBySessionIdMap.get(xid);
+            }
+
+            /* Record outcomes */
             final String outcomeIdentifier = candidateSessionOutcome.getOutcomeIdentifier();
             final String outcomeValue = candidateSessionOutcome.getStringValue();
             final BaseType baseType = candidateSessionOutcome.getBaseType();
             if (baseType!=null && baseType.isNumeric() && candidateSessionOutcome.getCardinality()==Cardinality.SINGLE) {
-                numericOutcomeIdentifiers.add(candidateSessionOutcome.getOutcomeIdentifier());
-                Map<String, String> numericOutcomesForSession = numericOutcomesBySessionIdMap.get(candidateSession.getId());
-                if (numericOutcomesForSession==null) {
-                    numericOutcomesForSession = new HashMap<String, String>();
-                    numericOutcomesBySessionIdMap.put(candidateSession.getId(), numericOutcomesForSession);
-                }
+                numericOutcomeIdentifiers.add(outcomeIdentifier);
                 numericOutcomesForSession.put(outcomeIdentifier, outcomeValue);
             }
             else {
-                otherOutcomeIdentifiers.add(candidateSessionOutcome.getOutcomeIdentifier());
-                Map<String, String> otherOutcomesForSession = otherOutcomesBySessionIdMap.get(candidateSession.getId());
-                if (otherOutcomesForSession==null) {
-                    otherOutcomesForSession = new HashMap<String, String>();
-                    otherOutcomesBySessionIdMap.put(candidateSession.getId(), otherOutcomesForSession);
-                }
+                otherOutcomeIdentifiers.add(outcomeIdentifier);
                 otherOutcomesForSession.put(outcomeIdentifier, outcomeValue);
             }
         }
 
+        /* Record metadata */
         final String ltiResultOutcomeIdentifier = delivery.getAssessment().getLtiResultOutcomeIdentifier();
         final CandidateSessionSummaryMetadata summaryMetadata = new CandidateSessionSummaryMetadata(ltiResultOutcomeIdentifier, numericOutcomeIdentifiers, otherOutcomeIdentifiers);
 
         /* Now build report for each session */
         final List<CandidateSessionSummaryData> rows = new ArrayList<CandidateSessionSummaryData>();
-        for (int i=0; i<candidateSessions.size(); i++) {
-            final CandidateSession candidateSession = candidateSessions.get(i);
+        for (final Entry<Long, CandidateSession> entry : candidateSessionByIdMap.entrySet()) {
+            final long xid = entry.getKey();
+            final CandidateSession candidateSession = entry.getValue();
             final List<String> numericOutcomeValues = new ArrayList<String>();
-            final Map<String, String> numericOutcomesForSession = numericOutcomesBySessionIdMap.get(candidateSession.getId());
-            if (numericOutcomesForSession!=null) {
-                for (final String outcomeIdentifier : numericOutcomeIdentifiers) {
-                    numericOutcomeValues.add(StringUtilities.emptyIfNull(numericOutcomesForSession.get(outcomeIdentifier)));
-                }
-            }
             final List<String> otherOutcomeValues = new ArrayList<String>();
-            final Map<String, String> otherOutcomesForSession = otherOutcomesBySessionIdMap.get(candidateSession.getId());
-            if (otherOutcomesForSession!=null) {
-                for (final String outcomeIdentifier : otherOutcomeIdentifiers) {
-                    otherOutcomeValues.add(StringUtilities.emptyIfNull(otherOutcomesForSession.get(outcomeIdentifier)));
-                }
+
+            final Map<String, String> numericOutcomesForSession = numericOutcomesBySessionIdMap.get(xid);
+            for (final String outcomeIdentifier : numericOutcomeIdentifiers) {
+                numericOutcomeValues.add(numericOutcomesForSession.get(outcomeIdentifier));
+            }
+            final Map<String, String> otherOutcomesForSession = otherOutcomesBySessionIdMap.get(xid);
+            for (final String outcomeIdentifier : otherOutcomeIdentifiers) {
+                otherOutcomeValues.add(otherOutcomesForSession.get(outcomeIdentifier));
             }
             String ltiResultOutcomeValue = null;
             if (ltiResultOutcomeIdentifier!=null && numericOutcomesForSession!=null) {

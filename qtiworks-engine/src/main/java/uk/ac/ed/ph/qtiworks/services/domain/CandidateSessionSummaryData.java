@@ -40,7 +40,6 @@ import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -84,7 +83,7 @@ public final class CandidateSessionSummaryData implements Serializable {
             final boolean sessionClosed, final boolean sessionTerminated, final boolean sessionExploded,
             final LisOutcomeReportingStatus lisOutcomeReportingStatus,
             final String lisResultOutcomeValue, final Double lisScore,
-            final Collection<String> numericOutcomeValues, final Collection<String> otherOutcomeValues) {
+            final List<String> numericOutcomeValues, final List<String> otherOutcomeValues) {
         Assert.notNull(numericOutcomeValues, "numericOutcomeValues");
         Assert.notNull(otherOutcomeValues, "otherOutcomesValues");
         this.sessionId = sessionId;
