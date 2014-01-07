@@ -142,7 +142,7 @@ candidateSessionSummaryReport
           <td align="center" colspan="2">(No outcome values currently recorded)</td>
         </tr>
       </c:if>
-    </body>
+    </tbody>
   </table>
   <p class="floatRight">
     <a href="${utils:escapeLink(deliveryRouting['candidateSessions'])}">Return to Candidate Sessions list</a>
