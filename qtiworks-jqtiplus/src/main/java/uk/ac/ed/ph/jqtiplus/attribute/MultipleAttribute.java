@@ -33,19 +33,14 @@
  */
 package uk.ac.ed.ph.jqtiplus.attribute;
 
-import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
-import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-
 /**
  * Implementation of attribute with multiple value (e.g. attr="1 2 3").
- * 
+ *
  * @author Jiri Kajaba
  */
 public abstract class MultipleAttribute<E> extends AbstractAttribute<List<E>> {
@@ -54,60 +49,39 @@ public abstract class MultipleAttribute<E> extends AbstractAttribute<List<E>> {
 
     public static final String SPACE_FIELD_SEPARATOR = " ";
     public static final String COMMA_FIELDS_SEPARATOR = ",";
-    
+
     private final String fieldSeparator;
 
-    public MultipleAttribute(QtiNode parent, String localName, String fieldSeparator, boolean required) {
+    public MultipleAttribute(final QtiNode parent, final String localName, final String fieldSeparator, final boolean required) {
         this(parent, localName, fieldSeparator, null, required);
     }
 
-    public MultipleAttribute(QtiNode parent, String localName, String fieldSeparator, List<E> defaultValue, boolean required) {
+    public MultipleAttribute(final QtiNode parent, final String localName, final String fieldSeparator, final List<E> defaultValue, final boolean required) {
         super(parent, localName, defaultValue, required);
         this.fieldSeparator = fieldSeparator;
     }
-    
-    @Override
-    public final void load(Element owner, Node node, LoadingContext context) {
-        load(owner, node.getNodeValue(), context);
-    }
 
     @Override
-    public final void load(Element owner, String stringValue, LoadingContext context) {
-        if (stringValue != null) {
-            try {
-                value = parseQtiString(stringValue);
-            }
-            catch (final QtiParseException ex) {
-                value = null;
-                context.modelBuildingError(ex, owner);
-            }
-        }
-        else {
-            value = null;
-        }
-    }
-
-    @Override
-    protected final List<E> parseQtiString(String stringValue) {
-        final List<String> values = splitStringValue(stringValue);
+    public final List<E> parseDomAttributeValue(final String domAttributeValue) {
+        final List<String> values = splitStringValue(domAttributeValue);
         final List<E> result = new ArrayList<E>(values.size());
         for (final String string : values) {
             result.add(parseItemValue(string));
         }
         return result;
     }
-    
+
     /**
      * Splits multiple string value into single string values.
      * For example attr="1 2 3". Multiple value is "1 2 3" and result is list
      * with single values "1", "2" and "3".
-     * 
+     *
      * @param stringValue multiple string value
      * @return split single string values
      */
-    private List<String> splitStringValue(String stringValue) {
+    private List<String> splitStringValue(final String stringValue) {
         final List<String> result = new ArrayList<String>();
-        final String[] values = stringValue.split(fieldSeparator);
+        final String[] values = stringValue.trim().split(fieldSeparator);
 
         for (int i = 0; i < values.length; i++) {
             if (values[i].length() != 0) {
@@ -120,45 +94,25 @@ public abstract class MultipleAttribute<E> extends AbstractAttribute<List<E>> {
 
     /**
      * Parses value from given string.
-     * 
+     *
      * @param itemValue string value
      * @return parsed value
      */
     protected abstract E parseItemValue(String itemValue);
-    
-    @Override
-    protected final String toQtiString(List<E> value) {
-        return itemsToString(value);
-    }
 
     @Override
-    public final String valueToQtiString() {
-        return itemsToString(value);
-    }
-
-    @Override
-    public final String defaultValueToQtiString() {
-        return itemsToString(defaultValue);
-    }
-
-    /**
-     * Gets multiple string value from given single values.
-     * 
-     * @param value single values
-     * @return multiple string value
-     */
-    private String itemsToString(List<E> value) {
+    public final String toDomAttributeValue(final List<E> singleValues) {
         final StringBuilder builder = new StringBuilder();
-        if (value!=null) {
-            for (int i = 0; i < value.size(); i++) {
-                builder.append(itemToQtiString(value.get(i)));
-                if (i < value.size() - 1) {
+        if (singleValues!=null) {
+            for (int i = 0; i < singleValues.size(); i++) {
+                builder.append(itemToQtiString(singleValues.get(i)));
+                if (i < singleValues.size() - 1) {
                     builder.append(fieldSeparator);
                 }
             }
         }
         return builder.toString();
     }
-    
+
     protected abstract String itemToQtiString(E item);
 }

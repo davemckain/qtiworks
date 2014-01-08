@@ -59,12 +59,12 @@ public final class ComplexReferenceIdentifierAttribute extends SingleAttribute<C
     }
 
     @Override
-    protected ComplexReferenceIdentifier parseQtiString(final String value) {
-        return ComplexReferenceIdentifier.parseString(value);
+    public ComplexReferenceIdentifier parseDomAttributeValue(final String domAttributeValue) {
+        return ComplexReferenceIdentifier.parseString(domAttributeValue);
     }
 
     @Override
-    protected String toQtiString(final ComplexReferenceIdentifier value) {
+    public String toDomAttributeValue(final ComplexReferenceIdentifier value) {
         return value.toString();
     }
 }

@@ -85,12 +85,12 @@ public final class BooleanAttribute extends SingleAttribute<Boolean> implements 
     }
 
     @Override
-    protected Boolean parseQtiString(final String value) {
-        return Boolean.valueOf(DataTypeBinder.parseBoolean(value));
+    public Boolean parseDomAttributeValue(final String domAttributeValue) {
+        return Boolean.valueOf(DataTypeBinder.parseBoolean(domAttributeValue));
     }
 
     @Override
-    protected String toQtiString(final Boolean value) {
+    public String toDomAttributeValue(final Boolean value) {
         return value.toString();
     }
 

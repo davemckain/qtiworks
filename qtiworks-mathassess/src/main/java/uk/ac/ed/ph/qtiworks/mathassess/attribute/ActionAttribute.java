@@ -38,7 +38,6 @@ import uk.ac.ed.ph.qtiworks.mathassess.value.ActionType;
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.SingleEnumerateAttribute;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -57,8 +56,8 @@ public final class ActionAttribute extends SingleEnumerateAttribute<ActionType> 
     }
 
     @Override
-    protected ActionType parseQtiString(final String value) {
-        return ActionType.parseActionType(value);
+	public ActionType parseDomAttributeValue(final String domAttributeValue) {
+        return ActionType.parseActionType(domAttributeValue);
     }
 
     /**

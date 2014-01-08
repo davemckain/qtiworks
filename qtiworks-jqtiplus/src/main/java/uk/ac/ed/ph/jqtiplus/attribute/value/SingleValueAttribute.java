@@ -81,12 +81,12 @@ public final class SingleValueAttribute extends SingleAttribute<SingleValue> {
     }
 
     @Override
-    protected SingleValue parseQtiString(final String value) {
-        return baseType.parseSingleValue(value);
+    public SingleValue parseDomAttributeValue(final String domAttributeValue) {
+        return baseType.parseSingleValueLax(domAttributeValue);
     }
 
     @Override
-    protected String toQtiString(final SingleValue value) {
+    public String toDomAttributeValue(final SingleValue value) {
         return value.toQtiString();
     }
 

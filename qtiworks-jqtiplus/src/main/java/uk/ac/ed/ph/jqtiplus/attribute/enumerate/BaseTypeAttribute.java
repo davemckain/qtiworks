@@ -54,8 +54,8 @@ public final class BaseTypeAttribute extends SingleEnumerateAttribute<BaseType> 
     }
 
     @Override
-    protected BaseType parseQtiString(final String value) {
-        return BaseType.parseBaseType(value);
+    public BaseType parseDomAttributeValue(final String domAttributeValue) {
+        return BaseType.parseBaseType(domAttributeValue);
     }
 
     /**

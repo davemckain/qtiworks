@@ -41,27 +41,27 @@ import uk.ac.ed.ph.jqtiplus.types.Stringifiable;
 /**
  * Convenience partial implementation of {@link EnumerateAttribute} for
  * enums that follow our {@link Stringifiable} convention.
- * 
+ *
  * @author David McKain
  */
 public abstract class SingleEnumerateAttribute<V extends Enum<V> & Stringifiable> extends SingleAttribute<V> implements EnumerateAttribute<V> {
 
     private static final long serialVersionUID = -3379931153392373791L;
-    
-    public SingleEnumerateAttribute(QtiNode parent, String localName, boolean required) {
+
+    public SingleEnumerateAttribute(final QtiNode parent, final String localName, final boolean required) {
         super(parent, localName, required);
     }
-    
-    public SingleEnumerateAttribute(QtiNode parent, String localName, V defaultValue, boolean required) {
+
+    public SingleEnumerateAttribute(final QtiNode parent, final String localName, final V defaultValue, final boolean required) {
         super(parent, localName, defaultValue, required);
     }
 
-    public SingleEnumerateAttribute(QtiNode parent, String localName, String namespaceUri, boolean required) {
+    public SingleEnumerateAttribute(final QtiNode parent, final String localName, final String namespaceUri, final boolean required) {
         super(parent, localName, namespaceUri, null, required);
     }
 
     @Override
-    protected String toQtiString(V value) {
+    public String toDomAttributeValue(final V value) {
         return value.toQtiString();
     }
 }

@@ -40,28 +40,28 @@ import java.util.List;
 
 /**
  * Attribute with string values.
- * 
+ *
  * @author Jiri Kajaba
  */
 public final class StringMultipleAttribute extends MultipleAttribute<String> {
 
     private static final long serialVersionUID = -867950733254443208L;
 
-    public StringMultipleAttribute(QtiNode parent, String localName, boolean required) {
+    public StringMultipleAttribute(final QtiNode parent, final String localName, final boolean required) {
         super(parent, localName, MultipleAttribute.SPACE_FIELD_SEPARATOR, required);
     }
 
-    public StringMultipleAttribute(QtiNode parent, String localName, List<String> defaultValue, boolean required) {
+    public StringMultipleAttribute(final QtiNode parent, final String localName, final List<String> defaultValue, final boolean required) {
         super(parent, localName, MultipleAttribute.SPACE_FIELD_SEPARATOR, defaultValue, required);
     }
 
     @Override
-    protected String parseItemValue(String value) {
+    protected String parseItemValue(final String value) {
         return value;
     }
-    
+
     @Override
-    protected String itemToQtiString(String item) {
+    protected String itemToQtiString(final String item) {
         return item;
     }
 }

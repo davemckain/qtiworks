@@ -171,9 +171,15 @@ public final class FieldValue extends AbstractNode {
 
     @Override
     protected void loadChildren(final Element element, final LoadingContext context) {
-        if (getBaseType() != null) {
+        final BaseType baseType = getBaseType();
+        if (baseType!=null) {
             try {
-                singleValue = getBaseType().parseSingleValue(element.getTextContent().trim());
+                /*
+                 * NB: The original JQTI always trimmed the element content.
+                 * This behaviour is arguably not good for string values, so we now leave it to
+                 * each BaseType instance to trim if appropriate.
+                 */
+                singleValue = baseType.parseSingleValueLax(element.getTextContent());
             }
             catch (final QtiParseException e) {
                 context.modelBuildingError(e, element);

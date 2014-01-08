@@ -49,17 +49,17 @@ public final class TextFormatAttribute extends SingleEnumerateAttribute<TextForm
 
     private static final long serialVersionUID = -4365578230488574089L;
 
-    public TextFormatAttribute(QtiNode parent, String localName, boolean required) {
+    public TextFormatAttribute(final QtiNode parent, final String localName, final boolean required) {
         super(parent, localName, required);
     }
 
-    public TextFormatAttribute(QtiNode parent, String localName, TextFormat defaultValue, boolean required) {
+    public TextFormatAttribute(final QtiNode parent, final String localName, final TextFormat defaultValue, final boolean required) {
         super(parent, localName, defaultValue, required);
     }
 
     @Override
-    protected TextFormat parseQtiString(String value) {
-        return TextFormat.parseTextFormat(value);
+    public TextFormat parseDomAttributeValue(final String domAttributeValue) {
+        return TextFormat.parseTextFormat(domAttributeValue);
     }
 
     /**

@@ -54,8 +54,8 @@ public final class CardinalityAttribute extends SingleEnumerateAttribute<Cardina
     }
 
     @Override
-    protected Cardinality parseQtiString(final String value) {
-        return Cardinality.parseCardinality(value);
+    public Cardinality parseDomAttributeValue(final String domAttributeValue) {
+        return Cardinality.parseCardinality(domAttributeValue);
     }
 
     /**

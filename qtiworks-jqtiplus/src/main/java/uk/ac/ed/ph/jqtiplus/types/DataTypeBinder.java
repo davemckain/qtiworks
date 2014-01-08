@@ -39,6 +39,10 @@ import uk.ac.ed.ph.jqtiplus.internal.util.Pair;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Helper class to bind certain QTI data types to and from Strings.
@@ -63,6 +67,30 @@ public final class DataTypeBinder {
 
     public static String toString(final boolean value) {
         return value ? "true" : "false";
+    }
+
+    //--------------------------------------------
+
+    public static Date parseDate(final String string) {
+        Assert.notNull(string);
+        try {
+            return createDateFormat().parse(string);
+        }
+        catch (final ParseException ex) {
+            throw new QtiParseException("Invalid date '" + string + "'");
+        }
+    }
+
+    public static String toString(final Date date) {
+        return createDateFormat().format(date);
+    }
+
+    /**
+     * Date formatting pattern.
+     * NB: DateFormat is not Thread safe, so don't cache the results of this across Threads!
+     */
+    private static final DateFormat createDateFormat() {
+        return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
     }
 
     //--------------------------------------------

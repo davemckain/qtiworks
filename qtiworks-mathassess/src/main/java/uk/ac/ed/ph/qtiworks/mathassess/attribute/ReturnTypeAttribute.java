@@ -38,7 +38,6 @@ import uk.ac.ed.ph.qtiworks.mathassess.value.ReturnTypeType;
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.SingleEnumerateAttribute;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -57,8 +56,8 @@ public class ReturnTypeAttribute extends SingleEnumerateAttribute<ReturnTypeType
     }
 
     @Override
-    protected ReturnTypeType parseQtiString(final String value) {
-        return ReturnTypeType.parseReturnType(value);
+	public ReturnTypeType parseDomAttributeValue(final String domAttributeValue) {
+        return ReturnTypeType.parseReturnType(domAttributeValue);
     }
 
     /**

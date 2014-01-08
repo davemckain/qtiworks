@@ -60,6 +60,10 @@ public class StringValueTest extends ValueTest {
                 {false, new StringValue("string"), null},
                 // NullValue
                 {false, new StringValue("string"), NullValue.INSTANCE},
+                // Empty string should be treated as NULL
+                {true, new StringValue(""), NullValue.INSTANCE},
+                // Blank but non-empty string is not NULL though
+                {false, new StringValue(" "), NullValue.INSTANCE},
                 // IdentifierValue
                 {false, new StringValue("string"), new IdentifierValue("identifier")},
                 // BooleanValue

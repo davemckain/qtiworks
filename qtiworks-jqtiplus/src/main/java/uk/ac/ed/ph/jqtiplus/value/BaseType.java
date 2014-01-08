@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.value;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.Stringifiable;
 
@@ -71,8 +72,8 @@ public enum BaseType implements Stringifiable {
     IDENTIFIER("identifier") {
 
         @Override
-        public SingleValue parseSingleValue(final String singleValue) {
-            return new IdentifierValue(Identifier.parseString(singleValue));
+        public SingleValue parseSingleValue(final String string) {
+            return new IdentifierValue(Identifier.parseString(string.trim()));
         }
     },
 
@@ -84,8 +85,8 @@ public enum BaseType implements Stringifiable {
     BOOLEAN("boolean") {
 
         @Override
-        public SingleValue parseSingleValue(final String singleValue) {
-            return BooleanValue.valueOf(singleValue);
+        public SingleValue parseSingleValue(final String string) {
+            return BooleanValue.valueOf(string.trim());
         }
     },
 
@@ -97,8 +98,8 @@ public enum BaseType implements Stringifiable {
     INTEGER("integer") {
 
         @Override
-        public SingleValue parseSingleValue(final String singleValue) {
-            return IntegerValue.parseString(singleValue);
+        public SingleValue parseSingleValue(final String string) {
+            return IntegerValue.parseString(string);
         }
     },
 
@@ -110,8 +111,8 @@ public enum BaseType implements Stringifiable {
     FLOAT("float") {
 
         @Override
-        public SingleValue parseSingleValue(final String singleValue) {
-            return new FloatValue(singleValue);
+        public SingleValue parseSingleValue(final String string) {
+            return new FloatValue(string);
         }
     },
 
@@ -123,11 +124,8 @@ public enum BaseType implements Stringifiable {
     STRING("string") {
 
         @Override
-        public SingleValue parseSingleValue(final String singleValue) {
-            if (singleValue == null || singleValue.length() == 0) {
-                return null;
-            }
-            return new StringValue(singleValue);
+        public SingleValue parseSingleValue(final String string) {
+            return new StringValue(string);
         }
     },
 
@@ -139,8 +137,8 @@ public enum BaseType implements Stringifiable {
     POINT("point") {
 
         @Override
-        public SingleValue parseSingleValue(final String singleValue) {
-            return PointValue.parseString(singleValue);
+        public SingleValue parseSingleValue(final String string) {
+            return PointValue.parseString(string);
         }
     },
 
@@ -152,8 +150,8 @@ public enum BaseType implements Stringifiable {
     PAIR("pair") {
 
         @Override
-        public SingleValue parseSingleValue(final String singleValue) {
-            return PairValue.parseString(singleValue);
+        public SingleValue parseSingleValue(final String string) {
+            return PairValue.parseString(string);
         }
     },
 
@@ -165,8 +163,8 @@ public enum BaseType implements Stringifiable {
     DIRECTED_PAIR("directedPair") {
 
         @Override
-        public SingleValue parseSingleValue(final String singleValue) {
-            return DirectedPairValue.parseString(singleValue);
+        public SingleValue parseSingleValue(final String string) {
+            return DirectedPairValue.parseString(string);
         }
     },
 
@@ -178,8 +176,8 @@ public enum BaseType implements Stringifiable {
     DURATION("duration") {
 
         @Override
-        public SingleValue parseSingleValue(final String singleValue) {
-            return new DurationValue(singleValue);
+        public SingleValue parseSingleValue(final String string) {
+            return new DurationValue(string);
         }
     },
 
@@ -191,7 +189,7 @@ public enum BaseType implements Stringifiable {
     FILE("file") {
 
         @Override
-        public SingleValue parseSingleValue(final String singleValue) {
+        public SingleValue parseSingleValue(final String string) {
             throw new IllegalStateException("Values of baseType file cannot be instantiated from a string");
         }
     },
@@ -204,8 +202,8 @@ public enum BaseType implements Stringifiable {
     URI("uri") {
 
         @Override
-        public SingleValue parseSingleValue(final String singleValue) {
-            return new UriValue(singleValue);
+        public SingleValue parseSingleValue(final String string) {
+            return new UriValue(string);
         }
     };
 
@@ -346,13 +344,42 @@ public enum BaseType implements Stringifiable {
     }
 
     /**
-     * Parses the <code>String</code> argument as A <code>SingleValue</code>.
+     * Parses the <code>String</code> argument to yield a <code>SingleValue</code> of this BaseType.
      *
-     * @param singleValue <code>String</code> representation of <code>SingleValue</code>
-     * @return parsed <code>SingleValue</code>
+     * @param string <code>String</code> representation of <code>SingleValue</code>, which must
+     *   not be null.
+     * @return resulting <code>SingleValue</code>, which will not be null
+     *
+     * @throws IllegalArgumentException if string is null
      * @throws QtiParseException if <code>String</code> representation of <code>SingleValue</code> is not valid
+     *   for this BaseType.
+     *
+     * @see #parseSingleValueLax(String)
      */
-    public abstract SingleValue parseSingleValue(String singleValue);
+    public abstract SingleValue parseSingleValue(String string);
+
+    /**
+     * Parses the <code>String</code> argument to yield a <code>SingleValue</code> of this BaseType,
+     * after first trimming leading and trailing whitespace from the string for non-STRING BaseTypes.
+     * <p>
+     * This is new in JQTI+. The original JQTI always trimmed strings before the {@link #parseSingleValue()}
+     * method was called, which could accidentally mutate the resulting value for STRING baseTypes. Hence the
+     * addition of this method to make it clearer what is happening.
+     *
+     * @param string <code>String</code> representation of <code>SingleValue</code>, which must
+     *   not be null.
+     * @return resulting <code>SingleValue</code>, which will not be null
+     *
+     * @throws IllegalArgumentException if string is null
+     * @throws QtiParseException if <code>String</code> representation of <code>SingleValue</code> is not valid
+     *   for this BaseType.
+     *
+     * @see #parseSingleValue(String)
+     */
+    public SingleValue parseSingleValueLax(final String string) {
+        Assert.notNull(string, "string");
+        return parseSingleValue(isString() ? string : string.trim());
+    }
 
     @Override
     public String toQtiString() {
@@ -362,16 +389,19 @@ public enum BaseType implements Stringifiable {
     /**
      * Returns parsed <code>BaseType</code> from given <code>String</code>.
      *
-     * @param baseType <code>String</code> representation of <code>BaseType</code>
+     * @param baseType <code>String</code> representation of <code>BaseType</code>,
+     *   which must not be null
      * @return parsed <code>BaseType</code> from given <code>String</code>
+     *
+     * @throws IllegalArgumentException if baseType is null
      * @throws QtiParseException if given <code>String</code> is not valid <code>BaseType</code>
      */
     public static BaseType parseBaseType(final String baseType) {
+        Assert.notNull(baseType, "baseType");
         final BaseType result = baseTypes.get(baseType);
-        if (result == null) {
+        if (result==null) {
             throw new QtiParseException("Invalid " + QTI_CLASS_NAME + " '" + baseType + "'.");
         }
-
         return result;
     }
 
@@ -390,7 +420,6 @@ public enum BaseType implements Stringifiable {
                 result.add(baseType);
             }
         }
-
         return result.toArray(new BaseType[] {});
     }
 
@@ -409,7 +438,6 @@ public enum BaseType implements Stringifiable {
                 result.add(baseType);
             }
         }
-
         return result.toArray(new BaseType[] {});
     }
 }

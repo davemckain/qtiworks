@@ -49,13 +49,13 @@ public final class StatsOperatorNameAttribute extends SingleEnumerateAttribute<S
 
     private static final long serialVersionUID = -2367561162140765443L;
 
-    public StatsOperatorNameAttribute(QtiNode parent, String name, boolean required) {
+    public StatsOperatorNameAttribute(final QtiNode parent, final String name, final boolean required) {
         super(parent, name, required);
     }
 
     @Override
-    protected StatsOperatorTarget parseQtiString(String value) {
-        return StatsOperatorTarget.parseOperation(value);
+    public StatsOperatorTarget parseDomAttributeValue(final String domAttributeValue) {
+        return StatsOperatorTarget.parseOperation(domAttributeValue);
     }
 
     @Override

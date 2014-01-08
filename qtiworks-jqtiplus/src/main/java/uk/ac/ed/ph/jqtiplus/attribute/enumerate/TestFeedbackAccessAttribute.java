@@ -49,13 +49,13 @@ public final class TestFeedbackAccessAttribute extends SingleEnumerateAttribute<
 
     private static final long serialVersionUID = 3074149624431788342L;
 
-    public TestFeedbackAccessAttribute(QtiNode parent, String localName, boolean required) {
+    public TestFeedbackAccessAttribute(final QtiNode parent, final String localName, final boolean required) {
         super(parent, localName, required);
     }
 
     @Override
-    protected TestFeedbackAccess parseQtiString(String value) {
-        return TestFeedbackAccess.parseTestFeedbackAccess(value);
+    public TestFeedbackAccess parseDomAttributeValue(final String domAttributeValue) {
+        return TestFeedbackAccess.parseTestFeedbackAccess(domAttributeValue);
     }
 
     /**

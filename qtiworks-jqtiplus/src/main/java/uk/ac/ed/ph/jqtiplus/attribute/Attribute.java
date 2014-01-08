@@ -33,19 +33,17 @@
  */
 package uk.ac.ed.ph.jqtiplus.attribute;
 
-import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
+import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.io.Serializable;
 
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-
 /**
- * Node's attribute interface.
+ * Represents an attribute of a {@link QtiNode}.
  *
- * @param <V> the type of value encoded by this Attribute.
+ * @param <V> the type of value encoded by this Attribute. (Note that V does not usually correspond to the
+ * {@link Value} class hierarchy.)
  *
  * @author Jiri Kajaba
  */
@@ -118,17 +116,6 @@ public interface Attribute<V> extends Serializable {
     V getValue();
 
     /**
-     * Gets the "computed" value of this attribute, which is defined to be the
-     * explicitly-set value (if not null), or the default value.
-     * <p>
-     * Note that if there is no default value, then this will return null.
-     * <p>
-     * (This method is new in JQTI+. The original JQTI did not differentiate between
-     * whether an attribute was explicitly set or reverted to default.)
-     */
-    V getComputedValue();
-
-    /**
      * Sets the value of this attribute.
      *
      * @param value new value of attribute, which may be null to indicate that the attribute's
@@ -137,20 +124,18 @@ public interface Attribute<V> extends Serializable {
     void setValue(V value);
 
     /**
-     * Loads attribute's value from given source node.
-     * Source node must contain attributes (one of them can be this attribute).
+     * Gets the "computed" value of this attribute, which is defined to be the
+     * explicitly-set value (if not null), or the default value.
+     * <p>
+     * Note that if there is no default value, then this will return null.
+     * <p>
+     * (This method is new in JQTI+. The original JQTI did not differentiate between
+     * whether an attribute was explicitly set or reverted to default.)
      *
-     * @param node source node
+     * @see #getValue()
+     * @see #getDefaultValue()
      */
-    void load(Element owner, Node node, LoadingContext context);
-
-    /**
-     * Loads attribute's value from given source string.
-     * Source string must contain only attribute's value, nothing else.
-     *
-     * @param value source string
-     */
-    void load(Element owner, String value, LoadingContext context);
+    V getComputedValue();
 
     /**
      * Validates this attribute's value to ensure it fits the general
@@ -163,20 +148,19 @@ public interface Attribute<V> extends Serializable {
     void validateBasic(ValidationContext context);
 
     /**
-     * Converts this Attribute's value to the String form used in
-     * the QTI information model.
+     * Parses value from given DOM attribute value
      *
-     * @return attribute's value converted to string, which will never be null
-     *   but may be an empty string.
+     * @param domAttributeValue DOM attribute value, which must not be null
+     * @return parsed value
      */
-    String valueToQtiString();
+    V parseDomAttributeValue(String domAttributeValue);
 
     /**
-     * Converts this Attribute's defaultValue to the String form used in
-     * the QTI information model.
+     * Converts the given value to a corresponding DOM attribute string value,
+     * which will not be null.
      *
-     * @return attribute's defaultValue converted to string, which will never be
-     *   null may be an empty string.
+     * @param value value to convert
+     * @return DOM attribute value, which will not be null but may be an empty string
      */
-    String defaultValueToQtiString();
+    String toDomAttributeValue(V value);
 }

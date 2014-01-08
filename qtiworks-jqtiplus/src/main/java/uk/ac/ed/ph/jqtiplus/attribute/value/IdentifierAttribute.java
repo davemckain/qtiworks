@@ -62,8 +62,13 @@ public final class IdentifierAttribute extends SingleAttribute<Identifier> {
     }
 
     @Override
-    protected Identifier parseQtiString(final String value) {
-        return Identifier.parseString(value);
+    public Identifier parseDomAttributeValue(final String domAttributeValue) {
+        return Identifier.parseString(domAttributeValue);
+    }
+
+    @Override
+    public String toDomAttributeValue(final Identifier value) {
+        return value.toString();
     }
 
     @Override
@@ -77,10 +82,5 @@ public final class IdentifierAttribute extends SingleAttribute<Identifier> {
                     + QtiConstants.IDENTIFIER_MAX_LENGTH_RECOMMENDATION
                     + " characters long");
         }
-    }
-
-    @Override
-    protected String toQtiString(final Identifier value) {
-        return value.toString();
     }
 }

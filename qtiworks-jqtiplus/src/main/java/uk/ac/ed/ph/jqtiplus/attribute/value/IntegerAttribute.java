@@ -72,12 +72,12 @@ public final class IntegerAttribute extends SingleAttribute<Integer> {
     }
 
     @Override
-    protected Integer parseQtiString(final String value) {
-        return Integer.valueOf(DataTypeBinder.parseInteger(value));
+    public Integer parseDomAttributeValue(final String domAttributeValue) {
+        return Integer.valueOf(DataTypeBinder.parseInteger(domAttributeValue));
     }
 
     @Override
-    protected String toQtiString(final Integer value) {
+    public String toDomAttributeValue(final Integer value) {
         return value.toString();
     }
 }

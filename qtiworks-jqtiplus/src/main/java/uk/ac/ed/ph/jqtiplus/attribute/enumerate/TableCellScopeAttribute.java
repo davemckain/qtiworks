@@ -49,13 +49,13 @@ public final class TableCellScopeAttribute extends SingleEnumerateAttribute<Tabl
 
     private static final long serialVersionUID = -5619179078436198190L;
 
-    public TableCellScopeAttribute(QtiNode parent, String localName, boolean required) {
+    public TableCellScopeAttribute(final QtiNode parent, final String localName, final boolean required) {
         super(parent, localName, required);
     }
 
     @Override
-    protected TableCellScope parseQtiString(String value) {
-        return TableCellScope.parseTableCellScope(value);
+    public TableCellScope parseDomAttributeValue(final String domAttributeValue) {
+        return TableCellScope.parseTableCellScope(domAttributeValue);
     }
 
     /**

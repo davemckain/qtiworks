@@ -37,26 +37,26 @@ import uk.ac.ed.ph.jqtiplus.node.ForeignElement;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 /**
- * An attribute for a {@link ForeignElement}, or any other unknown attribute. 
+ * An attribute for a {@link ForeignElement}, or any other unknown attribute.
  * These are simply wrapped up {@link String}s.
- * 
+ *
  * @author David McKain
  */
 public final class ForeignAttribute extends SingleAttribute<String> {
 
     private static final long serialVersionUID = -2789631230857582434L;
 
-    public ForeignAttribute(QtiNode parent, String localName, String namespaceUri) {
+    public ForeignAttribute(final QtiNode parent, final String localName, final String namespaceUri) {
         super(parent, localName, namespaceUri, null, false);
     }
 
     @Override
-    protected String parseQtiString(String value) {
-        return value;
+    public String parseDomAttributeValue(final String domAttributeValue) {
+        return domAttributeValue;
     }
-    
+
     @Override
-    protected String toQtiString(String value) {
+    public String toDomAttributeValue(final String value) {
         return value;
     }
 }

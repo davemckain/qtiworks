@@ -37,8 +37,8 @@ import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
-import uk.ac.ed.ph.jqtiplus.types.StringOrVariableRef;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.types.StringOrVariableRef;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.Signature;
 
@@ -56,12 +56,12 @@ public final class StringOrVariableRefAttribute extends SingleAttribute<StringOr
     }
 
     @Override
-    protected StringOrVariableRef parseQtiString(final String value) {
-        return StringOrVariableRef.parseString(value);
+    public StringOrVariableRef parseDomAttributeValue(final String domAttributeValue) {
+        return StringOrVariableRef.parseString(domAttributeValue);
     }
 
     @Override
-    protected String toQtiString(final StringOrVariableRef value) {
+    public String toDomAttributeValue(final StringOrVariableRef value) {
         return value.toString();
     }
 

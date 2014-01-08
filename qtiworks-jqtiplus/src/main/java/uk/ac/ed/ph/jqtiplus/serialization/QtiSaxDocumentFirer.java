@@ -242,7 +242,7 @@ public final class QtiSaxDocumentFirer {
                 final String namespaceUri = attribute.getNamespaceUri();
                 final String qName = requiredPrefixMappings.getQName(namespaceUri, localName);
                 xmlAttributes.addAttribute(namespaceUri, localName, qName,
-                        "CDATA", attribute.valueToQtiString());
+                        "CDATA", toDomAttributeValue(attribute));
             }
         }
 
@@ -257,6 +257,11 @@ public final class QtiSaxDocumentFirer {
         /* Fire element */
         fireStartElement(node, node.getQtiClassName(), elementNamespaceUri, xmlAttributes);
         ++currentQtiDepth;
+    }
+
+    private static <V> String toDomAttributeValue(final Attribute<V> attribute) {
+        final V value = attribute.getValue();
+        return value!=null ? attribute.toDomAttributeValue(value) : "";
     }
 
     public void fireStartElement(final Object object, final String localName, final String namespaceUri, final AttributesImpl attributes) throws SAXException {

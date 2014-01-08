@@ -49,13 +49,13 @@ public final class SessionStatusAttribute extends SingleEnumerateAttribute<Sessi
 
     private static final long serialVersionUID = 8759133738524182291L;
 
-    public SessionStatusAttribute(QtiNode parent, String localName, boolean required) {
+    public SessionStatusAttribute(final QtiNode parent, final String localName, final boolean required) {
         super(parent, localName, required);
     }
 
     @Override
-    protected SessionStatus parseQtiString(String value) {
-        return SessionStatus.parseSessionStatus(value);
+    public SessionStatus parseDomAttributeValue(final String domAttributeValue) {
+        return SessionStatus.parseSessionStatus(domAttributeValue);
     }
 
     /**

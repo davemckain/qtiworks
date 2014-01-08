@@ -51,12 +51,12 @@ public final class LongAttribute extends SingleAttribute<Long> {
     }
 
     @Override
-    protected Long parseQtiString(final String value) {
-        return DataTypeBinder.parseLong(value);
+    public Long parseDomAttributeValue(final String domAttributeValue) {
+        return DataTypeBinder.parseLong(domAttributeValue);
     }
 
     @Override
-    protected String toQtiString(final Long value) {
+    public String toDomAttributeValue(final Long value) {
         return DataTypeBinder.toString(value.longValue());
     }
 }

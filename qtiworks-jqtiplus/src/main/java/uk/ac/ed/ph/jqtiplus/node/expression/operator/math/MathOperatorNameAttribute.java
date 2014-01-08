@@ -49,13 +49,13 @@ public final class MathOperatorNameAttribute extends SingleEnumerateAttribute<Ma
 
     private static final long serialVersionUID = -2367561162140765443L;
 
-    public MathOperatorNameAttribute(QtiNode parent, String name, boolean required) {
+    public MathOperatorNameAttribute(final QtiNode parent, final String name, final boolean required) {
         super(parent, name, required);
     }
 
     @Override
-    protected MathOperatorTarget parseQtiString(String value) {
-        return MathOperatorTarget.parseOperation(value);
+    public MathOperatorTarget parseDomAttributeValue(final String domAttributeValue) {
+        return MathOperatorTarget.parseOperation(domAttributeValue);
     }
 
     @Override

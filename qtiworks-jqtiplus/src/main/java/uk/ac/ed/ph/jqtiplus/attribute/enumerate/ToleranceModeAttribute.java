@@ -49,13 +49,13 @@ public final class ToleranceModeAttribute extends SingleEnumerateAttribute<Toler
 
     private static final long serialVersionUID = 1737056425484603310L;
 
-    public ToleranceModeAttribute(QtiNode parent, String localName, boolean required) {
+    public ToleranceModeAttribute(final QtiNode parent, final String localName, final boolean required) {
         super(parent, localName, required);
     }
 
     @Override
-    protected ToleranceMode parseQtiString(String value) {
-        return ToleranceMode.parseToleranceMode(value);
+    public ToleranceMode parseDomAttributeValue(final String domAttributeValue) {
+        return ToleranceMode.parseToleranceMode(domAttributeValue);
     }
 
     /**

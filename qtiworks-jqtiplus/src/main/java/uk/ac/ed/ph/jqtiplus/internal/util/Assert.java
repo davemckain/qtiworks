@@ -65,7 +65,7 @@ public final class Assert {
      * @throws IllegalArgumentException if an error occurs.
      */
     public static void notNull(final Object value, final String objectName) {
-        if (value == null) {
+        if (value==null) {
             throw new IllegalArgumentException(objectName + " must not be null");
         }
     }

@@ -49,13 +49,13 @@ public final class ParamTypeAttribute extends SingleEnumerateAttribute<ParamType
 
     private static final long serialVersionUID = 1206043208733719873L;
 
-    public ParamTypeAttribute(QtiNode parent, String localName, boolean required) {
+    public ParamTypeAttribute(final QtiNode parent, final String localName, final boolean required) {
         super(parent, localName, required);
     }
 
     @Override
-    protected ParamType parseQtiString(String value) {
-        return ParamType.parseParamType(value);
+    public ParamType parseDomAttributeValue(final String domAttributeValue) {
+        return ParamType.parseParamType(domAttributeValue);
     }
 
     /**

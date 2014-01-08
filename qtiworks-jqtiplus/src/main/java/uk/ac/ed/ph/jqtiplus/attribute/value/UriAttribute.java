@@ -61,12 +61,12 @@ public final class UriAttribute extends SingleAttribute<URI> {
     }
 
     @Override
-    protected URI parseQtiString(final String value) {
-        return DataTypeBinder.parseUri(value);
+    public URI parseDomAttributeValue(final String domAttributeValue) {
+        return DataTypeBinder.parseUri(domAttributeValue);
     }
 
     @Override
-    protected String toQtiString(final URI value) {
+    public String toDomAttributeValue(final URI value) {
         return value.toString();
     }
 }

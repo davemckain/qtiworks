@@ -55,12 +55,12 @@ public final class DurationAttribute extends SingleAttribute<Double> {
     }
 
     @Override
-    protected Double parseQtiString(final String value) {
-        return Double.valueOf(DataTypeBinder.parseFloat(value));
+    public Double parseDomAttributeValue(final String domAttributeValue) {
+        return Double.valueOf(DataTypeBinder.parseFloat(domAttributeValue));
     }
 
     @Override
-    protected String toQtiString(final Double value) {
+    public String toDomAttributeValue(final Double value) {
         return value.toString();
     }
 }

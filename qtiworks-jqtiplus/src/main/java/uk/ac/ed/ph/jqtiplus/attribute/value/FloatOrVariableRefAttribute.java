@@ -60,12 +60,12 @@ public final class FloatOrVariableRefAttribute extends SingleAttribute<FloatOrVa
     }
 
     @Override
-    protected FloatOrVariableRef parseQtiString(final String value) {
-        return FloatOrVariableRef.parseString(value);
+    public FloatOrVariableRef parseDomAttributeValue(final String domAttributeValue) {
+        return FloatOrVariableRef.parseString(domAttributeValue);
     }
 
     @Override
-    protected String toQtiString(final FloatOrVariableRef value) {
+    public String toDomAttributeValue(final FloatOrVariableRef value) {
         return value.toString();
     }
 

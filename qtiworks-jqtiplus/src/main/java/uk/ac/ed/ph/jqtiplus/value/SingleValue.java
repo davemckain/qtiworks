@@ -36,7 +36,8 @@ package uk.ac.ed.ph.jqtiplus.value;
 /**
  * Superclass for all single values.
  * <p>
- * This class is not mutable and cannot contain NULL value.
+ * This class is immutable and generally does not contain NULL values. (The exception to this is an empty
+ * {@link StringValue}).
  * <p>
  * <code>Cardinality</code> of this class is always single.
  *
@@ -48,7 +49,7 @@ public abstract class SingleValue extends AbstractValue {
     private static final long serialVersionUID = 4392147022615484889L;
 
     @Override
-    public final boolean isNull() {
+    public boolean isNull() {
         return false;
     }
 

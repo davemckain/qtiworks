@@ -58,12 +58,12 @@ public final class StringAttribute extends SingleAttribute<String> {
     }
 
     @Override
-    protected String parseQtiString(final String value) {
-        return value;
+    public String parseDomAttributeValue(final String domAttributeValue) {
+        return domAttributeValue;
     }
 
     @Override
-    protected String toQtiString(final String value) {
+    public String toDomAttributeValue(final String value) {
         return value.toString();
     }
 }

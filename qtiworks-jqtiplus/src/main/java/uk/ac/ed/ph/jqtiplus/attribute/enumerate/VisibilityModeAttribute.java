@@ -49,17 +49,17 @@ public final class VisibilityModeAttribute extends SingleEnumerateAttribute<Visi
 
     private static final long serialVersionUID = 6524337813805169272L;
 
-    public VisibilityModeAttribute(QtiNode parent, String localName, boolean required) {
+    public VisibilityModeAttribute(final QtiNode parent, final String localName, final boolean required) {
         super(parent, localName, required);
     }
 
-    public VisibilityModeAttribute(QtiNode parent, String localName, VisibilityMode defaultValue, boolean required) {
+    public VisibilityModeAttribute(final QtiNode parent, final String localName, final VisibilityMode defaultValue, final boolean required) {
         super(parent, localName, defaultValue, required);
     }
 
     @Override
-    protected VisibilityMode parseQtiString(String value) {
-        return VisibilityMode.parseVisibilityMode(value);
+    public VisibilityMode parseDomAttributeValue(final String domAttributeValue) {
+        return VisibilityMode.parseVisibilityMode(domAttributeValue);
     }
 
     /**

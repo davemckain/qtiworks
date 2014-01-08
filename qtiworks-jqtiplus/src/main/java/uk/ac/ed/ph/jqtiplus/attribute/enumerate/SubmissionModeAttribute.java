@@ -49,13 +49,13 @@ public final class SubmissionModeAttribute extends SingleEnumerateAttribute<Subm
 
     private static final long serialVersionUID = -1875382709228264679L;
 
-    public SubmissionModeAttribute(QtiNode parent, String localName, boolean required) {
+    public SubmissionModeAttribute(final QtiNode parent, final String localName, final boolean required) {
         super(parent, localName, required);
     }
 
     @Override
-    protected SubmissionMode parseQtiString(String value) {
-        return SubmissionMode.parseSubmissionMode(value);
+    public SubmissionMode parseDomAttributeValue(final String domAttributeValue) {
+        return SubmissionMode.parseSubmissionMode(domAttributeValue);
     }
 
     /**

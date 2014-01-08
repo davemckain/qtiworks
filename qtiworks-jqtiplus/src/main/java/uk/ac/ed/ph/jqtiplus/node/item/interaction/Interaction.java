@@ -207,7 +207,7 @@ public abstract class Interaction extends BodyElement {
                         value = NullValue.INSTANCE;
                     }
                     else {
-                        value = responseDeclaration.getBaseType().parseSingleValue(stringResponseData.get(0));
+                        value = responseDeclaration.getBaseType().parseSingleValueLax(stringResponseData.get(0));
                     }
                 }
                 else if (!(responseCardinality == Cardinality.RECORD)) {

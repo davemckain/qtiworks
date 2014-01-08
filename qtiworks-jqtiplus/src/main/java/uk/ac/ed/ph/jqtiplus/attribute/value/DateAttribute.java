@@ -34,12 +34,9 @@
 package uk.ac.ed.ph.jqtiplus.attribute.value;
 
 import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
-import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
+import uk.ac.ed.ph.jqtiplus.types.DataTypeBinder;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -51,14 +48,6 @@ public final class DateAttribute extends SingleAttribute<Date> {
 
     private static final long serialVersionUID = 2736828962257037608L;
 
-    /**
-     * Date formatting pattern.
-     * NB: DateFormat is not Thread safe, so don't cache the results of this across Threads!
-     */
-    public static final DateFormat createDateFormat() {
-        return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-    }
-
     public DateAttribute(final QtiNode parent, final String localName, final boolean required) {
         super(parent, localName, required);
     }
@@ -68,21 +57,12 @@ public final class DateAttribute extends SingleAttribute<Date> {
     }
 
     @Override
-    protected Date parseQtiString(final String value) {
-        if (value == null || value.length() == 0) {
-            throw new QtiParseException("Invalid datetime '" + value + "'. Length is not valid.");
-        }
-
-        try {
-            return createDateFormat().parse(value);
-        }
-        catch (final ParseException ex) {
-            throw new QtiParseException("Invalid datetime '" + value + "'.", ex);
-        }
+    public Date parseDomAttributeValue(final String domAttributeValue) {
+        return DataTypeBinder.parseDate(domAttributeValue);
     }
 
     @Override
-    protected String toQtiString(final Date value) {
-        return createDateFormat().format(value);
+    public String toDomAttributeValue(final Date value) {
+        return DataTypeBinder.toString(value);
     }
 }

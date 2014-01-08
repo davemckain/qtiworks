@@ -49,13 +49,13 @@ public final class OrientationAttribute extends SingleEnumerateAttribute<Orienta
 
     private static final long serialVersionUID = 5170134258927740739L;
 
-    public OrientationAttribute(QtiNode parent, String localName, boolean required) {
+    public OrientationAttribute(final QtiNode parent, final String localName, final boolean required) {
         super(parent, localName, required);
     }
 
     @Override
-    protected Orientation parseQtiString(String value) {
-        return Orientation.parseOrientation(value);
+    public Orientation parseDomAttributeValue(final String domAttributeValue) {
+        return Orientation.parseOrientation(domAttributeValue);
     }
 
     /**

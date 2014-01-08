@@ -49,13 +49,13 @@ public final class ShapeAttribute extends SingleEnumerateAttribute<Shape> {
 
     private static final long serialVersionUID = -5369017290814290862L;
 
-    public ShapeAttribute(QtiNode parent, String localName, boolean required) {
+    public ShapeAttribute(final QtiNode parent, final String localName, final boolean required) {
         super(parent, localName, required);
     }
 
     @Override
-    protected Shape parseQtiString(String value) {
-        return Shape.parseShape(value);
+    public Shape parseDomAttributeValue(final String domAttributeValue) {
+        return Shape.parseShape(domAttributeValue);
     }
 
     /**

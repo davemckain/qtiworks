@@ -40,12 +40,10 @@ import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
  * <p>
  * See <A href="http://www.w3.org/TR/xmlschema-2/#string">XML</A> for more accurately definition.
  * <p>
- * This class is not mutable and cannot contain NULL value.
+ * Note that an empty String is considered a QTI NULL value.
  * <p>
  * <code>Cardinality</code> of this class is always single and <code>BaseType</code> is always string.
  *
- * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
- * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
 public final class StringValue extends SingleValue {
@@ -54,14 +52,19 @@ public final class StringValue extends SingleValue {
 
     private final String stringValue;
 
-    public StringValue(final String value) {
-        Assert.notNull(value);
-        this.stringValue = value;
+    public StringValue(final String stringValue) {
+        Assert.notNull(stringValue);
+        this.stringValue = stringValue;
     }
 
     @Override
     public BaseType getBaseType() {
         return BaseType.STRING;
+    }
+
+    @Override
+    public boolean isNull() {
+        return stringValue.isEmpty();
     }
 
     public String stringValue() {

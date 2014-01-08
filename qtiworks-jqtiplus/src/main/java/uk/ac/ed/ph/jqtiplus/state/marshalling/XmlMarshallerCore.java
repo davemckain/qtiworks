@@ -248,6 +248,7 @@ public final class XmlMarshallerCore {
         for (int i=0, size=childNodes.getLength(); i<size; i++) {
             final Node childNode = childNodes.item(i);
             if (childNode.getNodeType()==Node.TEXT_NODE && childNode.getNodeValue().trim().isEmpty()) {
+                /* Ignorable whitespace */
                 continue;
             }
             if (childNode.getNodeType()!=Node.ELEMENT_NODE) {

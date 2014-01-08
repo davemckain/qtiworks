@@ -49,13 +49,13 @@ public final class NavigationModeAttribute extends SingleEnumerateAttribute<Navi
 
     private static final long serialVersionUID = -8896482192798423143L;
 
-    public NavigationModeAttribute(QtiNode parent, String localName, boolean required) {
+    public NavigationModeAttribute(final QtiNode parent, final String localName, final boolean required) {
         super(parent, localName, required);
     }
 
     @Override
-    protected NavigationMode parseQtiString(String value) {
-        return NavigationMode.parseNavigationMode(value);
+    public NavigationMode parseDomAttributeValue(final String domAttributeValue) {
+        return NavigationMode.parseNavigationMode(domAttributeValue);
     }
 
     /**

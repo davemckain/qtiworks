@@ -132,33 +132,6 @@ public abstract class AbstractAttribute<V> implements Attribute<V> {
                 + localName;
     }
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
-                + "(localName=" + localName
-                + ",namespaceUri=" + namespaceUri
-                + ",required=" + required
-                + ",defaultValue=" + defaultValue
-                + ",value=" + value
-                + ")";
-    }
-
-    /**
-     * Parses value from given QTI string.
-     *
-     * @param value string value
-     * @return parsed value
-     */
-    protected abstract V parseQtiString(String value);
-
-    /**
-     * Subclasses should implement to convert the given value to
-     * the String format used in the QTI information model.
-     * <p>
-     * Subclasses must not return null here.
-     */
-    protected abstract String toQtiString(V value);
-
     /**
      * Default implementation of attribute validation that simply
      * checks the value has been set if required.
@@ -171,5 +144,16 @@ public abstract class AbstractAttribute<V> implements Attribute<V> {
         if (required && value==null) {
             context.fireAttributeValidationError(this, "Required attribute '" + localName + "' has not been assigned a value");
         }
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
+                + "(localName=" + localName
+                + ",namespaceUri=" + namespaceUri
+                + ",required=" + required
+                + ",defaultValue=" + defaultValue
+                + ",value=" + value
+                + ")";
     }
 }

@@ -49,13 +49,13 @@ public final class MathConstantNameAttribute extends SingleEnumerateAttribute<Ma
 
     private static final long serialVersionUID = -2367561162140765443L;
 
-    public MathConstantNameAttribute(QtiNode parent, String name, boolean required) {
+    public MathConstantNameAttribute(final QtiNode parent, final String name, final boolean required) {
         super(parent, name, required);
     }
 
     @Override
-    protected MathConstantTarget parseQtiString(String value) {
-        return MathConstantTarget.parseConstant(value);
+    public MathConstantTarget parseDomAttributeValue(final String domAttributeValue) {
+        return MathConstantTarget.parseConstant(domAttributeValue);
     }
 
     @Override

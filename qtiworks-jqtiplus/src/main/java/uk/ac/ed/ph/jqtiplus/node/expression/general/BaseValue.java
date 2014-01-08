@@ -103,9 +103,15 @@ public final class BaseValue extends AbstractSimpleFunctionalExpression {
 
     @Override
     protected void loadChildren(final Element element, final LoadingContext context) {
-        if (getBaseTypeAttrValue() != null) {
+        final BaseType baseType = getBaseTypeAttrValue();
+        if (baseType!=null) {
             try {
-                singleValue = getBaseTypeAttrValue().parseSingleValue(element.getTextContent().trim());
+                /*
+                 * NB: The original JQTI always trimmed the element content.
+                 * This behaviour is arguably not good for string values, so we now leave it to
+                 * each BaseType instance to trim if appropriate.
+                 */
+                singleValue = baseType.parseSingleValueLax(element.getTextContent());
             }
             catch (final QtiParseException e) {
                 context.modelBuildingError(e, element);

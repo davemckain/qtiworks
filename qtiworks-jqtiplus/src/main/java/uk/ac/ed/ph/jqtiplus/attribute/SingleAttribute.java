@@ -33,63 +33,26 @@
  */
 package uk.ac.ed.ph.jqtiplus.attribute;
 
-import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
-import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
-
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 /**
  * Implementation of attribute with single value (normal attribute).
- * 
+ *
  * @author Jiri Kajaba
  */
 public abstract class SingleAttribute<V> extends AbstractAttribute<V> {
 
     private static final long serialVersionUID = 7394997591576564116L;
 
-    public SingleAttribute(QtiNode owner, String localName, boolean required) {
+    public SingleAttribute(final QtiNode owner, final String localName, final boolean required) {
         super(owner, localName, null, required);
     }
 
-    public SingleAttribute(QtiNode owner, String localName, V defaultValue, boolean required) {
+    public SingleAttribute(final QtiNode owner, final String localName, final V defaultValue, final boolean required) {
         super(owner, localName, defaultValue, required);
     }
 
-    public SingleAttribute(QtiNode owner, String localName, String namespaceUri, V defaultValue,  boolean required) {
+    public SingleAttribute(final QtiNode owner, final String localName, final String namespaceUri, final V defaultValue,  final boolean required) {
         super(owner, localName, namespaceUri, defaultValue, required);
     }
-    
-    @Override
-    public final void load(Element owner, Node node, LoadingContext context) {
-        load(owner, node.getNodeValue(), context);
-    }
-
-    @Override
-    public final void load(Element owner, String value, LoadingContext context) {
-        if (value != null) {
-            try {
-                this.value = parseQtiString(value);
-            }
-            catch (final QtiParseException ex) {
-                this.value = null;
-                context.modelBuildingError(ex, owner);
-            }
-        }
-        else {
-            this.value = null;
-        }
-    }
-
-    @Override
-    public final String valueToQtiString() {
-        return value != null ? toQtiString(value) : "";
-    }
-
-    @Override
-    public final String defaultValueToQtiString() {
-        return defaultValue != null ? toQtiString(defaultValue) : "";
-    }
-
 }

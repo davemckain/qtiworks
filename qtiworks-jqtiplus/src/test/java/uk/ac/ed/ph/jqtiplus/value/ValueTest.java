@@ -68,7 +68,7 @@ public abstract class ValueTest {
      * Tests implementation of <code>qtiEquals</code> method.
      */
     @Test
-    public void testEquals() {
+    public void testQtiEquals() {
         assertEquals(equals, value1.qtiEquals(value2));
     }
 

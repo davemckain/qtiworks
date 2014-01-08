@@ -49,13 +49,13 @@ public final class RoundingModeAttribute extends SingleEnumerateAttribute<Roundi
 
     private static final long serialVersionUID = 7527369761752182141L;
 
-    public RoundingModeAttribute(QtiNode parent, String localName, boolean required) {
+    public RoundingModeAttribute(final QtiNode parent, final String localName, final boolean required) {
         super(parent, localName, required);
     }
 
     @Override
-    protected RoundingMode parseQtiString(String value) {
-        return RoundingMode.parseRoundingMode(value);
+    public RoundingMode parseDomAttributeValue(final String domAttributeValue) {
+        return RoundingMode.parseRoundingMode(domAttributeValue);
     }
 
     /**

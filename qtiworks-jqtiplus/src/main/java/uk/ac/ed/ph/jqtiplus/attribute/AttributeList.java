@@ -67,6 +67,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.StringMultipleAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringOrVariableRefAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.UriAttribute;
 import uk.ac.ed.ph.jqtiplus.exception.QtiAttributeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
@@ -166,11 +167,11 @@ public final class AttributeList implements Serializable, Iterable<Attribute<?>>
     }
 
     /**
-     * Loads attribute's values from given source node.
+     * Loads attribute's values from given source {@link Element}
      * If there is a foreign attribute, it creates new optional
      * ForeignAttribute with its foreign property set.
      *
-     * @param element source node
+     * @param element source {@link Element} to load attributes from
      */
     public void load(final Element element, final LoadingContext context) {
         /* First clear existing attributes */
@@ -182,7 +183,7 @@ public final class AttributeList implements Serializable, Iterable<Attribute<?>>
             }
             else {
                 /* Supported attribute, so clear for setting later */
-                attribute.load(element, (String) null, context);
+                attribute.setValue(null);
             }
         }
 
@@ -200,15 +201,28 @@ public final class AttributeList implements Serializable, Iterable<Attribute<?>>
             }
             else {
                 Attribute<?> attribute = get(localName, namespaceUri, true);
-                if (attribute == null) {
+                if (attribute==null) {
                     /* Foreign attribute, so create new */
                     attribute = new ForeignAttribute(owner, localName, namespaceUri);
                     attributes.add(attribute);
                 }
                 /* Load value into attribute */
-                attribute.load(element, attributeNode, context);
+                final String attributeValue = attributeNode.getNodeValue();
+                loadAttribute(attribute, element, attributeValue, context);
             }
         }
+    }
+
+    private static final <V> void loadAttribute(final Attribute<V> attribute, final Element element, final String stringValue, final LoadingContext context) {
+        Assert.notNull(stringValue, "stringValue");
+        V value = null;
+        try {
+            value = attribute.parseDomAttributeValue(stringValue);
+        }
+        catch (final QtiParseException ex) {
+            context.modelBuildingError(ex, element);
+        }
+        attribute.setValue(value);
     }
 
     /**
