@@ -72,8 +72,8 @@ public abstract class OutcomeConditionChild extends AbstractNode {
      * Evaluates all child outcomeRules and returns true.
      *
      * @return true
+     *
      * @throws QtiProcessingInterrupt
-     * @throws RuntimeValidationException
      */
     public boolean evaluate(final TestProcessingContext context) throws QtiProcessingInterrupt {
         for (final OutcomeRule outcomeRule : getOutcomeRules()) {

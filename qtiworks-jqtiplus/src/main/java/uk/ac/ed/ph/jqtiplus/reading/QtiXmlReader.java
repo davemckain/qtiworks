@@ -75,14 +75,13 @@ import java.util.Map.Entry;
 public final class QtiXmlReader {
 
     /**
-     * Base path within ClassPath to search in for schema and
-     * {@link ClassPathHttpResourceLocator} instance of {@link #parserResourceLocator}.
+     * Base path within ClassPath to search for schema resources
      */
     public static final String JQTIPLUS_PARSER_RESOURCE_CLASSPATH_BASE_PATH = "uk/ac/ed/ph/jqtiplus/xml-catalog";
 
     /**
-     * Default {@link ResourceLocator} that will be used to locate schemas (and DTDs). This searches within
-     * the ClassPath under {@link DEFAULT_PARSER_RESOURCE_CLASSPATH_BASE_PATH}.
+     * Default {@link ResourceLocator} that will be used to locate schemas (and DTDs).
+     * This searches within the ClassPath under {@link #JQTIPLUS_PARSER_RESOURCE_CLASSPATH_BASE_PATH}.
      */
     public static final ResourceLocator JQTIPLUS_PARSER_RESOURCE_LOCATOR = new ClassPathHttpResourceLocator(JQTIPLUS_PARSER_RESOURCE_CLASSPATH_BASE_PATH);
 

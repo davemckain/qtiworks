@@ -157,8 +157,8 @@ public final class XsltStylesheetManager {
      * Obtains the compiled XSLT stylesheet {@link Templates}s Object at the given URI,
      * using the {@link XsltStylesheetCache} (if set) to cache stylesheets for efficiency.
      *
-     * @param xsltUri location of the XSLT stylesheet in the ClassPath, following the
-     *   URI scheme in {@link ClassPathURIResolver}.
+     * @param xsltUri location of the XSLT stylesheet, located using the
+     *   {@link #getXsltResourceLocator()}
      *
      * @return compiled XSLT stylesheet.
      */

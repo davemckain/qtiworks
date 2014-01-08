@@ -370,7 +370,7 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
 
     /**
      * Returns {@link ResponseDeclaration} for the implicitly-defined
-     * {@link QtiConstants#VARIABLE_NUMBER_OF_ATTEMPTS} variable
+     * {@link QtiConstants#VARIABLE_NUMBER_OF_ATTEMPTS_NAME} variable
      */
     public ResponseDeclaration getNumAttemptsResponseDeclaration() {
         return numAttemptsResponseDeclaration;
@@ -388,7 +388,8 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
 
     /**
      * Gets all explicitly-defined outcomeDeclaration children.
-     * NB: Doesn't include the implicitly-defined {@link QtiConstants#VARIABLE_COMPLETION_STATUS} variable
+     * NB: Doesn't include the implicitly-defined
+     * {@link QtiConstants#VARIABLE_COMPLETION_STATUS_NAME} variable
      *
      * @return outcomeDeclaration children
      */
@@ -400,7 +401,9 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
     /**
      * Gets (first) explicitly-defined outcomeDeclaration with given identifier,
      * or null if no such declaration exists.
-     * NB: Doesn't include the implicitly-defined {@link QtiConstants#VARIABLE_COMPLETION_STATUS} variable
+     * <p>
+     * NB: Doesn't include the implicitly-defined
+     * {@link QtiConstants#VARIABLE_COMPLETION_STATUS_NAME} variable
      *
      * @param identifier given identifier
      * @return outcomeDeclaration with given identifier or null
@@ -420,8 +423,9 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
 
     /**
      * Gets all responseDeclaration children.
-     * NB: Doesn't include the implicitly-defined {@link QtiConstants#VARIABLE_DURATION}
-     * and {@link QtiConstants#VARIABLE_NUMBER_OF_ATTEMPTS} variables.
+     * <p>
+     * NB: Doesn't include the implicitly-defined {@link QtiConstants#VARIABLE_DURATION_NAME}
+     * and {@link QtiConstants#VARIABLE_NUMBER_OF_ATTEMPTS_NAME} variables.
      *
      * @return responseDeclaration children
      */
@@ -433,8 +437,8 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
      * Gets (first) explicitly-defined responseDeclaration with given identifier,
      * or null if no such variable is defined.
      * <p>
-     * NB: Doesn't include the implicitly-defined {@link QtiConstants#VARIABLE_DURATION}
-     * and {@link QtiConstants#VARIABLE_NUMBER_OF_ATTEMPTS} variables.
+     * NB: Doesn't include the implicitly-defined {@link QtiConstants#VARIABLE_DURATION_NAME}
+     * and {@link QtiConstants#VARIABLE_NUMBER_OF_ATTEMPTS_NAME} variables.
      *
      * @param identifier given identifier
      * @return responseDeclaration with given identifier or null

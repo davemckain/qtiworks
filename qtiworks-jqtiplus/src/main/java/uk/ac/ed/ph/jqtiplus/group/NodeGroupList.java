@@ -378,7 +378,8 @@ public final class NodeGroupList implements Serializable, Iterable<NodeGroup<?,?
     /**
      * Gets group supporting the given QTI class name.
      *
-     * @param name name of requested group
+     * @param qtiClassName name of requested group
+     *
      * @return group with given name
      * @throws QtiNodeGroupException if group is not found
      */

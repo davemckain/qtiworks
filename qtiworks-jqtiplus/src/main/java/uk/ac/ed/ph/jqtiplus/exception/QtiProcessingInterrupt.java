@@ -40,7 +40,7 @@ package uk.ac.ed.ph.jqtiplus.exception;
  * Whilst normally it would be bad to use an exception for flow
  * control, this particular use is quite exceptional, and would
  * be very difficult to achieve in any other manner.
- * 
+ *
  * @author Jonathon Hare
  */
 public class QtiProcessingInterrupt extends JqtiException {

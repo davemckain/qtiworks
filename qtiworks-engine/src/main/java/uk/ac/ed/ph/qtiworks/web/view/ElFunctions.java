@@ -50,7 +50,7 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.PageContext;
 
-import org.apache.commons.lang3.StringEscapeUtils;
+import com.google.common.xml.XmlEscapers;
 
 /**
  * Some convenience EL functions for the view/JSP layer.
@@ -130,6 +130,6 @@ public final class ElFunctions {
     }
 
     private static String escapeXml(final String rawString) {
-        return StringEscapeUtils.escapeXml(rawString);
+        return XmlEscapers.xmlContentEscaper().escape(rawString);
     }
 }

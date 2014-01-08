@@ -147,7 +147,7 @@ public abstract class ListValue extends ContainerValue implements Iterable<Singl
     /**
      * Returns true if this container contains given <code>SingleValue</code>; false otherwise.
      *
-     * @param value given <code>SingleValue</code>
+     * @param testValue given <code>SingleValue</code>
      * @return true if this container contains given <code>SingleValue</code>; false otherwise
      */
     public final boolean contains(final SingleValue testValue) {

@@ -159,7 +159,7 @@ public final class TestSessionController extends TestProcessingController {
 
     /**
      * Sets all explicitly-defined (valid) variables to their default value, and the
-     * <code>duration</code> variable to 0, and calls {@link #initialize()} on each
+     * <code>duration</code> variable to 0, and calls {@link #initialize(Date)} on each
      * item in the test plan.
      * <p>
      * Preconditions: None, this can be called at any time.
@@ -169,7 +169,7 @@ public final class TestSessionController extends TestProcessingController {
      * {@link ItemSessionController#initialize(Date)} will be called for each item,
      * <code>duration</code> will be set to 0. Duration tim will not yet start.
      *
-     * @param initialisation timestamp, which must not be null
+     * @param timestamp initialisation timestamp, which must not be null
      *
      * @throws IllegalArgumentException if timestamp is null
      */
@@ -224,7 +224,7 @@ public final class TestSessionController extends TestProcessingController {
     /**
      * Updates the {@link TestSessionState} to indicate that the test has
      * been entered. Returns the number {@link TestPart}s in the test.
-     * The caller would be expected to call {@link #enterNextAvailableTestPart()}
+     * The caller would be expected to call {@link #enterNextAvailableTestPart(Date)}
      * next.
      * <p>
      * Precondition: the test must have been initialized and not have already been entered.
@@ -240,7 +240,7 @@ public final class TestSessionController extends TestProcessingController {
      * @throws QtiCandidateStateException if the test has already been entered.
      *
      * @see #findNextEnterableTestPart()
-     * @see #enterNextAvailableTestPart()
+     * @see #enterNextAvailableTestPart(Date)
      */
     public int enterTest(final Date timestamp) {
         Assert.notNull(timestamp, "timestamp");
@@ -743,7 +743,7 @@ public final class TestSessionController extends TestProcessingController {
      * @throws QtiCandidateStateException if no testPart is selected, if the current testPart is not
      *   open or does not have {@link NavigationMode#NONLINEAR}
      *
-     * @see #selectItemNonlinear(TestPlanNodeKey)
+     * @see #selectItemNonlinear(Date, TestPlanNodeKey)
      */
     public boolean maySelectItemNonlinear(final TestPlanNodeKey itemKey) {
         Assert.notNull(itemKey, "itemKey");
@@ -913,7 +913,7 @@ public final class TestSessionController extends TestProcessingController {
      * navigation mode. An item must be selected. If we are in {@link SubmissionMode#INDIVIDUAL} then
      * the effective {@link ItemSessionControl} for the selected item must allow it to be ended.
      * <p>
-     * Postcondition: Current item session will be ended (if in {@link SubmissionMode#INDIVIDUAL)} or
+     * Postcondition: Current item session will be ended (if in {@link SubmissionMode#INDIVIDUAL} or
      * suspended (if in {@link SubmissionMode#SIMULTANEOUS}). The next available item will be
      * selected, if such a thing exists, taking into account {@link BranchRule}s and {@link PreCondition}s.
      * If there are no more items available then the {@link TestPart} will be ended.
@@ -1396,7 +1396,7 @@ public final class TestSessionController extends TestProcessingController {
      * Postcondition: Candidate comment will be changed.
      *
      * @param timestamp timestamp for this event, which must not be null
-     * @param comment comment to record, which may be null. An empty or blank comment will be
+     * @param candidateComment comment to record, which may be null. An empty or blank comment will be
      *   treated in the same way as a null comment.
      */
     public void setCandidateCommentForCurrentItem(final Date timestamp, final String candidateComment) {
@@ -1425,7 +1425,7 @@ public final class TestSessionController extends TestProcessingController {
      * <p>
      * Postcondition: None
      *
-     * @param key of the item to test, which must not be null
+     * @param itemKey {@link TestPlanNodeKey} of the item to check, which must not be null
      *
      * @throws QtiCandidateStateException if there is no selected {@link TestPart},
      *   if the requested item does not live within the current
@@ -1459,7 +1459,7 @@ public final class TestSessionController extends TestProcessingController {
      * <p>
      * Postcondition: None
      *
-     * @param key of the item to test, which must not be null
+     * @param itemKey {@link TestPlanNodeKey} of the item to check, which must not be null
      *
      * @throws QtiCandidateStateException if there is no selected {@link TestPart},
      *   if the requested item does not live within the current

@@ -39,6 +39,7 @@ import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.internal.util.PropertyOptions;
+import uk.ac.ed.ph.jqtiplus.node.test.AbstractPart;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentSection;
 import uk.ac.ed.ph.jqtiplus.node.test.SectionPart;
@@ -52,7 +53,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Represents an instance of an {@link AbstractPart) (i.e. {@link TestPart},
+ * Represents an instance of an {@link AbstractPart} (i.e. {@link TestPart},
  * {@link AssessmentSection} or {@link AssessmentItemRef}) within a {@link TestPlan}.
  *
  * @see TestPlan

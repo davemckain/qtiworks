@@ -344,7 +344,7 @@ public class TestProcessingController extends TestValidationController implement
     }
 
     /**
-     * Shareable instance of a {@link DereferencedTestVariableHandler} that simply evaluates
+     * Shareable instance of a {@link TestProcessingContext.DereferencedTestVariableHandler} that simply evaluates
      * the resulting variables.
      */
     public static final DereferencedTestVariableHandler variableEvaluator = new DereferencedTestVariableHandler() {

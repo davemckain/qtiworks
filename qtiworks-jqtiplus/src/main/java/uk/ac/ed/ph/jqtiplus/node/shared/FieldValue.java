@@ -229,7 +229,6 @@ public final class FieldValue extends AbstractNode {
      * @param cardinality requested cardinality
      * @param values given list of fieldValues (list of single values)
      * @return value (of any cardinality) from given list of fieldValues (list of single values)
-     * @see #getValues
      */
     public static Value computeValue(final Cardinality cardinality, final List<FieldValue> values) {
         if (values.isEmpty()) {
@@ -273,7 +272,6 @@ public final class FieldValue extends AbstractNode {
      * @param parent parent of constructed fieldValues
      * @param value given value (of any cardinality)
      * @return list of fieldValues (list of single values) from given value (of any cardinality)
-     * @see #getValue
      */
     public static List<FieldValue> computeValues(final FieldValueParent parent, final Value value) {
         final List<FieldValue> values = new ArrayList<FieldValue>();

@@ -173,7 +173,7 @@ public final class IntegerOrVariableRef implements Serializable {
     }
 
     /**
-     * Wrapper for {@link #evaluate(ProcessingContext)} that substitutes a replacement value and emits a
+     * Wrapper for {@link #evaluate(Expression, ProcessingContext)} that substitutes a replacement value and emits a
      * runtime warning if the result was NULL.
      */
     public int evaluateNotNull(final Expression expression, final ProcessingContext context,

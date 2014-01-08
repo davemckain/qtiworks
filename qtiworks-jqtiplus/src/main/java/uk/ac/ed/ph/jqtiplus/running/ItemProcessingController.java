@@ -269,7 +269,7 @@ public class ItemProcessingController extends ItemValidationController implement
                     itemSessionState.setCompletionStatus(value.toQtiString());
                 }
                 else {
-                    throw new IllegalArgumentException("Variable " + QtiConstants.VARIABLE_COMPLETION_STATUS
+                    throw new IllegalArgumentException("Variable " + QtiConstants.VARIABLE_COMPLETION_STATUS_NAME
                             + " must be set to an identifier value");
                 }
             }

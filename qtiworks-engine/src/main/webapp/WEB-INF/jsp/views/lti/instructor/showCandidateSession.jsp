@@ -125,6 +125,6 @@ candidateSessionSummaryReport
           <td align="center" colspan="2">(No outcome values currently recorded)</td>
         </tr>
       </c:if>
-    </body>
+    </tbody>
   </table>
 </page:ltipage>

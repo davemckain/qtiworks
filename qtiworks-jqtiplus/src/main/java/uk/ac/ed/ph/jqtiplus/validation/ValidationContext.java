@@ -109,7 +109,7 @@ public interface ValidationContext extends NotificationFirer {
      * NOTE: If the subject is an {@link AssessmentTest} then this only does a "local" reference
      * to an {@link OutcomeDeclaration} defined within the test.
      *
-     * @see #isValidVariableReference(QtiNode, Identifier)
+     * @see #isValidLocalVariableReference(Identifier)
      * @see #checkLocalVariableReference(QtiNode, ComplexReferenceIdentifier)
      */
     VariableDeclaration checkLocalVariableReference(QtiNode owner, Identifier variableReferenceIdentifier);
@@ -124,7 +124,7 @@ public interface ValidationContext extends NotificationFirer {
      * NOTE: If the subject is an {@link AssessmentTest} then this only does a "local" reference
      * to an {@link OutcomeDeclaration} defined within the test.
      *
-     * @see #isValidVariableReference(QtiNode, ComplexReferenceIdentifier)
+     * @see #isValidLocalVariableReference(ComplexReferenceIdentifier)
      * @see #checkLocalVariableReference(QtiNode, Identifier)
      */
     VariableDeclaration checkLocalVariableReference(QtiNode owner, ComplexReferenceIdentifier variableReferenceIdentifier);

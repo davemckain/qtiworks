@@ -36,7 +36,6 @@ package uk.ac.ed.ph.qtiworks.services.domain;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
@@ -60,8 +59,8 @@ public final class CandidateSessionSummaryMetadata implements Serializable {
     private final ImmutableList<String> otherOutcomeIdentifiers;
 
     public CandidateSessionSummaryMetadata(final String lisResultOutcomeIdentifier,
-            final Collection<String> numericOutcomeIdentifiers,
-            final Collection<String> otherOutcomeIdentifiers) {
+            final Iterable<String> numericOutcomeIdentifiers,
+            final Iterable<String> otherOutcomeIdentifiers) {
         this.lisResultOutcomeIdentifier = lisResultOutcomeIdentifier;
         this.numericOutcomeIdentifiers = ImmutableList.<String>copyOf(numericOutcomeIdentifiers);
         this.otherOutcomeIdentifiers = ImmutableList.<String>copyOf(otherOutcomeIdentifiers);

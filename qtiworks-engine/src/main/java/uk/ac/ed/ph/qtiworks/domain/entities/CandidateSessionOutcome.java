@@ -72,7 +72,7 @@ import org.hibernate.annotations.Type;
             query="SELECT xo"
                 + "  FROM CandidateSessionOutcome xo"
                 + "  WHERE xo.candidateSession.delivery = :delivery"
-                + "  ORDER BY xo.id"),
+                + "  ORDER BY xo.candidateSession.xid, xo.id"),
     @NamedQuery(name="CandidateSessionOutcome.deleteForSession",
             query="DELETE FROM CandidateSessionOutcome xo"
                 + "  WHERE xo.candidateSession = :candidateSession")

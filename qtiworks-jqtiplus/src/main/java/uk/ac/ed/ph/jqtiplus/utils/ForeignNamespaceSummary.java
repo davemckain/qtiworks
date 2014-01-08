@@ -34,33 +34,32 @@
 package uk.ac.ed.ph.jqtiplus.utils;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 import java.io.Serializable;
 import java.util.Set;
 
 /**
- * Result Object for {@link QueryUtils#findForeignNamespaces(QtiNode)}
+ * Result Object for {@link QueryUtils#findForeignNamespaces(Iterable)}
  *
  * @author David McKain
  */
 public final class ForeignNamespaceSummary implements Serializable {
-    
+
     private static final long serialVersionUID = 203033317863417550L;
-    
+
     private final Set<String> elementNamespaceUris;
     private final Set<String> attributeNamespaceUris;
 
-    public ForeignNamespaceSummary(Set<String> elementNamespaceUris, Set<String> attributeNamespaceUris) {
+    public ForeignNamespaceSummary(final Set<String> elementNamespaceUris, final Set<String> attributeNamespaceUris) {
         this.elementNamespaceUris = ObjectUtilities.unmodifiableSet(elementNamespaceUris);
         this.attributeNamespaceUris = ObjectUtilities.unmodifiableSet(attributeNamespaceUris);
     }
-    
+
     public Set<String> getElementNamespaceUris() {
         return elementNamespaceUris;
     }
-    
+
     public Set<String> getAttributeNamespaceUris() {
         return attributeNamespaceUris;
     }
-} 
+}

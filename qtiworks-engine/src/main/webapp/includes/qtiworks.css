@@ -8,6 +8,7 @@ All Rights Reserved
 body {
   background-color: white;
   font-family: 'Open Sans', sans-serif;
+  min-width: 780px;
 }
 
 a:link, a:visited {

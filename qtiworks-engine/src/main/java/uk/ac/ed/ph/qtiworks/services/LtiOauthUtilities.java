@@ -62,10 +62,11 @@ import net.oauth.client.OAuthResponseMessage;
 import net.oauth.client.httpclient4.HttpClient4;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
+
+import com.google.common.xml.XmlEscapers;
 
 /**
  * Utility methods for handling LTI and OAuth data, and managing LIS results.
@@ -267,7 +268,7 @@ public final class LtiOauthUtilities {
                 + "    <replaceResultRequest>\n"
                 + "      <resultRecord>\n"
                 + "        <sourcedGUID>\n"
-                + "          <sourcedId>" + StringEscapeUtils.escapeXml(lisResultSourcedid) + "</sourcedId>\n"
+                + "          <sourcedId>" + XmlEscapers.xmlContentEscaper().escape(lisResultSourcedid) + "</sourcedId>\n"
                 + "        </sourcedGUID>\n"
                 + "        <result>\n"
                 + "          <resultScore>\n"
