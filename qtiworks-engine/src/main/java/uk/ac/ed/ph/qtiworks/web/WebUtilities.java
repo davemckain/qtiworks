@@ -33,6 +33,11 @@
  */
 package uk.ac.ed.ph.qtiworks.web;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 
@@ -59,5 +64,11 @@ public final class WebUtilities {
                     + " for filter " + config.getFilterName());
         }
         return result;
+    }
+
+    public static String formatHttpDate(final Date date) {
+        final DateFormat httpDateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz");
+        httpDateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+        return httpDateFormat.format(date);
     }
 }

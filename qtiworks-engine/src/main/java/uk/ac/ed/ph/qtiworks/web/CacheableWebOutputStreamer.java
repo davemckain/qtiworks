@@ -65,7 +65,7 @@ public final class CacheableWebOutputStreamer extends ServletOutputStreamer {
         setContentLength(contentLength);
         setLastModifiedTime(lastModifiedTime);
         response.setHeader("Cache-Control", "max-age=" + maxCacheAge + ", private, must-revalidate");
-        response.setHeader("Expires", formatHttpDate(new Date(lastModifiedTime.getTime() + 1000L * maxCacheAge)));
+        response.setHeader("Expires", WebUtilities.formatHttpDate(new Date(lastModifiedTime.getTime() + 1000L * maxCacheAge)));
         transferResultStream(resultStream);
     }
 }

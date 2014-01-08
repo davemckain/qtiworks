@@ -37,10 +37,7 @@ import uk.ac.ed.ph.qtiworks.services.domain.OutputStreamer;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.TimeZone;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -57,15 +54,10 @@ abstract class ServletOutputStreamer implements OutputStreamer {
 
     protected final HttpServletResponse response;
     protected final String resourceEtag;
-    protected final DateFormat httpDateFormat;
 
     public ServletOutputStreamer(final HttpServletResponse response, final String resourceEtag) {
         this.response = response;
         this.resourceEtag = resourceEtag;
-
-        /* HTTP date format. NB: timezone must be GMT! */
-        this.httpDateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz");
-        httpDateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
     }
 
     protected void transferResultStream(final InputStream resultStream) throws IOException {
@@ -93,10 +85,6 @@ abstract class ServletOutputStreamer implements OutputStreamer {
     }
 
     protected void setLastModifiedTime(final Date date) {
-        response.setHeader("Last-Modified", formatHttpDate(date));
-    }
-
-    protected String formatHttpDate(final Date date) {
-        return httpDateFormat.format(date);
+        response.setHeader("Last-Modified", WebUtilities.formatHttpDate(date));
     }
 }
