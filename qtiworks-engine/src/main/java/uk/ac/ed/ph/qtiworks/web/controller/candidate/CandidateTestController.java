@@ -145,7 +145,7 @@ public class CandidateTestController {
             final HttpServletResponse response)
             throws DomainEntityNotFoundException, IOException, CandidateForbiddenException {
         /* Create appropriate options that link back to this controller */
-        final String sessionBaseUrl = "/candidate/session/" + xid + "/" + sessionToken;
+        final String sessionBaseUrl = "/candidate/testsession/" + xid + "/" + sessionToken;
         final AuthorViewRenderingOptions renderingOptions = new AuthorViewRenderingOptions();
         configureBaseRenderingOptions(sessionBaseUrl, renderingOptions);
 

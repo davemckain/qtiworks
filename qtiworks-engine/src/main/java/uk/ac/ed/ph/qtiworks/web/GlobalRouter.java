@@ -54,8 +54,9 @@ public final class GlobalRouter {
 
     public static String buildSessionStartWithinContextUrl(final CandidateSession candidateSession) {
         final boolean isItem = candidateSession.getDelivery().getAssessment().getAssessmentType()==AssessmentObjectType.ASSESSMENT_ITEM;
-        final String subPath = isItem ? "session" : "testsession";
-        return "/candidate/" + subPath + "/" + candidateSession.getId()
+        return "/candidate/"
+                + (isItem ? "itemsession" : "testsession")
+                + "/" + candidateSession.getId()
                 + "/" + candidateSession.getSessionToken();
     }
 
