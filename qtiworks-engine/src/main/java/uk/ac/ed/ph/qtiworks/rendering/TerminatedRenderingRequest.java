@@ -34,7 +34,8 @@
 package uk.ac.ed.ph.qtiworks.rendering;
 
 /**
- * FIXME: Document this type
+ * Encapsulates an (explicit) rendering request for a terminated session. (It's fairly
+ * pointless - just required for class hierarchy purposes.)
  *
  * @author David McKain
  */
