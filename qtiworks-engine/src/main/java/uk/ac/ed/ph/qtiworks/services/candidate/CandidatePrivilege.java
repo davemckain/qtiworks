@@ -36,16 +36,22 @@ package uk.ac.ed.ph.qtiworks.services.candidate;
 /**
  * Represents the various privileges a candidate user can have against a particular session.
  *
+ * FIXME: Document these better!
+ *
  * @see CandidateForbiddenException
  *
  * @author David McKain
  */
 public enum CandidatePrivilege {
 
+    /* General */
     ACCESS_CANDIDATE_SESSION,
     ACCESS_CANDIDATE_SESSION_AS_ITEM,
     ACCESS_CANDIDATE_SESSION_AS_TEST,
     ACCESS_ENTERED_SESSION,
+    ACCESS_AUTHOR_INFO,
+
+    /* Items */
     MAKE_RESPONSES,
     SUBMIT_COMMENT,
     ACCESS_BLACKLISTED_ASSESSMENT_FILE,
@@ -58,8 +64,8 @@ public enum CandidatePrivilege {
     HARD_RESET_SESSION_WHEN_ENDED,
     SOLUTION_WHEN_INTERACTING,
     SOLUTION_WHEN_ENDED,
-    ACCESS_AUTHOR_INFO,
 
+    /* Tests */
     SELECT_NONLINEAR_MENU,
     SELECT_NONLINEAR_TEST_ITEM,
     FINISH_LINEAR_TEST_ITEM,
