@@ -176,7 +176,7 @@ public class CandidateTestDeliveryService {
             throws CandidateForbiddenException, DomainEntityNotFoundException {
         final CandidateSession candidateSession = lookupCandidateTestSession(xid, sessionToken);
         final CandidateEvent mostRecentEvent = candidateDataService.getMostRecentEvent(candidateSession);
-        if (mostRecentEvent==null) {
+        if (mostRecentEvent==null && !candidateSession.isTerminated()) {
             enterCandidateSession(candidateSession);
         }
         return candidateSession;
