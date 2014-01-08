@@ -55,9 +55,9 @@ import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliveryDao;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
-import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
-import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -67,8 +67,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Helper service for launching new candidate sessions on a {@link Delivery} of an
- * {@link AssessmentItem} or {@link AssessmentTest}
+ * Helper service for creating new (or reconnecting to existing) {@link CandidateSession}s
+ * on a {@link Delivery} or {@link Assessment}.
  *
  * @see CandidateItemDeliveryService
  * @see CandidateTestDeliveryService
@@ -157,13 +157,16 @@ public class CandidateSessionStarter {
         /* Extract Delivery to be launched */
         final Delivery delivery = candidate.getDelivery();
 
-        /* Finally make sure delivery is open */
+        /* Make sure delivery is open */
         if (!delivery.isOpen()) {
             throw new PrivilegeException(candidate, Privilege.LAUNCH_CLOSED_DELIVERY, delivery);
         }
 
-        /* Start the session */
-        return launchCandidateSession(candidate, delivery, false, exitUrl, lisOutcomeServiceUrl, lisResultSourcedid);
+        /* Launch the session */
+        return launchCandidateSession(candidate, delivery,
+                false, /* Never author mode here */
+                sanitiseExitUrl(exitUrl), /* Don't necessarily trust exitUrl passed from TC */
+                lisOutcomeServiceUrl, lisResultSourcedid);
     }
 
     public CandidateSession launchDomainLevelLtiCandidateSession(final LtiUser candidate, final LtiResource ltiResource,
@@ -186,8 +189,10 @@ public class CandidateSessionStarter {
         /* Will use author mode if candidate is an instructor */
         final boolean authorMode = candidate.getUserRole()==UserRole.INSTRUCTOR;
 
-        /* Start the session */
-        return launchCandidateSession(candidate, delivery, authorMode, exitUrl, lisOutcomeServiceUrl, lisResultSourcedid);
+        /* Launch the session */
+        return launchCandidateSession(candidate, delivery, authorMode,
+                sanitiseExitUrl(exitUrl), /* Don't necessarily trust exitUrl passed from TC */
+                lisOutcomeServiceUrl, lisResultSourcedid);
     }
 
     //----------------------------------------------------
@@ -258,7 +263,27 @@ public class CandidateSessionStarter {
         candidateSessionDao.persist(candidateSession);
         auditLogger.recordEvent("Created and initialised new CandidateSession #" + candidateSession.getId()
                 + " on Delivery #" + delivery.getId());
-
         return candidateSession;
+    }
+
+    private String sanitiseExitUrl(final String exitUrl) {
+        if (exitUrl==null) {
+            return null;
+        }
+        /* Allow valid http:// or https:// URIs only */
+        final URI exitUrlUri;
+        try {
+            exitUrlUri = new URI(exitUrl);
+        }
+        catch (final URISyntaxException e) {
+            auditLogger.recordEvent("Rejecting exit URL " + exitUrl + " - not a URI");
+            return null;
+        }
+        final String scheme = exitUrlUri.getScheme();
+        if (!scheme.equals("http") && !scheme.equals("https")) {
+            auditLogger.recordEvent("Rejecting exit URL " + exitUrl + " - only accepting http and https schemes");
+        }
+        /* If still here, then OK */
+        return exitUrl;
     }
 }

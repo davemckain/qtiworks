@@ -323,12 +323,7 @@ public class CandidateItemController {
     public String exitSession(@PathVariable final long xid, @PathVariable final String sessionToken)
             throws DomainEntityNotFoundException, CandidateForbiddenException, CandidateSessionTerminatedException {
         final CandidateSession candidateSession = candidateItemDeliveryService.exitCandidateSession(xid, sessionToken);
-        String redirect = redirectToExitUrl(candidateSession.getExitUrl());
-        if (redirect==null) {
-            /* No/unsafe redirect specified, so get the rendered to generate an "assessment is complete" page */
-            redirect = redirectToRenderSession(xid, sessionToken);
-        }
-        return redirect;
+        return redirectToExitUrl(candidateSession);
     }
 
     //----------------------------------------------------
@@ -418,10 +413,14 @@ public class CandidateItemController {
         return redirectToRenderSession(candidateSession.getId(), candidateSession.getSessionToken());
     }
 
-    private String redirectToExitUrl(final String exitUrl) {
-        if (exitUrl!=null && (exitUrl.startsWith("/") || exitUrl.startsWith("http://") || exitUrl.startsWith("https://"))) {
-            return "redirect:" + exitUrl;
+    private String redirectToExitUrl(final CandidateSession candidateSession) {
+        final String exitUrl = candidateSession.getExitUrl();
+        if (exitUrl==null) {
+            /* No (or unsafe) exit URL provided, so redirect to normal rendering, which will
+             * show a generic "this assessment is now complete" page.
+             */
+            return redirectToRenderSession(candidateSession);
         }
-        return null;
+        return "redirect:" + exitUrl;
     }
 }
