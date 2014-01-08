@@ -61,9 +61,17 @@ public class BaseTypeAcceptTest {
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-                { "identifier", BaseType.IDENTIFIER }, { "boolean", BaseType.BOOLEAN }, { "integer", BaseType.INTEGER },
-                { "float", BaseType.FLOAT }, { "string", BaseType.STRING }, { "point", BaseType.POINT }, { "pair", BaseType.PAIR },
-                { "directedPair", BaseType.DIRECTED_PAIR }, { "duration", BaseType.DURATION }, { "file", BaseType.FILE }, { "uri", BaseType.URI },
+                { "identifier", BaseType.IDENTIFIER },
+                { "boolean", BaseType.BOOLEAN },
+                { "integer", BaseType.INTEGER },
+                { "float", BaseType.FLOAT },
+                { "string", BaseType.STRING },
+                { "point", BaseType.POINT },
+                { "pair", BaseType.PAIR },
+                { "directedPair", BaseType.DIRECTED_PAIR },
+                { "duration", BaseType.DURATION },
+                { "file", BaseType.FILE },
+                { "uri", BaseType.URI },
         });
     }
 

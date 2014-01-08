@@ -61,10 +61,20 @@ public class BaseTypeRefuseTest {
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-                { "Identifier" }, { "IDENTIFIER" }, { "Boolean" }, { "BOOLEAN" }, { "Integer" }, { "INTEGER" }, { "Float" },
-                { "FLOAT" }, { "String" }, { "STRING" }, { "Point" }, { "POINT" }, { "Pair" }, { "PAIR" }, { "directedpair" }, { "directed_pair" },
-                { "Directedpair" }, { "Directed_pair" }, { "DirectedPair" }, { "Directed_Pair" }, { "DIRECTEDPAIR" }, { "DIRECTED_PAIR" }, { "Duration" },
-                { "DURATION" }, { "File" }, { "FILE" }, { "Uri" }, { "URI" },
+                { "Identifier" }, { "IDENTIFIER" },
+                { "Boolean" }, { "BOOLEAN" },
+                { "Integer" }, { "INTEGER" },
+                { "Float" }, { "FLOAT" },
+                { "String" }, { "STRING" },
+                { "Point" }, { "POINT" },
+                { "Pair" }, { "PAIR" },
+                { "directedpair" }, { "directed_pair" },
+                { "Directedpair" }, { "Directed_pair" },
+                { "DirectedPair" }, { "Directed_Pair" },
+                { "DIRECTEDPAIR" }, { "DIRECTED_PAIR" },
+                { "Duration" }, { "DURATION" },
+                { "File" }, { "FILE" },
+                { "Uri" }, { "URI" },
         });
     }
 
