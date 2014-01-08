@@ -91,12 +91,30 @@ public class CandidateTestController {
     private CandidateTestDeliveryService candidateTestDeliveryService;
 
     //----------------------------------------------------
+    // Session containment and launching
+
+    @RequestMapping(value="/testsession/{xid}/{sessionToken}", method=RequestMethod.GET)
+    public String driveSession(final Model model, @PathVariable final long xid, @PathVariable final String sessionToken) {
+        model.addAttribute("sessionEntryPath", "/candidate/testsession/" + xid + "/" + sessionToken + "/enter");
+        return "launch";
+    }
+
+    @RequestMapping(value="/testsession/{xid}/{sessionToken}/enter", method=RequestMethod.POST)
+    public String enterSession(@PathVariable final long xid, @PathVariable final String sessionToken)
+            throws DomainEntityNotFoundException, CandidateForbiddenException {
+        candidateTestDeliveryService.enterOrReenterCandidateSession(xid, sessionToken);
+
+        /* Redirect to rendering of current session state */
+        return redirectToRenderSession(xid, sessionToken);
+    }
+
+    //----------------------------------------------------
     // Rendering
 
     /**
      * Renders the current state of the given session
      */
-    @RequestMapping(value="/testsession/{xid}/{sessionToken}", method=RequestMethod.GET)
+    @RequestMapping(value="/testsession/{xid}/{sessionToken}/render", method=RequestMethod.GET)
     public void renderCurrentTestSessionState(@PathVariable final long xid, @PathVariable final String sessionToken,
             final HttpServletResponse response)
             throws DomainEntityNotFoundException, IOException, CandidateForbiddenException {
@@ -448,7 +466,7 @@ public class CandidateTestController {
     }
 
     private String redirectToRenderSession(final long xid, final String sessionToken) {
-        return "redirect:/candidate/testsession/" + xid + "/" + sessionToken;
+        return "redirect:/candidate/testsession/" + xid + "/" + sessionToken + "/render";
     }
 
     private String redirectToExitUrl(final String exitUrl) {

@@ -185,6 +185,10 @@ public class CandidateDataService {
     // Item or Test methods
 
     public AssessmentResult computeAssessmentResult(final CandidateEvent candidateEvent) {
+        if (candidateEvent==null) {
+            /* Session not entered, so return empty result */
+            return new AssessmentResult();
+        }
         final AssessmentObjectType assessmentType = candidateEvent.getCandidateSession().getDelivery().getAssessment().getAssessmentType();
         switch (assessmentType) {
             case ASSESSMENT_ITEM:
@@ -208,8 +212,8 @@ public class CandidateDataService {
         streamAssessmentResult(mostRecentEvent, outputStream);
     }
 
-    public void streamAssessmentResult(final CandidateEvent candidateEvent, final OutputStream outputStream) {
-        /* Generate result Object from current state */
+    private void streamAssessmentResult(final CandidateEvent candidateEvent, final OutputStream outputStream) {
+        /* Generate AssessmentResult from event */
         final AssessmentResult assessmentResult = computeAssessmentResult(candidateEvent);
 
         /* Send result */
@@ -265,10 +269,6 @@ public class CandidateDataService {
      * <p>
      * This will return null if the item can't be started because its {@link ItemProcessingMap}
      * can't be created, e.g. if its XML can't be parsed.
-     *
-     * @param delivery
-     * @param notificationRecorder
-     * @return
      */
     public ItemSessionController createNewItemSessionStateAndController(final User candidate, final Delivery delivery, final NotificationRecorder notificationRecorder) {
         ensureItemDelivery(delivery);
@@ -359,11 +359,6 @@ public class CandidateDataService {
         return requestedLimitIntValue > 0 ? requestedLimitIntValue : JqtiPlus.DEFAULT_TEMPLATE_PROCESSING_LIMIT;
     }
 
-    public ItemSessionState computeCurrentItemSessionState(final CandidateSession candidateSession)  {
-        final CandidateEvent mostRecentItemEvent = getMostRecentEvent(candidateSession);
-        return loadItemSessionState(mostRecentItemEvent);
-    }
-
     public AssessmentResult computeAndRecordItemAssessmentResult(final CandidateSession candidateSession, final ItemSessionController itemSessionController) {
         final AssessmentResult assessmentResult = computeItemAssessmentResult(candidateSession, itemSessionController);
         recordItemAssessmentResult(candidateSession, assessmentResult);
@@ -403,7 +398,6 @@ public class CandidateDataService {
         final Document document = loadStateDocument(candidateEvent);
         return TestSessionStateXmlMarshaller.unmarshal(document.getDocumentElement());
     }
-
 
     /**
      * Attempts to create a fresh {@link TestSessionState} wrapped into a {@link TestSessionController}
@@ -545,11 +539,6 @@ public class CandidateDataService {
         return event;
     }
 
-    public TestSessionState computeCurrentTestSessionState(final CandidateSession candidateSession)  {
-        final CandidateEvent mostRecentTestEvent = getMostRecentEvent(candidateSession);
-        return loadTestSessionState(mostRecentTestEvent);
-    }
-
     public AssessmentResult computeTestAssessmentResult(final CandidateSession candidateSession, final TestSessionController testSessionController) {
         final URI sessionIdentifierSourceId = URI.create(qtiWorksDeploymentSettings.getBaseUrl());
         final String sessionIdentifier = "testsession/" + candidateSession.getId();
@@ -580,12 +569,13 @@ public class CandidateDataService {
     //----------------------------------------------------
     // General helpers
 
+    /**
+     * Returns the most recently-recorded {@link CandidateEvent} for the given {@link CandidateSession}.
+     * The result will be null if and only if the {@link CandidateSession} has been created but not
+     * yet entered.
+     */
     public CandidateEvent getMostRecentEvent(final CandidateSession candidateSession)  {
-        final CandidateEvent mostRecentEvent = candidateEventDao.getNewestEventInSession(candidateSession);
-        if (mostRecentEvent==null) {
-            throw new QtiWorksLogicException("Session has no events registered. Current logic should not have allowed this!");
-        }
-        return mostRecentEvent;
+        return candidateEventDao.getNewestEventInSession(candidateSession);
     }
 
     private void storeStateDocument(final CandidateEvent candidateEvent, final Document stateXml) {

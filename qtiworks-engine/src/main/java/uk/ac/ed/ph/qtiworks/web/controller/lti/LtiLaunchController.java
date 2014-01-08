@@ -117,7 +117,7 @@ public class LtiLaunchController {
 
             /* Start/reuse candidate session */
             try {
-                final CandidateSession candidateSession = candidateSessionStarter.createDomainLevelLtiCandidateSession(ltiUser,
+                final CandidateSession candidateSession = candidateSessionStarter.launchDomainLevelLtiCandidateSession(ltiUser,
                         ltiResource, exitUrl, lisOutcomeServiceUrl, lisResultSourcedid);
                 return GlobalRouter.buildSessionStartRedirect(candidateSession);
             }
@@ -150,7 +150,7 @@ public class LtiLaunchController {
         /* Start/reuse candidate session */
         final LtiUser ltiUser = decodedLtiLaunch.getLtiUser();
         try {
-            final CandidateSession candidateSession = candidateSessionStarter.createLinkLevelLtiCandidateSession(ltiUser,
+            final CandidateSession candidateSession = candidateSessionStarter.launchLinkLevelLtiCandidateSession(ltiUser,
                     exitUrl, lisOutcomeServiceUrl, lisResultSourcedid);
             return GlobalRouter.buildSessionStartRedirect(candidateSession);
         }

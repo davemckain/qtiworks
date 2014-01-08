@@ -100,7 +100,7 @@ public class UniqurateStandaloneRunner {
             }
             final Delivery delivery = assessmentManagementService.createDemoDelivery(assessment, null);
             final String exitUrl = "/web/anonymous/standalonerunner";
-            final CandidateSession candidateSession = candidateSessionStarter.createCandidateSession(delivery, true, exitUrl, null, null);
+            final CandidateSession candidateSession = candidateSessionStarter.launchCandidateSession(delivery, true, exitUrl, null, null);
 
             /* Redirect to candidate dispatcher */
             return GlobalRouter.buildSessionStartRedirect(candidateSession);

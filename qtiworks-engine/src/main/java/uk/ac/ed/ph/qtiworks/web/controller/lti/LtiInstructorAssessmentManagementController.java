@@ -371,7 +371,7 @@ public class LtiInstructorAssessmentManagementController {
 
     private String runDelivery(final Delivery delivery, final boolean authorMode, final String exitUrl)
             throws PrivilegeException {
-        final CandidateSession candidateSession = candidateSessionStarter.createCandidateSession(delivery, authorMode, exitUrl, null, null);
+        final CandidateSession candidateSession = candidateSessionStarter.launchCandidateSession(delivery, authorMode, exitUrl, null, null);
         return GlobalRouter.buildSessionStartRedirect(candidateSession);
     }
 

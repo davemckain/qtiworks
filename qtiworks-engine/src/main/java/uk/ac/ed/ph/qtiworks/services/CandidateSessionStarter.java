@@ -40,10 +40,7 @@ import uk.ac.ed.ph.qtiworks.domain.Privilege;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateTestEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiLaunchType;
@@ -60,14 +57,7 @@ import uk.ac.ed.ph.qtiworks.services.dao.DeliveryDao;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
-import uk.ac.ed.ph.jqtiplus.notification.NotificationLevel;
-import uk.ac.ed.ph.jqtiplus.notification.NotificationRecorder;
-import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
-import uk.ac.ed.ph.jqtiplus.running.TestSessionController;
-import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
-import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -119,10 +109,10 @@ public class CandidateSessionStarter {
     //-------------------------------------------------
     // System samples
 
-    public CandidateSession createSystemSampleSession(final long aid, final String exitUrl)
+    public CandidateSession launchSystemSampleSession(final long aid, final String exitUrl)
             throws PrivilegeException, DomainEntityNotFoundException {
         final Delivery sampleDelivery = lookupSystemSampleDelivery(aid);
-        return createCandidateSession(sampleDelivery, true, exitUrl, null, null);
+        return launchCandidateSession(sampleDelivery, true, exitUrl, null, null);
     }
 
     private Delivery lookupSystemSampleDelivery(final long aid)
@@ -146,7 +136,6 @@ public class CandidateSessionStarter {
         return assessment;
     }
 
-
     //----------------------------------------------------
     // Single delivery launches (currently LTI only)
 
@@ -156,7 +145,7 @@ public class CandidateSessionStarter {
      * <p>
      * Access controls are checked on the {@link Delivery}.
      */
-    public CandidateSession createLinkLevelLtiCandidateSession(final LtiUser candidate,
+    public CandidateSession launchLinkLevelLtiCandidateSession(final LtiUser candidate,
             final String exitUrl, final String lisOutcomeServiceUrl, final String lisResultSourcedid)
             throws PrivilegeException {
         /* Make sure this is the correct type of user */
@@ -174,10 +163,10 @@ public class CandidateSessionStarter {
         }
 
         /* Start the session */
-        return createCandidateSession(candidate, delivery, false, exitUrl, lisOutcomeServiceUrl, lisResultSourcedid);
+        return launchCandidateSession(candidate, delivery, false, exitUrl, lisOutcomeServiceUrl, lisResultSourcedid);
     }
 
-    public CandidateSession createDomainLevelLtiCandidateSession(final LtiUser candidate, final LtiResource ltiResource,
+    public CandidateSession launchDomainLevelLtiCandidateSession(final LtiUser candidate, final LtiResource ltiResource,
             final String exitUrl, final String lisOutcomeServiceUrl, final String lisResultSourcedid)
             throws PrivilegeException {
         Assert.notNull(candidate, "candidate");
@@ -198,7 +187,7 @@ public class CandidateSessionStarter {
         final boolean authorMode = candidate.getUserRole()==UserRole.INSTRUCTOR;
 
         /* Start the session */
-        return createCandidateSession(candidate, delivery, authorMode, exitUrl, lisOutcomeServiceUrl, lisResultSourcedid);
+        return launchCandidateSession(candidate, delivery, authorMode, exitUrl, lisOutcomeServiceUrl, lisResultSourcedid);
     }
 
     //----------------------------------------------------
@@ -209,12 +198,12 @@ public class CandidateSessionStarter {
      * <p>
      * NO ACCESS controls are checked on the {@link Delivery}
      */
-    public CandidateSession createCandidateSession(final Delivery delivery, final boolean authorMode,
+    public CandidateSession launchCandidateSession(final Delivery delivery, final boolean authorMode,
             final String exitUrl, final String lisOutcomeServiceUrl, final String lisResultSourcedid)
             throws PrivilegeException {
         Assert.notNull(delivery, "delivery");
         final User candidate = identityService.getCurrentThreadUser();
-        return createCandidateSession(candidate, delivery, authorMode, exitUrl, lisOutcomeServiceUrl, lisResultSourcedid);
+        return launchCandidateSession(candidate, delivery, authorMode, exitUrl, lisOutcomeServiceUrl, lisResultSourcedid);
     }
 
     /**
@@ -222,7 +211,7 @@ public class CandidateSessionStarter {
      * <p>
      * NO ACCESS controls are checked on the {@link User} and {@link Delivery}
      */
-    public CandidateSession createCandidateSession(final User candidate, final Delivery delivery,
+    public CandidateSession launchCandidateSession(final User candidate, final Delivery delivery,
             final boolean authorMode, final String exitUrl, final String lisOutcomeServiceUrl,
             final String lisResultSourcedid)
             throws PrivilegeException {
@@ -245,50 +234,16 @@ public class CandidateSessionStarter {
         final List<CandidateSession> existingSessions = candidateSessionDao.getNonTerminatedForDeliveryAndCandidate(delivery, candidate);
         if (!existingSessions.isEmpty()) {
             final CandidateSession mostRecent = existingSessions.get(existingSessions.size()-1);
-            auditLogger.recordEvent("Reconnected to CandidateSession #" + mostRecent.getId()
+            auditLogger.recordEvent("Reconnected to existing CandidateSession #" + mostRecent.getId()
                     + " on Delivery #" + delivery.getId());
             return mostRecent;
         }
 
-        /* Now branch depending on whether this is an item or test */
-        final Assessment assessment = delivery.getAssessment();
-        switch (assessment.getAssessmentType()) {
-            case ASSESSMENT_ITEM:
-                return createCandidateItemSession(candidate, delivery, authorMode, exitUrl, lisOutcomeServiceUrl, lisResultSourcedid);
-
-            case ASSESSMENT_TEST:
-                return createCandidateTestSession(candidate, delivery, authorMode, exitUrl, lisOutcomeServiceUrl, lisResultSourcedid);
-
-            default:
-                throw new QtiWorksLogicException("Unexpected switch case " + assessment.getAssessmentType());
-        }
-    }
-
-    private CandidateSession createCandidateItemSession(final User candidate, final Delivery delivery,
-            final boolean authorMode, final String exitUrl,
-            final String lisOutcomeServiceUrl, final String lisResultSourcedid) {
-        /* Set up listener to record any notifications */
-        final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
-
-        /* Create fresh JQTI+ state Object and try to create controller */
-        final ItemSessionController itemSessionController = candidateDataService.createNewItemSessionStateAndController(candidate, delivery, notificationRecorder);
-        if (itemSessionController==null) {
-            return handleStartupExplosion(delivery, candidate, exitUrl);
-        }
-
-        /* Try to Initialise JQTI+ state */
-        final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
-        try {
-            final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
-            itemSessionController.initialize(timestamp);
-            itemSessionController.performTemplateProcessing(timestamp);
-            itemSessionController.enterItem(timestamp);
-        }
-        catch (final RuntimeException e) {
-            return handleStartupExplosion(delivery, candidate, exitUrl);
-        }
-
-        /* Create new session entity and put into appropriate initial state */
+        /* No existing session to reconnect to, so create a new session.
+         *
+         * (NB: The session will later need to be explicitly entered before anything can be done
+         * with it.)
+         */
         final CandidateSession candidateSession = new CandidateSession();
         candidateSession.setSessionToken(ServiceUtilities.createRandomAlphanumericToken(DomainConstants.CANDIDATE_SESSION_TOKEN_LENGTH));
         candidateSession.setExitUrl(exitUrl);
@@ -298,106 +253,12 @@ public class CandidateSessionStarter {
         candidateSession.setDelivery(delivery);
         candidateSession.setAuthorMode(authorMode);
         candidateSession.setClosed(false);
+        candidateSession.setTerminated(false);
+        candidateSession.setExploded(false);
         candidateSessionDao.persist(candidateSession);
-
-        /* Handle immediate end of session */
-        if (itemSessionState.isEnded()) {
-            candidateSessionCloser.closeCandidateItemSession(candidateSession, itemSessionController);
-        }
-
-        /* Record and log event */
-        final CandidateEvent candidateEvent = candidateDataService.recordCandidateItemEvent(candidateSession, CandidateItemEventType.ENTER, itemSessionState, notificationRecorder);
-        candidateAuditLogger.logCandidateEvent(candidateEvent);
-
-        /* Record current result state */
-        candidateDataService.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
-
         auditLogger.recordEvent("Created and initialised new CandidateSession #" + candidateSession.getId()
                 + " on Delivery #" + delivery.getId());
+
         return candidateSession;
     }
-
-    //----------------------------------------------------
-    // Test session creation
-
-    private CandidateSession createCandidateTestSession(final User candidate, final Delivery delivery,
-            final boolean authorMode, final String exitUrl, final String lisOutcomeServiceUrl,
-            final String lisResultSourcedid) {
-        /* Set up listener to record any notifications */
-        final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
-
-        /* Create fresh JQTI+ state & controller for it */
-        final TestSessionController testSessionController = candidateDataService.createNewTestSessionStateAndController(candidate, delivery, notificationRecorder);
-        if (testSessionController==null) {
-            return handleStartupExplosion(delivery, candidate, exitUrl);
-        }
-
-        /* Initialise test state and enter test */
-        final TestSessionState testSessionState = testSessionController.getTestSessionState();
-        final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
-        try {
-            testSessionController.initialize(timestamp);
-            final int testPartCount = testSessionController.enterTest(timestamp);
-            if (testPartCount==1) {
-                /* If there is only testPart, then enter this (if possible).
-                 * (Note that this may cause the test to exit immediately if there is a failed
-                 * preCondition on this part.)
-                 */
-                testSessionController.enterNextAvailableTestPart(timestamp);
-            }
-            else {
-                /* Don't enter first testPart yet - we shall tell candidate that
-                 * there are multiple parts and let them enter manually.
-                 */
-            }
-        }
-        catch (final RuntimeException e) {
-            return handleStartupExplosion(delivery, candidate, exitUrl);
-        }
-
-        /* Create new session entity and put into appropriate initial state */
-        final CandidateSession candidateSession = new CandidateSession();
-        candidateSession.setSessionToken(ServiceUtilities.createRandomAlphanumericToken(DomainConstants.CANDIDATE_SESSION_TOKEN_LENGTH));
-        candidateSession.setExitUrl(exitUrl);
-        candidateSession.setLisOutcomeServiceUrl(lisOutcomeServiceUrl);
-        candidateSession.setLisResultSourcedid(lisResultSourcedid);
-        candidateSession.setCandidate(candidate);
-        candidateSession.setDelivery(delivery);
-        candidateSession.setAuthorMode(authorMode);
-        candidateSession.setClosed(false);
-        candidateSessionDao.persist(candidateSession);
-
-        /* Handle immediate end of session */
-        if (testSessionState.isEnded()) {
-            candidateSessionCloser.closeCandidateTestSession(candidateSession, testSessionController);
-        }
-
-        /* Record and log event */
-        final CandidateEvent candidateEvent = candidateDataService.recordCandidateTestEvent(candidateSession,
-                CandidateTestEventType.ENTER_TEST, testSessionState, notificationRecorder);
-        candidateAuditLogger.logCandidateEvent(candidateEvent);
-
-        /* Record current result state */
-        candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
-
-        auditLogger.recordEvent("Created and initialised new CandidateSession #" + candidateSession.getId()
-                + " on Delivery #" + delivery.getId());
-        return candidateSession;
-    }
-
-    /**
-     * Helper to deal with what happens when the JQTI+ init logic throws a {@link RuntimeException}.
-     */
-    private CandidateSession handleStartupExplosion(final Delivery delivery, final User candidate, final String exitUrl) {
-        final CandidateSession candidateSession = new CandidateSession();
-        candidateSession.setSessionToken(ServiceUtilities.createRandomAlphanumericToken(DomainConstants.CANDIDATE_SESSION_TOKEN_LENGTH));
-        candidateSession.setExitUrl(exitUrl);
-        candidateSession.setCandidate(candidate);
-        candidateSession.setDelivery(delivery);
-        candidateSession.setExploded(true);
-        candidateSession.setTerminated(true);
-        candidateSessionDao.persist(candidateSession);
-        return candidateSession;
-    }
-
 }

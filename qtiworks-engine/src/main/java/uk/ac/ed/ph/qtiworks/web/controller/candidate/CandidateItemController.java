@@ -93,6 +93,24 @@ public class CandidateItemController {
     private CandidateItemDeliveryService candidateItemDeliveryService;
 
     //----------------------------------------------------
+    // Session containment and launching
+
+    @RequestMapping(value="/session/{xid}/{sessionToken}", method=RequestMethod.GET)
+    public String driveSession(final Model model, @PathVariable final long xid, @PathVariable final String sessionToken) {
+        model.addAttribute("sessionEntryPath", "/candidate/session/" + xid + "/" + sessionToken + "/enter");
+        return "launch";
+    }
+
+    @RequestMapping(value="/session/{xid}/{sessionToken}/enter", method=RequestMethod.POST)
+    public String enterSession(@PathVariable final long xid, @PathVariable final String sessionToken)
+            throws DomainEntityNotFoundException, CandidateForbiddenException {
+        candidateItemDeliveryService.enterOrReenterCandidateSession(xid, sessionToken);
+
+        /* Redirect to rendering of current session state */
+        return redirectToRenderSession(xid, sessionToken);
+    }
+
+    //----------------------------------------------------
     // Rendering
 
     /**
@@ -101,7 +119,7 @@ public class CandidateItemController {
      * @throws IOException
      * @throws CandidateForbiddenException
      */
-    @RequestMapping(value="/session/{xid}/{sessionToken}", method=RequestMethod.GET)
+    @RequestMapping(value="/session/{xid}/{sessionToken}/render", method=RequestMethod.GET)
     public void renderCurrentItemSessionState(@PathVariable final long xid, @PathVariable final String sessionToken,
             final HttpServletResponse response)
             throws DomainEntityNotFoundException, IOException, CandidateForbiddenException {
@@ -392,12 +410,12 @@ public class CandidateItemController {
     //----------------------------------------------------
     // Redirections
 
-    private String redirectToRenderSession(final CandidateSession candidateSession) {
-        return redirectToRenderSession(candidateSession.getId(), candidateSession.getSessionToken());
+    private String redirectToRenderSession(final long xid, final String sessionToken) {
+        return "redirect:/candidate/session/" + xid + "/" + sessionToken + "/render";
     }
 
-    private String redirectToRenderSession(final long xid, final String sessionToken) {
-        return "redirect:/candidate/session/" + xid + "/" + sessionToken;
+    private String redirectToRenderSession(final CandidateSession candidateSession) {
+        return redirectToRenderSession(candidateSession.getId(), candidateSession.getSessionToken());
     }
 
     private String redirectToExitUrl(final String exitUrl) {

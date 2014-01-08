@@ -98,7 +98,7 @@ public class AnonymousSamplesController {
             throws PrivilegeException, DomainEntityNotFoundException {
         final String exitUrl = anonymousRouter.buildWithinContextUrl("/samples") + "#" + sampleCategoryAnchor;
 
-        final CandidateSession candidateSession = candidateSessionStarter.createSystemSampleSession(aid, exitUrl);
+        final CandidateSession candidateSession = candidateSessionStarter.launchSystemSampleSession(aid, exitUrl);
         return GlobalRouter.buildSessionStartRedirect(candidateSession);
     }
 }

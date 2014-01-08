@@ -249,7 +249,7 @@ public class InstructorAssessmentManagementController {
     private String runDelivery(final long aid, final Delivery delivery, final boolean authorMode)
             throws PrivilegeException {
         final String exitUrl = instructorRouter.buildWithinContextUrl("/assessment/" + aid);
-        final CandidateSession candidateSession = candidateSessionStarter.createCandidateSession(delivery, authorMode, exitUrl, null, null);
+        final CandidateSession candidateSession = candidateSessionStarter.launchCandidateSession(delivery, authorMode, exitUrl, null, null);
         return GlobalRouter.buildSessionStartRedirect(candidateSession);
     }
 
@@ -310,7 +310,7 @@ public class InstructorAssessmentManagementController {
             throws PrivilegeException, DomainEntityNotFoundException {
         final Delivery delivery = assessmentManagementService.lookupDelivery(did);
         final String exitUrl = instructorRouter.buildWithinContextUrl("/delivery/" + did);
-        final CandidateSession candidateSession = candidateSessionStarter.createCandidateSession(delivery, true, exitUrl, null, null);
+        final CandidateSession candidateSession = candidateSessionStarter.launchCandidateSession(delivery, true, exitUrl, null, null);
         return GlobalRouter.buildSessionStartRedirect(candidateSession);
     }
 

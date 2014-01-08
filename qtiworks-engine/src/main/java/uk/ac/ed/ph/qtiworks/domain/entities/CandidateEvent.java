@@ -64,7 +64,7 @@ import javax.persistence.TemporalType;
 import org.hibernate.annotations.Type;
 
 /**
- * Represents each "event" generated during a {@link CandidateSession}
+ * Represents each "event" recorded during a {@link CandidateSession}
  *
  * @author David McKain
  */

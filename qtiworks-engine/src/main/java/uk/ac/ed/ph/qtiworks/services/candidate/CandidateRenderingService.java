@@ -153,7 +153,7 @@ public class CandidateRenderingService {
 
     public void renderCurrentCandidateItemSessionState(final CandidateSession candidateSession,
             final ItemRenderingOptions renderingOptions, final OutputStreamer outputStreamer)
-            throws IOException {
+            throws IOException, CandidateForbiddenException {
         Assert.notNull(candidateSession, "candidateSession");
         Assert.notNull(renderingOptions, "renderingOptions");
         Assert.notNull(outputStreamer, "outputStreamer");
@@ -185,7 +185,8 @@ public class CandidateRenderingService {
     }
 
     private void renderCurrentCandidateItemSessionState(final CandidateSession candidateSession,
-            final ItemRenderingOptions renderingOptions, final StreamResult result) {
+            final ItemRenderingOptions renderingOptions, final StreamResult result)
+            throws CandidateForbiddenException {
         if (candidateSession.isExploded()) {
             renderExploded(candidateSession, renderingOptions, result);
         }
@@ -194,7 +195,7 @@ public class CandidateRenderingService {
         }
         else {
             /* Look up most recent event */
-            final CandidateEvent latestEvent = candidateDataService.getMostRecentEvent(candidateSession);
+            final CandidateEvent latestEvent = ensureSessionEntered(candidateSession);
 
             /* Load the ItemSessionState */
             final ItemSessionState itemSessionState = candidateDataService.loadItemSessionState(latestEvent);
@@ -279,13 +280,13 @@ public class CandidateRenderingService {
 
     public void renderCurrentCandidateItemSessionStateAuthorView(final CandidateSession candidateSession,
             final AuthorViewRenderingOptions renderingOptions, final OutputStreamer outputStreamer)
-            throws IOException {
+            throws IOException, CandidateForbiddenException {
         Assert.notNull(candidateSession, "candidateSession");
         Assert.notNull(renderingOptions, "renderingOptions");
         Assert.notNull(outputStreamer, "outputStreamer");
 
         /* Look up most recent event */
-        final CandidateEvent latestEvent = candidateDataService.getMostRecentEvent(candidateSession);
+        final CandidateEvent latestEvent = ensureSessionEntered(candidateSession);
 
         /* Load the ItemSessionState */
         final ItemSessionState itemSessionState = candidateDataService.loadItemSessionState(latestEvent);
@@ -344,7 +345,8 @@ public class CandidateRenderingService {
 
     public void renderCurrentCandidateTestSessionState(final CandidateSession candidateSession,
             final TestRenderingOptions renderingOptions,
-            final OutputStreamer outputStreamer) throws IOException {
+            final OutputStreamer outputStreamer)
+            throws IOException, CandidateForbiddenException {
         Assert.notNull(candidateSession, "candidateSession");
         Assert.notNull(renderingOptions, "renderingOptions");
         Assert.notNull(outputStreamer, "outputStreamer");
@@ -376,7 +378,8 @@ public class CandidateRenderingService {
     }
 
     private void renderCurrentCandidateTestSessionState(final CandidateSession candidateSession,
-            final TestRenderingOptions renderingOptions, final StreamResult result) {
+            final TestRenderingOptions renderingOptions, final StreamResult result)
+            throws CandidateForbiddenException {
         if (candidateSession.isExploded()) {
             renderExploded(candidateSession, renderingOptions, result);
         }
@@ -385,7 +388,7 @@ public class CandidateRenderingService {
         }
         else {
             /* Look up most recent event */
-            final CandidateEvent latestEvent = candidateDataService.getMostRecentEvent(candidateSession);
+            final CandidateEvent latestEvent = ensureSessionEntered(candidateSession);
 
             /* Load the TestSessionState and create a TestSessionController */
             final TestSessionState testSessionState = candidateDataService.loadTestSessionState(latestEvent);
@@ -462,13 +465,13 @@ public class CandidateRenderingService {
 
     public void renderCurrentCandidateTestSessionStateAuthorView(final CandidateSession candidateSession,
             final AuthorViewRenderingOptions renderingOptions, final OutputStreamer outputStreamer)
-            throws IOException {
+            throws IOException, CandidateForbiddenException {
         Assert.notNull(candidateSession, "candidateSession");
         Assert.notNull(renderingOptions, "renderingOptions");
         Assert.notNull(outputStreamer, "outputStreamer");
 
         /* Look up most recent event */
-        final CandidateEvent latestEvent = candidateDataService.getMostRecentEvent(candidateSession);
+        final CandidateEvent latestEvent = ensureSessionEntered(candidateSession);
 
         /* Load the TestSessionState and create a TestSessionController */
         final TestSessionState testSessionState = candidateDataService.loadTestSessionState(latestEvent);
@@ -601,7 +604,7 @@ public class CandidateRenderingService {
         ensureCallerMayAccessAuthorInfo(candidateSession);
 
         /* Get most recent event */
-        final CandidateEvent mostRecentEvent = candidateDataService.getMostRecentEvent(candidateSession);
+        final CandidateEvent mostRecentEvent = ensureSessionEntered(candidateSession);
 
         /* Generate result Object from current state */
         final File sessionStateFile = candidateDataService.ensureSessionStateFile(mostRecentEvent);
@@ -746,6 +749,15 @@ public class CandidateRenderingService {
         if (candidateSession.isTerminated()) {
             candidateAuditLogger.logTerminated(candidateSession);
         }
+    }
+
+    private CandidateEvent ensureSessionEntered(final CandidateSession candidateSession)
+            throws CandidateForbiddenException {
+        final CandidateEvent mostRecentEvent = candidateDataService.getMostRecentEvent(candidateSession);
+        if (mostRecentEvent==null) {
+            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.ACCESS_ENTERED_SESSION);
+        }
+        return mostRecentEvent;
     }
 
     private void ensureCallerMayAccessAuthorInfo(final CandidateSession candidateSession)
