@@ -167,14 +167,15 @@ public class SampleResourceImporter {
         final Map<String, Assessment> importedSampleAssessments = getImportedSampleAssessments(sampleOwner);
         logger.debug("Existing samples are {}", importedSampleAssessments);
 
-        /* Pick out all of the valid samples */
+        /* Pick out all of the suitably decent samples */
+        final Feature[] badFeatures = { Feature.NOT_FULLY_VALID, Feature.NOT_RUNNABLE, Feature.NOT_VERY_GOOD };
         final QtiSampleSet[] qtiSampleSets = new QtiSampleSet[] {
-                StandardQtiSampleSet.instance().withoutFeatures(Feature.NOT_FULLY_VALID, Feature.NOT_RUNNABLE),
-                MathAssessSampleSet.instance().withoutFeatures(Feature.NOT_FULLY_VALID, Feature.NOT_RUNNABLE),
-                UpmcSampleSet.instance().withoutFeatures(Feature.NOT_FULLY_VALID, Feature.NOT_RUNNABLE),
-                StompSampleSet.instance().withoutFeatures(Feature.NOT_FULLY_VALID, Feature.NOT_RUNNABLE),
-                LanguageSampleSet.instance().withoutFeatures(Feature.NOT_FULLY_VALID, Feature.NOT_RUNNABLE),
-                TestImplementationSampleSet.instance().withoutFeatures(Feature.NOT_FULLY_VALID, Feature.NOT_RUNNABLE)
+                StandardQtiSampleSet.instance().withoutFeatures(badFeatures),
+                MathAssessSampleSet.instance().withoutFeatures(badFeatures),
+                UpmcSampleSet.instance().withoutFeatures(badFeatures),
+                StompSampleSet.instance().withoutFeatures(badFeatures),
+                LanguageSampleSet.instance().withoutFeatures(badFeatures),
+                TestImplementationSampleSet.instance().withoutFeatures(badFeatures)
         };
 
         /* If MathAssess extensions are not enabled, filter out assessments that need them */

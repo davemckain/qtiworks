@@ -56,6 +56,7 @@ public final class QtiSampleAssessment implements Serializable {
         NOT_FULLY_VALID,  /* Example isn't fully valid (according to our validation process) */
         REQUIRES_MATHASSES, /* Requires MathAssess extensions */
         NOT_RUNNABLE,     /* QTIWorks can't run this example yet */
+        NOT_VERY_GOOD,    /* Assessment runs OK, but isn't very good so shouldn't be included in public demos */
     }
 
     private final AssessmentObjectType type;

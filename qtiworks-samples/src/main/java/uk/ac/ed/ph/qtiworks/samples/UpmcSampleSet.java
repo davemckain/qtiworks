@@ -33,6 +33,8 @@
  */
 package uk.ac.ed.ph.qtiworks.samples;
 
+import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment.Feature;
+
 /**
  * Sample set containing examples of the MathAssess extensions
  *
@@ -44,7 +46,7 @@ public final class UpmcSampleSet {
             "Mathematics examples from Université Pierre et Marie Curie (Paris)",
             new QtiSampleAssessment(DeliveryStyle.MATHASSESS_TEMPLATED, "upmc/addition.xml"),
             new QtiSampleAssessment(DeliveryStyle.MATHASSESS_TEMPLATED, "upmc/addition2entier.xml"),
-            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_TEMPLATED, "upmc/carre2.xml"),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_TEMPLATED, "upmc/carre2.xml", Feature.NOT_VERY_GOOD /* Question is really odd! */),
             new QtiSampleAssessment(DeliveryStyle.MATHASSESS_TEMPLATED, "upmc/carre2g.xml"),
             new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "upmc/exercise1.xml"),
             new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "upmc/exercise2.xml"),
