@@ -10,12 +10,88 @@ All Rights Reserved
   <nav class="breadcrumbs">
     <a href="${utils:internalLink(pageContext, '/about/')}">About QTIWorks</a> &#xbb;
   </nav>
-  <h2>QTIWorks Release Notes (Production)</h2>
+  <h2>QTIWorks Release Notes</h2>
 
-  <h3>1.0-beta3 [Production] (10/10/2013)</h3>
+  <h3>Release 1.0-beta4 (09/01/2014)</h3>
   <p>
-    Bug-fix release addressing problems reported since beta2. This is likely to be the last beta before the
-    final 1.0 release. Issues fixed:
+    Bug-fix release addressing problems reported since beta3, as well as including a few
+    minor features and tweaks.
+  </p>
+  <p>
+    Issues resolved:
+  </p>
+  <ul>
+    <li>
+      <a href="https://github.com/davemckain/qtiworks/issues/37">#37</a>: Fixed encoding of candidate
+      responses, which previously resulted in non-ASCII characters being mangled.
+    </li>
+    <li>
+      <a href="https://github.com/davemckain/qtiworks/issues/38">#38</a>: Further investigation
+      of LTI result return on Moodle has been performed with assistance from Glasgow University.
+      Result return now works for them for <em>domain</em> launches, but not <em>link</em> launches.
+      It is currently believe that the issues with the latter are problems with Moodle, rather than
+      QTIWorks. Some refactoring of the LTI code within QTIWorks was done to assist with the investigation,
+      including a few improvements to the result resturn's HTTP headers.
+    </li>
+    <li>
+      <a href="https://github.com/davemckain/qtiworks/issues/41">#41</a>: Empty
+      <code>StringValue</code>s now correctly compare with NULL. Fixing this bug
+      identified some issues with the handling of whitespace when building the JQTI
+      object model (typically from XML), which have been dealt with in an acceptable
+      fashion.
+    </li>
+    <li>
+      Improved handling of responceProcessing templates that fail to load at
+      runtime. These are now logged as runtime warnings.
+    </li>
+    <li>
+      Fixes to the logic assembling the outcome variable information that gets
+      displayed in the candidate session proctoring page.
+    </li>
+    <li>
+      Some minor fixes to routing/linking in the instructor web interface.
+    </li>
+  </ul>
+  <p>
+    New features:
+  </p>
+  <ul>
+    <li>
+      Improvement to the visual workflow when launching a candidate session. A
+      new entry page includes a splash message if the session takes a few
+      moments to start up, and this page also
+      attempts to push the candidate back into the session if they use their browser's back button.
+      (Some further testing is required for this - it works everywhere I've tried so far except for
+      Apple iDevices.)
+    </li>
+    <li>
+      Added stricter checking of OAuth timestamps and nonces when invoking LTI
+      links. (This requires a new database table, hence a schema update. See
+      below for details.)
+    </li>
+    <li>
+      Deletion of deliveries now sensibly deletes all information about any candidates running the delivery via an LTI link.
+    </li>
+    <li>
+      <a href="https://github.com/davemckain/qtiworks/issues/40">#40</a>: Added code to seek out and
+      clean up any application-level ThreadLocals when the webapp is shut down. This doesn't yet fix issue #40, but is a good start.
+    </li>
+    <li>
+      Page layout for (the non-candidate part of) the QTIWorks engine webapp
+      now uses a fluid grid instead of a fixed grid. This should make it
+      integrate nicer visually with LTI Tool Consumers. (For example,
+      Blackboard Learn's iFrame option for invoking LTI launches.)
+    </li>
+  </ul>
+  <p>
+    A small database schema change is required. Please run <code>qtiworks-engine/support/schema-migrations/beta3-to-beta4.sql</code>
+    to upgrade your database if you have been running your own QTIWorks 1.0-beta3 installation.
+  </p>
+
+
+  <h3>Release 1.0-beta3 (10/10/2013)</h3>
+  <p>
+    Bug-fix release addressing problems reported since beta2. Issues fixed:
   </p>
   <ul>
     <li>
@@ -43,15 +119,11 @@ All Rights Reserved
     </li>
   </ul>
   <p>
-    A small schema change is required. Please run <code>qtiworks-engine/support/schema-migrations/beta2-to-beta3.sql</code>
+    A small database schema change is required. Please run <code>qtiworks-engine/support/schema-migrations/beta2-to-beta3.sql</code>
     to upgrade your database if you have been running your own QTIWorks 1.0-beta2 installation.
   </p>
-  <p>
-    See production releases at <a href="https://webapps.ph.ed.ac.uk/qtiworks">https://webapps.ph.ed.ac.uk/qtiworks</a>, and
-    development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
-  </p>
 
-  <h3>1.0-beta2 [Production] (22/08/2013)</h3>
+  <h3>Release 1.0-beta2 (22/08/2013)</h3>
   <p>
     This fixes a few bugs noted by people testing the production instance of QTIWorks:
   </p>
@@ -64,7 +136,7 @@ All Rights Reserved
     <li>
       Fixed silly bug in the new author view triggered if an assessmentItemRef has been selected multiple
       times in the testPart.
-    </li<>
+    </li>
     <li>
       Fixed regression in the rendering stylesheets when determining whether feedback blocks should be
       shown when rendering the current state of a test item.
@@ -79,12 +151,8 @@ All Rights Reserved
       simultaneous submissionMode.
     </li>
   </ul>
-  <p>
-    See production releases at <a href="https://webapps.ph.ed.ac.uk/qtiworks">https://webapps.ph.ed.ac.uk/qtiworks</a>, and
-    development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
-  </p>
 
-  <h3>1.0-DEV34 [Development] (20/08/2013)</h3>
+  <h3>Release 1.0-DEV34 (20/08/2013)</h3>
   <p>
     Fixes a couple of bugs discovered after beta1 went live:
   </p>
@@ -99,12 +167,8 @@ All Rights Reserved
       in tests while the item session was still open. Nobody had noticed this before. Fixed here.
     </li>
   </ul>
-  <p>
-    See production releases at <a href="https://webapps.ph.ed.ac.uk/qtiworks">https://webapps.ph.ed.ac.uk/qtiworks</a>, and
-    development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
-  </p>
 
-  <h3>1.0-beta1 [Production] (19/08/2013)</h3>
+  <h3>Release 1.0-beta1 (19/08/2013)</h3>
   <p>
     This first beta release brings the production branch back in line with
     the master (development) branch. It is essentially the same as 1.0-DEV33, but
@@ -119,35 +183,31 @@ All Rights Reserved
   </p>
   <ol>
     <li>Take QTIWorks 1.0-M4 offline (and make a full backup of the filesystem and database).</li>
-    <li>Run the <tt>purgeAnonymousData</tt> engine manager action (on M4 binaries).</li>
-    <li>Run the SQL script <tt>qtiworks-engine/support/schema-migrations/m4-to-beta1.sql</tt> on your QTIWorks database to upgrade its schema
+    <li>Run the <code>purgeAnonymousData</code> engine manager action (on M4 binaries).</li>
+    <li>Run the SQL script <code>qtiworks-engine/support/schema-migrations/m4-to-beta1.sql</code> on your QTIWorks database to upgrade its schema
       and delete the candidate data stored in the DB.</li>
     <li>Perform a <code>git fetch</code> and <code>git merge origin/production</code> to bring your code up to beta1, then do a clean rebuild.</li>
-    <li>Run the <tt>update</tt> engine action to complete deleting data from the QTIWorks database and file store.</li>
-    <li>Update your <tt>qtiworks-deployment.properties</tt> against the newly-updated default version in the git tree.</li>
+    <li>Run the <code>update</code> engine action to complete deleting candidate data from the QTIWorks database and file store.</li>
+    <li>Update your <code>qtiworks-deployment.properties</code> against the newly-updated default version in the git tree.</li>
     <li>
       Deploy the QTIWorks 1.0-beta1 webapp. It should deploy and run without issues and all existing instructor users
       should be able to access the system and all of their existing assessments.
     </li>
   </ol>
-  <p>
-    See production releases at <a href="https://webapps.ph.ed.ac.uk/qtiworks">https://webapps.ph.ed.ac.uk/qtiworks</a>, and
-    development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
-  </p>
 
-  <h3>1.0-DEV33 [Development] (12/08/2013)</h3>
+  <h3>Release 1.0-DEV33 (12/08/2013)</h3>
   <p>
     Minor bug-fix release ahead of next release, which is currently scheduled to be BETA1.
     No changes are needed to the database schema.
   </p>
 
-  <h3>1.0-DEV32 [Development] (17/07/2013)</h3>
+  <h3>Release 1.0-DEV32 (17/07/2013)</h3>
   <p>
-    This final snapshot brings the project to feature freeze in the context
+    This final planned development snapshot brings the project to feature freeze in the context
     of its current funding.
   </p>
   <p>
-    This snapshot mainaly includes some reorganisation and tidying of the MVC
+    This development snapshot mainaly includes some reorganisation and tidying of the MVC
     layer, in particular the new domain-level LTI instructor interface and the
     existing instructor interface. The latter has been simplified a bit and
     tidied up visually.
@@ -168,19 +228,15 @@ All Rights Reserved
     candidate data if upgrading from DEV31.
   </p>
 
-  <h3>1.0-M4b [Production] (11/07/2013)</h3>
+  <h3>Release 1.0-M4b (11/07/2013)</h3>
   <p>
     Patch release that cherry-picks the new MathJax SSL CDN URL from the master branch.
     (The old SSN CDN appears to have gone offline recently!)
   </p>
-  <p>
-    See production releases at <a href="https://webapps.ph.ed.ac.uk/qtiworks">https://webapps.ph.ed.ac.uk/qtiworks</a>, and
-    development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
-  </p>
 
-  <h3>1.0-DEV31 [Development] (09/07/2013)</h3>
+  <h3>Release 1.0-DEV31 (09/07/2013)</h3>
   <p>
-    This snapshot includes a working implementation of LTI instructor role
+    This development snapshot includes a working implementation of LTI instructor role
     functionality (via domain-level launches). It also completes amd makes
     available the LTI result returning functionality sketched out earlier.
   </p>
@@ -196,17 +252,13 @@ All Rights Reserved
     candidate data if upgrading from DEV30.
   </p>
 
-  <h3>1.0-M4a [Production] (01/07/2013)</h3>
+  <h3>Release 1.0-M4a (01/07/2013)</h3>
   <p>
     Patch release that cherry-picks the new Content Package handling code from the development branch. QTIWorks will
     no longer complain about the odd MIME types sent by some browsers when uploading ZIP files.
   </p>
-  <p>
-    See production releases at <a href="https://webapps.ph.ed.ac.uk/qtiworks">https://webapps.ph.ed.ac.uk/qtiworks</a>, and
-    development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
-  </p>
 
-  <h3>1.0-DEV30 [Development] (01/07/2013)</h3>
+  <h3>Release 1.0-DEV30 (01/07/2013)</h3>
   <p>
     This work-in-progress release adds in enough functionality for testing out the
     new domain-level LTI launches. I've released it now so that partners can start
@@ -222,9 +274,9 @@ All Rights Reserved
     candidate session data needs to be deleted here.)
   </p>
 
-  <h3>1.0-DEV29 [Development] (03/06/2013)</h3>
+  <h3>Release 1.0-DEV29 (03/06/2013)</h3>
   <p>
-    This continues the work of the last 2 snapshots, adding in a new author
+    This continues the work of the last 2 development snapshots, adding in a new author
     view which finally covers tests as well as items. It is now also possible
     to launch assessment containing validation errors or warnings.
   </p>
@@ -256,11 +308,8 @@ All Rights Reserved
     <code>update</code> action in the QTIWorks Engine Manager. (Note that all
     candidate session data needs to be deleted here.)
   </p>
-  <p>
-    See development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
-  </p>
 
-  <h3>1.0-DEV28 [Development] (05/05/2013)</h3>
+  <h3>Release 1.0-DEV28 (05/05/2013)</h3>
   <p>
     This release consolidates on DEV27, fixing some bugs and refining features added in DEV27. This includes some
     changes to the rendering of items and tests, including some improvements to the rendering of <code>mathEntryInteraction</code>s.
@@ -270,15 +319,12 @@ All Rights Reserved
     their feedback stand out a bit more clearly. One of the items (MAB01) has been deprecated.
   </p>
   <p>
-    There is a small schema fix required here. See <code>qtiworks-engine/support/schema-migrations/dev27-to-dev28.sql</code>.
-  </p>
-  <p>
-    See development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
+    There is a small database schema fix required here. See <code>qtiworks-engine/support/schema-migrations/dev27-to-dev28.sql</code>.
   </p>
 
-  <h3>1.0-DEV27 [Development] (30/04/2013)</h3>
+  <h3>Release 1.0-DEV27 (30/04/2013)</h3>
   <p>
-    This snapshot fills in the remaining parts of the test specification that we plan to implement, namely
+    This development snapshot fills in the remaining parts of the test specification that we plan to implement, namely
     <code>preCondition</code>, <code>branchRule</code> and the recording of duration at all required levels within
     the test. The low-level test and item running logic has been significantly refactored, and split into new classes
     called <code>TestSessionController</code> and <code>ItemSessionController</code> within JQTI+, which should be easier
@@ -300,13 +346,10 @@ All Rights Reserved
     This snapshot requires a fairly large set of fixes to the database schema. See <code>qtiworks-engine/support/schema-migrations/dev26-to-dev27.sql</code>.
     You must also wipe all candiate session data as the internal XML state files have changed significantly.
   </p>
-  <p>
-    See development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
-  </p>
 
-  <h3>1.0-DEV26 [Development] (07/03/2013)</h3>
+  <h3>Release 1.0-DEV26 (07/03/2013)</h3>
   <p>
-    This snapshot adds support for delivering tests containing multiple <code>testPart</code>s, and now
+    This development snapshot adds support for delivering tests containing multiple <code>testPart</code>s, and now
     evaluations any <code>preCondition</code>s declared at <code>testPart</code> level. It also completes
     the implementation of <code>testFeedback</code> to support both <code>during</code> and <code>atEnd</code>
     feedback, at both test and test part level.
@@ -317,40 +360,26 @@ All Rights Reserved
     defined to have a fixed default value. You may therefore need to check existing assessments to ensure they now
     behave correctly.
   </p>
-  <p>
-    See development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
-  </p>
 
-  <h3>1.0-M4 [Production] (07/03/2013)</h3>
+  <h3>Release 1.0-M4 (07/03/2013)</h3>
   <p>
     This is basically 1.0-DEV25 with some further behind-the-scenes changes added since then. There is no noticeable
     change in functionality between M3 and M4, though we have dropped some obscure features that were never really used
     that much (such as the "playback" feature when running single items).
   </p>
-  <p>
-    See production releases at <a href="https://webapps.ph.ed.ac.uk/qtiworks">https://webapps.ph.ed.ac.uk/qtiworks</a>, and
-    development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
-  </p>
 
-  <h3>1.0-DEV25 [Development] (28/02/2013)</h3>
+  <h3>Release 1.0-DEV25 (28/02/2013)</h3>
   <p>
-    This snapshot includes a large number of behind-the-scenes changes to make QTIWorks easier to install and manage.
+    This development snapshot includes a large number of behind-the-scenes changes to make QTIWorks easier to install and manage.
     It also includes a number of minor fixes, but no real functional changes.
   </p>
-  <p>
-    See development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
-  </p>
 
-  <h3>1.0-M3 [Production] (14/02/2013)</h3>
+  <h3>Release 1.0-M3 (14/02/2013)</h3>
   <p>
     Third production milestone, equivalent to the 1.0-DEV24 development snapshot.
   </p>
-  <p>
-    See production releases at <a href="https://webapps.ph.ed.ac.uk/qtiworks">https://webapps.ph.ed.ac.uk/qtiworks</a>, and
-    development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
-  </p>
 
-  <h3>1.0-DEV24 [Development] (11/02/2013)</h3>
+  <h3>Release 1.0-DEV24 (11/02/2013)</h3>
   <p>
     Minor update including mainly low-level code refactoring and documentation improvements.
     Visible changes are:
@@ -360,35 +389,26 @@ All Rights Reserved
     <li>Fixed corner case in response processing with endAttemptInteractions if no responses had previously been bound</li>
     <li>Minor improvement to rendering of uploadInteraction</li>
   </ul>
-  <p>
-    See development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
-  </p>
 
-  <h3>1.0-DEV23 [Development] (29/01/2013)</h3>
+  <h3>Release 1.0-DEV23 (29/01/2013)</h3>
   <p>
     Minor update that finally includes front-end functionality for deleting Assessments
     and Deliverables. (There is more back-end deletion functionality included too.)
   </p>
-  <p>
-    See development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
-  </p>
 
-  <h3>1.0-DEV22 [Development] (11/01/2013)</h3>
+  <h3>Release 1.0-DEV22 (11/01/2013)</h3>
   <p>
-    This snapshot continues with the implementation of the test specification, refining and slightly extending
+    This development snapshot continues with the implementation of the test specification, refining and slightly extending
     what was added in DEV21, as well as adding some improved test samples.
   </p>
   <p>
     We now support <code>testPart</code> feedback (albeit still only with single <code>testPart</code>s), the
     showing of item solutions and the display of section/rubric information within test item rendering.
   </p>
-  <p>
-    See development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
-  </p>
 
-  <h3>1.0-DEV21 [Development] (07/01/2013)</h3>
+  <h3>Release 1.0-DEV21 (07/01/2013)</h3>
   <p>
-    This snapshot continues with the implementation of the test specification. It now supports all 4 combinations
+    This development snapshot continues with the implementation of the test specification. It now supports all 4 combinations
     of navigation and submission modes, though linear navigation is currently a bit rough and needs feedback.
     It also shows the <code>assessmentSection</code> structure and <code>rubric</code>s when presenting the
     navigation (in nonlinear mode); something similar will need done for linear navigation mode.
@@ -399,11 +419,8 @@ All Rights Reserved
     and <code>selectPointInteraction</code>. The default is now 0 instead of 1, reflecting a poorly-advertised
     changed in the information model.
   </p>
-  <p>
-    See development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
-  </p>
 
-  <h3>1.0-M2 [Production] (07/01/2013)</h3>
+  <h3>Release 1.0-M2 (07/01/2013)</h3>
   <p>
     This second Milestone release is based on the 1.0-DEV20 development snapshot (see below),
     which was used to pilot some of the (partial) test implementation included in this snapshot.
@@ -416,12 +433,8 @@ All Rights Reserved
     time being. However, bear in mind that these will be subject to change at short notice so should not be used
     for "real" testing with students.
   </p>
-  <p>
-    See production releases at <a href="https://webapps.ph.ed.ac.uk/qtiworks">https://webapps.ph.ed.ac.uk/qtiworks</a>, and
-    development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
-  </p>
 
-  <h3>1.0-DEV20 [Development] (26/11/2012)</h3>
+  <h3>Release 1.0-DEV20 (26/11/2012)</h3>
   <p>
     Minor update before Sue Milne's test pilot. This adds support for
     <code>printedVariable/@index</code>, as well as a change to
@@ -429,11 +442,8 @@ All Rights Reserved
     reconnect to an existing non-terminated session if available, rather
     than always starting a new one.
   </p>
-  <p>
-    See development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
-  </p>
 
-  <h3>1.0-DEV19 [Development] (17/11/2012)</h3>
+  <h3>Release 1.0-DEV19 (17/11/2012)</h3>
   <p>
     Filled in initial sketch of support for <code>allowReview</code> and
     <code>showFeedback</code> in the test delivery. Fixed issue with mixed
@@ -441,45 +451,33 @@ All Rights Reserved
     basic functionality for getting at candidate data (summary table, CSV summary,
     ZIP bundle containing all <code>assessmentResult</code> files).
   </p>
-  <p>
-    See development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
-  </p>
 
-  <h3>1.0-DEV18 [Development] (15/11/2012)</h3>
+  <h3>Release 1.0-DEV18 (15/11/2012)</h3>
   <p>
-    This snapshot tidies up implementation of tests added in DEV17, and adds in
+    This development snapshot tidies up implementation of tests added in DEV17, and adds in
     initial functionality within the webapp for viewing and downloading result
     data for candidate sessions on a given delivery.
   </p>
-  <p>
-    See development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
-  </p>
 
-  <h3>1.0-DEV17 [Development] (09/11/2012)</h3>
+  <h3>Release 1.0-DEV17 (09/11/2012)</h3>
   <p>
-    This snapshot continues with the implementation of tests.
+    This development snapshot continues with the implementation of tests.
     A first sketch of the full delivery of NONLINEAR/INDIVIDUAL tests is now in place,
     ready for discussion with project partners.
   </p>
-  <p>
-    See development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
-  </p>
 
-  <h3>1.0-DEV16 [Development] (02/11/2012)</h3>
+  <h3>Release 1.0-DEV16 (02/11/2012)</h3>
   <p>
-    This snapshot continues with the implementation of tests. The basic logic for handling
+    This development snapshot continues with the implementation of tests. The basic logic for handling
     tests with one NONLINEAR/INDIVIDUAL part are now in place, and much of the
     supporting data model is now ready. You can now upload and start one of
     these tests, but you'll just end up seeing a dump of the resulting test
     state (after template processing has run on each item).
   </p>
-  <p>
-    See development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
-  </p>
 
-  <h3>1.0-DEV15 [Development] (25/10/2012)</h3>
+  <h3>Release 1.0-DEV15 (25/10/2012)</h3>
   <p>
-    This snapshot includes a lot of the groundwork required for the test implementation,
+    This development snapshot includes a lot of the groundwork required for the test implementation,
     with significant refactoring to the session state and controller classes. It also includes
     another final QTI 2.1 schema.
   </p>
@@ -524,16 +522,14 @@ All Rights Reserved
       needed to model test state and events...)
     </li>
   </ul>
-  <p>
-    See development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
-  </p>
 
-  <h3>1.0-DEV14 [Development] (28/09/2012)</h3>
+  <h3>Release 1.0-DEV14 (28/09/2012)</h3>
   <p>
-    This is the first development snapshot following the split into two instances.
-    This snapshot does not contain any visible new features but includes a lot of changes
-    and code refactoring to consolidate the work of the last few iterations and
-    help prepare for the work on tests. Key changes are:
+    This is the first development snapshot following the tempoarily split into
+    production and development instances.  This snapshot does not contain any
+    visible new features but includes a lot of changes and code refactoring to
+    consolidate the work of the last few iterations and help prepare for the
+    work on tests. Key changes are:
   </p>
   <ul>
     <li>
@@ -566,27 +562,21 @@ All Rights Reserved
       validation API to use this, which should be used in all new code in favour of the old cumbersome checks.
     </li>
   </ul>
-  <p>
-    See development snapshots at <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
-  </p>
 
-  <h3>1.0-M1 [Production] (27/09/2012)</h3>
+  <h3>Release 1.0-M1 (27/09/2012)</h3>
   <p>
-    This "Milestone 1" snapshot is the first of a set of stable, less frequent snapshots
+    This "Milestone 1" snapshot is the first of a set of stable, less frequent releases
     so that people using QTIWorks for "real" stuff don't have to worry too much about things
     suddenly changing. Functionally, this is the same as 1.0-DEV13 but includes a few improvements
     you won't notice.
   </p>
   <p>
     The next milestone snapshot will be released once we have some of the test functionality implemented.
-    You can always see the latest production snapshot at <a href="https://webapps.ph.ed.ac.uk/qtiworks">https://webapps.ph.ed.ac.uk/qtiworks</a>.
-    For bleeding edge snapshots, please see the new DEV instance of QTIWorks at
-    <a href="https://webapps.ph.ed.ac.uk/qtiworks-dev/">https://webapps.ph.ed.ac.uk/qtiworks-dev</a>.
   </p>
 
-  <h3>1.0-DEV13 (04/09/2012)</h3>
+  <h3>Release 1.0-DEV13 (04/09/2012)</h3>
   <p>
-    This snapshot finally adds in support for the <code>integerOrVariableRef</code>,
+    This development snapshot finally adds in support for the <code>integerOrVariableRef</code>,
     <code>floatOrVariableRef</code> and <code>stringOrVariableRef</code> types.
     Most expressions that use these have been updated, though the behaviour when things
     veer off the "happy path" is still not consistent and will require a bit more refactoring.
@@ -598,36 +588,32 @@ All Rights Reserved
     namespace. This will require a bit of refactoring to change.
   </p>
 
-  <h3>1.0-DEV12 (15/08/2012)</h3>
-
+  <h3>Release 1.0-DEV12 (15/08/2012)</h3>
   <p>
-    This snapshot fills in more of the Instructor functionality, such as the
+    This development snapshot fills in more of the Instructor functionality, such as the
     management of "deliveries" of an assessment. It also includes a first cut of the LTI
     launch for assessments, as well as a number of less noticeable improvements.
   </p>
 
-  <h3>1.0-DEV11 (09/07/2012)</h3>
-
+  <h3>Release 1.0-DEV11 (09/07/2012)</h3>
   <p>
-    This snapshot fixes a number of minor bugs found after the release of 1.0-DEV10, including
+    This development snapshot fixes a number of minor bugs found after the release of 1.0-DEV10, including
     a couple of regressions in the display of validation results. The item rendering now handles
     overridden correct response values correctly, and the "show solution" button is only shown if
     there is something to show, which should cut down the number of delivery settings that people
     need to manage.
   </p>
 
-  <h3>1.0-DEV10 (07/07/2012)</h3>
-
+  <h3>Release 1.0-DEV10 (07/07/2012)</h3>
   <p>
     This consolidates the work in the last snapshot by making it look a bit nicer and easier to use.
     More details can be found in the accompanying
     <a href="http://qtisupport.blogspot.co.uk/2012/07/qtiworks-snapshot-10-has-been-released.html">blog post about this release</a>.
   </p>
 
-  <h3>1.0-DEV9 (03/07/2012)</h3>
-
+  <h3>Release 1.0-DEV9 (03/07/2012)</h3>
   <p>
-    This snapshot adds a standalone "upload and run" feature that can be run without requiring a login,
+    This development snapshot adds a standalone "upload and run" feature that can be run without requiring a login,
     allowing candidates to choose from a number of pre-defined "delivery settings". (This is similar but
     more flexible than existing functionality in MathAssessEngine.)
   </p>
@@ -640,8 +626,7 @@ All Rights Reserved
     The next snapshot will consolidate on this work and improve the user experience somewhat...
   </p>
 
-  <h3>1.0-DEV8 (31/05/2012)</h3>
-
+  <h3>Release 1.0-DEV8 (31/05/2012)</h3>
   <p>
     This adds further enhancements to the rendering process for single items.
     I have written a
@@ -650,8 +635,7 @@ All Rights Reserved
     link to it than try to paraphrase it badly here.
     </p>
 
-  <h3>1.0-DEV7 (25/05/2012)</h3>
-
+  <h3>Release 1.0-DEV7 (25/05/2012)</h3>
   <p>
     This snapshot finally includes all of the internal logic for successfully
     delivering - and recording the delivery of - a single asseesment item to a
@@ -663,8 +647,7 @@ All Rights Reserved
     not enough to be truly usable yet.
   </p>
 
-  <h3>1.0-DEV6 (02/05/2012)</h3>
-
+  <h3>Release 1.0-DEV6 (02/05/2012)</h3>
   <p>
     The only real visible change in this snapshot is the addition of
     Graham Smith's sample questions on languages. However, this release
@@ -676,8 +659,7 @@ All Rights Reserved
     protocol if they come in via HTTP.)
   </p>
 
-  <h3>1.0-DEV5 (25/04/2012)</h3>
-
+  <h3>Release 1.0-DEV5 (25/04/2012)</h3>
   <p>
     Further tweaks to logic determining whether submit button should
     appear in item rendering, in light of discussion with Sue.
@@ -686,8 +668,7 @@ All Rights Reserved
     I've also hidden the RESET button to see if anyone misses it...
   </p>
 
-  <h3>1.0-DEV4 (24/04/2012)</h3>
-
+  <h3>Release 1.0-DEV4 (24/04/2012)</h3>
   <p>
     Fixed bug introduced when refactoring endAttemptInteraction,
     which prevented it from working correctly. Also added some experimental
@@ -697,18 +678,15 @@ All Rights Reserved
     started laying the ORM pipework for the webapp domain model.
   </p>
 
-
-  <h3>1.0-DEV3 (11/04/2012)</h3>
-
+  <h3>Release 1.0-DEV3 (11/04/2012)</h3>
   <p>
-    This snapshot adds in the MathAssess examples, as well as the
+    This development snapshot adds in the MathAssess examples, as well as the
     "get source" and "get item result" functions in the item delivery.
     Significant further refactorings and improvements have also 
     been made within JQTI+.
   </p>
 
-  <h3>1.0-DEV2 (23/03/2012)</h3>
-
+  <h3>Release 1.0-DEV2 (23/03/2012)</h3>
   <p>
     Demonstrates the newly-refactored assessmentItem state &amp; logic
     code in JQTI+, joining it back in with the rendering components
@@ -717,7 +695,7 @@ All Rights Reserved
     API for getting your items into the system.
   </p>
 
-  <h3>1.0-DEV1 (26/01/2012)</h3>
+  <h3>Release 1.0-DEV1 (26/01/2012)</h3>
   <p>
     Demonstrates the newly-refactored validation functionality in JQTI+,
     with more general JQTI -&gt; JQTI+ refactoring work continuing apace.
