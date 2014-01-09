@@ -811,7 +811,7 @@ public final class ItemSessionController extends ItemProcessingController implem
                         throw new QtiCandidateStateException("Expected to find a response value for identifier " + interaction.getResponseDeclaration());
                     }
                     if (!responseValue.hasSignature(Signature.SINGLE_BOOLEAN)) {
-                        fireRuntimeWarning(getSubjectItem().getResponseProcessing(),
+                        fireRuntimeWarning(item,
                                 "Expected value " + responseValue + " bound to endAttemptInteraction "
                                 + endAttemptInteraction.getResponseIdentifier() + " to be a "
                                 + Signature.SINGLE_BOOLEAN
@@ -837,17 +837,23 @@ public final class ItemSessionController extends ItemProcessingController implem
             ResponseProcessing responseProcessing = null;
             final RootNodeLookup<ResponseProcessing> resolvedResponseProcessingTemplateLookup = resolvedAssessmentItem.getResolvedResponseProcessingTemplateLookup();
             if (resolvedResponseProcessingTemplateLookup!=null) {
-                responseProcessing = resolvedResponseProcessingTemplateLookup.extractAssumingSuccessful();
+                /* Template specified, so try to use that */
+                responseProcessing = resolvedResponseProcessingTemplateLookup.extractIfSuccessful();
+                if (responseProcessing==null) {
+                    fireRuntimeWarning(item.getResponseProcessing(), "responseProcessing template could not be loaded, so no responseProcessing will not be performed");
+                }
             }
             else {
+                /* Use RP specified within the item (if available) */
                 responseProcessing = item.getResponseProcessing();
             }
 
             /* Invoke response processing */
-            if (responseProcessing != null) {
+            if (responseProcessing!=null) {
                 responseProcessing.evaluate(this);
             }
             else {
+                fireRuntimeWarning(item, "There is not responseProcessing to perform here");
                 logger.debug("No responseProcessing rules or responseProcessing template exists, so no response processing will be performed");
             }
 
