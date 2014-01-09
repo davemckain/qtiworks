@@ -98,7 +98,7 @@ import org.hibernate.annotations.Type;
                 + "  FROM Assessment a"
                 + "  LEFT JOIN a.selectedAssessmentPackage ap"
                 + "  WHERE a.sampleCategory = :sampleCategory"
-                + "  ORDER BY a.creationTime")
+                + "  ORDER BY a.id") /* NB: All samples have same creationTime, so use order by ID to get insertion order */
 })
 public class Assessment implements BaseEntity, TimestampedOnCreation {
 
