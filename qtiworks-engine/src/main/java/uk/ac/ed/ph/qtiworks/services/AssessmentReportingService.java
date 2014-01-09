@@ -271,15 +271,15 @@ public class AssessmentReportingService {
 
             final Map<String, String> numericOutcomesForSession = numericOutcomesBySessionIdMap.get(xid);
             for (final String outcomeIdentifier : numericOutcomeIdentifiers) {
-                numericOutcomeValues.add(numericOutcomesForSession.get(outcomeIdentifier));
+                numericOutcomeValues.add(safelyExtractOutcomeValue(numericOutcomesForSession, outcomeIdentifier));
             }
             final Map<String, String> otherOutcomesForSession = otherOutcomesBySessionIdMap.get(xid);
             for (final String outcomeIdentifier : otherOutcomeIdentifiers) {
-                otherOutcomeValues.add(otherOutcomesForSession.get(outcomeIdentifier));
+                otherOutcomeValues.add(safelyExtractOutcomeValue(otherOutcomesForSession, outcomeIdentifier));
             }
             String ltiResultOutcomeValue = null;
             if (ltiResultOutcomeIdentifier!=null && numericOutcomesForSession!=null) {
-                ltiResultOutcomeValue = numericOutcomesForSession.get(ltiResultOutcomeIdentifier);
+                ltiResultOutcomeValue = safelyExtractOutcomeValue(numericOutcomesForSession, ltiResultOutcomeIdentifier);
             }
             final User candidate = candidateSession.getCandidate();
             final CandidateSessionSummaryData row = new CandidateSessionSummaryData(candidateSession.getId().longValue(),
@@ -300,6 +300,15 @@ public class AssessmentReportingService {
 
         auditLogger.recordEvent("Generated candidate summary report for Delivery #" + delivery.getId());
         return new DeliveryCandidateSummaryReport(summaryMetadata, rows);
+    }
+
+    /**
+     * Safely extracts an outcome value from the given Map, handling the case where the Map is null
+     * or the value does not exist sensible. (These scenarios may happen if the assessment package changes
+     * over time.)
+     */
+    private String safelyExtractOutcomeValue(final Map<String, String> outcomesByIdentifier, final String identifier) {
+        return outcomesByIdentifier!=null && outcomesByIdentifier.containsKey(identifier) ? outcomesByIdentifier.get(identifier) : "N/A";
     }
 
     //-------------------------------------------------
