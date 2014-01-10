@@ -133,48 +133,46 @@ Renders a standalone assessmentItem
   </xsl:template>
 
   <xsl:template name="qw:item-controls">
-    <div class="sessionControl">
-      <ul class="controls">
-        <xsl:if test="$softSoftResetAllowed">
-          <li>
-            <form action="{$webappContextPath}{$softResetUrl}" method="post">
-              <input type="submit" value="Reset{if ($isItemSessionEnded) then ' and play again' else ''}"/>
-            </form>
-          </li>
-        </xsl:if>
-        <xsl:if test="$hardResetAllowed and $hasTemplateProcessing">
-          <li>
-            <form action="{$webappContextPath}{$hardResetUrl}" method="post">
-              <input type="submit" value="Reinitialise{if ($isItemSessionEnded) then ' and play again' else ''}"/>
-            </form>
-          </li>
-        </xsl:if>
-        <xsl:if test="$endAllowed and $hasResponseProcessing">
-          <li>
-            <form action="{$webappContextPath}{$endUrl}" method="post">
-              <input type="submit" value="Finish and review"/>
-            </form>
-          </li>
-        </xsl:if>
-        <xsl:if test="$solutionAllowed and $hasModelSolution">
-          <li>
-            <form action="{$webappContextPath}{$solutionUrl}" method="post">
-              <input type="submit" value="Show model solution">
-                <xsl:if test="$solutionMode">
-                  <!-- Already in solution mode -->
-                  <xsl:attribute name="disabled" select="'disabled'"/>
-                </xsl:if>
-              </input>
-            </form>
-          </li>
-        </xsl:if>
+    <ul class="sessionControl">
+      <xsl:if test="$softSoftResetAllowed">
         <li>
-          <form action="{$webappContextPath}{$exitUrl}" method="post">
-            <input type="submit" value="Exit"/>
+          <form action="{$webappContextPath}{$softResetUrl}" method="post">
+            <input type="submit" value="Reset{if ($isItemSessionEnded) then ' and play again' else ''}"/>
           </form>
         </li>
-      </ul>
-    </div>
+      </xsl:if>
+      <xsl:if test="$hardResetAllowed and $hasTemplateProcessing">
+        <li>
+          <form action="{$webappContextPath}{$hardResetUrl}" method="post">
+            <input type="submit" value="Reinitialise{if ($isItemSessionEnded) then ' and play again' else ''}"/>
+          </form>
+        </li>
+      </xsl:if>
+      <xsl:if test="$endAllowed and $hasResponseProcessing">
+        <li>
+          <form action="{$webappContextPath}{$endUrl}" method="post">
+            <input type="submit" value="Finish and review"/>
+          </form>
+        </li>
+      </xsl:if>
+      <xsl:if test="$solutionAllowed and $hasModelSolution">
+        <li>
+          <form action="{$webappContextPath}{$solutionUrl}" method="post">
+            <input type="submit" value="Show model solution">
+              <xsl:if test="$solutionMode">
+                <!-- Already in solution mode -->
+                <xsl:attribute name="disabled" select="'disabled'"/>
+              </xsl:if>
+            </input>
+          </form>
+        </li>
+      </xsl:if>
+      <li>
+        <form action="{$webappContextPath}{$exitUrl}" method="post">
+          <input type="submit" value="Exit"/>
+        </form>
+      </li>
+    </ul>
   </xsl:template>
 
   <!-- ************************************************************ -->

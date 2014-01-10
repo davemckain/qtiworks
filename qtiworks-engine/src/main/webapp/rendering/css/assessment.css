@@ -3,9 +3,36 @@
 body {
   background-color: white;
   color: black;
-  font-family: Sans-Serif;
+  font: 14px/1.4 Helvetica, Arial, Sans-Serif;
   margin: 1em 1em 5em 1em;
   padding: 0;
+}
+
+h1 {
+  font-size: 1.5em;
+  margin-bottom: 0;
+}
+
+h2 {
+  font-size: 1.3em;
+}
+
+/************************************************************/
+/* Session control */
+
+ul.sessionControl {
+  list-style: none;
+  margin: 1em;
+  text-align: center;
+}
+
+ul.sessionControl li {
+  display: inline;
+  padding: 0.2em;
+}
+
+ul.sessionControl li form {
+  display: inline;
 }
 
 /************************************************************/
@@ -15,13 +42,17 @@ body {
 .assessmentItem {
 }
 
+.assessmentItem h1 {
+  margin-bottom: 0;
+}
+
 .assessmentItem .itemStatus {
   float: right;
   display: block;
   padding: 0.3em;
-  border-radius: 0.3em;
+  border-radius: 0.5em;
   color: white;
-  font-size: 0.7em;
+  font-size: 0.8em;
 }
 
 .itemStatus.ended {
@@ -63,22 +94,7 @@ body {
 }
 
 #itemBody {
-  margin: 2em 0;
-}
-
-.sessionControl ul {
-  list-style: none;
-  margin: 1em;
-  text-align: center;
-}
-
-.sessionControl li {
-  display: inline;
-  padding: 0.2em;
-}
-
-.sessionControl li form {
-  display: inline;
+  margin: 1em 0;
 }
 
 /************************************************************/
@@ -366,18 +382,14 @@ ul.testPartNavigation {
 }
 
 ul.testPartNavigation li.assessmentSection {
-  border: 1px dotted #cccccc;
+  border: 2px solid #eeeeee;
+  border-radius: 0.5em;
   padding: 0 1em 0.5em 1em;
   margin: 0.5em 0;
 }
 
 ul.testPartNavigation li.assessmentSection header {
   margin: 0 0 1em 0;
-}
-
-ul.testPartNavigation li.assessmentSection header h2 {
-  font-size: larger;
-  font-weight: bold;
 }
 
 ul.testPartNavigation li.assessmentSection header div.rubric {
@@ -391,23 +403,27 @@ ul.testPartNavigation li.assessmentSection ul.testPartNavigationInner {
 }
 
 ul.testPartNavigation li.assessmentItem {
-  padding: 0.3em 0;
+  padding: 0.1em 0;
 }
 
 ul.testPartNavigation li.assessmentItem button {
-  padding: 0.3em 0;
+  padding: 0.5em;
+}
+
+ul.testPartNavigation li.assessmentItem span {
+  vertical-align: middle;
 }
 
 ul.testPartNavigation li.assessmentItem .questionTitle {
-  padding: 0 0.8em;
 }
 
-ul.testPartNavigation li.assessmentItem .assessmentItemStatus {
-  display: inline-block;
-  padding: 0.3em;
+ul.testPartNavigation li.assessmentItem .itemStatus {
+  display: inline;
+  float: none;
+  margin: 0.2em;
+  padding: 0.4em;
   border-radius: 0.3em;
-  color: white;
-  font-size: 0.7em;
+  margin-left: 1em;
 }
 
 /* Test Item Presentation */
@@ -419,17 +435,13 @@ ul.testPartDrilldown {
 }
 
 ul.testPartDrilldown li.assessmentSection {
-  border: 1px dotted #cccccc;
+  border: 2px solid #eeeeee;
+  border-radius: 0.5em;
   padding: 0 1em 0.5em 1em;
 }
 
 ul.testPartDrilldown li.assessmentSection header {
   margin: 0 0 1em 0;
-}
-
-ul.testPartDrilldown li.assessmentSection header h2 {
-  font-size: larger;
-  font-weight: bold;
 }
 
 ul.testPartDrilldown li.assessmentSection header div.rubric {
@@ -443,9 +455,14 @@ ul.testPartDrilldown li.assessmentSection ul.testPartDrilldownInner {
 }
 
 ul.testPartDrilldown li.currentItem {
-  border: 1px dotted #cccccc;
+  border: 2px solid #eeeeee;
+  border-radius: 0.5em;
   padding: 0 1em;
   margin-top: 1em;
+}
+
+.testItemControl {
+  margin-top: 0.5em;
 }
 
 /************************************************************/

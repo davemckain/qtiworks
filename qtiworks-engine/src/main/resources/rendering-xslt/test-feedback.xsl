@@ -62,16 +62,14 @@ combine the feedback for the test and the testPart.)
   </xsl:template>
 
   <xsl:template name="qw:test-controls">
-    <div class="sessionControl">
-      <ul class="controls test">
-        <li>
-          <form action="{$webappContextPath}{$exitTestUrl}" method="post"
-            onsubmit="return confirm('Are you sure? This will exit the test and you can\'t go back in.')">
-            <input type="submit" value="Exit Test"/>
-          </form>
-        </li>
-      </ul>
-    </div>
+    <ul class="sessionControl">
+      <li>
+        <form action="{$webappContextPath}{$exitTestUrl}" method="post"
+          onsubmit="return confirm('Are you sure? This will exit the test and you can\'t go back in.')">
+          <input type="submit" value="Exit Test"/>
+        </form>
+      </li>
+    </ul>
   </xsl:template>
 
 </xsl:stylesheet>

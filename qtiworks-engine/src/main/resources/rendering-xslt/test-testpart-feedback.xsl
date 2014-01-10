@@ -67,16 +67,14 @@ Renders the test(Part) feedback
   </xsl:template>
 
   <xsl:template name="qw:test-controls">
-    <div class="sessionControl">
-      <ul class="controls test">
-        <li>
-          <form action="{$webappContextPath}{$advanceTestPartUrl}" method="post"
-            onsubmit="return confirm('Are you sure? This will leave this {$testOrTestPart} and you can\'t go back in.')">
-            <input type="submit" value="Exit {$testOrTestPart}"/>
-          </form>
-        </li>
-      </ul>
-    </div>
+    <ul class="sessionControl">
+      <li>
+        <form action="{$webappContextPath}{$advanceTestPartUrl}" method="post"
+          onsubmit="return confirm('Are you sure? This will leave this {$testOrTestPart} and you can\'t go back in.')">
+          <input type="submit" value="Exit {$testOrTestPart}"/>
+        </form>
+      </li>
+    </ul>
   </xsl:template>
 
   <xsl:template match="qw:node[@type='TEST_PART']" mode="testPart-review">

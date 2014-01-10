@@ -134,56 +134,54 @@ NB: This is used both while being presented, and during review.
   </xsl:template>
 
   <xsl:template name="qw:test-controls">
-    <div class="sessionControl">
-      <ul class="controls test">
-        <!-- Interacting state -->
-        <xsl:if test="$advanceTestItemAllowed">
-          <li>
-            <form action="{$webappContextPath}{$advanceTestItemUrl}" method="post">
-              <input type="submit" value="Next Question"/>
-            </form>
-          </li>
-        </xsl:if>
-        <xsl:if test="$testPartNavigationAllowed">
-          <li>
-            <form action="{$webappContextPath}{$testPartNavigationUrl}" method="post">
-              <input type="submit" value="Test Question Menu"/>
-            </form>
-          </li>
-        </xsl:if>
-        <xsl:if test="$endTestPartAllowed">
-          <li>
-            <form action="{$webappContextPath}{$endTestPartUrl}" method="post"
-              onsubmit="return confirm('Are you sure?')">
-              <input type="submit" value="End {$testOrTestPart}"/>
-            </form>
-          </li>
-        </xsl:if>
-        <!-- Review state -->
-        <xsl:if test="$reviewMode">
-          <li>
-            <form action="{$webappContextPath}{$reviewTestPartUrl}" method="post">
-              <input type="submit" value="Back to Test Feedback"/>
-            </form>
-          </li>
-        </xsl:if>
-        <xsl:if test="$provideItemSolutionButton">
-          <li>
-            <form action="{$webappContextPath}{$showTestItemSolutionUrl}/{$itemKey}" method="post">
-              <input type="submit" value="Show Solution"/>
-            </form>
-          </li>
-        </xsl:if>
-        <xsl:if test="$reviewMode and $solutionMode">
-          <!-- Allow return to item review state -->
-          <li>
-            <form action="{$webappContextPath}{$reviewTestItemUrl}/{$itemKey}" method="post">
-              <input type="submit" value="Hide Solution"/>
-            </form>
-          </li>
-        </xsl:if>
-      </ul>
-    </div>
+    <ul class="sessionControl">
+      <!-- Interacting state -->
+      <xsl:if test="$advanceTestItemAllowed">
+        <li>
+          <form action="{$webappContextPath}{$advanceTestItemUrl}" method="post">
+            <input type="submit" value="Next Question"/>
+          </form>
+        </li>
+      </xsl:if>
+      <xsl:if test="$testPartNavigationAllowed">
+        <li>
+          <form action="{$webappContextPath}{$testPartNavigationUrl}" method="post">
+            <input type="submit" value="Test Question Menu"/>
+          </form>
+        </li>
+      </xsl:if>
+      <xsl:if test="$endTestPartAllowed">
+        <li>
+          <form action="{$webappContextPath}{$endTestPartUrl}" method="post"
+            onsubmit="return confirm('Are you sure?')">
+            <input type="submit" value="End {$testOrTestPart}"/>
+          </form>
+        </li>
+      </xsl:if>
+      <!-- Review state -->
+      <xsl:if test="$reviewMode">
+        <li>
+          <form action="{$webappContextPath}{$reviewTestPartUrl}" method="post">
+            <input type="submit" value="Back to Test Feedback"/>
+          </form>
+        </li>
+      </xsl:if>
+      <xsl:if test="$provideItemSolutionButton">
+        <li>
+          <form action="{$webappContextPath}{$showTestItemSolutionUrl}/{$itemKey}" method="post">
+            <input type="submit" value="Show Solution"/>
+          </form>
+        </li>
+      </xsl:if>
+      <xsl:if test="$reviewMode and $solutionMode">
+        <!-- Allow return to item review state -->
+        <li>
+          <form action="{$webappContextPath}{$reviewTestItemUrl}/{$itemKey}" method="post">
+            <input type="submit" value="Hide Solution"/>
+          </form>
+        </li>
+      </xsl:if>
+    </ul>
   </xsl:template>
 
   <!-- ************************************************************ -->
@@ -287,8 +285,8 @@ NB: This is used both while being presented, and during review.
 
         <xsl:if test="$isItemSessionOpen">
           <xsl:variable name="submitText" as="xs:string"
-            select="if ($currentTestPart/@submissionMode='individual') then 'SUBMIT ANSWER' else 'SAVE ANSWER'"/>
-          <div class="controls">
+            select="if ($currentTestPart/@submissionMode='individual') then 'Submit Answer' else 'Save Answer'"/>
+          <div class="testItemControl">
             <input id="submit_button" name="submit" type="submit" value="{$submitText}"/>
           </div>
         </xsl:if>

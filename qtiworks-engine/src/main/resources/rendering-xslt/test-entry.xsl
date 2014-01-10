@@ -59,15 +59,13 @@ Test Entry page (shown when there are multiple testParts)
   </xsl:template>
 
   <xsl:template name="qw:test-controls">
-    <div class="sessionControl">
-      <ul class="controls test">
-        <li>
-          <form action="{$webappContextPath}{$advanceTestPartUrl}" method="post">
-            <input type="submit" value="Enter Test"/>
-          </form>
-        </li>
-      </ul>
-    </div>
+    <ul class="sessionControl">
+      <li>
+        <form action="{$webappContextPath}{$advanceTestPartUrl}" method="post">
+          <input type="submit" value="Enter Test"/>
+        </form>
+      </li>
+    </ul>
   </xsl:template>
 
 </xsl:stylesheet>
