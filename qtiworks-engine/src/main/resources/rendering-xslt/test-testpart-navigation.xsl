@@ -18,7 +18,6 @@ Renders the navigation for the current testPart
 
   <xsl:import href="qti-fallback.xsl"/>
   <xsl:import href="test-common.xsl"/>
-  <xsl:import href="serialize.xsl"/>
   <xsl:import href="utils.xsl"/>
 
   <!-- Action permissions -->
