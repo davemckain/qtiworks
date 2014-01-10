@@ -126,19 +126,19 @@ Renders the test(Part) feedback
             <span class="questionTitle"><xsl:value-of select="@sectionPartTitle"/></span>
             <xsl:choose>
               <xsl:when test="not($reviewable)">
-                <div class="itemStatus reviewNotAllowed">Not Reviewable</div>
+                <span class="itemStatus reviewNotAllowed">Not Reviewable</span>
               </xsl:when>
               <xsl:when test="not(empty($itemSessionState/@unboundResponseIdentifiers) and empty($itemSessionState/@invalidResponseIdentifiers))">
-                <div class="itemStatus reviewInvalid">Review (Invalid Answer)</div>
+                <span class="itemStatus reviewInvalid">Review (Invalid Answer)</span>
               </xsl:when>
               <xsl:when test="$itemSessionState/@responded='true'">
-                <div class="itemStatus review">Review</div>
+                <span class="itemStatus review">Review</span>
               </xsl:when>
               <xsl:when test="$itemSessionState/@entryTime!=''">
-                <div class="itemStatus reviewNotAnswered">Review (Not Answered)</div>
+                <span class="itemStatus reviewNotAnswered">Review (Not Answered)</span>
               </xsl:when>
               <xsl:otherwise>
-                <div class="itemStatus reviewNotSeen">Review (Not Seen)</div>
+                <span class="itemStatus reviewNotSeen">Review (Not Seen)</span>
               </xsl:otherwise>
             </xsl:choose>
           </button>

@@ -314,21 +314,21 @@ NB: This is used both while being presented, and during review.
   <xsl:template match="qw:itemSessionState" mode="item-status">
     <xsl:choose>
       <xsl:when test="$solutionMode">
-        <div class="itemStatus review">Model Solution</div>
+        <span class="itemStatus review">Model Solution</span>
       </xsl:when>
       <xsl:when test="$reviewMode">
         <xsl:choose>
           <xsl:when test="not(empty(@unboundResponseIdentifiers) and empty(@invalidResponseIdentifiers))">
-            <div class="itemStatus reviewInvalid">Review (Invalid Answer)</div>
+            <span class="itemStatus reviewInvalid">Review (Invalid Answer)</span>
           </xsl:when>
           <xsl:when test="@responded='true'">
-            <div class="itemStatus review">Review</div>
+            <span class="itemStatus review">Review</span>
           </xsl:when>
           <xsl:when test="@entryTime!=''">
-            <div class="itemStatus reviewNotAnswered">Review (Not Answered)</div>
+            <span class="itemStatus reviewNotAnswered">Review (Not Answered)</span>
           </xsl:when>
           <xsl:otherwise>
-            <div class="itemStatus reviewNotSeen">Review (Not Seen)</div>
+            <span class="itemStatus reviewNotSeen">Review (Not Seen)</span>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:when>

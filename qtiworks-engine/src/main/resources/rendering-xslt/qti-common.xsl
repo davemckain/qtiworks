@@ -487,19 +487,19 @@ rendering.
   <xsl:template match="qw:itemSessionState" mode="item-status">
     <xsl:choose>
       <xsl:when test="@endTime!=''">
-        <div class="itemStatus ended">Finished</div>
+        <span class="itemStatus ended">Finished</span>
       </xsl:when>
       <xsl:when test="not(empty(@unboundResponseIdentifiers) and empty(@invalidResponseIdentifiers))">
-        <div class="itemStatus invalid">Needs Attention</div>
+        <span class="itemStatus invalid">Needs Attention</span>
       </xsl:when>
       <xsl:when test="@responded='true' or exists(qw:uncommittedResponseValue)">
-        <div class="itemStatus answered">Answered</div>
+        <span class="itemStatus answered">Answered</span>
       </xsl:when>
       <xsl:when test="@entryTime!=''">
-        <div class="itemStatus notAnswered">Not Answered</div>
+        <span class="itemStatus notAnswered">Not Answered</span>
       </xsl:when>
       <xsl:otherwise>
-        <div class="itemStatus notPresented">Not Seen</div>
+        <span class="itemStatus notPresented">Not Seen</span>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>

@@ -209,7 +209,7 @@ Renders a standalone assessmentItem
   <xsl:template match="qw:itemSessionState" mode="item-status">
     <xsl:choose>
       <xsl:when test="$solutionMode">
-        <div class="itemStatus review">Model Solution</div>
+        <span class="itemStatus review">Model Solution</span>
       </xsl:when>
       <xsl:otherwise>
         <xsl:apply-imports/>
