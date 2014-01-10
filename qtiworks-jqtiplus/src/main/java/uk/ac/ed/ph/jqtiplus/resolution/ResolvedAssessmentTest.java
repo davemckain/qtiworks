@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.resolution;
 
+import uk.ac.ed.ph.jqtiplus.QtiConstants;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
@@ -124,14 +125,18 @@ public final class ResolvedAssessmentTest extends ResolvedAssessmentObject<Asses
     /**
      * Resolves the given variable reference, within this test only.
      * <p>
-     * The resolution returns a {@link List} of matching {@link OutcomeDeclaration}s, or null if the
+     * The resolution returns a {@link List} of matching {@link VariableDeclaration}s, or null if the
      * test lookup was unsuccessful. The List will ideally contain 1 element, but may contain 0
-     * elements (if no match is found) or more than 1 element (if there are multiple {@link OutcomeDeclaration}s
+     * elements (if no match is found) or more than 1 element (if there are multiple {@link VariableDeclaration}s
      * having the same identifier.
+     * <p>
+     * (Note that while tests normally only contain outcome variables, there is also the built-in
+     * <code>duration</code> variable, which is a response variable. Hence this returns a
+     * {@link VariableDeclaration} rather than anything more specific.)
      *
      * @param variableReferenceIdentifier
      */
-    public List<OutcomeDeclaration> resolveTestVariable(final Identifier variableReferenceIdentifier) {
+    public List<VariableDeclaration> resolveTestVariable(final Identifier variableReferenceIdentifier) {
         if (!testLookup.wasSuccessful()) {
             return null;
         }
@@ -147,6 +152,10 @@ public final class ResolvedAssessmentTest extends ResolvedAssessmentObject<Asses
      * the same identifier (in which case the test is not considered valid).
      * <p>
      * Return null if the test lookup was unsuccessful.
+     * <p>
+     * (Note that while tests normally only contain outcome variables, there is also the built-in
+     * <code>duration</code> variable, which is a response variable. Hence this returns a
+     * {@link VariableDeclaration} rather than anything more specific.)
      *
      * @param variableReferenceIdentifier
      *
@@ -157,9 +166,9 @@ public final class ResolvedAssessmentTest extends ResolvedAssessmentObject<Asses
             return null;
         }
         final List<ResolvedTestVariableReference> result = new ArrayList<ResolvedTestVariableReference>();
-        final List<OutcomeDeclaration> outcomeDeclarations = tryTestVariableDeclaration(variableReferenceIdentifier);
-        for (final OutcomeDeclaration outcomeDeclaration : outcomeDeclarations) {
-            result.add(new ResolvedTestVariableReference(outcomeDeclaration));
+        final List<VariableDeclaration> variableDeclarations = tryTestVariableDeclaration(variableReferenceIdentifier);
+        for (final VariableDeclaration variableDeclaration : variableDeclarations) {
+            result.add(new ResolvedTestVariableReference(variableDeclaration));
         }
         return result;
     }
@@ -173,6 +182,10 @@ public final class ResolvedAssessmentTest extends ResolvedAssessmentObject<Asses
      * the same identifier (in which case the test is not considered valid).
      * <p>
      * Return null if the test lookup was unsuccessful.
+     * <p>
+     * (Note that while tests normally only contain outcome variables, there is also the built-in
+     * <code>duration</code> variable, which is a response variable. Hence this returns a
+     * {@link VariableDeclaration} rather than anything more specific.)
      *
      * @param variableReferenceIdentifier
      */
@@ -186,9 +199,9 @@ public final class ResolvedAssessmentTest extends ResolvedAssessmentObject<Asses
         final String[] components = variableReferenceIdentifier.toString().split("\\.");
         if (components.length==1) {
             /* No dots, so it must be a local test variable reference */
-            final List<OutcomeDeclaration> outcomeDeclarations = tryTestVariableDeclaration(Identifier.parseString(components[0]));
-            for (final OutcomeDeclaration outcomeDeclaration : outcomeDeclarations) {
-                result.add(new ResolvedTestVariableReference(outcomeDeclaration));
+            final List<VariableDeclaration> variableDeclarations = tryTestVariableDeclaration(Identifier.parseString(components[0]));
+            for (final VariableDeclaration variableDeclaration : variableDeclarations) {
+                result.add(new ResolvedTestVariableReference(variableDeclaration));
             }
         }
         else if (components.length==2) {
@@ -230,12 +243,17 @@ public final class ResolvedAssessmentTest extends ResolvedAssessmentObject<Asses
         return result;
     }
 
-    private List<OutcomeDeclaration> tryTestVariableDeclaration(final Identifier possibleTestVariableIdentifier) {
+    private List<VariableDeclaration> tryTestVariableDeclaration(final Identifier possibleTestVariableIdentifier) {
         final AssessmentTest test = testLookup.extractAssumingSuccessful();
-        final List<OutcomeDeclaration> result = new ArrayList<OutcomeDeclaration>();
-        for (final OutcomeDeclaration outcomeDeclaration : test.getOutcomeDeclarations()) {
-            if (outcomeDeclaration.getIdentifier().equals(possibleTestVariableIdentifier)) {
-                result.add(outcomeDeclaration);
+        final List<VariableDeclaration> result = new ArrayList<VariableDeclaration>();
+        if (possibleTestVariableIdentifier.equals(QtiConstants.VARIABLE_DURATION_IDENTIFIER)) {
+            result.add(test.getDurationResponseDeclaration());
+        }
+        else {
+            for (final OutcomeDeclaration outcomeDeclaration : test.getOutcomeDeclarations()) {
+                if (outcomeDeclaration.getIdentifier().equals(possibleTestVariableIdentifier)) {
+                    result.add(outcomeDeclaration);
+                }
             }
         }
         return result;

@@ -36,6 +36,7 @@ package uk.ac.ed.ph.jqtiplus.running;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.test.AbstractPart;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentSection;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
@@ -152,8 +153,8 @@ public final class TestProcessingInitializer {
     }
 
     private void doOutcomeVariable(final OutcomeDeclaration declaration) {
-        final List<OutcomeDeclaration> declarations = resolvedAssessmentTest.resolveTestVariable(declaration.getIdentifier());
-        if (declarations.size() == 1) {
+        final List<VariableDeclaration> variableDeclarations = resolvedAssessmentTest.resolveTestVariable(declaration.getIdentifier());
+        if (variableDeclarations.size()==1) {
             outcomeDeclarationMapBuilder.put(declaration.getIdentifier(), declaration);
         }
     }

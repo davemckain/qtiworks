@@ -36,7 +36,6 @@ package uk.ac.ed.ph.jqtiplus.validation;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.exception.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
-import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
@@ -85,47 +84,47 @@ public class TestValidationController extends AbstractValidationContext<Assessme
     }
 
     @Override
-    public OutcomeDeclaration isValidLocalVariableReference(final Identifier variableReferenceIdentifier) {
-        final List<OutcomeDeclaration> outcomeDeclarations = resolvedAssessmentTest.resolveTestVariable(variableReferenceIdentifier);
-        if (outcomeDeclarations==null) {
+    public VariableDeclaration isValidLocalVariableReference(final Identifier variableReferenceIdentifier) {
+        final List<VariableDeclaration> variableDeclarations = resolvedAssessmentTest.resolveTestVariable(variableReferenceIdentifier);
+        if (variableDeclarations==null) {
             /* Test lookup failed, which is impossible here */
             throw new QtiLogicException("Unexpected logic branch");
         }
-        else if (outcomeDeclarations.size()==1) {
+        else if (variableDeclarations.size()==1) {
             /* Found and unique which is what we want */
-            final OutcomeDeclaration outcomeDeclaration = outcomeDeclarations.get(0);
-            if (outcomeDeclaration.hasValidSignature()) {
-                return outcomeDeclaration;
+            final VariableDeclaration variableDeclaration = variableDeclarations.get(0);
+            if (variableDeclaration.hasValidSignature()) {
+                return variableDeclaration;
             }
         }
         return null;
     }
 
     @Override
-    public OutcomeDeclaration checkLocalVariableReference(final QtiNode owner, final Identifier variableReferenceIdentifier) {
-        final List<OutcomeDeclaration> outcomeDeclarations = resolvedAssessmentTest.resolveTestVariable(variableReferenceIdentifier);
-        if (outcomeDeclarations==null) {
+    public VariableDeclaration checkLocalVariableReference(final QtiNode owner, final Identifier variableReferenceIdentifier) {
+        final List<VariableDeclaration> variableDeclarations = resolvedAssessmentTest.resolveTestVariable(variableReferenceIdentifier);
+        if (variableDeclarations==null) {
             /* Test lookup failed, which is impossible here */
             throw new QtiLogicException("Unexpected logic branch");
         }
-        if (outcomeDeclarations.size()==1) {
+        if (variableDeclarations.size()==1) {
             /* Found and unique which is what we want */
-            final OutcomeDeclaration outcomeDeclaration = outcomeDeclarations.get(0);
-            if (!outcomeDeclaration.hasValidSignature()) {
+            final VariableDeclaration variableDeclaration = variableDeclarations.get(0);
+            if (!variableDeclaration.hasValidSignature()) {
                 fireValidationWarning(owner, "Test outcome variable referenced by identifier '" + variableReferenceIdentifier
                         + "' has an invalid cardinality/baseType combination so no further validation will be performed on this reference");
                 return null;
             }
-            return outcomeDeclaration;
+            return variableDeclaration;
         }
-        else if (outcomeDeclarations.isEmpty()) {
+        else if (variableDeclarations.isEmpty()) {
             /* No variable found */
             fireValidationError(owner, "Test outcome variable referenced by identifier '" + variableReferenceIdentifier + "' has not been declared");
             return null;
         }
         else {
             /* Multiple matches for identifier */
-            fireValidationError(owner, outcomeDeclarations.size() + " matches were found for the test outcome variable having identifier '" + variableReferenceIdentifier + "'");
+            fireValidationError(owner, variableDeclarations.size() + " matches were found for the test outcome variable having identifier '" + variableReferenceIdentifier + "'");
             return null;
         }
     }
