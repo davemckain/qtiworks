@@ -41,7 +41,6 @@ import uk.ac.ed.ph.qtiworks.rendering.AuthorViewRenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.ItemRenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
-import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateForbiddenException;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateItemDeliveryService;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateRenderingService;
@@ -339,15 +338,19 @@ public class CandidateItemController {
             @PathVariable final String sessionToken,
             final HttpServletRequest request, final HttpServletResponse response)
             throws DomainEntityNotFoundException, IOException, CandidateForbiddenException, CandidateSessionTerminatedException {
-        final String resourceEtag = ServiceUtilities.computeSha1Digest(request.getRequestURI());
-        final String requestEtag = request.getHeader("If-None-Match");
-        if (resourceEtag.equals(requestEtag)) {
-            response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-        }
-        else {
-            final CacheableWebOutputStreamer outputStreamer = new CacheableWebOutputStreamer(response, resourceEtag, CACHEABLE_MAX_AGE);
-            candidateRenderingService.streamAssessmentSource(xid, sessionToken, outputStreamer);
-        }
+//        final String resourceEtag = ServiceUtilities.computeSha1Digest(request.getRequestURI());
+//        final String requestEtag = request.getHeader("If-None-Match");
+//        if (resourceEtag.equals(requestEtag)) {
+//            response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+//        }
+//        else {
+//            final CacheableWebOutputStreamer outputStreamer = new CacheableWebOutputStreamer(response, resourceEtag, CACHEABLE_MAX_AGE);
+//            candidateRenderingService.streamAssessmentSource(xid, sessionToken, outputStreamer);
+//        }
+
+        /* TEMP */
+        final CacheableWebOutputStreamer outputStreamer = new CacheableWebOutputStreamer(response, null, CACHEABLE_MAX_AGE);
+        candidateRenderingService.streamAssessmentSource(xid, sessionToken, outputStreamer);
     }
 
     /**
@@ -382,16 +385,20 @@ public class CandidateItemController {
             @RequestParam("href") final String href,
             final HttpServletRequest request, final HttpServletResponse response)
             throws IOException, DomainEntityNotFoundException, CandidateForbiddenException, CandidateSessionTerminatedException {
-        final String resourceUniqueTag = request.getRequestURI() + "/" + href;
-        final String resourceEtag = ServiceUtilities.computeSha1Digest(resourceUniqueTag);
-        final String requestEtag = request.getHeader("If-None-Match");
-        if (resourceEtag.equals(requestEtag)) {
-            response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-        }
-        else {
-            final CacheableWebOutputStreamer outputStreamer = new CacheableWebOutputStreamer(response, resourceEtag, CACHEABLE_MAX_AGE);
-            candidateRenderingService.streamAssessmentFile(xid, sessionToken, href, outputStreamer);
-        }
+//        final String resourceUniqueTag = request.getRequestURI() + "/" + href;
+//        final String resourceEtag = ServiceUtilities.computeSha1Digest(resourceUniqueTag);
+//        final String requestEtag = request.getHeader("If-None-Match");
+//        if (resourceEtag.equals(requestEtag)) {
+//            response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+//        }
+//        else {
+//            final CacheableWebOutputStreamer outputStreamer = new CacheableWebOutputStreamer(response, resourceEtag, CACHEABLE_MAX_AGE);
+//            candidateRenderingService.streamAssessmentFile(xid, sessionToken, href, outputStreamer);
+//        }
+
+        /* TEMP */
+        final CacheableWebOutputStreamer outputStreamer = new CacheableWebOutputStreamer(response, null, CACHEABLE_MAX_AGE);
+        candidateRenderingService.streamAssessmentFile(xid, sessionToken, href, outputStreamer);
     }
 
     @RequestMapping(value="/itemsession/{xid}/{sessionToken}/validation", method=RequestMethod.GET)

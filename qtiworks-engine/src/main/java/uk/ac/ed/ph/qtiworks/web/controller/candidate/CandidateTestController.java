@@ -41,7 +41,6 @@ import uk.ac.ed.ph.qtiworks.rendering.AuthorViewRenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
 import uk.ac.ed.ph.qtiworks.rendering.TestRenderingOptions;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
-import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateForbiddenException;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateRenderingService;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateSessionTerminatedException;
@@ -94,7 +93,8 @@ public class CandidateTestController {
     // Session containment and launching
 
     @RequestMapping(value="/testsession/{xid}/{sessionToken}", method=RequestMethod.GET)
-    public String driveSession(final Model model, @PathVariable final long xid, @PathVariable final String sessionToken) {
+    public String driveSession(final HttpServletResponse response, final Model model, @PathVariable final long xid, @PathVariable final String sessionToken) {
+        response.setHeader("Cache-Control", "no-cache, no-store, max-age=0, must-revalidate");
         model.addAttribute("sessionEntryPath", "/candidate/testsession/" + xid + "/" + sessionToken + "/enter");
         return "launch";
     }
@@ -408,15 +408,19 @@ public class CandidateTestController {
             @PathVariable final String sessionToken,
             final HttpServletRequest request, final HttpServletResponse response)
             throws DomainEntityNotFoundException, IOException, CandidateForbiddenException, CandidateSessionTerminatedException {
-        final String resourceEtag = ServiceUtilities.computeSha1Digest(request.getRequestURI());
-        final String requestEtag = request.getHeader("If-None-Match");
-        if (resourceEtag.equals(requestEtag)) {
-            response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-        }
-        else {
-            final CacheableWebOutputStreamer outputStreamer = new CacheableWebOutputStreamer(response, resourceEtag, CandidateItemController.CACHEABLE_MAX_AGE);
-            candidateRenderingService.streamAssessmentSource(xid, sessionToken, outputStreamer);
-        }
+//        final String resourceEtag = ServiceUtilities.computeSha1Digest(request.getRequestURI());
+//        final String requestEtag = request.getHeader("If-None-Match");
+//        if (resourceEtag.equals(requestEtag)) {
+//            response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+//        }
+//        else {
+//            final CacheableWebOutputStreamer outputStreamer = new CacheableWebOutputStreamer(response, resourceEtag, CandidateItemController.CACHEABLE_MAX_AGE);
+//            candidateRenderingService.streamAssessmentSource(xid, sessionToken, outputStreamer);
+//        }
+
+        /* TEMP */
+        final CacheableWebOutputStreamer outputStreamer = new CacheableWebOutputStreamer(response, null, CandidateItemController.CACHEABLE_MAX_AGE);
+        candidateRenderingService.streamAssessmentSource(xid, sessionToken, outputStreamer);
     }
 
     /**
@@ -429,16 +433,20 @@ public class CandidateTestController {
             @RequestParam("href") final String href,
             final HttpServletRequest request, final HttpServletResponse response)
             throws IOException, DomainEntityNotFoundException, CandidateForbiddenException, CandidateSessionTerminatedException {
-        final String resourceUniqueTag = request.getRequestURI() + "/" + href;
-        final String resourceEtag = ServiceUtilities.computeSha1Digest(resourceUniqueTag);
-        final String requestEtag = request.getHeader("If-None-Match");
-        if (resourceEtag.equals(requestEtag)) {
-            response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-        }
-        else {
-            final CacheableWebOutputStreamer outputStreamer = new CacheableWebOutputStreamer(response, resourceEtag, CandidateItemController.CACHEABLE_MAX_AGE);
-            candidateRenderingService.streamAssessmentFile(xid, sessionToken, href, outputStreamer);
-        }
+//        final String resourceUniqueTag = request.getRequestURI() + "/" + href;
+//        final String resourceEtag = ServiceUtilities.computeSha1Digest(resourceUniqueTag);
+//        final String requestEtag = request.getHeader("If-None-Match");
+//        if (resourceEtag.equals(requestEtag)) {
+//            response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+//        }
+//        else {
+//            final CacheableWebOutputStreamer outputStreamer = new CacheableWebOutputStreamer(response, resourceEtag, CandidateItemController.CACHEABLE_MAX_AGE);
+//            candidateRenderingService.streamAssessmentFile(xid, sessionToken, href, outputStreamer);
+//        }
+
+        /* TEMP */
+        final CacheableWebOutputStreamer outputStreamer = new CacheableWebOutputStreamer(response, null, CandidateItemController.CACHEABLE_MAX_AGE);
+        candidateRenderingService.streamAssessmentFile(xid, sessionToken, href, outputStreamer);
     }
 
     @RequestMapping(value="/testsession/{xid}/{sessionToken}/validation", method=RequestMethod.GET)

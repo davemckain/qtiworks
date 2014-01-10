@@ -58,7 +58,7 @@ public final class NonCacheableWebOutputStreamer extends ServletOutputStreamer {
         setContentType(contentType);
         setContentLength(contentLength);
         setLastModifiedTime(lastModifiedTime);
-        response.setHeader("Cache-Control", "no-cache, must-revalidate");
+        response.setHeader("Cache-Control", "no-cache, max-age=0, no-store, private, must-revalidate");
         response.setHeader("Expires", WebUtilities.formatHttpDate(lastModifiedTime));
         transferResultStream(resultStream);
     }
