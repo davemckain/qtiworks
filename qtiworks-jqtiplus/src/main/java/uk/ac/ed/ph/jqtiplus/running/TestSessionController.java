@@ -648,13 +648,13 @@ public final class TestSessionController extends TestProcessingController {
 	    if (!mayEndCurrentTestPart()) {
 	        throw new QtiCandidateStateException("Current test part cannot be ended");
 	    }
-
 	    final TestPlanNode currentTestPartNode = assertCurrentTestPartNode();
 	    final TestPartSessionState currentTestPartSessionState = expectTestPartSessionState(currentTestPartNode);
 	    final TestPart currentTestPart = expectTestPart(currentTestPartNode);
 	    final List<TestPlanNode> itemRefNodes = currentTestPartNode.searchDescendants(TestNodeType.ASSESSMENT_ITEM_REF);
+
+	    /* If in SIMULTANEOUS mode, then commit responses on each item that has been visited and invoke run RP */
 	    if (currentTestPart.getSubmissionMode()==SubmissionMode.SIMULTANEOUS) {
-	        /* We're in SIMULTANEOUS mode. Commit responses on each item that has been visited, then run RP */
 	        for (final TestPlanNode itemRefNode : itemRefNodes) {
 	            final ItemSessionController itemSessionController = getItemSessionController(itemRefNode);
 	            final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
@@ -668,8 +668,6 @@ public final class TestSessionController extends TestProcessingController {
 	                itemSessionController.performResponseProcessing(timestamp);
 	            }
 	        }
-	        /* Then we'll run outcome processing for the test */
-	        performOutcomeProcessing();
 	    }
 
 	    /* End all items (if not done so already due to RP ending the item or during LINEAR navigation) */
@@ -697,6 +695,14 @@ public final class TestSessionController extends TestProcessingController {
 
         /* Update test duration */
         touchControlObjectTimer(testSessionState, timestamp);
+
+        /* Finally, if in SIMULTANEOUS mode then invoke outcome processing.
+         * (We do this last to ensure that the various duration values have been updated
+         * so that they are accurate if accessed during OP.)
+         */
+        if (currentTestPart.getSubmissionMode()==SubmissionMode.SIMULTANEOUS) {
+            performOutcomeProcessing();
+        }
 
 	    /* Deselect item */
 	    testSessionState.setCurrentItemKey(null);
@@ -1381,6 +1387,7 @@ public final class TestSessionController extends TestProcessingController {
             if (boundSuccessfully) {
                 itemSessionController.performResponseProcessing(timestamp);
             }
+
             /* Run outcome processing */
             performOutcomeProcessing();
         }
