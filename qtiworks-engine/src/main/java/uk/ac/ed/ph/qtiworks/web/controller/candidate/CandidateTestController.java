@@ -52,6 +52,7 @@ import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
 import uk.ac.ed.ph.jqtiplus.node.result.AssessmentResult;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
+import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeKey;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
@@ -385,18 +386,36 @@ public class CandidateTestController {
     }
 
     //----------------------------------------------------
-    // Informational actions
+    // Assessment resource streaming
 
     /**
-     * Streams an {@link AssessmentResult} representing the current state of the given
-     * {@link CandidateSession}
+     * Serves the given (white-listed) file in the given {@link AssessmentPackage}
+     *
+     * @see AssessmentManagementService#streamPackageSource(AssessmentPackage, java.io.OutputStream)
      */
-    @RequestMapping(value="/testsession/{xid}/{sessionToken}/result", method=RequestMethod.GET)
-    public void streamResult(final HttpServletResponse response, @PathVariable final long xid, @PathVariable final String sessionToken)
-            throws DomainEntityNotFoundException, IOException, CandidateForbiddenException {
-        response.setContentType("application/xml");
-        candidateRenderingService.streamAssessmentResult(xid, sessionToken, response.getOutputStream());
+    @RequestMapping(value="/testsession/{xid}/{sessionToken}/file", method=RequestMethod.GET)
+    public void streamPackageFile(@PathVariable final long xid, @PathVariable final String sessionToken,
+            @RequestParam("href") final String href,
+            final HttpServletRequest request, final HttpServletResponse response)
+            throws IOException, DomainEntityNotFoundException, CandidateForbiddenException, CandidateSessionTerminatedException {
+//        final String resourceUniqueTag = request.getRequestURI() + "/" + href;
+//        final String resourceEtag = ServiceUtilities.computeSha1Digest(resourceUniqueTag);
+//        final String requestEtag = request.getHeader("If-None-Match");
+//        if (resourceEtag.equals(requestEtag)) {
+//            response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+//        }
+//        else {
+//            final CacheableWebOutputStreamer outputStreamer = new CacheableWebOutputStreamer(response, resourceEtag, CandidateItemController.CACHEABLE_MAX_AGE);
+//            candidateRenderingService.streamAssessmentFile(xid, sessionToken, href, outputStreamer);
+//        }
+
+        /* TEMP */
+        final CacheableWebOutputStreamer outputStreamer = new CacheableWebOutputStreamer(response, null, CandidateItemController.CACHEABLE_MAX_AGE);
+        candidateRenderingService.streamAssessmentFile(xid, sessionToken, href, outputStreamer);
     }
+
+    //----------------------------------------------------
+    // Author actions
 
     /**
      * Serves the source of the given {@link AssessmentPackage}
@@ -424,29 +443,25 @@ public class CandidateTestController {
     }
 
     /**
-     * Serves the given (white-listed) file in the given {@link AssessmentPackage}
-     *
-     * @see AssessmentManagementService#streamPackageSource(AssessmentPackage, java.io.OutputStream)
+     * Streams an {@link ItemSessionState} representing the current state of the given
+     * {@link CandidateSession}
      */
-    @RequestMapping(value="/testsession/{xid}/{sessionToken}/file", method=RequestMethod.GET)
-    public void streamPackageFile(@PathVariable final long xid, @PathVariable final String sessionToken,
-            @RequestParam("href") final String href,
-            final HttpServletRequest request, final HttpServletResponse response)
-            throws IOException, DomainEntityNotFoundException, CandidateForbiddenException, CandidateSessionTerminatedException {
-//        final String resourceUniqueTag = request.getRequestURI() + "/" + href;
-//        final String resourceEtag = ServiceUtilities.computeSha1Digest(resourceUniqueTag);
-//        final String requestEtag = request.getHeader("If-None-Match");
-//        if (resourceEtag.equals(requestEtag)) {
-//            response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-//        }
-//        else {
-//            final CacheableWebOutputStreamer outputStreamer = new CacheableWebOutputStreamer(response, resourceEtag, CandidateItemController.CACHEABLE_MAX_AGE);
-//            candidateRenderingService.streamAssessmentFile(xid, sessionToken, href, outputStreamer);
-//        }
+    @RequestMapping(value="/itemsession/{xid}/{sessionToken}/state", method=RequestMethod.GET)
+    public void streamState(final HttpServletResponse response, @PathVariable final long xid, @PathVariable final String sessionToken)
+            throws DomainEntityNotFoundException, IOException, CandidateForbiddenException {
+        final NonCacheableWebOutputStreamer outputStreamer = new NonCacheableWebOutputStreamer(response);
+        candidateRenderingService.streamAssessmentState(xid, sessionToken, outputStreamer);
+    }
 
-        /* TEMP */
-        final CacheableWebOutputStreamer outputStreamer = new CacheableWebOutputStreamer(response, null, CandidateItemController.CACHEABLE_MAX_AGE);
-        candidateRenderingService.streamAssessmentFile(xid, sessionToken, href, outputStreamer);
+    /**
+     * Streams an {@link AssessmentResult} representing the current state of the given
+     * {@link CandidateSession}
+     */
+    @RequestMapping(value="/testsession/{xid}/{sessionToken}/result", method=RequestMethod.GET)
+    public void streamResult(final HttpServletResponse response, @PathVariable final long xid, @PathVariable final String sessionToken)
+            throws DomainEntityNotFoundException, IOException, CandidateForbiddenException {
+        response.setContentType("application/xml");
+        candidateRenderingService.streamAssessmentResult(xid, sessionToken, response.getOutputStream());
     }
 
     @RequestMapping(value="/testsession/{xid}/{sessionToken}/validation", method=RequestMethod.GET)
