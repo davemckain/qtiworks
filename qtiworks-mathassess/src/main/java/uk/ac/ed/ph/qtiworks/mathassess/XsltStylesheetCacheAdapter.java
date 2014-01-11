@@ -55,12 +55,14 @@ public final class XsltStylesheetCacheAdapter implements StylesheetCache {
 
     @Override
     public Templates getStylesheet(final String key) {
-        return targetCache.getStylesheet(key);
+        return targetCache!=null ? targetCache.getStylesheet(key) : null;
     }
 
     @Override
     public void putStylesheet(final String key, final Templates stylesheet) {
-        targetCache.putStylesheet(key, stylesheet);
+        if (targetCache!=null) {
+        	targetCache.putStylesheet(key, stylesheet);
+        }
     }
 
 }
