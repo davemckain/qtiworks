@@ -65,7 +65,7 @@ combine the feedback for the test and the testPart.)
     <ul class="sessionControl">
       <li>
         <form action="{$webappContextPath}{$exitTestUrl}" method="post"
-          onsubmit="return confirm('Are you sure? This will exit the test and you can\'t go back in.')">
+          onsubmit="return confirm({qw:to-javascript-string($exitTestAlertMessage)})">
           <input type="submit" value="Exit Test"/>
         </form>
       </li>

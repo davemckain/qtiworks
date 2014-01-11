@@ -49,10 +49,23 @@ Base templates used in test rendering
   <xsl:variable name="assessmentTest" select="document($testSystemId)/*[1]" as="element(qti:assessmentTest)"/>
   <xsl:variable name="currentTestPart" select="$assessmentTest/qti:testPart[@identifier=qw:extract-identifier($currentTestPartNode)]" as="element(qti:testPart)"/>
   <xsl:variable name="hasMultipleTestParts" select="count($assessmentTest/qti:testPart) &gt; 1" as="xs:boolean"/>
-  <xsl:variable name="testOrTestPart" select="if ($hasMultipleTestParts) then 'Test Part' else 'Test'" as="xs:string"/>
 
   <!-- Test outcome values -->
   <xsl:variable name="testOutcomeValues" select="$testSessionState/qw:outcomeVariable" as="element(qw:outcomeVariable)*"/>
+
+  <!-- ************************************************************ -->
+
+  <xsl:variable name="testOrTestPart" as="xs:string"
+    select="if ($hasMultipleTestParts) then 'Test Part' else 'Test'"/>
+
+  <xsl:variable name="endTestPartAlertMessage" as="xs:string"
+    select="concat('Are you sure? This will commit your answers for this ', $testOrTestPart, '.')"/>
+
+  <xsl:variable name="exitTestPartAlertMessage" as="xs:string"
+    select="concat('Are you sure? This will leave this ', $testOrTestPart, ' and you can''t go back in.')"/>
+
+  <xsl:variable name="exitTestAlertMessage" as="xs:string"
+    select="'Are you sure? This will leave ths Test and you can''t go back in.'"/>
 
   <!-- ************************************************************ -->
 

@@ -70,7 +70,7 @@ Renders the test(Part) feedback
     <ul class="sessionControl">
       <li>
         <form action="{$webappContextPath}{$advanceTestPartUrl}" method="post"
-          onsubmit="return confirm('Are you sure? This will leave this {$testOrTestPart} and you can\'t go back in.')">
+          onsubmit="return confirm({qw:to-javascript-string($exitTestPartAlertMessage)})">
           <input type="submit" value="Exit {$testOrTestPart}"/>
         </form>
       </li>

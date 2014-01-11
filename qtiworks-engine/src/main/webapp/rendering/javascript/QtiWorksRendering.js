@@ -518,6 +518,7 @@ var QtiWorksRendering = (function() {
     /* Public methods */
 
     return {
+        /* FIXME: Rename this as canSubmit() */
         submit: function() {
             var allowSubmit = true;
             for (var i in submitCallbacks) {

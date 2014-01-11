@@ -61,6 +61,10 @@ NB: This is used both while being presented, and during review.
   <xsl:variable name="provideItemSolutionButton" as="xs:boolean"
     select="$reviewMode and $showSolution and not($solutionMode)"/>
 
+  <!-- Text to use on submit button, which depends on submissionMode -->
+  <xsl:variable name="submitButtonText" as="xs:string"
+    select="if ($currentTestPart/@submissionMode='individual') then 'Submit Answer' else 'Save Answer'"/>
+
   <!-- ************************************************************ -->
 
   <!-- Item may be QTI 2.0 or 2.1, so we'll put a template in here to fix namespaces to QTI 2.1 -->
@@ -111,9 +115,6 @@ NB: This is used both while being presented, and during review.
       <body class="qtiworks assessmentItem assessmentTest">
         <xsl:call-template name="maybeAddAuthoringLink"/>
 
-        <!-- Drill down into current item via current testPart structure -->
-        <xsl:apply-templates select="$currentTestPartNode" mode="testPart-drilldown"/>
-
         <!--
         Show 'during' tetFeedback for the current testPart and/or the test itself.
         The info model says this should be shown directly after outcome processing.
@@ -127,8 +128,8 @@ NB: This is used both while being presented, and during review.
           <xsl:apply-templates select="$assessmentTest/qti:testFeedback[@access='during']"/>
         </xsl:if>
 
-        <!-- Session control -->
-        <xsl:call-template name="qw:test-controls"/>
+        <!-- Drill down into current item via current testPart structure -->
+        <xsl:apply-templates select="$currentTestPartNode" mode="testPart-drilldown"/>
       </body>
     </html>
   </xsl:template>
@@ -153,7 +154,7 @@ NB: This is used both while being presented, and during review.
       <xsl:if test="$endTestPartAllowed">
         <li>
           <form action="{$webappContextPath}{$endTestPartUrl}" method="post"
-            onsubmit="return confirm('Are you sure?')">
+            onsubmit="return confirm({qw:to-javascript-string($endTestPartAlertMessage)})">
             <input type="submit" value="End {$testOrTestPart}"/>
           </form>
         </li>
@@ -216,7 +217,12 @@ NB: This is used both while being presented, and during review.
     <xsl:if test="@key=$itemKey">
       <!-- We've reached the current item -->
       <li class="currentItem">
+
+        <!-- Render item -->
         <xsl:apply-templates select="$assessmentItem" mode="render-item"/>
+
+        <!-- Put session controls here -->
+        <xsl:call-template name="qw:test-controls"/>
       </li>
     </xsl:if>
   </xsl:template>
@@ -284,10 +290,8 @@ NB: This is used both while being presented, and during review.
         </xsl:choose>
 
         <xsl:if test="$isItemSessionOpen">
-          <xsl:variable name="submitText" as="xs:string"
-            select="if ($currentTestPart/@submissionMode='individual') then 'Submit Answer' else 'Save Answer'"/>
           <div class="testItemControl">
-            <input id="submit_button" name="submit" type="submit" value="{$submitText}"/>
+            <input id="submit_button" name="submit" type="submit" value="{$submitButtonText}"/>
           </div>
         </xsl:if>
       </form>

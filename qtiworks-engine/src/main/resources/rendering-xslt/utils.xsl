@@ -13,20 +13,17 @@ General utility templates
   xpath-default-namespace="http://www.w3.org/1999/xhtml"
   exclude-result-prefixes="xs qti qw">
 
-  <xsl:variable name="apos" as="xs:string" select='"&apos;"'/>
-
   <!-- ************************************************************ -->
+  <!-- JavaScript string helpers -->
 
   <xsl:function name="qw:escape-for-javascript-string" as="xs:string">
     <xsl:param name="input" as="xs:string?"/>
-    <xsl:sequence select="replace(replace($input, '[&#x0d;&#x0a;]', ''), '($apos)', '\\$1')"/>
+    <xsl:sequence select="replace(replace($input, '[&#x0d;&#x0a;]', ''), '('')', '\\$1')"/>
   </xsl:function>
 
   <xsl:function name="qw:to-javascript-string" as="xs:string">
     <xsl:param name="input" as="xs:string"/>
-    <xsl:sequence select="concat($apos,
-      replace(replace($input, '[&#x0d;&#x0a;]', ''), '($apos)', '\\$1'),
-      $apos)"/>
+    <xsl:sequence select="concat('''', qw:escape-for-javascript-string($input), '''')"/>
   </xsl:function>
 
   <xsl:function name="qw:to-javascript-arguments" as="xs:string">
