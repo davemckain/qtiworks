@@ -35,6 +35,7 @@ $(document).ready(function() {
 
     /* Form progressive enhancement - show target page (which should be XML) in a dialog box */
     $('.showXmlInDialog').submit(function() {
+        /* Extract details from this <form> element */
         var title = $(this).attr('title');
         var action = $(this).attr('action');
         $.get(action, function(data, textStatus, jqXHR) {
