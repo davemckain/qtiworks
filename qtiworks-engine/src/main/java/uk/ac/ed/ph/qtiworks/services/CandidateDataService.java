@@ -91,6 +91,7 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltSerializationOptions;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetManager;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -584,11 +585,19 @@ public class CandidateDataService {
         xsltSerializationOptions.setIndenting(true);
         xsltSerializationOptions.setIncludingXMLDeclaration(false);
         final Transformer serializer = XsltStylesheetManager.createSerializer(xsltSerializationOptions);
+        FileOutputStream resultStream = null;
         try {
-            serializer.transform(new DOMSource(stateXml), new StreamResult(sessionFile));
+            resultStream = new FileOutputStream(sessionFile);
+            serializer.transform(new DOMSource(stateXml), new StreamResult(resultStream));
         }
         catch (final TransformerException e) {
             throw new QtiWorksRuntimeException("Unexpected Exception serializing state DOM", e);
+        }
+        catch (final FileNotFoundException e) {
+            throw QtiWorksRuntimeException.unexpectedException(e);
+        }
+        finally {
+            ServiceUtilities.ensureClose(resultStream);
         }
     }
 
@@ -597,7 +606,7 @@ public class CandidateDataService {
         FileOutputStream resultStream = null;
         try {
             resultStream = new FileOutputStream(resultFile);
-            qtiSerializer.serializeJqtiObject(resultNode, new FileOutputStream(resultFile));
+            qtiSerializer.serializeJqtiObject(resultNode, resultStream);
         }
         catch (final Exception e) {
             throw QtiWorksRuntimeException.unexpectedException(e);
