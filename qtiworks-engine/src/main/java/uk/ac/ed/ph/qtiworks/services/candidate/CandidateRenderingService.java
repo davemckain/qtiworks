@@ -63,6 +63,7 @@ import uk.ac.ed.ph.qtiworks.services.AssessmentPackageFileService;
 import uk.ac.ed.ph.qtiworks.services.CandidateAuditLogger;
 import uk.ac.ed.ph.qtiworks.services.CandidateDataService;
 import uk.ac.ed.ph.qtiworks.services.FilespaceManager;
+import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.services.domain.OutputStreamer;
 
@@ -89,7 +90,6 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -171,7 +171,7 @@ public class CandidateRenderingService {
                 throw new QtiWorksRuntimeException("Unexpected IOException", e);
             }
             finally {
-                IOUtils.closeQuietly(resultOutputStream);
+                ServiceUtilities.ensureClose(resultOutputStream);
             }
 
             /* Finally stream to caller */
@@ -304,7 +304,7 @@ public class CandidateRenderingService {
                 throw new QtiWorksRuntimeException("Unexpected IOException", e);
             }
             finally {
-                IOUtils.closeQuietly(resultOutputStream);
+                ServiceUtilities.ensureClose(resultOutputStream);
             }
 
             /* Finally stream to caller */
@@ -364,7 +364,7 @@ public class CandidateRenderingService {
                 throw new QtiWorksRuntimeException("Unexpected IOException", e);
             }
             finally {
-                IOUtils.closeQuietly(resultOutputStream);
+                ServiceUtilities.ensureClose(resultOutputStream);
             }
 
             /* Finally stream to caller */
@@ -490,7 +490,7 @@ public class CandidateRenderingService {
                 throw new QtiWorksRuntimeException("Unexpected IOException", e);
             }
             finally {
-                IOUtils.closeQuietly(resultOutputStream);
+                ServiceUtilities.ensureClose(resultOutputStream);
             }
 
             /* Finally stream to caller */
@@ -740,7 +740,7 @@ public class CandidateRenderingService {
             throw e;
         }
         finally {
-            IOUtils.closeQuietly(resultInputStream);
+            ServiceUtilities.ensureClose(resultInputStream);
         }
     }
 

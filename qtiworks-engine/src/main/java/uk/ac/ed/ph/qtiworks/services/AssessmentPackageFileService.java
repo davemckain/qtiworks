@@ -74,7 +74,6 @@ import javax.activation.FileTypeMap;
 import javax.annotation.Resource;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -431,7 +430,7 @@ public class AssessmentPackageFileService {
                             + " yielded null lookup. The sample bootstrap process may need to be redone.");
                 }
                 finally {
-                    IOUtils.closeQuietly(sampleFileStream);
+                    ServiceUtilities.ensureClose(sampleFileStream);
                 }
                 streamPackageFile(assessmentPackage, tempFile, contentType, outputStreamer);
             }
@@ -470,7 +469,7 @@ public class AssessmentPackageFileService {
             outputStreamer.stream(contentType, contentLength, lastModifiedTime, fileInputStream);
         }
         finally {
-            IOUtils.closeQuietly(fileInputStream);
+            ServiceUtilities.ensureClose(fileInputStream);
         }
     }
 
