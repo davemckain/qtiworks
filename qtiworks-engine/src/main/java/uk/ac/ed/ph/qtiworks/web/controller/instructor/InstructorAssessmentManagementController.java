@@ -139,8 +139,8 @@ public class InstructorAssessmentManagementController {
             final @Valid @ModelAttribute UploadAssessmentPackageCommand command,
             final BindingResult result)
             throws PrivilegeException {
-        /* Validate command Object */
         if (result.hasErrors()) {
+            /* Return to form if any binding errors */
             return "uploadAssessmentForm";
         }
 

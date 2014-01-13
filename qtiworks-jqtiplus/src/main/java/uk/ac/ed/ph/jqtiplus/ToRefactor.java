@@ -40,11 +40,13 @@ import java.lang.annotation.Target;
 
 /**
  * Temporary annotation for things that are known to require further refactoring work
- * 
+ *
  * @author David McKain
  */
 @Retention(RetentionPolicy.SOURCE)
 @Target({ ElementType.TYPE, ElementType.METHOD, ElementType.FIELD, ElementType.CONSTRUCTOR })
 public @interface ToRefactor {
+
+    /* Marker annotation only */
 
 }

@@ -176,6 +176,10 @@ public final class CasCompare extends MathAssessOperator {
                         context.fireValidationError(this, "The action '" + getAction() + "' is not supported by the '" + getSyntax() + "' engine.");
                     }
                     break;
+
+                default:
+                    /* No other syntaxes supported at present */
+                    break;
             }
         }
 

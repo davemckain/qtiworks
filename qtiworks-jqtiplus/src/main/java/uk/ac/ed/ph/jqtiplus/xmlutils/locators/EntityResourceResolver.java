@@ -93,6 +93,17 @@ public class EntityResourceResolver implements EntityResolver {
         return result;
     }
 
+    /**
+     * Subclasses can override this method if you would like to handle the case when the
+     * required entity cannot be resolved and possibly provide a "fallback" {@link InputSource}.
+     *
+     * @param publicId The public identifier of the external entity
+     *        being referenced, or null if none was supplied.
+     * @param systemId The system identifier of the external entity
+     *        being referenced.
+     *
+     * @return suitable fallback {@link InputSource}, or null.
+     */
     public InputSource onMiss(final String publicId, final String systemId) {
         return null;
     }

@@ -41,4 +41,6 @@ package uk.ac.ed.ph.qtiworks.rendering;
  */
 public final class TerminatedRenderingRequest extends AbstractRenderingRequest<AbstractRenderingOptions> {
 
+    /* Nothing new in here */
+
 }

@@ -68,8 +68,6 @@ public final class MaximaLaunchHelper {
     /**
      * Checks whether Maxima can be successfully configured, instantiated then immediately
      * shut down.
-     *
-     * @return
      */
     public static boolean isMaximaWorking() {
         final MaximaConfiguration maximaConfiguration = tryMaximaConfiguration();

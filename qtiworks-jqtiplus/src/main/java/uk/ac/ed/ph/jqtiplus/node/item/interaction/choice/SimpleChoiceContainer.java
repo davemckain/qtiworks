@@ -35,9 +35,11 @@ package uk.ac.ed.ph.jqtiplus.node.item.interaction.choice;
 
 /**
  * Interface for marking classes that contain simpleChoices
- * 
+ *
  * @author Jonathon Hare
  */
 public interface SimpleChoiceContainer extends ChoiceContainer {
+
+    /* Marker interface only */
 
 }

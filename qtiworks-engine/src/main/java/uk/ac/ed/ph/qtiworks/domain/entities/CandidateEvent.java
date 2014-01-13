@@ -138,7 +138,6 @@ public class CandidateEvent implements BaseEntity {
     private List<CandidateEventNotification> notifications;
 
     /** (Currently used for cascading deletion only - upgrade if required) */
-    @SuppressWarnings("unused")
     @OneToMany(mappedBy="candidateEvent", cascade=CascadeType.REMOVE)
     private Set<CandidateResponse> candidateResponses;
 

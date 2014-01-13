@@ -45,4 +45,6 @@ import uk.ac.ed.ph.jqtiplus.node.QtiNode;
  */
 public interface Content extends QtiNode {
 
+    /* Marker interface only */
+
 }

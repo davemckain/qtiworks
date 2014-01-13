@@ -51,7 +51,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
 public class CandidateFileSubmissionDao extends GenericDao<CandidateFileSubmission> {
 
-    @SuppressWarnings("unused")
     @PersistenceContext
     private EntityManager em;
 

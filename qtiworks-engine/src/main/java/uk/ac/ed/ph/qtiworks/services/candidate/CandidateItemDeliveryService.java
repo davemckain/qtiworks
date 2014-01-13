@@ -234,7 +234,6 @@ public class CandidateItemDeliveryService {
 
     /**
      * @param candidateComment optional candidate comment, or null if no comment has been sent
-     * @return
      */
     public CandidateSession handleResponses(final CandidateSession candidateSession,
             final Map<Identifier, StringResponseData> stringResponseMap,

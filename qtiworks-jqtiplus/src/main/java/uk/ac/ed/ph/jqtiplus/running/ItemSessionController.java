@@ -774,8 +774,8 @@ public final class ItemSessionController extends ItemProcessingController implem
      * Precondition: item session must be open and not suspended
      * <p>
      * Postconditions: Outcome Variables will be updated. SessionStatus will be changed to
-     * {@link SessionStatus#FINAL}. The <code>numAttempts</code> variables will be incremented (unless
-     * directed otherwise by an {@link EndAttemptInteraction}).
+     * {@link SessionStatus#FINAL}. The <code>numAttempts</code> variables will be incremented
+     * (unless directed otherwise by an {@link EndAttemptInteraction}).
      *
      * @param timestamp timestamp for this event, which must not be null
      */
@@ -853,7 +853,7 @@ public final class ItemSessionController extends ItemProcessingController implem
                 responseProcessing.evaluate(this);
             }
             else {
-                fireRuntimeWarning(item, "There is not responseProcessing to perform here");
+                fireRuntimeWarning(item, "There is no responseProcessing to be performed here");
                 logger.debug("No responseProcessing rules or responseProcessing template exists, so no response processing will be performed");
             }
 

@@ -37,9 +37,11 @@ import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 /**
  * Interface for marking classes that contain choices
- * 
+ *
  * @author Jonathon Hare
  */
 public interface ChoiceContainer extends QtiNode {
+
+    /* Marker interface only */
 
 }

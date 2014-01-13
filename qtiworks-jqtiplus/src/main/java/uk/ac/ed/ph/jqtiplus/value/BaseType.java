@@ -362,7 +362,7 @@ public enum BaseType implements Stringifiable {
      * Parses the <code>String</code> argument to yield a <code>SingleValue</code> of this BaseType,
      * after first trimming leading and trailing whitespace from the string for non-STRING BaseTypes.
      * <p>
-     * This is new in JQTI+. The original JQTI always trimmed strings before the {@link #parseSingleValue()}
+     * This is new in JQTI+. The original JQTI always trimmed strings before the {@link #parseSingleValue(String)}
      * method was called, which could accidentally mutate the resulting value for STRING baseTypes. Hence the
      * addition of this method to make it clearer what is happening.
      *

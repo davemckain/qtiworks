@@ -220,20 +220,18 @@ public class LtiInstructorAssessmentManagementController {
             final @Valid @ModelAttribute UploadAssessmentPackageCommand command,
             final BindingResult result)
             throws PrivilegeException {
-        Assessment assessment = null;
-        if (!result.hasErrors()) {
-            /* No binding errors, so attempt to import and validate the package */
-            try {
-                assessment = assessmentManagementService.importAssessment(command.getFile(), true);
-            }
-            catch (final AssessmentPackageFileImportException e) {
-                final EnumerableClientFailure<APFIFailureReason> failure = e.getFailure();
-                failure.registerErrors(result, "assessmentPackageUpload");
-                return "instructor/uploadAssessmentForm";
-            }
-        }
         if (result.hasErrors()) {
-            /* Return to form if any binding/service errors */
+            /* Return to form if any binding errors */
+            return "instructor/uploadAssessmentForm";
+        }
+        /* No binding errors, so attempt to import and validate the package */
+        Assessment assessment;
+        try {
+            assessment = assessmentManagementService.importAssessment(command.getFile(), true);
+        }
+        catch (final AssessmentPackageFileImportException e) {
+            final EnumerableClientFailure<APFIFailureReason> failure = e.getFailure();
+            failure.registerErrors(result, "assessmentPackageUpload");
             return "instructor/uploadAssessmentForm";
         }
         GlobalRouter.addFlashMessage(redirectAttributes, "Assessment successfully created");

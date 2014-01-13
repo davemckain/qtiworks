@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.services.domain;
 
+import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.LisOutcomeReportingStatus;
 
@@ -183,8 +184,8 @@ public final class CandidateSessionSummaryData implements Serializable {
             case TC_RETURN_SUCCESS: return "LTI result returned successfully";
             case TC_RETURN_FAIL_ATTEMPT: return "LTI result return attempt failed - will retry shortly";
             case TC_RETURN_FAIL_TERMINAL: return "LTI result return failed";
+            default: throw new QtiWorksLogicException("Unexpected switch case " + lisOutcomeReportingStatus);
         }
-        return "";
     }
 
     @Override

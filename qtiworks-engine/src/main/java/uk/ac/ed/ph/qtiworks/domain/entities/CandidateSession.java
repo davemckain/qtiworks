@@ -262,22 +262,18 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
     private LisOutcomeReportingStatus lisOutcomeReportingStatus;
 
     /** (Currently used for cascading deletion only - upgrade if required) */
-    @SuppressWarnings("unused")
     @OneToMany(mappedBy="candidateSession", cascade=CascadeType.REMOVE)
     private Set<CandidateEvent> candidateEvents;
 
     /** (Currently used for cascading deletion only - upgrade if required) */
-    @SuppressWarnings("unused")
     @OneToMany(mappedBy="candidateSession", cascade=CascadeType.REMOVE)
     private Set<CandidateFileSubmission> candidateFileSubmissions;
 
     /** (Currently used for cascading deletion only - upgrade if required) */
-    @SuppressWarnings("unused")
     @OneToMany(mappedBy="candidateSession", cascade=CascadeType.REMOVE)
     private Set<CandidateSessionOutcome> candidateSessionOutcomes;
 
     /** (Currently used for cascading deletion only - upgrade if required) */
-    @SuppressWarnings("unused")
     @OneToMany(mappedBy="candidateSession", cascade=CascadeType.REMOVE)
     private Set<QueuedLtiOutcome> queuedLtiOutcomes;
 

@@ -39,6 +39,7 @@ import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment.Feature;
 import uk.ac.ed.ph.qtiworks.test.utils.TestUtils;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
+import uk.ac.ed.ph.jqtiplus.exception.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.reading.AssessmentObjectXmlLoader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiObjectReader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
@@ -139,6 +140,9 @@ public abstract class AbstractIntegrationTest {
             case ASSESSMENT_TEST:
                 result = createSampleAssessmentXmlLoader().loadResolveAndValidateTest(sampleResourceUri);
                 break;
+
+            default:
+                throw new QtiLogicException("Unexpected switch case " + qtiSampleAssessment.getType());
         }
         return result;
     }

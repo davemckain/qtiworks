@@ -219,7 +219,6 @@ public final class GlueValueBinder {
      * Returns null if the given {@link Value} is not supported by the glue code.
      *
      * @param value
-     * @return
      */
     public static ValueWrapper jqtiToCas(final Value value) {
         if (value.isNull()) {
@@ -385,10 +384,6 @@ public final class GlueValueBinder {
      * Returns the {@link ValueWrapper} class that would be used to wrap the output
      * from the CAS for the given {@link BaseType} and {@link Cardinality},
      * or null if that particular combination is not supported.
-     *
-     * @param baseType
-     * @param cardinality
-     * @return
      */
     public static Class<? extends ValueWrapper> getCasReturnClass(final BaseType baseType, final Cardinality cardinality) {
         switch (cardinality) {
@@ -430,8 +425,10 @@ public final class GlueValueBinder {
 
             case RECORD:
                 return MathsContentValueWrapper.class;
+
+            default:
+                throw new QtiLogicException("Unexpected switch case " + cardinality);
         }
-        return null;
     }
 
 }

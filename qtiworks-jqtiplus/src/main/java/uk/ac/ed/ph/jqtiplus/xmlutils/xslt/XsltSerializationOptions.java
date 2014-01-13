@@ -75,7 +75,7 @@ public final class XsltSerializationOptions implements Serializable {
     /**
      * Gets the encoding for the resulting serialized XML.
      * <p>
-     * Default is {@link SerializationSpecifier#DEFAULT_ENCODING}.
+     * Default is {@link #DEFAULT_ENCODING}.
      */
     public String getEncoding() {
         return encoding;
@@ -123,9 +123,7 @@ public final class XsltSerializationOptions implements Serializable {
      * the default processor that ships with your Java platform.)
      * <p>
      * This must be a non-negative integer.
-     * The default value is {@link SerializationSpecifier#DEFAULT_INDENT}.
-     *
-     * @since 1.2.3
+     * The default value is {@link #DEFAULT_INDENT}.
      */
     public int getIndent() {
         return indent;
@@ -138,9 +136,7 @@ public final class XsltSerializationOptions implements Serializable {
      * the default processor that ships with your Java platform.)
      * <p>
      * This must be a non-negative integer.
-     * The default value is {@link SerializationSpecifier#DEFAULT_INDENT}.
-     *
-     * @since 1.2.3
+     * The default value is {@link #DEFAULT_INDENT}.
      */
     public void setIndent(final int indent) {
         if (indent<0) {

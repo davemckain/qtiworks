@@ -165,7 +165,13 @@ public class AssessmentPackageFileImporter {
                 final File destFile = new File(importSandboxDirectory, zipEntry.getName());
                 if (!zipEntry.isDirectory()) {
                     ServiceUtilities.ensureFileCreated(destFile);
-                    IOUtils.copy(zipInputStream, new FileOutputStream(destFile));
+                    final FileOutputStream destOutputStream = new FileOutputStream(destFile);
+                    try {
+                        IOUtils.copy(zipInputStream, destOutputStream);
+                    }
+                    finally {
+                        ServiceUtilities.ensureClose(destOutputStream);
+                    }
                     zipInputStream.closeEntry();
                 }
             }

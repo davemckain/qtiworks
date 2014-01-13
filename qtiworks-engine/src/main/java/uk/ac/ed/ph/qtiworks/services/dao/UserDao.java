@@ -51,7 +51,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
 public class UserDao extends GenericDao<User> {
 
-    @SuppressWarnings("unused")
     @PersistenceContext
     private EntityManager em;
 
