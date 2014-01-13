@@ -165,12 +165,14 @@ public class LtiDomain implements BaseEntity, TimestampedOnCreation {
                 + ")";
     }
 
-    @Override
-    public final boolean equals(final Object obj) {
-        if (!(obj instanceof LtiDomain)) {
-            return false;
-        }
-        final LtiDomain other = (LtiDomain) obj;
-        return ObjectUtilities.nullSafeEquals(consumerKey, other.getConsumerKey());
+    /**
+     * Weaker form of {@link #equals(Object)} that tests simply for "business" equivalence, i.e.
+     * having the same key(s)
+     */
+    public boolean businessEquals(final LtiDomain other) {
+        return other!=null
+                && consumerKey!=null
+                && other.getConsumerKey()!=null
+                && consumerKey.equals(other.getConsumerKey());
     }
 }

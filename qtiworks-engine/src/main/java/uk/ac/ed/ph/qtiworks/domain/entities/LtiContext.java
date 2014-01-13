@@ -216,13 +216,14 @@ public class LtiContext implements BaseEntity, TimestampedOnCreation {
                 + ")";
     }
 
-    @Override
-    public boolean equals(final Object obj) {
-        if (!(obj instanceof LtiContext)) {
-            return false;
-        }
-        final LtiContext other = (LtiContext) obj;
-        return ObjectUtilities.nullSafeEquals(getLtiDomain(), other.getLtiDomain())
+    /**
+     * Weaker form of {@link #equals(Object)} that tests simply for "business" equivalence, i.e.
+     * having the same key(s)
+     */
+    public boolean businessEquals(final LtiContext other) {
+        return other!=null
+                && ltiDomain!=null
+                && ltiDomain.businessEquals(other.getLtiDomain())
                 && ObjectUtilities.nullSafeEquals(contextId, other.getContextId())
                 && ObjectUtilities.nullSafeEquals(fallbackResourceLinkId, other.getFallbackResourceLinkId());
     }

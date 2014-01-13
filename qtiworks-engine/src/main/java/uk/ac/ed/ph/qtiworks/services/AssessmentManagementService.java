@@ -159,7 +159,7 @@ public class AssessmentManagementService {
             /* Manager access is shared with all instructors in the LTI context */
             final LtiContext ltiContext = ltiResource.getLtiContext();
             final LtiContext assessmentLtiContext = assessment.getOwnerLtiContext();
-            if (!caller.isInstructor() || assessmentLtiContext==null || !ltiContext.equals(assessmentLtiContext)) {
+            if (!caller.isInstructor() || assessmentLtiContext==null || !ltiContext.businessEquals(assessmentLtiContext)) {
                 throw new PrivilegeException(caller, Privilege.MANAGE_ASSESSMENT, assessment);
             }
         }
@@ -421,7 +421,7 @@ public class AssessmentManagementService {
             /* Manager access is shared with all instructors in the LTI context */
             final LtiContext ltiContext = ltiResource.getLtiContext();
             final LtiContext dsLtiContext = deliverySettings.getOwnerLtiContext();
-            if (!caller.isInstructor() || dsLtiContext==null || !ltiContext.equals(dsLtiContext)) {
+            if (!caller.isInstructor() || dsLtiContext==null || !ltiContext.businessEquals(dsLtiContext)) {
                 throw new PrivilegeException(caller, Privilege.MANAGE_DELIVERY_SETTINGS, deliverySettings);
             }
         }
