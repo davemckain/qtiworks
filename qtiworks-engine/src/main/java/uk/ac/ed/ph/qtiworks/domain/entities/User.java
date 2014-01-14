@@ -41,8 +41,10 @@ import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.internal.util.PropertyOptions;
 
 import java.util.Date;
+import java.util.Set;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -51,6 +53,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -107,6 +110,10 @@ public class User implements BaseEntity, TimestampedOnCreation {
     @Basic(optional=true)
     @Column(name="email_address", length=DomainConstants.USER_EMAIL_ADDRESS_MAX_LENGTH)
     private String emailAddress;
+
+    /** (Currently used for JPA only) */
+    @OneToMany(mappedBy="candidate", cascade=CascadeType.REMOVE)
+    private Set<CandidateSession> candidateSessions;
 
     //------------------------------------------------------------
 

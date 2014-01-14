@@ -80,7 +80,8 @@ import org.springframework.transaction.annotation.Transactional;
  * TODO: In the future we might want to make a low-level version of {@link AssessmentManagementService}
  * that does the raw storage work and merge it with this service.
  *
- * @see EntityGraphService
+ * FIXME: This class has grown organically and there are too many brittle interdependencies.
+ *
  * @see AssessmentManagementService
  *
  * @author David McKain
@@ -252,8 +253,10 @@ public class DataDeletionService {
         ltiResourceDao.remove(ltiResource);
     }
 
-    /* NB: This method is called AFTER candidate session data is removed, so there's no need to
-     * repeat this here. This behaviour would need to change if this method was called at a
+    /* NB: This method is called AFTER candidate session data is removed, so there are no
+     * associations and it's a trivial deletion.
+     *
+     * This behaviour would need to change if this method was called at a
      * different time.
      */
     private int deleteLtiLinkCandidateUsers(final Delivery delivery) {
@@ -372,18 +375,34 @@ public class DataDeletionService {
      */
     public void purgeTransientData(final Date creationTimeThreshold) {
         final int usersDeleted = deleteAnonymousUsers(creationTimeThreshold);
-        if (usersDeleted > 0) {
+        if (usersDeleted>0) {
             logger.info("Purged {} anonymous users from the system", usersDeleted);
         }
         final int transientDeliveriesDeleted = deleteTransientDeliveries(creationTimeThreshold);
-        if (transientDeliveriesDeleted > 0) {
+        if (transientDeliveriesDeleted>0) {
             logger.info("Purged {} transient deliveries from the system", transientDeliveriesDeleted);
         }
     }
 
+    /**
+     * Purges all LTI candidate users who are no longer associated with any {@link CandidateSession}s.
+     */
+    public void purgeOrphanedLtiCandidateUsers() {
+        /* NB: These users don't have any associations, so can be deleted by a single query */
+        final int usersDeletedCount = ltiUserDao.deleteCandidatesWithNoSessions();
+        if (usersDeletedCount>0) {
+            logger.info("Deleted {} LTI orphaned candidate users", usersDeletedCount);
+        }
+    }
+
+    /**
+     * Purges all stored LTI nonces older than the given threshold.
+     */
     public void purgeOldNonces(final Date nonceThreshold) {
-        final int noncesDeleted = ltiNonceDao.deleteOldNonces(nonceThreshold);
-        logger.info("Deleted {} LTI nonces", noncesDeleted);
+        final int noncesDeletedCount = ltiNonceDao.deleteOldNonces(nonceThreshold);
+        if (noncesDeletedCount>0) {
+            logger.info("Deleted {} LTI nonces", noncesDeletedCount);
+        }
     }
 
 }

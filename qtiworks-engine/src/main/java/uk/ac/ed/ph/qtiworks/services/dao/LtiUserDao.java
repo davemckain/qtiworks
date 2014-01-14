@@ -42,6 +42,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
@@ -95,5 +96,10 @@ public class LtiUserDao extends GenericDao<LtiUser> {
         final TypedQuery<LtiUser> query = em.createNamedQuery("LtiUser.getCandidatesForLinkDelivery", LtiUser.class);
         query.setParameter("delivery", delivery);
         return query.getResultList();
+    }
+
+    public int deleteCandidatesWithNoSessions() {
+        final Query query = em.createNamedQuery("LtiUser.deleteCandidatesWithNoSessions");
+        return query.executeUpdate();
     }
 }

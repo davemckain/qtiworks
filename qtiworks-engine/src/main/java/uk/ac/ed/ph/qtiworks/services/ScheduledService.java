@@ -56,7 +56,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @EnableScheduling
-@Profile(QtiWorksProfiles.WEBAPP)
+@Profile({QtiWorksProfiles.WEBAPP, QtiWorksProfiles.MANAGER})
 public class ScheduledService {
 
     private static final Logger logger = LoggerFactory.getLogger(ScheduledService.class);
@@ -79,11 +79,14 @@ public class ScheduledService {
     @Resource
     private LtiOutcomeService ltiOutcomeService;
 
+    //-------------------------------------------------
+
     /** Routine maintenance jobs */
     @Scheduled(fixedRate=ONE_HOUR, initialDelay=ONE_MINUTE)
     public void maintenanceJobs() {
         purgeTransientData();
         purgeOldNonces();
+        dataDeletionService.purgeOrphanedLtiCandidateUsers();
     }
 
     /**
@@ -106,6 +109,8 @@ public class ScheduledService {
         final Date nonceThreshold = new Date(System.currentTimeMillis() - DomainConstants.OAUTH_TIMESTAMP_MAX_AGE);
         dataDeletionService.purgeOldNonces(nonceThreshold);
     }
+
+    //-------------------------------------------------
 
     /**
      * Attempts to send any queued LTI outcomes back to the relevant Tool Consumers.

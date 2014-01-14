@@ -86,7 +86,12 @@ import org.hibernate.annotations.Type;
                 + "  FROM LtiUser u"
                 + "  WHERE u.delivery = :delivery"
                 + "    AND u.ltiLaunchType = 'LINK'"
-                + "    AND u.userRole = 'CANDIDATE'")
+                + "    AND u.userRole = 'CANDIDATE'"),
+    @NamedQuery(name="LtiUser.deleteCandidatesWithNoSessions",
+            query="DELETE"
+                + "  FROM LtiUser u"
+                + "  WHERE u.userRole = 'CANDIDATE'"
+                + "    AND u.candidateSessions IS EMPTY")
 })
 public class LtiUser extends User implements BaseEntity, Comparable<LtiUser> {
 

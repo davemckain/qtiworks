@@ -33,9 +33,8 @@
  */
 package uk.ac.ed.ph.qtiworks.manager;
 
-import uk.ac.ed.ph.qtiworks.services.DataDeletionService;
+import uk.ac.ed.ph.qtiworks.services.ScheduledService;
 
-import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -43,23 +42,24 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Purges all transient data from the system
+ * Invokes {@link ScheduledService#maintenanceJobs()}
  *
  * @author David McKain
  */
-public final class PurgeTransientDataAction extends ManagerAction {
+public final class RunMaintenanceJobs extends ManagerAction {
 
-	private static final Logger logger = LoggerFactory.getLogger(PurgeTransientDataAction.class);
+	private static final Logger logger = LoggerFactory.getLogger(RunMaintenanceJobs.class);
 
 	@Override
 	public String getActionSummary() {
-		return "Purges anonymous users and transient candidate session data from the system";
+		return "Invokes ScheduledService.maintenanceJobs()";
 	}
 
 	@Override
 	public void run(final ApplicationContext applicationContext, final List<String> parameters) {
-	    final DataDeletionService dataDeletionService = applicationContext.getBean(DataDeletionService.class);
-	    dataDeletionService.purgeTransientData(new Date());
-		logger.info("Purged anonymous data from the system");
+	    final ScheduledService scheduledService = applicationContext.getBean(ScheduledService.class);
+	    logger.info("Maintenance jobs starting");
+	    scheduledService.maintenanceJobs();
+	    logger.info("Maintenance jobs complete");
     }
 }
