@@ -1,0 +1,26 @@
+CREDITS
+=======
+
+The QTIWorks code is based on the earlier JQTI/QTIEngine and
+MathAssessEngine tools.
+
+The original JQTI/QTIEngine code was developed by Jiri Kajaba and
+Jonathon Hare, working for the University of Southampton. The JQTI+
+library in QTIWorks is derived from this original JQTI code and owes a
+great debt of gratitude to this original work.
+
+The remainder of the code in QTIWorks was largely developed by David
+Mckain, working for the University of Edinburgh. This includes some bits
+of MathAssessEngine, also largely developed by David McKain.
+
+Contribution to the development of Java files has been indicated using
+standard @author JavaDoc tags. I have tried where possible to attribute
+everyone involved where possible.
+
+This work has also benefited greatly from contributions and advice from
+the many people, in particular Sue Milne, Niall Barr, Graham Smith,
+Wilbert Kraan, Dick Bacon, Steve Lay, Zack Pierce and Jon Mason. (Sorry
+to anyone I've missed!)
+
+David McKain
+January 2014
