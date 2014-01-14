@@ -47,17 +47,13 @@ import uk.ac.ed.ph.qtiworks.services.candidate.CandidateSessionTerminatedExcepti
 import uk.ac.ed.ph.qtiworks.web.ServletOutputStreamer;
 import uk.ac.ed.ph.qtiworks.web.WebUtilities;
 
-import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
-import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
 import uk.ac.ed.ph.jqtiplus.node.result.AssessmentResult;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -79,7 +75,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
  * @author David McKain
  */
 @Controller
-public class CandidateItemController {
+public class CandidateItemController extends CandidateControllerBase {
 
     @Resource
     private CandidateRenderingService candidateRenderingService;
@@ -199,67 +195,6 @@ public class CandidateItemController {
         return redirectToRenderSession(xid, sessionToken);
     }
 
-    /**
-     * @throws BadResponseWebPayloadException
-     */
-    private Map<Identifier, MultipartFile> extractFileResponseData(final MultipartHttpServletRequest multipartRequest) {
-        final Map<Identifier, MultipartFile> fileResponseMap = new HashMap<Identifier, MultipartFile>();
-        @SuppressWarnings("unchecked")
-        final Set<String> parameterNames = multipartRequest.getParameterMap().keySet();
-        for (final String name : parameterNames) {
-            if (name.startsWith("qtiworks_uploadpresented_")) {
-                final String responseIdentifierString = name.substring("qtiworks_uploadpresented_".length());
-                final Identifier responseIdentifier;
-                try {
-                    responseIdentifier = Identifier.parseString(responseIdentifierString);
-                }
-                catch (final QtiParseException e) {
-                    throw new BadResponseWebPayloadException("Bad response identifier encoded in parameter  " + name, e);
-                }
-                final String multipartName = "qtiworks_uploadresponse_" + responseIdentifierString;
-                final MultipartFile multipartFile = multipartRequest.getFile(multipartName);
-                if (multipartFile==null) {
-                    throw new BadResponseWebPayloadException("Expected to find multipart file with name " + multipartName);
-                }
-                fileResponseMap.put(responseIdentifier, multipartFile);
-            }
-        }
-        return fileResponseMap;
-    }
-
-    private String extractCandidateComment(final HttpServletRequest request) {
-        if (request.getParameter("qtiworks_comment_presented")==null) {
-            /* No comment box given to candidate */
-            return null;
-        }
-        return StringUtilities.emptyIfNull(request.getParameter("qtiworks_comment"));
-    }
-
-    /**
-     * @throws BadResponseWebPayloadException
-     */
-    private Map<Identifier, StringResponseData> extractStringResponseData(final HttpServletRequest request) {
-        final Map<Identifier, StringResponseData> responseMap = new HashMap<Identifier, StringResponseData>();
-        @SuppressWarnings("unchecked")
-        final Set<String> parameterNames = request.getParameterMap().keySet();
-        for (final String name : parameterNames) {
-            if (name.startsWith("qtiworks_presented_")) {
-                final String responseIdentifierString = name.substring("qtiworks_presented_".length());
-                final Identifier responseIdentifier;
-                try {
-                    responseIdentifier = Identifier.parseString(responseIdentifierString);
-                }
-                catch (final QtiParseException e) {
-                    throw new BadResponseWebPayloadException("Bad response identifier encoded in parameter  " + name, e);
-                }
-                final String[] responseValues = request.getParameterValues("qtiworks_response_" + responseIdentifierString);
-                final StringResponseData stringResponseData = new StringResponseData(responseValues);
-                responseMap.put(responseIdentifier, stringResponseData);
-            }
-        }
-        return responseMap;
-    }
-
     //----------------------------------------------------
     // Other actions
 
@@ -327,6 +262,7 @@ public class CandidateItemController {
     /**
      * Serves the given (white-listed) file in the given {@link AssessmentPackage}
      */
+    @Override
     @RequestMapping(value="/itemsession/{xid}/{sessionToken}/file", method=RequestMethod.GET)
     public void streamAssessmentPackageFile(@PathVariable final long xid, @PathVariable final String sessionToken,
             @RequestParam("href") final String fileHref,
@@ -350,21 +286,13 @@ public class CandidateItemController {
     /**
      * Serves the source of the given {@link AssessmentPackage}
      */
+    @Override
     @RequestMapping(value="/itemsession/{xid}/{sessionToken}/source", method=RequestMethod.GET)
     public void streamAssessmentSource(@PathVariable final long xid,
             @PathVariable final String sessionToken,
             final HttpServletRequest request, final HttpServletResponse response)
             throws DomainEntityNotFoundException, IOException, CandidateForbiddenException, CandidateSessionTerminatedException {
-        final String fingerprint = "session/" + xid + "/source";
-        final String resourceEtag = WebUtilities.computeEtag(fingerprint);
-        final String requestEtag = request.getHeader("If-None-Match");
-        if (resourceEtag.equals(requestEtag)) {
-            response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-        }
-        else {
-            final ServletOutputStreamer outputStreamer = new ServletOutputStreamer(response, resourceEtag);
-            candidateRenderingService.streamAssessmentSource(xid, sessionToken, outputStreamer);
-        }
+        super.streamAssessmentSource(xid, sessionToken, request, response);
     }
 
     /**
@@ -372,52 +300,38 @@ public class CandidateItemController {
      * {@link CandidateSession}
      */
     @RequestMapping(value="/itemsession/{xid}/{sessionToken}/state", method=RequestMethod.GET)
-    public void streamItemSessionState(final HttpServletResponse response, @PathVariable final long xid, @PathVariable final String sessionToken)
+    public void streamItemSessionState(@PathVariable final long xid, @PathVariable final String sessionToken, final HttpServletResponse response)
             throws DomainEntityNotFoundException, IOException, CandidateForbiddenException {
-        final ServletOutputStreamer outputStreamer = new ServletOutputStreamer(response, null /* No caching */);
-        candidateRenderingService.streamAssessmentState(xid, sessionToken, outputStreamer);
+        super.streamSessionState(xid, sessionToken, response);
     }
 
     /**
      * Streams an {@link AssessmentResult} representing the current state of the given
      * {@link CandidateSession}
      */
+    @Override
     @RequestMapping(value="/itemsession/{xid}/{sessionToken}/result", method=RequestMethod.GET)
-    public void streamAssessmentResult(final HttpServletResponse response, @PathVariable final long xid, @PathVariable final String sessionToken)
+    public void streamAssessmentResult(@PathVariable final long xid, @PathVariable final String sessionToken,
+            final HttpServletResponse response)
             throws DomainEntityNotFoundException, IOException, CandidateForbiddenException {
-        response.setContentType("application/xml");
-        final ServletOutputStreamer outputStreamer = new ServletOutputStreamer(response, null /* No caching */);
-        candidateRenderingService.streamAssessmentResult(xid, sessionToken, outputStreamer);
+        super.streamAssessmentResult(xid, sessionToken, response);
     }
 
 
+    @Override
     @RequestMapping(value="/itemsession/{xid}/{sessionToken}/validation", method=RequestMethod.GET)
     public String showPackageValidationResult(@PathVariable final long xid, @PathVariable final String sessionToken,
             final Model model)
             throws DomainEntityNotFoundException, CandidateForbiddenException {
-        model.addAttribute("validationResult", candidateRenderingService.generateValidationResult(xid, sessionToken));
-        return "validationResult";
+        return super.showPackageValidationResult(xid, sessionToken, model);
     }
 
     //----------------------------------------------------
     // Redirections
 
-    private String redirectToRenderSession(final long xid, final String sessionToken) {
+    @Override
+    protected String redirectToRenderSession(final long xid, final String sessionToken) {
         return "redirect:/candidate/itemsession/" + xid + "/" + sessionToken + "/render";
     }
 
-    private String redirectToRenderSession(final CandidateSession candidateSession) {
-        return redirectToRenderSession(candidateSession.getId(), candidateSession.getSessionToken());
-    }
-
-    private String redirectToExitUrl(final CandidateSession candidateSession) {
-        final String exitUrl = candidateSession.getExitUrl();
-        if (exitUrl==null) {
-            /* No (or unsafe) exit URL provided, so redirect to normal rendering, which will
-             * show a generic "this assessment is now complete" page.
-             */
-            return redirectToRenderSession(candidateSession);
-        }
-        return "redirect:" + exitUrl;
-    }
 }
