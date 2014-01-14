@@ -162,7 +162,7 @@ public final class XmlResourceReader {
     //--------------------------------------------------
 
     /**
-     * FIXME: This currently calls the {@link ResourceLocator} to read the input *twice*. I may
+     * FIXME: This currently calls the {@link ResourceLocator} to read the input *twice*. We may
      * want to save the initial input to a temp file if the stream is not something that can be
      * quickly re-read (e.g. HTTP!)
      *
@@ -211,7 +211,7 @@ public final class XmlResourceReader {
         boolean validated = false;
         final List<String> supportedSchemaNamespaces = new ArrayList<String>();
         final List<String> unsupportedSchemaNamespaces = new ArrayList<String>();
-        final List<String> unresolvedEntitySystemIds = new ArrayList<String>();
+
         final InputErrorHandler inputErrorHandler = new InputErrorHandler();
 
         /* Create the DOM Document that will be built up here */
@@ -222,15 +222,7 @@ public final class XmlResourceReader {
         final Document document = documentBuilder.newDocument();
 
         /* Set up SAX EntityResolver, which will record locator failures appropriately */
-        final EntityResourceResolver entityResolver = new EntityResourceResolver(entityResourceLocator) {
-            @Override
-            public InputSource onMiss(final String publicId, final String systemId) {
-                unresolvedEntitySystemIds.add(systemId);
-                final InputSource emptyStringSource = new InputSource(new StringReader(""));
-                emptyStringSource.setSystemId(systemId);
-                return emptyStringSource;
-            }
-        };
+        final FailureEntityResolver failureEntityResolver = new FailureEntityResolver(entityResourceLocator);
 
         /* Create and configure SAX parser */
         final SAXParserFactory spFactory = SAXParserFactory.newInstance();
@@ -243,7 +235,7 @@ public final class XmlResourceReader {
         spFactory.setFeature("http://xml.org/sax/features/lexical-handler/parameter-entities", false);
         final XMLReader xmlReader = spFactory.newSAXParser().getXMLReader();
         xmlReader.setErrorHandler(inputErrorHandler);
-        xmlReader.setEntityResolver(entityResolver);
+        xmlReader.setEntityResolver(failureEntityResolver);
 
         /* Parse input and convert to a DOM containing SAX Locator information */
         logger.trace("XML parse of {} starting", systemIdString);
@@ -262,6 +254,7 @@ public final class XmlResourceReader {
 
         /* We'll consider successful parsing to be no errors or fatal errors, and no unresolved
          * entities */
+        final List<String> unresolvedEntitySystemIds = failureEntityResolver.getUnresolvedEntitySystemIds();
         parsed = inputErrorHandler.fatalErrors.isEmpty() && inputErrorHandler.errors.isEmpty()
                 && unresolvedEntitySystemIds.isEmpty();
         logger.debug("XML parse of {} success? {}", systemIdString, parsed);
@@ -384,6 +377,33 @@ public final class XmlResourceReader {
         }
         catch (final SAXException e) {
             throw new XmlResourceReaderException("Unexpected Exception compiling schema(s) with URI(s)" + schemaUris, e);
+        }
+    }
+
+    /**
+     * Trivial extension of {@link EntityResourceResolver} that handles failed
+     * resolutions by recording the offending systemId then simply returning an
+     * empty document.
+     */
+    static class FailureEntityResolver extends EntityResourceResolver {
+
+        private final List<String> unresolvedEntitySystemIds;
+
+        public FailureEntityResolver(final ResourceLocator resourceLocator) {
+            super(resourceLocator);
+            this.unresolvedEntitySystemIds = new ArrayList<String>();
+        }
+
+        public List<String> getUnresolvedEntitySystemIds() {
+            return unresolvedEntitySystemIds;
+        }
+
+        @Override
+        public InputSource onMiss(final String publicId, final String systemId) {
+            unresolvedEntitySystemIds.add(systemId);
+            final InputSource emptyStringSource = new InputSource(new StringReader(""));
+            emptyStringSource.setSystemId(systemId);
+            return emptyStringSource;
         }
     }
 

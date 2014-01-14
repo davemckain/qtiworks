@@ -42,8 +42,7 @@ import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.node.test.VisibilityMode;
-import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
-import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
+import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
@@ -179,7 +178,7 @@ public class ModalFeedback extends AbstractNode {
     protected void validateChildren(final ValidationContext context) {
         super.validateChildren(context);
 
-        if (getChildren().size() == 0) {
+        if (getFlowStatics().isEmpty()) {
             context.fireValidationWarning(this, "ModalFeedback is empty.");
         }
     }
@@ -189,19 +188,25 @@ public class ModalFeedback extends AbstractNode {
      *
      * @return true if this feedback can be displayed; false otherwise
      */
-    public boolean isVisible(final ItemSessionController itemController) {
+    public boolean isVisible(final ItemProcessingContext itemProcessingContext) {
+        final Identifier outcomeIdentifier = getOutcomeIdentifier();
+        final Identifier identifier = getIdentifier();
+        final VisibilityMode visibilityMode = getVisibilityMode();
+        if (outcomeIdentifier==null || identifier==null || visibilityMode==null) {
+            return false;
+        }
 
-        /* FIXME: This way of accessing outcome values looks old... probably needs refactored! */
-        final ItemSessionState itemState = itemController.getItemSessionState();
-        final Value outcomeValue = itemState.getOutcomeValue(getOutcomeIdentifier());
-        boolean identifierCheck;
-        if (outcomeValue.getCardinality() == Cardinality.SINGLE) {
-            identifierCheck = outcomeValue.equals(new IdentifierValue(getIdentifier()));
+        final IdentifierValue identifierValue = new IdentifierValue(identifier);
+        final Value outcomeValue = itemProcessingContext.evaluateVariableValue(outcomeIdentifier, VariableType.OUTCOME);
+
+        boolean identifierMatches;
+        if (outcomeValue.hasCardinality(Cardinality.SINGLE)) {
+            identifierMatches = outcomeValue.equals(identifierValue);
         }
         else {
-            identifierCheck = ((MultipleValue) outcomeValue).contains(new IdentifierValue(getIdentifier()));
+            identifierMatches = ((MultipleValue) outcomeValue).contains(identifierValue);
         }
-        return identifierCheck && getVisibilityMode().equals(VisibilityMode.SHOW_IF_MATCH)
-                || !identifierCheck && getVisibilityMode().equals(VisibilityMode.HIDE_IF_MATCH);
+        return identifierMatches && visibilityMode.equals(VisibilityMode.SHOW_IF_MATCH)
+                || !identifierMatches && visibilityMode.equals(VisibilityMode.HIDE_IF_MATCH);
     }
 }

@@ -40,41 +40,38 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 
 /**
  * (Refactored and cut down version of the XMLUtilities class in SnuggleTeX.)
- * 
- * FIXME: Some DOM feature stuff needs changed
  *
- * @author  David McKain
- * @version $Revision: 698 $
+ * @author David McKain
  */
 public final class XsltFactoryUtilities {
-    
+
     /** Explicit name of the SAXON 9.X TransformerFactoryImpl Class, as used by the up-conversion extensions */
     public static final String SAXON_TRANSFORMER_FACTORY_CLASS_NAME = "net.sf.saxon.TransformerFactoryImpl";
-    
+
     public static TransformerFactory createJAXPTransformerFactory() {
         try {
             return TransformerFactory.newInstance();
         }
-        catch (TransformerFactoryConfigurationError e) {
+        catch (final TransformerFactoryConfigurationError e) {
             throw new QtiSerializationException(e);
         }
     }
-    
+
     public static void requireFeature(final TransformerFactory transformerFactory, final String feature) {
         if (!transformerFactory.getFeature(feature)) {
             throw new QtiSerializationException("TransformerFactory "
                     + transformerFactory.getClass().getName()
                     + " does not support required feature "
                     + feature);
-        }   
+        }
     }
-    
+
     public static boolean isSaxonAvailable() {
         try {
             Class.forName(SAXON_TRANSFORMER_FACTORY_CLASS_NAME);
             return true;
         }
-        catch (Exception e) {
+        catch (final Exception e) {
             return false;
         }
     }
@@ -88,24 +85,24 @@ public final class XsltFactoryUtilities {
     public static boolean supportsXSLT20(final TransformerFactory tranformerFactory) {
         return tranformerFactory.getClass().getName().startsWith("net.sf.saxon.");
     }
-    
+
     public static boolean supportsXSLT20(final Transformer tranformer) {
         return tranformer.getClass().getName().startsWith("net.sf.saxon.");
     }
-    
+
     /**
      * Helper to turn on indentation for a {@link Transformer} that works correctly for
      * both Saxon and Xalan.
-     * 
+     *
      * @param transformer {@link Transformer} to configure
      * @param indent required indentation, where 0 or more provides indentation and negative
      *   numbers turns indentation off.
      */
-    public static void setIndentation(Transformer transformer, int indent) {
+    public static void setIndentation(final Transformer transformer, final int indent) {
         if (indent>=0) {
-            String indentString = String.valueOf(indent);
+            final String indentString = String.valueOf(indent);
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            
+
             /* Set custom properties for both Saxon and Xalan at once.
              * This appears safe to do without having to check the underlying processor.
              */

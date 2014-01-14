@@ -132,9 +132,6 @@ public abstract class ItemSubset extends AbstractFunctionalExpression {
     protected final Value evaluateValidSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
         final TestProcessingContext testProcessingContext = (TestProcessingContext) context;
 
-        /* TODO: Filter out the required assessmentItemRef instances and get the subclass to
-         * process them in some suitable way.
-         */
         final List<TestPlanNode> matchedTestPlanNodes = testProcessingContext.computeItemSubset(getSectionIdentifier(), getIncludeCategories(), getExcludeCategories());
         return handleSubset(testProcessingContext, matchedTestPlanNodes);
     }

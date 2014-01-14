@@ -312,15 +312,15 @@ public abstract class AbstractNode implements QtiNode {
         }
     }
 
-    private boolean validateUniqueIdentifier(final QtiNode parent, final Object identifier) {
-        if (parent != this && parent instanceof UniqueNode) {
-            final Object parentIdentifier = ((UniqueNode<?>) parent).getIdentifier();
+    private boolean validateUniqueIdentifier(final QtiNode parentNode, final Object identifier) {
+        if (parentNode != this && parentNode instanceof UniqueNode) {
+            final Object parentIdentifier = ((UniqueNode<?>) parentNode).getIdentifier();
             if (identifier.equals(parentIdentifier)) {
                 return false;
             }
         }
 
-        final NodeGroupList groups = parent.getNodeGroups();
+        final NodeGroupList groups = parentNode.getNodeGroups();
         for (int i = 0; i < groups.size(); i++) {
             final NodeGroup<?,?> group = groups.get(i);
             for (final QtiNode child : group.getChildren()) {

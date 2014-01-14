@@ -337,7 +337,6 @@ public enum Shape implements Stringifiable {
      * Validates if all coordinates are greater or equal than zero.
      *
      * @param attribute attribute to be validated
-     * @param result TODO
      * @param coords attribute's value to be validated
      */
     protected void validatePositiveCoords(final ValidationContext context, final CoordsAttribute attribute, final int[] coords) {

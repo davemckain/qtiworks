@@ -36,7 +36,9 @@ package uk.ac.ed.ph.qtiworks.services.candidate;
 /**
  * Represents the various privileges a candidate user can have against a particular session.
  *
- * FIXME: Document these better!
+ * FIXME: Some of these represent "bad request" or "bad state" rather than "not allowed", so should
+ * possibly be handled better (e.g. sending a 400 response). In that case, it would make sense to merge
+ * {@link CandidateSessionTerminatedException} in here, as that's effectively the same thing.
  *
  * @see CandidateForbiddenException
  *

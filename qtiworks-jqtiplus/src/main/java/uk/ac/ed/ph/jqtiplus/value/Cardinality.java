@@ -180,14 +180,14 @@ public enum Cardinality implements Stringifiable {
      * @return intersection of two given cardinalities sets
      */
     public static Cardinality[] intersection(final Cardinality[] firstSet, final Cardinality[] secondSet) {
-        final List<Cardinality> cardinalities = new ArrayList<Cardinality>();
+        final List<Cardinality> result = new ArrayList<Cardinality>();
 
         for (final Cardinality cardinality : firstSet) {
             if (Arrays.binarySearch(secondSet, cardinality) >= 0) {
-                cardinalities.add(cardinality);
+                result.add(cardinality);
             }
         }
 
-        return cardinalities.toArray(new Cardinality[] {});
+        return result.toArray(new Cardinality[] {});
     }
 }
