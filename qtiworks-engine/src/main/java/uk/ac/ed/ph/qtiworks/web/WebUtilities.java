@@ -33,6 +33,8 @@
  */
 package uk.ac.ed.ph.qtiworks.web;
 
+import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -70,5 +72,10 @@ public final class WebUtilities {
         final DateFormat httpDateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz");
         httpDateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
         return httpDateFormat.format(date);
+    }
+
+    public static String computeEtag(final String fingerprint) {
+        final String digest = ServiceUtilities.computeSha1Digest(fingerprint);
+        return "W/\"" + digest + "\""; /* (We'll always use weak etags for now) */
     }
 }

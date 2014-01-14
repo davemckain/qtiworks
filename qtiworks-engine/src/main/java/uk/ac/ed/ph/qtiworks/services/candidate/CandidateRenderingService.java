@@ -82,7 +82,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.URI;
 import java.util.Date;
 import java.util.List;
@@ -175,7 +174,7 @@ public class CandidateRenderingService {
             }
 
             /* Finally stream to caller */
-            streamFile(resultFile, outputStreamer, renderingOptions);
+            streamRenderingResultFile(resultFile, outputStreamer, renderingOptions);
         }
         finally {
             if (!resultFile.delete()) {
@@ -308,7 +307,7 @@ public class CandidateRenderingService {
             }
 
             /* Finally stream to caller */
-            streamFile(resultFile, outputStreamer, renderingOptions);
+            streamRenderingResultFile(resultFile, outputStreamer, renderingOptions);
         }
         finally {
             if (!resultFile.delete()) {
@@ -368,7 +367,7 @@ public class CandidateRenderingService {
             }
 
             /* Finally stream to caller */
-            streamFile(resultFile, outputStreamer, renderingOptions);
+            streamRenderingResultFile(resultFile, outputStreamer, renderingOptions);
         }
         finally {
             if (!resultFile.delete()) {
@@ -494,7 +493,7 @@ public class CandidateRenderingService {
             }
 
             /* Finally stream to caller */
-            streamFile(resultFile, outputStreamer, renderingOptions);
+            streamRenderingResultFile(resultFile, outputStreamer, renderingOptions);
         }
         finally {
             if (!resultFile.delete()) {
@@ -518,17 +517,17 @@ public class CandidateRenderingService {
     //----------------------------------------------------
     // Access to additional package resources (e.g. images/CSS)
 
-    public void streamAssessmentFile(final long xid, final String sessionToken, final String fileSystemIdString,
+    public void streamAssessmentPackageFile(final long xid, final String sessionToken, final String fileSystemIdString,
             final OutputStreamer outputStreamer)
             throws CandidateForbiddenException, IOException, DomainEntityNotFoundException, CandidateSessionTerminatedException {
         Assert.notNull(sessionToken, "sessionToken");
         Assert.notNull(fileSystemIdString, "fileSystemIdString");
         Assert.notNull(outputStreamer, "outputStreamer");
         final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
-        streamAssessmentFile(candidateSession, fileSystemIdString, outputStreamer);
+        streamAssessmentPackageFile(candidateSession, fileSystemIdString, outputStreamer);
     }
 
-    public void streamAssessmentFile(final CandidateSession candidateSession, final String fileSystemIdString,
+    public void streamAssessmentPackageFile(final CandidateSession candidateSession, final String fileSystemIdString,
             final OutputStreamer outputStreamer)
             throws CandidateForbiddenException, IOException, CandidateSessionTerminatedException {
         Assert.notNull(candidateSession, "candidateSession");
@@ -549,12 +548,15 @@ public class CandidateRenderingService {
                 break;
             }
         }
-        if (resultingFileHref==null) {
+
+        if (resultingFileHref!=null) {
+            /* Safe to stream */
+            assessmentPackageFileService.streamAssessmentPackageFile(assessmentPackage, resultingFileHref, outputStreamer);
+        }
+        else {
+            /* Blacklisted file. Log and throw Exception */
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.ACCESS_BLACKLISTED_ASSESSMENT_FILE);
         }
-
-        /* Finally stream the required resource */
-        assessmentPackageFileService.streamAssessmentPackageFile(assessmentPackage, resultingFileHref, outputStreamer);
     }
 
     //----------------------------------------------------
@@ -609,35 +611,41 @@ public class CandidateRenderingService {
         /* Generate result Object from current state */
         final File sessionStateFile = candidateDataService.ensureSessionStateFile(mostRecentEvent);
 
-        /* Send result */
-        assessmentPackageFileService.streamFile(sessionStateFile, "application/xml",
-                requestTimestampContext.getCurrentRequestTimestamp(), outputStreamer);
+        /* Record action */
         candidateAuditLogger.logAction(candidateSession, "ACCESS_STATE");
+
+        /* Stream result file */
+        final Date lastModifiedTime = mostRecentEvent.getTimestamp();
+        ServiceUtilities.streamFile(sessionStateFile, "application/xml", lastModifiedTime, outputStreamer);
     }
 
     //----------------------------------------------------
     // Candidate Result access
 
-    public void streamAssessmentResult(final long xid, final String sessionToken, final OutputStream outputStream)
-            throws CandidateForbiddenException, DomainEntityNotFoundException {
-        Assert.notNull(outputStream, "outputStream");
+    public void streamAssessmentResult(final long xid, final String sessionToken, final OutputStreamer outputStreamer)
+            throws CandidateForbiddenException, DomainEntityNotFoundException, IOException {
+        Assert.notNull(outputStreamer, "outputStreamer");
         final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
-        streamAssessmentResult(candidateSession, outputStream);
+        streamAssessmentResult(candidateSession, outputStreamer);
     }
 
-    public void streamAssessmentResult(final CandidateSession candidateSession, final OutputStream outputStream)
-            throws CandidateForbiddenException {
+    public void streamAssessmentResult(final CandidateSession candidateSession, final OutputStreamer outputStreamer)
+            throws CandidateForbiddenException, IOException {
         Assert.notNull(candidateSession, "candidateSession");
-        Assert.notNull(outputStream, "outputStream");
+        Assert.notNull(outputStreamer, "outputStreamer");
 
         /* Make sure candidate can access authoring info */
         ensureCallerMayAccessAuthorInfo(candidateSession);
 
+        /* Generate result Object from current state */
+        final File assessmentResultFile = candidateDataService.ensureAssessmentResultFile(candidateSession);
+
         /* Log action */
         candidateAuditLogger.logAction(candidateSession, "ACCESS_RESULT");
 
-        /* Stream data */
-        candidateDataService.streamAssessmentResult(candidateSession, outputStream);
+        /* Stream result file */
+        final Date lastModifiedTime = new Date(assessmentResultFile.lastModified());
+        ServiceUtilities.streamFile(assessmentResultFile, "application/xml", lastModifiedTime, outputStreamer);
     }
 
     //----------------------------------------------------
@@ -709,27 +717,18 @@ public class CandidateRenderingService {
     }
 
     //----------------------------------------------------
-    // Access controls
+    // Result streaming
 
-    private CandidateSession lookupCandidateSession(final long xid, final String sessionToken)
-            throws DomainEntityNotFoundException, CandidateForbiddenException {
-        Assert.notNull(sessionToken, "sessionToken");
-        final CandidateSession candidateSession = candidateSessionDao.requireFindById(xid);
-        if (!sessionToken.equals(candidateSession.getSessionToken())) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.ACCESS_CANDIDATE_SESSION);
-        }
-        return candidateSession;
-    }
-
-    private void streamFile(final File resultFile, final OutputStreamer outputStreamer, final AbstractRenderingOptions renderingOptions)
+    private void streamRenderingResultFile(final File resultFile, final OutputStreamer outputStreamer,
+            final AbstractRenderingOptions renderingOptions)
             throws IOException {
-        /* Finally stream to caller */
         final String contentType = renderingOptions.getSerializationMethod().getContentType();
         final long contentLength = resultFile.length();
         FileInputStream resultInputStream = null;
         try {
             resultInputStream = new FileInputStream(resultFile);
-            outputStreamer.stream(contentType, contentLength, requestTimestampContext.getCurrentRequestTimestamp(),
+            outputStreamer.stream(contentType, contentLength,
+                    requestTimestampContext.getCurrentRequestTimestamp(), /* Use request time, which is less accurate than it could be */
                     resultInputStream);
         }
         catch (final FileNotFoundException e) {
@@ -743,6 +742,20 @@ public class CandidateRenderingService {
             ServiceUtilities.ensureClose(resultInputStream);
         }
     }
+
+    //----------------------------------------------------
+    // Access controls
+
+    private CandidateSession lookupCandidateSession(final long xid, final String sessionToken)
+            throws DomainEntityNotFoundException, CandidateForbiddenException {
+        Assert.notNull(sessionToken, "sessionToken");
+        final CandidateSession candidateSession = candidateSessionDao.requireFindById(xid);
+        if (!sessionToken.equals(candidateSession.getSessionToken())) {
+            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.ACCESS_CANDIDATE_SESSION);
+        }
+        return candidateSession;
+    }
+
 
     private void ensureSessionNotTerminated(final CandidateSession candidateSession)
             throws CandidateSessionTerminatedException {

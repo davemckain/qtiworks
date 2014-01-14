@@ -374,7 +374,7 @@ public class CandidateDataService {
 
     public void recordItemAssessmentResult(final CandidateSession candidateSession, final AssessmentResult assessmentResult) {
         /* First record full result XML to filesystem */
-        storeResultFile(candidateSession, assessmentResult);
+        storeAssessmentResultFile(candidateSession, assessmentResult);
 
         /* Then record item outcome variables to DB */
         recordOutcomeVariables(candidateSession, assessmentResult.getItemResults().get(0));
@@ -554,7 +554,7 @@ public class CandidateDataService {
 
     public void recordTestAssessmentResult(final CandidateSession candidateSession, final AssessmentResult assessmentResult) {
         /* First record full result XML to filesystem */
-        storeResultFile(candidateSession, assessmentResult);
+        storeAssessmentResultFile(candidateSession, assessmentResult);
 
         /* Then record test outcome variables to DB */
         recordOutcomeVariables(candidateSession, assessmentResult.getTestResult());
@@ -568,16 +568,7 @@ public class CandidateDataService {
     }
 
     //----------------------------------------------------
-    // General helpers
-
-    /**
-     * Returns the most recently-recorded {@link CandidateEvent} for the given {@link CandidateSession}.
-     * The result will be null if and only if the {@link CandidateSession} has been created but not
-     * yet entered.
-     */
-    public CandidateEvent getMostRecentEvent(final CandidateSession candidateSession)  {
-        return candidateEventDao.getNewestEventInSession(candidateSession);
-    }
+    // State file management
 
     private void storeStateDocument(final CandidateEvent candidateEvent, final Document stateXml) {
         final File sessionFile = getSessionStateFile(candidateEvent);
@@ -601,8 +592,39 @@ public class CandidateDataService {
         }
     }
 
-    private void storeResultFile(final CandidateSession candidateSession, final QtiNode resultNode) {
-        final File resultFile = getResultFile(candidateSession);
+    private Document loadStateDocument(final CandidateEvent candidateEvent) {
+        final File sessionFile = ensureSessionStateFile(candidateEvent);
+        final DocumentBuilder documentBuilder = XmlUtilities.createNsAwareDocumentBuilder();
+        try {
+            return documentBuilder.parse(sessionFile);
+        }
+        catch (final Exception e) {
+            throw new QtiWorksLogicException("Could not parse serailized state XML. This is an internal error as we currently don't expose this data to clients", e);
+        }
+    }
+
+    public File ensureSessionStateFile(final CandidateEvent candidateEvent) {
+        final File sessionStateFile = getSessionStateFile(candidateEvent);
+        if (!sessionStateFile.exists()) {
+            throw new QtiWorksLogicException("Expectation failed: State file " + sessionStateFile + " does not exist");
+        }
+        return sessionStateFile;
+    }
+
+    private File getSessionStateFile(final CandidateEvent candidateEvent) {
+        final CandidateSession candidateSession = candidateEvent.getCandidateSession();
+        final AssessmentObjectType assessmentType = candidateSession.getDelivery().getAssessment().getAssessmentType();
+        final String stateFileBaseName = assessmentType==AssessmentObjectType.ASSESSMENT_ITEM ? "itemSessionState" : "testSessionState";
+        final File sessionFolder = filespaceManager.obtainCandidateSessionStateStore(candidateSession);
+        final String stateFileName = stateFileBaseName + candidateEvent.getId() + ".xml";
+        return new File(sessionFolder, stateFileName);
+    }
+
+    //----------------------------------------------------
+    // Result file management
+
+    private void storeAssessmentResultFile(final CandidateSession candidateSession, final QtiNode resultNode) {
+        final File resultFile = getAssessmentResultFile(candidateSession);
         FileOutputStream resultStream = null;
         try {
             resultStream = new FileOutputStream(resultFile);
@@ -616,23 +638,42 @@ public class CandidateDataService {
         }
     }
 
-    public File getResultFile(final CandidateSession candidateSession) {
+    public File ensureAssessmentResultFile(final CandidateSession candidateSession) {
+        final File resultFile = getAssessmentResultFile(candidateSession);
+        if (!resultFile.exists()) {
+            throw new QtiWorksLogicException("Expectation failed: assessmentResult file " + resultFile + " does not exist");
+        }
+        return resultFile;
+    }
+
+    private File getAssessmentResultFile(final CandidateSession candidateSession) {
         final File sessionFolder = filespaceManager.obtainCandidateSessionStateStore(candidateSession);
         return new File(sessionFolder, "assessmentResult.xml");
     }
 
-    public String readResultFile(final CandidateSession candidateSession) {
-        final File resultFile = getResultFile(candidateSession);
+    public String readAssessmentResultFile(final CandidateSession candidateSession) {
+        final File resultFile = getAssessmentResultFile(candidateSession);
         if (!resultFile.exists()) {
             return null;
         }
         try {
             /* NB: We're using the fact that we're writing out as UTF-8 when storing these files */
-            return FileUtils.readFileToString(getResultFile(candidateSession), "UTF-8");
+            return FileUtils.readFileToString(getAssessmentResultFile(candidateSession), "UTF-8");
         }
         catch (final IOException e) {
             throw QtiWorksRuntimeException.unexpectedException(e);
         }
+    }
+    //----------------------------------------------------
+    // General helpers
+
+    /**
+     * Returns the most recently-recorded {@link CandidateEvent} for the given {@link CandidateSession}.
+     * The result will be null if and only if the {@link CandidateSession} has been created but not
+     * yet entered.
+     */
+    public CandidateEvent getMostRecentEvent(final CandidateSession candidateSession)  {
+        return candidateEventDao.getNewestEventInSession(candidateSession);
     }
 
     private void recordOutcomeVariables(final CandidateSession candidateSession, final AbstractResult resultNode) {
@@ -670,31 +711,4 @@ public class CandidateDataService {
         return value.toQtiString();
     }
 
-    private Document loadStateDocument(final CandidateEvent candidateEvent) {
-        final File sessionFile = ensureSessionStateFile(candidateEvent);
-        final DocumentBuilder documentBuilder = XmlUtilities.createNsAwareDocumentBuilder();
-        try {
-            return documentBuilder.parse(sessionFile);
-        }
-        catch (final Exception e) {
-            throw new QtiWorksLogicException("Could not parse serailized state XML. This is an internal error as we currently don't expose this data to clients", e);
-        }
-    }
-
-    public File ensureSessionStateFile(final CandidateEvent candidateEvent) {
-        final File sessionStateFile = getSessionStateFile(candidateEvent);
-        if (!sessionStateFile.exists()) {
-            throw new QtiWorksLogicException("State file " + sessionStateFile + " does not exist");
-        }
-        return sessionStateFile;
-    }
-
-    private File getSessionStateFile(final CandidateEvent candidateEvent) {
-        final CandidateSession candidateSession = candidateEvent.getCandidateSession();
-        final AssessmentObjectType assessmentType = candidateSession.getDelivery().getAssessment().getAssessmentType();
-        final String stateFileBaseName = assessmentType==AssessmentObjectType.ASSESSMENT_ITEM ? "itemSessionState" : "testSessionState";
-        final File sessionFolder = filespaceManager.obtainCandidateSessionStateStore(candidateSession);
-        final String stateFileName = stateFileBaseName + candidateEvent.getId() + ".xml";
-        return new File(sessionFolder, stateFileName);
-    }
 }

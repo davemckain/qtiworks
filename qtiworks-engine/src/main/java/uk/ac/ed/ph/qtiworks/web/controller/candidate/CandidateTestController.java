@@ -40,20 +40,19 @@ import uk.ac.ed.ph.qtiworks.rendering.AbstractRenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.AuthorViewRenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
 import uk.ac.ed.ph.qtiworks.rendering.TestRenderingOptions;
-import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateForbiddenException;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateRenderingService;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateSessionTerminatedException;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateTestDeliveryService;
-import uk.ac.ed.ph.qtiworks.web.CacheableWebOutputStreamer;
-import uk.ac.ed.ph.qtiworks.web.NonCacheableWebOutputStreamer;
+import uk.ac.ed.ph.qtiworks.web.ServletOutputStreamer;
+import uk.ac.ed.ph.qtiworks.web.WebUtilities;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
 import uk.ac.ed.ph.jqtiplus.node.result.AssessmentResult;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
-import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeKey;
+import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 
@@ -133,8 +132,7 @@ public class CandidateTestController {
         renderingOptions.setAdvanceTestPartUrl(sessionBaseUrl + "/advance-test-part");
         renderingOptions.setExitTestUrl(sessionBaseUrl + "/exit-test");
 
-        /* Now call up the rendering service */
-        final NonCacheableWebOutputStreamer outputStreamer = new NonCacheableWebOutputStreamer(response);
+        final ServletOutputStreamer outputStreamer = new ServletOutputStreamer(response, null /* No caching */);
         candidateRenderingService.renderCurrentCandidateTestSessionState(xid, sessionToken, renderingOptions, outputStreamer);
     }
 
@@ -150,7 +148,7 @@ public class CandidateTestController {
         final AuthorViewRenderingOptions renderingOptions = new AuthorViewRenderingOptions();
         configureBaseRenderingOptions(sessionBaseUrl, renderingOptions);
 
-        final NonCacheableWebOutputStreamer outputStreamer = new NonCacheableWebOutputStreamer(response);
+        final ServletOutputStreamer outputStreamer = new ServletOutputStreamer(response, null /* No caching */);
         candidateRenderingService.renderCurrentCandidateTestSessionStateAuthorView(xid, sessionToken, renderingOptions, outputStreamer);
     }
 
@@ -390,28 +388,22 @@ public class CandidateTestController {
 
     /**
      * Serves the given (white-listed) file in the given {@link AssessmentPackage}
-     *
-     * @see AssessmentManagementService#streamPackageSource(AssessmentPackage, java.io.OutputStream)
      */
     @RequestMapping(value="/testsession/{xid}/{sessionToken}/file", method=RequestMethod.GET)
-    public void streamPackageFile(@PathVariable final long xid, @PathVariable final String sessionToken,
-            @RequestParam("href") final String href,
+    public void streamAssessmentPackageFile(@PathVariable final long xid, @PathVariable final String sessionToken,
+            @RequestParam("href") final String fileHref,
             final HttpServletRequest request, final HttpServletResponse response)
             throws IOException, DomainEntityNotFoundException, CandidateForbiddenException, CandidateSessionTerminatedException {
-//        final String resourceUniqueTag = request.getRequestURI() + "/" + href;
-//        final String resourceEtag = ServiceUtilities.computeSha1Digest(resourceUniqueTag);
-//        final String requestEtag = request.getHeader("If-None-Match");
-//        if (resourceEtag.equals(requestEtag)) {
-//            response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-//        }
-//        else {
-//            final CacheableWebOutputStreamer outputStreamer = new CacheableWebOutputStreamer(response, resourceEtag, CandidateItemController.CACHEABLE_MAX_AGE);
-//            candidateRenderingService.streamAssessmentFile(xid, sessionToken, href, outputStreamer);
-//        }
-
-        /* TEMP */
-        final CacheableWebOutputStreamer outputStreamer = new CacheableWebOutputStreamer(response, null, CandidateItemController.CACHEABLE_MAX_AGE);
-        candidateRenderingService.streamAssessmentFile(xid, sessionToken, href, outputStreamer);
+        final String fingerprint = "session/" + xid + "/file/" + fileHref;
+        final String resourceEtag = WebUtilities.computeEtag(fingerprint);
+        final String requestEtag = request.getHeader("If-None-Match");
+        if (resourceEtag.equals(requestEtag)) {
+            response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+        }
+        else {
+            final ServletOutputStreamer outputStreamer = new ServletOutputStreamer(response, resourceEtag);
+            candidateRenderingService.streamAssessmentPackageFile(xid, sessionToken, fileHref, outputStreamer);
+        }
     }
 
     //----------------------------------------------------
@@ -419,37 +411,32 @@ public class CandidateTestController {
 
     /**
      * Serves the source of the given {@link AssessmentPackage}
-     *
-     * @see AssessmentManagementService#streamPackageSource(AssessmentPackage, java.io.OutputStream)
      */
     @RequestMapping(value="/testsession/{xid}/{sessionToken}/source", method=RequestMethod.GET)
-    public void streamPackageSource(@PathVariable final long xid,
+    public void streamAssessmentSource(@PathVariable final long xid,
             @PathVariable final String sessionToken,
             final HttpServletRequest request, final HttpServletResponse response)
             throws DomainEntityNotFoundException, IOException, CandidateForbiddenException, CandidateSessionTerminatedException {
-//        final String resourceEtag = ServiceUtilities.computeSha1Digest(request.getRequestURI());
-//        final String requestEtag = request.getHeader("If-None-Match");
-//        if (resourceEtag.equals(requestEtag)) {
-//            response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-//        }
-//        else {
-//            final CacheableWebOutputStreamer outputStreamer = new CacheableWebOutputStreamer(response, resourceEtag, CandidateItemController.CACHEABLE_MAX_AGE);
-//            candidateRenderingService.streamAssessmentSource(xid, sessionToken, outputStreamer);
-//        }
-
-        /* TEMP */
-        final CacheableWebOutputStreamer outputStreamer = new CacheableWebOutputStreamer(response, null, CandidateItemController.CACHEABLE_MAX_AGE);
-        candidateRenderingService.streamAssessmentSource(xid, sessionToken, outputStreamer);
+        final String fingerprint = "session/" + xid + "/source";
+        final String resourceEtag = WebUtilities.computeEtag(fingerprint);
+        final String requestEtag = request.getHeader("If-None-Match");
+        if (resourceEtag.equals(requestEtag)) {
+            response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+        }
+        else {
+            final ServletOutputStreamer outputStreamer = new ServletOutputStreamer(response, resourceEtag);
+            candidateRenderingService.streamAssessmentSource(xid, sessionToken, outputStreamer);
+        }
     }
 
     /**
-     * Streams an {@link ItemSessionState} representing the current state of the given
+     * Streams an {@link TestSessionState} representing the current state of the given
      * {@link CandidateSession}
      */
-    @RequestMapping(value="/itemsession/{xid}/{sessionToken}/state", method=RequestMethod.GET)
-    public void streamState(final HttpServletResponse response, @PathVariable final long xid, @PathVariable final String sessionToken)
+    @RequestMapping(value="/testsession/{xid}/{sessionToken}/state", method=RequestMethod.GET)
+    public void streamTestSessionState(final HttpServletResponse response, @PathVariable final long xid, @PathVariable final String sessionToken)
             throws DomainEntityNotFoundException, IOException, CandidateForbiddenException {
-        final NonCacheableWebOutputStreamer outputStreamer = new NonCacheableWebOutputStreamer(response);
+        final ServletOutputStreamer outputStreamer = new ServletOutputStreamer(response, null /* No caching */);
         candidateRenderingService.streamAssessmentState(xid, sessionToken, outputStreamer);
     }
 
@@ -458,10 +445,10 @@ public class CandidateTestController {
      * {@link CandidateSession}
      */
     @RequestMapping(value="/testsession/{xid}/{sessionToken}/result", method=RequestMethod.GET)
-    public void streamResult(final HttpServletResponse response, @PathVariable final long xid, @PathVariable final String sessionToken)
+    public void streamAssessmentResult(final HttpServletResponse response, @PathVariable final long xid, @PathVariable final String sessionToken)
             throws DomainEntityNotFoundException, IOException, CandidateForbiddenException {
-        response.setContentType("application/xml");
-        candidateRenderingService.streamAssessmentResult(xid, sessionToken, response.getOutputStream());
+        final ServletOutputStreamer outputStreamer = new ServletOutputStreamer(response, null /* No caching */);
+        candidateRenderingService.streamAssessmentResult(xid, sessionToken, outputStreamer);
     }
 
     @RequestMapping(value="/testsession/{xid}/{sessionToken}/validation", method=RequestMethod.GET)

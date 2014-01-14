@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.qtiworks.services;
 
-import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
@@ -178,7 +177,7 @@ public class AssessmentReportingService {
                 otherOutcomeValues);
 
         /* read assessmentResult XML */
-        final String assessmentResultXml = candidateDataService.readResultFile(candidateSession);
+        final String assessmentResultXml = candidateDataService.readAssessmentResultFile(candidateSession);
 
         auditLogger.recordEvent("Generated summary report for CandidateSession #" + candidateSession.getId());
         return new CandidateSessionSummaryReport(summaryMetadata, data, assessmentResultXml);
@@ -422,10 +421,7 @@ public class AssessmentReportingService {
 
     private void addAssessmentReport(final ZipOutputStream zipOutputStream, final CandidateSession candidateSession)
             throws IOException {
-        final File assessmentResultFile = candidateDataService.getResultFile(candidateSession);
-        if (!assessmentResultFile.exists()) {
-            throw new QtiWorksLogicException("Expected result file " + assessmentResultFile + " to exist after session is closed");
-        }
+        final File assessmentResultFile = candidateDataService.ensureAssessmentResultFile(candidateSession);
 
         /* Work out what to call the ZIP entry */
         final String zipEntryName = makeReportFileName(candidateSession);

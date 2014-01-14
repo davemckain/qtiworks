@@ -35,15 +35,18 @@ package uk.ac.ed.ph.qtiworks.services;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
+import uk.ac.ed.ph.qtiworks.services.domain.OutputStreamer;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 
 import java.io.Closeable;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.security.SecureRandom;
+import java.util.Date;
 import java.util.Random;
 
 import org.slf4j.Logger;
@@ -256,4 +259,20 @@ public final class ServiceUtilities {
         recursivelyDelete(root, true);
     }
 
+    //-----------------------------------------------------
+    // File streaming
+
+    public static void streamFile(final File file, final String contentType,
+            final Date lastModifiedTime, final OutputStreamer outputStreamer)
+            throws IOException {
+        final long contentLength = file.length();
+        FileInputStream fileInputStream = null;
+        try {
+            fileInputStream = new FileInputStream(file);
+            outputStreamer.stream(contentType, contentLength, lastModifiedTime, fileInputStream);
+        }
+        finally {
+            ensureClose(fileInputStream);
+        }
+    }
 }

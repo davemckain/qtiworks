@@ -35,6 +35,8 @@ package uk.ac.ed.ph.qtiworks.web;
 
 import uk.ac.ed.ph.qtiworks.services.domain.OutputStreamer;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
@@ -45,46 +47,52 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 
 /**
- * Base implementation of {@link OutputStreamer} suitable for sending data
- * via an {@link HttpServletResponse}
+ * Implementation of {@link OutputStreamer} suitable for streaming data
+ * via an {@link HttpServletResponse}.
+ * <p>
+ * This supports optional caching for resources via entity tags where it is considered safe
+ * or sensible to do so.
  *
  * @author David McKain
  */
-abstract class ServletOutputStreamer implements OutputStreamer {
+public final class ServletOutputStreamer implements OutputStreamer {
 
-    protected final HttpServletResponse response;
-    protected final String resourceEtag;
+    private final HttpServletResponse httpServletResponse;
+    private final String etag;
 
-    public ServletOutputStreamer(final HttpServletResponse response, final String resourceEtag) {
-        this.response = response;
-        this.resourceEtag = resourceEtag;
+    public ServletOutputStreamer(final HttpServletResponse httpServletResponse, final String etag) {
+        Assert.notNull(httpServletResponse, "httpServletResponse");
+        this.httpServletResponse = httpServletResponse;
+        this.etag = etag;
     }
 
-    protected void transferResultStream(final InputStream resultStream) throws IOException {
-        final ServletOutputStream servletOutputStream = response.getOutputStream();
+    @Override
+    public void stream(final String contentType, final long contentLength, final Date lastModifiedTime,
+            final InputStream resultStream)
+            throws IOException {
+        /* Set appropriate headers */
+        httpServletResponse.setContentType(contentType);
+        httpServletResponse.setContentLength((int) contentLength); /* Huge files aren't going to happen... */
+        if (lastModifiedTime!=null) {
+            httpServletResponse.setHeader("Last-Modified", WebUtilities.formatHttpDate(lastModifiedTime));
+        }
+
+        /* Set suitable caching headers based on presence of ETag */
+        if (etag!=null) {
+            httpServletResponse.setHeader("ETag", etag);
+            httpServletResponse.setHeader("Cache-Control", "private, must-revalidate");
+        }
+        else {
+            httpServletResponse.setHeader("Cache-Control", "private, no-cache, no-store, max-age=0, must-revalidate");
+        }
+
+        /* Final stream data to ServletOutputStream */
+        final ServletOutputStream servletOutputStream = httpServletResponse.getOutputStream();
         try {
             IOUtils.copy(resultStream, servletOutputStream);
         }
         finally {
             servletOutputStream.flush();
         }
-    }
-
-    protected void maybeSetEtag() {
-        if (resourceEtag!=null) {
-            response.setHeader("ETag", resourceEtag);
-        }
-    }
-
-    protected void setContentType(final String contentType) {
-        response.setContentType(contentType);
-    }
-
-    protected void setContentLength(final long contentLength) {
-        response.setContentLength((int) contentLength); /* Huge files aren't going to happen... */
-    }
-
-    protected void setLastModifiedTime(final Date date) {
-        response.setHeader("Last-Modified", WebUtilities.formatHttpDate(date));
     }
 }

@@ -42,11 +42,13 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * Controller for candidate helpers, such as math input verifiers.
@@ -60,17 +62,20 @@ public class CandidateHelperController {
     private XsltStylesheetCache stylesheetCache;
 
     /**
-     * Runs {@link ASCIIMathMLHelper} helper on the given 'input' parameter, expecting to return
-     * JSON.
+     * Runs the {@link AsciiMathHelper} helper on the given 'input' parameter,
+     * expecting to return JSON.
      *
      * Accept: application/json from client expected
      */
     @RequestMapping(value="/verifyAsciiMath", method=RequestMethod.POST)
-    @ResponseBody
-    public Map<String, String>  verifyASCIIMath(@RequestParam("input") final String asciiMathInput) {
+    public ResponseEntity<Map<String, String>>  verifyASCIIMath(@RequestParam("input") final String asciiMathInput) {
         final AsciiMathHelper asciiMathHelper = new AsciiMathHelper(new XsltStylesheetCacheAdapter(stylesheetCache));
-        final Map<String, String> upConvertedASCIIMathInput = asciiMathHelper.upConvertASCIIMathInput(asciiMathInput);
-        return upConvertedASCIIMathInput;
+        final Map<String, String> upConvertedAsciiMathInput = asciiMathHelper.upConvertASCIIMathInput(asciiMathInput);
+
+        final HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.setCacheControl("private, no-cache, no-store, max-age=0, must-revalidate");
+
+        return new ResponseEntity<Map<String,String>>(upConvertedAsciiMathInput, responseHeaders, HttpStatus.OK);
     }
 
 }

@@ -64,7 +64,6 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.locators.NetworkHttpResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -387,12 +386,12 @@ public class AssessmentPackageFileService {
     public void streamAssessmentPackageSource(final AssessmentPackage assessmentPackage,
             final OutputStreamer outputStreamer)
             throws IOException {
-        streamAssessmentFile(assessmentPackage, assessmentPackage.getAssessmentHref(),
+        streamAssessmentPackageFile(assessmentPackage, assessmentPackage.getAssessmentHref(),
                 QTI_CONTENT_TYPE, outputStreamer);
     }
 
     /**
-     * Streams the source of the given {@link AssessmentPackage} to the required {@link OutputStreamer}
+     * Streams a file within the given {@link AssessmentPackage} to the required {@link OutputStreamer}
      * <p>
      * (NB: this service does not whether this file is white-listed. The caller should ensure this
      * in advance.)
@@ -403,15 +402,17 @@ public class AssessmentPackageFileService {
             final String fileHref, final OutputStreamer outputStreamer)
             throws IOException {
         final String contentType = getResourceContentType(fileHref);
-        streamAssessmentFile(assessmentPackage, fileHref, contentType, outputStreamer);
+        streamAssessmentPackageFile(assessmentPackage, fileHref, contentType, outputStreamer);
     }
 
-    private void streamAssessmentFile(final AssessmentPackage assessmentPackage, final String fileHref,
+    private void streamAssessmentPackageFile(final AssessmentPackage assessmentPackage, final String fileHref,
             final String contentType, final OutputStreamer outputStreamer)
             throws IOException {
+        /* Compute a suitable entity tag */
+        final Date lastModifiedTime = assessmentPackage.getCreationTime(); /* (Safe since packages never change - they get replaced) */
         if (assessmentPackage.getImportType()==AssessmentPackageImportType.BUNDLED_SAMPLE) {
-            /* Bundled sample lives in the ClassPath. We'll copy it to a temp File
-             * for serving
+            /* Bundled sample lives in the ClassPath.
+             * We'll copy it to a temp File for serving
              */
             final File tempFile = filespaceManager.createTempFile();
             try {
@@ -432,7 +433,7 @@ public class AssessmentPackageFileService {
                 finally {
                     ServiceUtilities.ensureClose(sampleFileStream);
                 }
-                streamPackageFile(assessmentPackage, tempFile, contentType, outputStreamer);
+                ServiceUtilities.streamFile(tempFile, contentType, lastModifiedTime, outputStreamer);
             }
             finally {
                 if (!tempFile.delete()) {
@@ -447,29 +448,11 @@ public class AssessmentPackageFileService {
             final FileSandboxResourceLocator fileSandboxResourceLocator = new FileSandboxResourceLocator(packageUriScheme, sandboxDirectory);
             final File sandboxFile = fileSandboxResourceLocator.findSandboxFile(packageUriScheme.decodedPathToUri(fileHref));
             if (sandboxFile==null) {
+                /* (This should not happen due to the way we record what's in each package) */
                 throw new QtiWorksRuntimeException("Uploaded AssessmentPackage file with href " + fileHref
                         + " in package " + assessmentPackage + " yielded null lookup");
             }
-            streamPackageFile(assessmentPackage, sandboxFile, contentType, outputStreamer);
-        }
-    }
-
-    private void streamPackageFile(final AssessmentPackage assessmentPackage, final File file,
-            final String contentType, final OutputStreamer outputStreamer)
-            throws IOException {
-        streamFile(file, contentType, assessmentPackage.getCreationTime(), outputStreamer);
-    }
-
-    public void streamFile(final File file, final String contentType, final Date lastModifiedTime, final OutputStreamer outputStreamer)
-            throws IOException {
-        final long contentLength = file.length();
-        FileInputStream fileInputStream = null;
-        try {
-            fileInputStream = new FileInputStream(file);
-            outputStreamer.stream(contentType, contentLength, lastModifiedTime, fileInputStream);
-        }
-        finally {
-            ServiceUtilities.ensureClose(fileInputStream);
+            ServiceUtilities.streamFile(sandboxFile, contentType, lastModifiedTime, outputStreamer);
         }
     }
 

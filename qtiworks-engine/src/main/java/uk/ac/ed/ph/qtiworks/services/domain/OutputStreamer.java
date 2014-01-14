@@ -33,15 +33,13 @@
  */
 package uk.ac.ed.ph.qtiworks.services.domain;
 
-import uk.ac.ed.ph.qtiworks.services.candidate.CandidateItemDeliveryService;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 
 /**
- * Callback interface used to handle data emanating from {@link CandidateItemDeliveryService}
- * and friends.
+ * Callback interface used to handle result data coming from the service layer, for example
+ * rendered assessment state, assessment package files.
  *
  * @author David McKain
  */
@@ -49,15 +47,18 @@ public interface OutputStreamer {
 
     /**
      * Callback should do whatever is required with the data coming from the given {@link InputStream}.
-     * The stream will be closed afterwards, so the caller does not have to worry about this.
+     * <p>
+     * The {@link InputStream} will be closed afterwards, so the implementor of this interface
+     * does not have to worry about this.
+     *
      * @param contentType
      * @param contentLength
      * @param lastModifiedTime
      * @param resultStream
-     * @throws IOException
+     *
+     * @throws IOException if the implementor fails to stream the data successfully
      */
-    void stream(String contentType, long contentLength, Date lastModifiedTime,
-            InputStream resultStream)
+    void stream(String contentType, long contentLength, Date lastModifiedTime, InputStream resultStream)
         throws IOException;
 
 }
