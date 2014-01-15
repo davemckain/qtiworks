@@ -246,7 +246,8 @@ public class AssessmentRenderer {
     }
 
     /**
-     * Renders the given {@link TestItemRenderingDetails}, sending the result to the provided JAXP {@link Result}.
+     * Renders the given {@link TestRenderingRequest}, sending the result to the
+     * provided JAXP {@link Result}.
      * <p>
      * NB: If you're using a {@link StreamResult} then you probably want to wrap it around an
      * {@link OutputStream} rather than a {@link Writer}. Remember that you are responsible for

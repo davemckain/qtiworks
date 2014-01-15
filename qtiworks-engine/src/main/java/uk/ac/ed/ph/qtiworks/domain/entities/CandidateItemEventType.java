@@ -64,7 +64,7 @@ public enum CandidateItemEventType {
 
     /**
      * Candidate has reset the session back to the state immediately after the last
-     * reinit (or after the {@link #INIT} if there were no reinits)
+     * reinit (or after the {@link #ENTER} if there were no reinits)
      */
     RESET,
 

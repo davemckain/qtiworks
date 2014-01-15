@@ -412,10 +412,11 @@ public class LtiLaunchService {
      * Returns null is the resource specified in the launch hasn't been initialised yet and if the
      * caller does not have {@link UserRole#INSTRUCTOR}.
      *
-     * @param ltiDomain
-     * @param decodedLtiLaunch
+     * @param decodedLtiLaunch decoded LTI launch data
      *
      * @throws IllegalArgumentException if the LTI launch is not a domain-level link.
+     *
+     * @see #decodeLtiLaunchData(HttpServletRequest, LtiLaunchType)
      */
     public LtiResource provideLtiResource(final DecodedLtiLaunch decodedLtiLaunch) {
         Assert.notNull(decodedLtiLaunch, "decodedLtiLaunch");

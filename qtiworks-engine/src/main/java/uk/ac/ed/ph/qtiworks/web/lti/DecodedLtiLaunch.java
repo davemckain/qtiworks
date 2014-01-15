@@ -42,7 +42,7 @@ import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 /**
  * Encapsulates the result of decoding an LTI launch request.
  *
- * @see LtiLaunchDecodingService
+ * @see LtiLaunchService#decodeLtiLaunchData(javax.servlet.http.HttpServletRequest, uk.ac.ed.ph.qtiworks.domain.entities.LtiLaunchType)
  *
  * @author David McKain
  */

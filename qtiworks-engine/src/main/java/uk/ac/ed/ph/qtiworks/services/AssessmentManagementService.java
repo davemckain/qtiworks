@@ -177,7 +177,7 @@ public class AssessmentManagementService {
      * from the data provided by the given {@link InputStream} and having the given content type.
      * <p>
      * Validation can be invoked immediately, otherwise callers will want to call
-     * {@link #validateAssessment(Assessment)} at a later point, certainly before
+     * {@link #validateAssessment(long)} at a later point, certainly before
      * trying to run this new {@link Assessment}.
      * <p>
      * Success post-conditions:

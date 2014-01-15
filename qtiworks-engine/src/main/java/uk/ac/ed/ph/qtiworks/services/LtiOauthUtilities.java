@@ -159,12 +159,7 @@ public final class LtiOauthUtilities {
      * (constructed by {@link #createLisResultMessage(String, String, String, String, double)}
      * to the corresponding LIS outcome service.
      *
-     * @param lisOutcomeServiceUrl URL of the outcome service to send to
-     * @param lisResultSourcedid <code>lis_result_sourcedid</code> to send
-     * @param ltiConsumerKey consumer key for signing OAuth request
-     * @param ltiConsumerSecret secret corresponding to the consumer key
-     * @param normalizedScore score to be returned, in the range 0.0 to 1.0
-     * @return true on success, false otherwise.
+     * @param lisResultMessage LIS result message to be send to the outcome service
      *
      * @throws QtiWorksLogicException
      */

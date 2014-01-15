@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
 
 /**
- * Concrete implementation of {@link AbstractWebAuthenticator} that uses the simple form-based
+ * Concrete implementation of {@link AbstractSystemUserAuthenticator} that uses the simple form-based
  * log-in process to authenticate the current user.
  *
  * <h2>How it works</h2>

@@ -70,7 +70,7 @@ import org.slf4j.LoggerFactory;
  * Defines the {@link CustomOperator}s and {@link CustomInteraction}s that make
  * up the package of MathAssess QTI extensions.
  * <p>
- * Note the lifecycle {@link #startMaximaPool()} and {@link #shutdown()} methods here.
+ * Note the lifecycle {@link #startMaximaPool()} and {@link #closeMaximaPool()} methods here.
  *
  * @author David McKain
  */
