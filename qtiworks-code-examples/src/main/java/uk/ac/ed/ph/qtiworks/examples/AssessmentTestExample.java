@@ -32,7 +32,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * (Used for ad hoc test of test functionality)
+ * (This was used for ad hoc test of test functionality. Not documented very well, but might
+ * be useful enough to look at.)
  *
  * @author David McKain
  */
@@ -48,7 +49,7 @@ public final class AssessmentTestExample {
 
         final TestValidationResult testValidationResult = assessmentObjectXmlLoader.loadResolveAndValidateTest(inputUri);
         System.out.println("Validation result: " + ObjectDumper.dumpObject(testValidationResult, DumpMode.DEEP));
-        
+
         System.exit(0);
 
         final TestProcessingMap testProcessingMap = new TestProcessingInitializer(testValidationResult).initialize();
@@ -67,11 +68,11 @@ public final class AssessmentTestExample {
         final TestSessionController testSessionController = new TestSessionController(jqtiExtensionManager, testSessionControllerSettings, testProcessingMap, testSessionState);
         testSessionController.addNotificationListener(notificationLogListener);
 
-        Date timestamp = new Date();
+        final Date timestamp = new Date();
         testSessionController.initialize(timestamp);
         testSessionController.enterTest(timestamp);
         testSessionController.enterNextAvailableTestPart(timestamp);
-        System.out.println("Test state after entry into fist test part: " + ObjectDumper.dumpObject(testSessionState, DumpMode.DEEP));
+        System.out.println("Test state after entry into first test part: " + ObjectDumper.dumpObject(testSessionState, DumpMode.DEEP));
 
         final TestPlanNode firstItemRefNode = testPlan.getTestPartNodes().get(0).searchDescendants(TestNodeType.ASSESSMENT_ITEM_REF).get(0);
         testSessionController.selectItemNonlinear(timestamp, firstItemRefNode.getKey());

@@ -28,5 +28,12 @@ All Rights Reserved
       <artifactId>qtiworks-mathassess</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <!-- (The rendering examples require the full engine as a dependency) -->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>qtiworks-engine</artifactId>
+      <version>${project.version}</version>
+      <classifier>classes</classifier>
+    </dependency>
   </dependencies>
 </project>

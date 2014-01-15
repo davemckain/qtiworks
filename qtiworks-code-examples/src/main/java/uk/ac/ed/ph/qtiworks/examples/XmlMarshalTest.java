@@ -68,7 +68,7 @@ import java.util.Map;
 import org.w3c.dom.Document;
 
 /**
- * Debugging for {@link ItemSessionStateXmlMarshaller}. Needs to be made into a unit test...
+ * Debugging for the item/test marshalling classes. Really needs to be made into a unit test...
  *
  * @author David McKain
  */

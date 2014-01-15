@@ -15,6 +15,13 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
 
 import java.net.URI;
 
+/**
+ * Example of invoking validation.
+ * <p>
+ * (Not documented very well yet. Sorry)
+ *
+ * @author David McKain
+ */
 public final class ValidationExample {
 
     public static void main(final String[] args) throws Exception {

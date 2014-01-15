@@ -27,6 +27,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Example of running <code>choice.xml</code>.
+ * <p>
+ * (Not documented very well yet. Sorry!)
+ *
+ * @author David McKain
+ */
 public final class ChoiceRunningExample {
 
     public static void main(final String[] args) {
@@ -48,41 +55,41 @@ public final class ChoiceRunningExample {
         final ItemSessionController itemSessionController = new ItemSessionController(jqtiExtensionManager, itemSessionControllerSettings, itemProcessingMap, itemSessionState);
 
         System.out.println("\nInitialising");
-        Date timestamp1 = new Date();
+        final Date timestamp1 = new Date();
         itemSessionController.initialize(timestamp1);
         itemSessionController.performTemplateProcessing(timestamp1);
         System.out.println("State after init: " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
-        
+
         System.out.println("\nEntering item");
-        Date timestamp2 = ObjectUtilities.addToTime(timestamp1, 1000L);
+        final Date timestamp2 = ObjectUtilities.addToTime(timestamp1, 1000L);
         itemSessionController.enterItem(timestamp2);
         System.out.println("State after entry: " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
 
         System.out.println("\nBinding & validating responses");
-        Date timestamp3 = ObjectUtilities.addToTime(timestamp2, 1000L);
+        final Date timestamp3 = ObjectUtilities.addToTime(timestamp2, 1000L);
         final Map<Identifier, ResponseData> responseMap = new HashMap<Identifier, ResponseData>();
         responseMap.put(Identifier.parseString("RESPONSE"), new StringResponseData("ChoiceA"));
         itemSessionController.bindResponses(timestamp3, responseMap);
         System.out.println("Unbound responses: " + itemSessionState.getUnboundResponseIdentifiers());
         System.out.println("Invalid responses:" + itemSessionState.getInvalidResponseIdentifiers());
         System.out.println("State after binding: " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
-        
+
         System.out.println("\nCommitting responses");
-        Date timestamp4 = ObjectUtilities.addToTime(timestamp3, 1000L);
+        final Date timestamp4 = ObjectUtilities.addToTime(timestamp3, 1000L);
         itemSessionController.commitResponses(timestamp4);
         System.out.println("State after committing: " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
 
         System.out.println("\nInvoking response processing");
-        Date timestamp5 = ObjectUtilities.addToTime(timestamp4, 1000L);
+        final Date timestamp5 = ObjectUtilities.addToTime(timestamp4, 1000L);
         itemSessionController.performResponseProcessing(timestamp5);
         System.out.println("State after RP1: " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
 
         System.out.println("\nExplicitly closing item session");
-        Date timestamp6 = ObjectUtilities.addToTime(timestamp5, 1000L);
+        final Date timestamp6 = ObjectUtilities.addToTime(timestamp5, 1000L);
         itemSessionController.endItem(timestamp6);
         System.out.println("State after end of session: " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
 
-        Date timestamp7 = ObjectUtilities.addToTime(timestamp6, 1000L);
+        final Date timestamp7 = ObjectUtilities.addToTime(timestamp6, 1000L);
         itemSessionController.exitItem(timestamp7);
         System.out.println("State after exit: " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
     }

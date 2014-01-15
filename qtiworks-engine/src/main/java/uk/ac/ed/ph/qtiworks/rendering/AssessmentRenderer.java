@@ -37,7 +37,6 @@ import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksProperties;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEventNotification;
 import uk.ac.ed.ph.qtiworks.utils.XmlUtilities;
 
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.test.NavigationMode;
 import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
@@ -123,9 +122,6 @@ public class AssessmentRenderer {
     private QtiWorksProperties qtiWorksProperties;
 
     @Resource
-    private JqtiExtensionManager jqtiExtensionManager;
-
-    @Resource
     private XsltStylesheetCache xsltStylesheetCache;
 
     @Resource
@@ -145,15 +141,6 @@ public class AssessmentRenderer {
 
     public void setQtiWorksProperties(final QtiWorksProperties qtiWorksProperties) {
         this.qtiWorksProperties = qtiWorksProperties;
-    }
-
-
-    public JqtiExtensionManager getJqtiExtensionManager() {
-        return jqtiExtensionManager;
-    }
-
-    public void setJqtiExtensionManager(final JqtiExtensionManager jqtiExtensionManager) {
-        this.jqtiExtensionManager = jqtiExtensionManager;
     }
 
 
