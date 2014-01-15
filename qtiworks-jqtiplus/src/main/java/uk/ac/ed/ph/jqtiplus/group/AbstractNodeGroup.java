@@ -155,7 +155,7 @@ public abstract class AbstractNodeGroup<P extends QtiNode, C extends QtiNode> im
      * @throws QtiIllegalChildException
      */
     @SuppressWarnings("unchecked")
-    protected C createChild(final Element childElement, final JqtiExtensionManager jqtiExtensionManager) {
+    private C createChild(final Element childElement, final JqtiExtensionManager jqtiExtensionManager) {
         final String localName = childElement.getLocalName();
         C child;
         if ("customOperator".equals(localName)) {

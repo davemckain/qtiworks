@@ -42,9 +42,7 @@ import uk.ac.ed.ph.qtiworks.rendering.ItemRenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
 import uk.ac.ed.ph.qtiworks.rendering.TestRenderingOptions;
 
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
-import uk.ac.ed.ph.jqtiplus.reading.AssessmentObjectXmlLoader;
-import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
+import uk.ac.ed.ph.jqtiplus.SimpleJqtiFacade;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingInitializer;
@@ -86,35 +84,28 @@ public final class RenderingExampleHelpers {
     public static ItemSessionController createItemSessionController(final ResourceLocator assessmentResourceLocator, final URI itemUri) {
         System.out.println("Running " + itemUri + " from the ClassPath");
 
-        final JqtiExtensionManager jqtiExtensionManager = new JqtiExtensionManager();
-        final QtiXmlReader qtiXmlReader = new QtiXmlReader(jqtiExtensionManager);
-        final AssessmentObjectXmlLoader assessmentObjectXmlLoader = new AssessmentObjectXmlLoader(qtiXmlReader, assessmentResourceLocator);
-
-        final ResolvedAssessmentItem resolvedAssessmentItem = assessmentObjectXmlLoader.loadAndResolveAssessmentItem(itemUri);
+        final SimpleJqtiFacade simpleJqtiFacade = new SimpleJqtiFacade();
+        final ResolvedAssessmentItem resolvedAssessmentItem = simpleJqtiFacade.loadAndResolveAssessmentItem(assessmentResourceLocator, itemUri);
         final ItemSessionControllerSettings itemSessionControllerSettings = new ItemSessionControllerSettings();
         final ItemProcessingMap itemProcessingMap = new ItemProcessingInitializer(resolvedAssessmentItem, true).initialize();
         final ItemSessionState itemSessionState = new ItemSessionState();
-        final ItemSessionController itemSessionController = new ItemSessionController(jqtiExtensionManager,
-                itemSessionControllerSettings, itemProcessingMap, itemSessionState);
+        final ItemSessionController itemSessionController = simpleJqtiFacade.createItemSessionController(itemSessionControllerSettings, itemProcessingMap, itemSessionState);
         return itemSessionController;
     }
 
     public static TestSessionController createTestSessionController(final ResourceLocator assessmentResourceLocator, final URI testUri) {
         System.out.println("Running " + testUri + " from the ClassPath");
 
-        final JqtiExtensionManager jqtiExtensionManager = new JqtiExtensionManager();
-        final QtiXmlReader qtiXmlReader = new QtiXmlReader(jqtiExtensionManager);
-        final AssessmentObjectXmlLoader assessmentObjectXmlLoader = new AssessmentObjectXmlLoader(qtiXmlReader, assessmentResourceLocator);
-
-        final ResolvedAssessmentTest resolvedAssessmentTest = assessmentObjectXmlLoader.loadAndResolveAssessmentTest(testUri);
+        final SimpleJqtiFacade simpleJqtiFacade = new SimpleJqtiFacade();
+        final ResolvedAssessmentTest resolvedAssessmentTest = simpleJqtiFacade.loadAndResolveAssessmentTest(assessmentResourceLocator, testUri);
         final TestProcessingMap testProcessingMap = new TestProcessingInitializer(resolvedAssessmentTest, true).initialize();
 
-        final TestPlanner testPlanner = new TestPlanner(testProcessingMap);
+        final TestPlanner testPlanner = simpleJqtiFacade.createTestPlanner(testProcessingMap);
         final TestPlan testPlan = testPlanner.generateTestPlan();
 
         final TestSessionState testSessionState = new TestSessionState(testPlan);
         final TestSessionControllerSettings testSessionControllerSettings = new TestSessionControllerSettings();
-        final TestSessionController testSessionController = new TestSessionController(jqtiExtensionManager, testSessionControllerSettings, testProcessingMap, testSessionState);
+        final TestSessionController testSessionController = simpleJqtiFacade.createTestSessionController(testSessionControllerSettings, testProcessingMap, testSessionState);
         return testSessionController;
     }
 

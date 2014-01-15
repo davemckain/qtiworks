@@ -77,9 +77,15 @@ public final class ItemProcessingInitializer {
         this.validOutcomeDeclarationMapBuilder = new LinkedHashMap<Identifier, OutcomeDeclaration>();
     }
 
+    /**
+     * Builds and returns the {@link ItemProcessingMap}.
+     *
+     * @return resulting {@link ItemProcessingMap}, or null if the underlying {@link AssessmentItem}
+     *   lookup was unsuccessful
+     */
     public ItemProcessingMap initialize() {
         if (!resolvedAssessmentItem.getItemLookup().wasSuccessful()) {
-            throw new IllegalStateException("Item lookup did not succeed, so item cannot be run");
+            return null;
         }
         final AssessmentItem item = resolvedAssessmentItem.getItemLookup().extractAssumingSuccessful();
 

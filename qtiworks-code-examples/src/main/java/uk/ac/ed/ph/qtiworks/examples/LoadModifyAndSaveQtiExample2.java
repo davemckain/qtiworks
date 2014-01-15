@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.examples;
 
-import uk.ac.ed.ph.jqtiplus.SimpleJqtiFacade;
+import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.node.content.ItemBody;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.TextRun;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
@@ -45,7 +45,9 @@ import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
 import uk.ac.ed.ph.jqtiplus.node.shared.FieldValue;
 import uk.ac.ed.ph.jqtiplus.reading.QtiObjectReadResult;
+import uk.ac.ed.ph.jqtiplus.reading.QtiObjectReader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlInterpretationException;
+import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.serialization.QtiSerializer;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
@@ -71,11 +73,9 @@ import java.net.URI;
  * You should also be able to run this inside your favourite IDE if you have loaded the QTIWorks
  * source code into it.
  *
- * @see LoadModifyAndSaveQtiExample2 for another version of this example using lower-level APIs
- *
  * @author David McKain
  */
-public final class LoadModifyAndSaveQtiExample {
+public final class LoadModifyAndSaveQtiExample2 {
 
     public static void main(final String[] args) throws Exception {
         /* We'll be loading a bundled example file called minimal.xml, which you can find
@@ -89,14 +89,15 @@ public final class LoadModifyAndSaveQtiExample {
         /* Load the QTI XML, perform schema validation, and build a JQTI+ Object model from it,
          * expecting an AssessmentItem.
          *
-         * (We're going to use SimpleJqtiFacade here)
+         * (The current API for this requires joining a few Objects together; it would be nice to
+         * have a simple facade that makes it easier 95% of the time.)
          */
-        final SimpleJqtiFacade simpleJqtiFacade = new SimpleJqtiFacade();
+        final JqtiExtensionManager jqtiExtensionManager = new JqtiExtensionManager();
+        final QtiXmlReader qtiXmlReader = new QtiXmlReader(jqtiExtensionManager);
+        final QtiObjectReader qtiObjectReader = qtiXmlReader.createQtiObjectReader(inputResourceLocator, true /* = perform schema validation */);
         QtiObjectReadResult<AssessmentItem> readResult;
         try {
-            readResult = simpleJqtiFacade.readQtiRootNode(inputResourceLocator, inputUri,
-                    true, /* = perform schema validation */
-                    AssessmentItem.class);
+            readResult = qtiObjectReader.lookupRootNode(inputUri, AssessmentItem.class);
         }
         catch (final XmlResourceNotFoundException e) {
             /* This Exception will be thrown the example file could not be found
@@ -164,7 +165,7 @@ public final class LoadModifyAndSaveQtiExample {
         assessmentItem.setResponseProcessing(responseProcessing);
 
         /* Finally we serialize the updated assessmentItem to an XML string and print it out */
-        final QtiSerializer qtiSerializer = simpleJqtiFacade.createQtiSerializer();
+        final QtiSerializer qtiSerializer = new QtiSerializer(jqtiExtensionManager);
         System.out.println(qtiSerializer.serializeJqtiObject(assessmentItem));
     }
 

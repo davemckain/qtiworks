@@ -83,6 +83,7 @@ public class ItemProcessingController extends ItemValidationController implement
     public ItemProcessingController(final JqtiExtensionManager jqtiExtensionManager,
             final ItemProcessingMap itemProcessingMap, final ItemSessionState itemSessionState) {
         super(jqtiExtensionManager, itemProcessingMap!=null ? itemProcessingMap.getResolvedAssessmentItem() : null);
+        Assert.notNull(itemProcessingMap, "itemProcessingMap");
         Assert.notNull(itemSessionState, "itemSessionState");
         this.itemProcessingMap = itemProcessingMap;
         this.itemSessionState = itemSessionState;

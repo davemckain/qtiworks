@@ -310,8 +310,6 @@ public final class TestPlanner extends ListenerNotificationFirer {
         return result;
     }
 
-
-
     private List<SectionPart> selectSectionParts(final AssessmentSection assessmentSection) {
         final List<SectionPart> children = assessmentSection.getSectionParts();
         final Selection selection = assessmentSection.getSelection();

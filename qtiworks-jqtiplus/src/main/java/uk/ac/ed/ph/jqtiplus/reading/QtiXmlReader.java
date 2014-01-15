@@ -128,18 +128,21 @@ public final class QtiXmlReader {
      * Reads the XML resource having the given System ID using the specified {@link ResourceLocator}
      * to locate the XML, optionally performing schema validation.
      *
+     * @param inputResourceLocator {@link ResourceLocator} used to read in the QTI XML
+     * @param systemId System ID (URI) of the QTI XML resource to be read
+     * @param performSchemaValidation whether to perform schema validation
      * @throws XmlResourceNotFoundException if the XML resource with the given System ID cannot be
      *             located using the given {@link ResourceLocator}
      * @throws XmlResourceReaderException if an unexpected Exception occurred parsing and/or validating the XML, or
      *             if any of the required schemas could not be located.
      */
-    public XmlReadResult read(final URI systemIdUri, final ResourceLocator inputResourceLocator,
+    public XmlReadResult read(final ResourceLocator inputResourceLocator, final URI systemId,
             final boolean performSchemaValidation)
             throws XmlResourceNotFoundException {
-        Assert.notNull(systemIdUri, "systemIdUri");
         Assert.notNull(inputResourceLocator, "inputResourceLocator");
+        Assert.notNull(systemId, "systemId");
         final ResourceLocator entityResourceLocator = new ChainedResourceLocator(JQTIPLUS_PARSER_RESOURCE_LOCATOR, inputResourceLocator);
-        return xmlResourceReader.read(systemIdUri, inputResourceLocator, entityResourceLocator, performSchemaValidation);
+        return xmlResourceReader.read(systemId, inputResourceLocator, entityResourceLocator, performSchemaValidation);
     }
 
     /**

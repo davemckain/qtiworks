@@ -43,6 +43,7 @@ import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.exception.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.exception.QtiModelException;
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.RootNode;
 import uk.ac.ed.ph.jqtiplus.node.RootNodeTypes;
@@ -107,6 +108,33 @@ public final class QtiObjectReader implements RootNodeProvider {
     }
 
     /**
+     * Reads in the QTI XML from the given System ID, then attempts to build a JQTI+ Object
+     * model from it.
+     *
+     * @param systemId System ID (URI) of the QTI XML, which must correspond to an allowed QTI
+     *   {@link RootNode}.
+     *
+     * @throws XmlResourceNotFoundException if the XML resource with the given System ID cannot be
+     *             located using the current {@link #inputResourceLocator}
+     * @throws QtiXmlInterpretationException if the required QTI Object model could not be instantiated from
+     *             the XML
+     * @throws XmlResourceReaderException if an unexpected Exception occurred parsing and/or validating the XML, or
+     *             if any of the required schemas could not be located.
+     */
+    public QtiObjectReadResult<RootNode> lookupRootNode(final URI systemId)
+            throws XmlResourceNotFoundException, QtiXmlInterpretationException {
+        return lookupRootNode(systemId, RootNode.class);
+    }
+
+    /**
+     * Reads in the QTI XML from the given System ID, then attempts to build a JQTI+ Object
+     * model from it, having a {@link RootNode} of the specified class.
+     *
+     * @param systemId System ID (URI) of the QTI XML, which must correspond to an allowed QTI
+     *   {@link RootNode}.
+     * @param requiredRootNodeClass Class of the expected {@link RootNode} in the resulting JQTI+
+     *   Object model
+     *
      * @throws XmlResourceNotFoundException if the XML resource with the given System ID cannot be
      *             located using the current {@link #inputResourceLocator}
      * @throws QtiXmlInterpretationException if the required QTI Object model could not be instantiated from
@@ -115,9 +143,11 @@ public final class QtiObjectReader implements RootNodeProvider {
      *             if any of the required schemas could not be located.
      */
     @Override
-    public <E extends RootNode> QtiObjectReadResult<E> lookupRootNode(final URI systemId, final Class<E> requiredResultClass)
+    public <E extends RootNode> QtiObjectReadResult<E> lookupRootNode(final URI systemId, final Class<E> requiredRootNodeClass)
             throws XmlResourceNotFoundException, QtiXmlInterpretationException {
-        logger.debug("Attempting to read QTI Object at system ID {}, requiring result class {}", systemId, requiredResultClass);
+        Assert.notNull(systemId, "systemId");
+        Assert.notNull(requiredRootNodeClass, "requiredRootNodeClass");
+        logger.debug("Attempting to read QTI Object at system ID {}, requiring result result class {}", systemId, requiredRootNodeClass);
 
         /* We'll create a chained resource locator using the one used to locate parser resources first, as this
          * allows us to resolve things like response processing templates and anything else that might be pre-loaded
@@ -126,19 +156,19 @@ public final class QtiObjectReader implements RootNodeProvider {
         final ChainedResourceLocator resourceLocator = new ChainedResourceLocator(QtiXmlReader.JQTIPLUS_PARSER_RESOURCE_LOCATOR, inputResourceLocator);
 
         /* Parse XML */
-        final XmlReadResult xmlReadResult = qtiXmlReader.read(systemId, resourceLocator, schemaValidating);
+        final XmlReadResult xmlReadResult = qtiXmlReader.read(resourceLocator, systemId, schemaValidating);
         final XmlParseResult xmlParseResult = xmlReadResult.getXmlParseResult();
         final Document document = xmlReadResult.getDocument();
         if (document==null) {
             /* Parsing failed */
             throw new QtiXmlInterpretationException(XML_PARSE_FAILED, "XML parsing failed",
-                    requiredResultClass, xmlParseResult);
+                    requiredRootNodeClass, xmlParseResult);
         }
 
         /* Bail out if we're validating and the resulting XML was not valid */
         if (schemaValidating && !xmlParseResult.isSchemaValid()) {
             throw new QtiXmlInterpretationException(XML_SCHEMA_VALIDATION_FAILED, "XML schema validation was requested and the resulting XML was not valid",
-                   requiredResultClass, xmlParseResult);
+                   requiredRootNodeClass, xmlParseResult);
         }
 
         /* Build QTI Object Model */
@@ -156,17 +186,17 @@ public final class QtiObjectReader implements RootNodeProvider {
             logger.debug("QTI Object read of system ID {} yielded unsupported root Node {}", systemId, rootElement.getLocalName());
             throw new QtiXmlInterpretationException(UNSUPPORTED_ROOT_NODE, "XML parse succeeded but had an unsupported root Node {"
                     + rootNamespaceUri + "}:" + rootElement.getLocalName(),
-                    requiredResultClass, xmlParseResult, null, qtiModelBuildingErrors);
+                    requiredRootNodeClass, xmlParseResult, null, qtiModelBuildingErrors);
         }
         catch (final QtiParseException e) {
             throw new QtiLogicException("All QtiParseExceptions should have been caught before this point!", e);
         }
 
         /* Make sure we got the right type of Object */
-        if (!requiredResultClass.isInstance(rootNode)) {
-            logger.debug("QTI Object {} is not of the required type {}", rootNode, requiredResultClass);
-            throw new QtiXmlInterpretationException(WRONG_RESULT_TYPE, "QTI Object Model was not of the required type " + requiredResultClass,
-                    requiredResultClass, xmlParseResult, rootNode, qtiModelBuildingErrors);
+        if (!requiredRootNodeClass.isInstance(rootNode)) {
+            logger.debug("QTI Object {} is not of the required type {}", rootNode, requiredRootNodeClass);
+            throw new QtiXmlInterpretationException(WRONG_RESULT_TYPE, "QTI Object Model was not of the required type " + requiredRootNodeClass,
+                    requiredRootNodeClass, xmlParseResult, rootNode, qtiModelBuildingErrors);
         }
 
         /* Make sure there were no model building errors */
@@ -174,13 +204,13 @@ public final class QtiObjectReader implements RootNodeProvider {
             logger.debug("QTI Object read of system ID {} resulting in {} model building error(s): {}",
                     new Object[] { systemId, qtiModelBuildingErrors.size(), qtiModelBuildingErrors });
             throw new QtiXmlInterpretationException(JQTI_MODEL_BUILD_FAILED, "XML parse succeeded but generated " + qtiModelBuildingErrors.size() + " model building error(s)",
-                    requiredResultClass, xmlParseResult, null, qtiModelBuildingErrors);
+                    requiredRootNodeClass, xmlParseResult, null, qtiModelBuildingErrors);
         }
 
         /* Success! */
-        final QtiObjectReadResult<E> result = new QtiObjectReadResult<E>(requiredResultClass,
+        final QtiObjectReadResult<E> result = new QtiObjectReadResult<E>(requiredRootNodeClass,
                 xmlParseResult, rootNamespaceUri,
-                requiredResultClass.cast(rootNode));
+                requiredRootNodeClass.cast(rootNode));
         logger.debug("Result of QTI Object read from system ID {} is {}", systemId, result);
         return result;
     }

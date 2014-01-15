@@ -101,11 +101,17 @@ public final class UnitTestHelper {
         return new AssessmentObjectXmlLoader(qtiXmlReader, createTestFileResourceLocator());
     }
 
-    public static XmlReadResult readTestFile(final String testFilePath, final boolean schemaValiadating)
-            throws XmlResourceNotFoundException {
+    public static XmlReadResult readUnitTestFile(final String testFilePath, final boolean schemaValiadating) {
         final QtiXmlReader reader = createUnitTestQtiXmlReader();
         final URI testFileUri = createTestResourceUri(testFilePath);
-        return reader.read(testFileUri, createTestFileResourceLocator(), schemaValiadating);
+        try {
+            return reader.read(createTestFileResourceLocator(), testFileUri, schemaValiadating);
+        }
+        catch (final XmlResourceNotFoundException e) {
+            /* Should not happen! */
+            Assert.fail("Failed to read unit test file at path " + testFilePath);
+            return null;
+        }
     }
 
     public static ResolvedAssessmentItem resolveUnitTestAssessmentItem(final String testFilePath) {

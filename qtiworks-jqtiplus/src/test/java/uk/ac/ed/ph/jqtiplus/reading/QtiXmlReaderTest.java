@@ -44,36 +44,37 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.XmlParseResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReadResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceNotFoundException;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
-import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 
 import java.net.URI;
 
 import org.junit.Test;
 
 /**
+ * Tests for the {@link QtiXmlReader}
+ *
  * @author David McKain
  */
 public class QtiXmlReaderTest {
 
     @Test(expected=IllegalArgumentException.class)
     public void testReadNullUri() throws Exception {
-        new QtiXmlReader().read(null, new ClassPathResourceLocator(), false);
+        new QtiXmlReader().read(new ClassPathResourceLocator(), null, false);
     }
 
     @Test(expected=IllegalArgumentException.class)
     public void testReadNullLocator() throws Exception {
-        new QtiXmlReader().read(makeSystemId("choice.xml"), null, false);
+        new QtiXmlReader().read(null, makeSystemId("choice.xml"), false);
     }
 
-    @Test(expected = XmlResourceNotFoundException.class)
+    @Test(expected=XmlResourceNotFoundException.class)
     public void testReadNotFound() throws Exception {
-        readTestFile("notfound.xml", false);
+        readUnitTestFile("notfound.xml", false);
     }
 
     @Test
     public void testGoodReadNoValidate() throws Exception {
         final String fileName = "choice.xml";
-        final XmlReadResult result = readTestFile(fileName, false);
+        final XmlReadResult result = readUnitTestFile(fileName, false);
         final XmlParseResult parseResult = result.getXmlParseResult();
 
         assertNotNull(result.getDocument());
@@ -91,7 +92,7 @@ public class QtiXmlReaderTest {
     @Test
     public void testGoodReadAndValidate() throws Exception {
         final String fileName = "choice.xml";
-        final XmlReadResult result = readTestFile(fileName, true);
+        final XmlReadResult result = readUnitTestFile(fileName, true);
         final XmlParseResult parseResult = result.getXmlParseResult();
 
         assertNotNull(result.getDocument());
@@ -109,7 +110,7 @@ public class QtiXmlReaderTest {
     @Test
     public void testReadIllFormed() throws Exception {
         final String fileName = "illformed.xml";
-        final XmlReadResult result = readTestFile(fileName, false);
+        final XmlReadResult result = readUnitTestFile(fileName, false);
         final XmlParseResult parseResult = result.getXmlParseResult();
 
         assertNull(result.getDocument());
@@ -125,7 +126,7 @@ public class QtiXmlReaderTest {
     @Test
     public void testReadNotValid() throws Exception {
         final String fileName = "invalid.xml";
-        final XmlReadResult result = readTestFile(fileName, true);
+        final XmlReadResult result = readUnitTestFile(fileName, true);
         final XmlParseResult parseResult = result.getXmlParseResult();
 
         assertNotNull(result.getDocument());
@@ -143,7 +144,7 @@ public class QtiXmlReaderTest {
     @Test
     public void testReadNotQTI() throws Exception {
         final String fileName = "imsmanifest.xml"; /* (It's a Content Package manifest!) */
-        final XmlReadResult result = readTestFile(fileName, true);
+        final XmlReadResult result = readUnitTestFile(fileName, true);
         final XmlParseResult parseResult = result.getXmlParseResult();
 
         assertNotNull(result.getDocument());
@@ -161,7 +162,7 @@ public class QtiXmlReaderTest {
     @Test
     public void testReadUnsupportedSchema() throws Exception {
         final String fileName = "unsupported.xml";
-        final XmlReadResult result = readTestFile(fileName, true);
+        final XmlReadResult result = readUnitTestFile(fileName, true);
         final XmlParseResult parseResult = result.getXmlParseResult();
 
         assertNotNull(result.getDocument());
@@ -178,10 +179,11 @@ public class QtiXmlReaderTest {
 
     //-------------------------------
 
-    private XmlReadResult readTestFile(final String testFileName, final boolean schemaValiadating) throws XmlResourceNotFoundException {
-        final QtiXmlReader reader = new QtiXmlReader();
-        final ResourceLocator inputResourceLocator = new ClassPathResourceLocator();
-        return reader.read(makeSystemId(testFileName), inputResourceLocator, schemaValiadating);
+    private XmlReadResult readUnitTestFile(final String testFilePath, final boolean schemaValiadating)
+            throws XmlResourceNotFoundException {
+        final QtiXmlReader reader = UnitTestHelper.createUnitTestQtiXmlReader();
+        final URI testFileUri = makeSystemId(testFilePath);
+        return reader.read(UnitTestHelper.createTestFileResourceLocator(), testFileUri, schemaValiadating);
     }
 
     private URI makeSystemId(final String testFileName) {

@@ -38,10 +38,10 @@ import uk.ac.ed.ph.jqtiplus.running.ItemSessionControllerSettings;
 import uk.ac.ed.ph.jqtiplus.running.TestSessionControllerSettings;
 
 /**
- * JQTI+ public definitions
+ * JQTI+ constants and definitions
  *
- * @author David McKain
- * @author Jonathon Hare (original from JQTI)
+ * @author David McKain (minor changes)
+ * @author Jonathon Hare (original constant definitions in JQTI)
  */
 public final class JqtiPlus {
 

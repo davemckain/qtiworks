@@ -5,12 +5,10 @@
  */
 package uk.ac.ed.ph.qtiworks.examples;
 
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
+import uk.ac.ed.ph.jqtiplus.SimpleJqtiFacade;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
-import uk.ac.ed.ph.jqtiplus.reading.AssessmentObjectXmlLoader;
-import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingInitializer;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
@@ -21,6 +19,7 @@ import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
 import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
+import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 
 import java.net.URI;
 import java.util.Date;
@@ -28,7 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Example of running <code>choice.xml</code>.
+ * Example of running <code>choice.xml</code> using the {@link SimpleJqtiFacade}.
  * <p>
  * (Not documented very well yet. Sorry!)
  *
@@ -37,13 +36,12 @@ import java.util.Map;
 public final class ChoiceRunningExample {
 
     public static void main(final String[] args) {
+        final ResourceLocator inputResourceLocator = new ClassPathResourceLocator();
         final URI inputUri = URI.create("classpath:/choice.xml");
 
         System.out.println("Reading");
-        final JqtiExtensionManager jqtiExtensionManager = new JqtiExtensionManager();
-        final QtiXmlReader qtiXmlReader = new QtiXmlReader(jqtiExtensionManager);
-        final AssessmentObjectXmlLoader assessmentObjectXmlLoader = new AssessmentObjectXmlLoader(qtiXmlReader, new ClassPathResourceLocator());
-        final ResolvedAssessmentItem resolvedAssessmentItem = assessmentObjectXmlLoader.loadAndResolveAssessmentItem(inputUri);
+        final SimpleJqtiFacade simpleJqtiFacade = new SimpleJqtiFacade();
+        final ResolvedAssessmentItem resolvedAssessmentItem = simpleJqtiFacade.loadAndResolveAssessmentItem(inputResourceLocator, inputUri);
 
         final ItemProcessingMap itemProcessingMap = new ItemProcessingInitializer(resolvedAssessmentItem, false).initialize();
         System.out.println("Run map is: " + ObjectDumper.dumpObject(itemProcessingMap, DumpMode.DEEP));
@@ -52,7 +50,7 @@ public final class ChoiceRunningExample {
         System.out.println("State before init: " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
 
         final ItemSessionControllerSettings itemSessionControllerSettings = new ItemSessionControllerSettings();
-        final ItemSessionController itemSessionController = new ItemSessionController(jqtiExtensionManager, itemSessionControllerSettings, itemProcessingMap, itemSessionState);
+        final ItemSessionController itemSessionController = simpleJqtiFacade.createItemSessionController(itemSessionControllerSettings, itemProcessingMap, itemSessionState);
 
         System.out.println("\nInitialising");
         final Date timestamp1 = new Date();

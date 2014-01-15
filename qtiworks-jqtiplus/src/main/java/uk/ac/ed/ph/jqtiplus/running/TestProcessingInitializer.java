@@ -99,9 +99,15 @@ public final class TestProcessingInitializer {
         this.outcomeDeclarationMapBuilder = new LinkedHashMap<Identifier, OutcomeDeclaration>();
     }
 
+    /**
+     * Builds and returns the {@link TestProcessingMap}.
+     *
+     * @return resulting {@link TestProcessingMap}, or null if the underlying {@link AssessmentTest}
+     *   lookup was unsuccessful
+     */
     public TestProcessingMap initialize() {
         if (!resolvedAssessmentTest.getTestLookup().wasSuccessful()) {
-            throw new IllegalStateException("Test lookup did not succeed, so test cannot be run");
+            return null;
         }
         final AssessmentTest test = resolvedAssessmentTest.getTestLookup().extractAssumingSuccessful();
 

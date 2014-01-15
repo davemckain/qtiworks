@@ -107,13 +107,27 @@ public final class JqtiExtensionManager {
     }
 
     //---------------------------------------------------------------------
-    // Lifecycle methods
+    // Extension package lifecycle management
 
+    /**
+     * Allows all registered {@link JqtiExtensionPackage}s to initialise themselves.
+     * <p>
+     * This MUST be called before the {@link JqtiExtensionManager} is used if any extensions
+     * have been registered. If no packages have been registered, there is no need to call this
+     * method.
+     */
     public void init() {
         logger.info("Initialising all registered JqtiExtensionPackages");
         fireJqtiLifecycleEvent(this, JqtiLifecycleEventType.MANAGER_INITIALISED);
     }
 
+    /**
+     * Allows all registered {@link JqtiExtensionPackage}s to safely destroy themselves.
+     * <p>
+     * This MUST be called at a suitable time if any extensions have been registered to allow
+     * them to perform any required clean-up. If no packages have been registered,
+     * there is no need to call this method.
+     */
     public void destroy() {
         logger.info("Destroying all registered JqtiExtensionPackages");
         fireJqtiLifecycleEvent(this, JqtiLifecycleEventType.MANAGER_DESTROYED);

@@ -101,6 +101,7 @@ public class TestProcessingController extends TestValidationController implement
             final TestSessionState testSessionState) {
         super(jqtiExtensionManager, testProcessingMap!=null ? testProcessingMap.getResolvedAssessmentTest() : null);
         Assert.notNull(testSessionControllerSettings, "testSessionControllerSettings");
+        Assert.notNull(testProcessingMap, "testProcessingMap");
         Assert.notNull(testSessionState, "testSessionState");
         this.testSessionControllerSettings = new TestSessionControllerSettings(testSessionControllerSettings);
         this.listenerNotificationForwarder = new ListenerNotificationForwarder(this);

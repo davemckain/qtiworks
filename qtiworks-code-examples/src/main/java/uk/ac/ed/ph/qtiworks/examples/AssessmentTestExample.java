@@ -5,14 +5,11 @@
  */
 package uk.ac.ed.ph.qtiworks.examples;
 
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
+import uk.ac.ed.ph.jqtiplus.SimpleJqtiFacade;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationLogListener;
-import uk.ac.ed.ph.jqtiplus.reading.AssessmentObjectXmlLoader;
-import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.running.TestPlanner;
-import uk.ac.ed.ph.jqtiplus.running.TestProcessingInitializer;
 import uk.ac.ed.ph.jqtiplus.running.TestSessionController;
 import uk.ac.ed.ph.jqtiplus.running.TestSessionControllerSettings;
 import uk.ac.ed.ph.jqtiplus.state.TestPlan;
@@ -25,6 +22,7 @@ import uk.ac.ed.ph.jqtiplus.types.ResponseData;
 import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 import uk.ac.ed.ph.jqtiplus.validation.TestValidationResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
+import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 
 import java.net.URI;
 import java.util.Date;
@@ -40,32 +38,27 @@ import java.util.Map;
 public final class AssessmentTestExample {
 
     public static void main(final String[] args) throws Exception {
+        final ResourceLocator inputResourceLocator = new ClassPathResourceLocator();
         final URI inputUri = URI.create("classpath:/testimplementation/selection.xml");
 
         System.out.println("Reading and validating");
-        final JqtiExtensionManager jqtiExtensionManager = new JqtiExtensionManager();
-        final QtiXmlReader qtiXmlReader = new QtiXmlReader(jqtiExtensionManager);
-        final AssessmentObjectXmlLoader assessmentObjectXmlLoader = new AssessmentObjectXmlLoader(qtiXmlReader, new ClassPathResourceLocator());
-
-        final TestValidationResult testValidationResult = assessmentObjectXmlLoader.loadResolveAndValidateTest(inputUri);
+        final SimpleJqtiFacade simpleJqtiFacade = new SimpleJqtiFacade();
+        final TestValidationResult testValidationResult = simpleJqtiFacade.loadResolveAndValidateTest(inputResourceLocator, inputUri);
         System.out.println("Validation result: " + ObjectDumper.dumpObject(testValidationResult, DumpMode.DEEP));
 
-        System.exit(0);
-
-        final TestProcessingMap testProcessingMap = new TestProcessingInitializer(testValidationResult).initialize();
+        final TestProcessingMap testProcessingMap = simpleJqtiFacade.buildTestProcessingMap(testValidationResult);
         System.out.println("Test processing map: " + ObjectDumper.dumpObject(testProcessingMap, DumpMode.DEEP));
 
+        final TestPlanner testPlanner = simpleJqtiFacade.createTestPlanner(testProcessingMap);
         final NotificationLogListener notificationLogListener = new NotificationLogListener();
-        final TestPlanner testPlanner = new TestPlanner(testProcessingMap);
         testPlanner.addNotificationListener(notificationLogListener);
         final TestPlan testPlan = testPlanner.generateTestPlan();
-        System.out.println("Test plan structure:\n" + testPlan.debugStructure());
-
         System.out.println("Test plan: " + ObjectDumper.dumpObject(testPlan, DumpMode.DEEP));
+        System.out.println("Test plan structure:\n" + testPlan.debugStructure());
 
         final TestSessionState testSessionState = new TestSessionState(testPlan);
         final TestSessionControllerSettings testSessionControllerSettings = new TestSessionControllerSettings();
-        final TestSessionController testSessionController = new TestSessionController(jqtiExtensionManager, testSessionControllerSettings, testProcessingMap, testSessionState);
+        final TestSessionController testSessionController = simpleJqtiFacade.createTestSessionController(testSessionControllerSettings, testProcessingMap, testSessionState);
         testSessionController.addNotificationListener(notificationLogListener);
 
         final Date timestamp = new Date();
