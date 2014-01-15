@@ -62,6 +62,14 @@ All Rights Reserved.
     )</function-signature>
   </function>
   <function>
+    <description>Timestamp formatting</description>
+    <name>formatTimestamp</name>
+    <function-class>uk.ac.ed.ph.qtiworks.web.view.ElFunctions</function-class>
+    <function-signature>String formatTimestamp(
+      java.util.Date
+    )</function-signature>
+  </function>
+  <function>
     <description>Date formatting</description>
     <name>formatDateAndTime</name>
     <function-class>uk.ac.ed.ph.qtiworks.web.view.ElFunctions</function-class>
@@ -99,6 +107,14 @@ All Rights Reserved.
     <function-class>uk.ac.ed.ph.qtiworks.web.view.ElFunctions</function-class>
     <function-signature>String formatLtiResourceTitle(
       uk.ac.ed.ph.qtiworks.domain.entities.LtiResource
+    )</function-signature>
+  </function>
+  <function>
+    <description>TestPlanNodeKey formatting</description>
+    <name>formatTestPlanNodeKey</name>
+    <function-class>uk.ac.ed.ph.qtiworks.web.view.ElFunctions</function-class>
+    <function-signature>String formatTestPlanNodeKey(
+      uk.ac.ed.ph.jqtiplus.state.TestPlanNodeKey
     )</function-signature>
   </function>
 

@@ -42,7 +42,10 @@ import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
 import uk.ac.ed.ph.qtiworks.services.AssessmentDataService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentReportingService;
+import uk.ac.ed.ph.qtiworks.services.domain.CandidateEventSummaryData;
 import uk.ac.ed.ph.qtiworks.services.domain.CandidateSessionSummaryReport;
+
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -130,13 +133,14 @@ public class InstructorModelHelper {
         return setupModelForCandidateSession(assessmentReportingService.lookupCandidateSession(xid), model);
     }
 
-    public CandidateSession setupModelForCandidateSession(final CandidateSession candidateSession, final Model model)
-            throws PrivilegeException, DomainEntityNotFoundException {
+    public CandidateSession setupModelForCandidateSession(final CandidateSession candidateSession, final Model model) {
         final Delivery delivery = candidateSession.getDelivery();
         setupModelForDelivery(delivery, model);
 
-        final CandidateSessionSummaryReport candidateSessionSummaryReport = assessmentReportingService.buildCandidateSessionSummaryReport(candidateSession.getId());
+        final CandidateSessionSummaryReport candidateSessionSummaryReport = assessmentReportingService.buildCandidateSessionSummaryReport(candidateSession);
+        final List<CandidateEventSummaryData> candidateEventSummaryDataList = assessmentReportingService.buildCandidateEventSummaryDataList(candidateSession);
         model.addAttribute(candidateSessionSummaryReport);
+        model.addAttribute(candidateEventSummaryDataList);
         model.addAttribute(candidateSession);
         model.addAttribute("candidateSessionRouting", instructorRouter.buildCandidateSessionRouting(candidateSession.getId()));
         return candidateSession;

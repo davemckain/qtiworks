@@ -176,6 +176,7 @@ public class InstructorRouter {
     public Map<String, String> buildCandidateSessionRouting(final long xid) {
         final Map<String, String> result = new HashMap<String, String>();
         result.put("show", buildWebUrl("/candidate-session/" + xid));
+        result.put("events", buildWebUrl("/candidate-session/" + xid + "/events"));
         result.put("result", buildWebUrl("/candidate-session/" + xid + "/result"));
         result.put("terminate", buildWebUrl("/candidate-session/" + xid + "/terminate"));
         return result;

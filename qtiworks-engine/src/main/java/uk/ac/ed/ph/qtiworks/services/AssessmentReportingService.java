@@ -35,12 +35,15 @@ package uk.ac.ed.ph.qtiworks.services;
 
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSessionOutcome;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
+import uk.ac.ed.ph.qtiworks.services.dao.CandidateEventDao;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionOutcomeDao;
+import uk.ac.ed.ph.qtiworks.services.domain.CandidateEventSummaryData;
 import uk.ac.ed.ph.qtiworks.services.domain.CandidateSessionSummaryData;
 import uk.ac.ed.ph.qtiworks.services.domain.CandidateSessionSummaryMetadata;
 import uk.ac.ed.ph.qtiworks.services.domain.CandidateSessionSummaryReport;
@@ -56,6 +59,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -97,6 +101,9 @@ public class AssessmentReportingService {
     private CandidateSessionDao candidateSessionDao;
 
     @Resource
+    private CandidateEventDao candidateEventDao;
+
+    @Resource
     private CandidateSessionOutcomeDao candidateSessionOutcomeDao;
 
     //-------------------------------------------------
@@ -107,6 +114,7 @@ public class AssessmentReportingService {
         assessmentManagementService.ensureCallerMayManage(candidateSession.getDelivery().getAssessment());
         return candidateSession;
     }
+
 
     /**
      * Generates a {@link CandidateSessionSummaryReport} containing summary statistics
@@ -181,6 +189,31 @@ public class AssessmentReportingService {
 
         auditLogger.recordEvent("Generated summary report for CandidateSession #" + candidateSession.getId());
         return new CandidateSessionSummaryReport(summaryMetadata, data, assessmentResultXml);
+    }
+
+    //-------------------------------------------------
+
+    /**
+     * Generates summary information about the {@link CandidateEvent}s recorded in the
+     * {@link CandidateSession} having the given ID (xid)
+     */
+    public List<CandidateEventSummaryData> buildCandidateEventSummaryDataList(final long xid)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        final CandidateSession candidateSession = lookupCandidateSession(xid);
+        return buildCandidateEventSummaryDataList(candidateSession);
+    }
+
+    /**
+     * Generates summary information about the {@link CandidateEvent}s recorded in the
+     * given {@link CandidateSession}.
+     */
+    public List<CandidateEventSummaryData> buildCandidateEventSummaryDataList(final CandidateSession candidateSession) {
+        final List<CandidateEvent> candidateEvents = candidateEventDao.getForSession(candidateSession);
+        final List<CandidateEventSummaryData> result = new ArrayList<CandidateEventSummaryData>(candidateEvents.size());
+        for (final CandidateEvent candidateEvent : candidateEvents) {
+            result.add(new CandidateEventSummaryData(candidateEvent));
+        }
+        return Collections.unmodifiableList(result);
     }
 
     //-------------------------------------------------

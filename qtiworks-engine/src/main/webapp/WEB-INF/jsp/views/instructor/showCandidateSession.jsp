@@ -9,6 +9,7 @@ Additional model data:
 
 candidateSession
 candidateSessionSummaryReport
+candidateEventSummaryDataList
 
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
@@ -87,6 +88,9 @@ candidateSessionSummaryReport
 
   <h3>Actions</h3>
   <ul class="menu">
+    <li>
+      <a href="${utils:escapeLink(candidateSessionRouting['events'])}">Show Candidate Activity Log for this session</a>
+    </li>
     <li>
       <c:choose>
         <c:when test="${!candidateSessionSummaryData.sessionTerminated}">

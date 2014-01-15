@@ -55,6 +55,12 @@ aside {
   float: right;
 }
 
+ul.footActions {
+  float: right;
+  text-align: right;
+  list-style-type: none;
+}
+
 /* ========== Home Page ========== */
 
 .homepage header {

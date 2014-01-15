@@ -134,6 +134,13 @@ public class InstructorAssessmentReportingController {
         return "showCandidateSession";
     }
 
+    @RequestMapping(value="/candidate-session/{xid}/events", method=RequestMethod.GET)
+    public String showCandidateSessionEvents(@PathVariable final long xid, final Model model)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        instructorModelHelper.setupModelForCandidateSession(xid, model);
+        return "showCandidateSessionEvents";
+    }
+
     @RequestMapping(value="/candidate-session/{xid}/result", method=RequestMethod.GET)
     public void streamResult(final HttpServletResponse response, @PathVariable final long xid)
             throws DomainEntityNotFoundException, IOException, PrivilegeException {

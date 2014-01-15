@@ -9,13 +9,14 @@ Additional model data:
 
 candidateSession
 candidateSessionSummaryReport
+candidateEventSummaryDataList
 
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
 <c:set var="candidateSessionSummaryMetadata" value="${candidateSessionSummaryReport.candidateSessionSummaryMetadata}"/>
 <c:set var="candidateSessionSummaryData" value="${candidateSessionSummaryReport.candidateSessionSummaryData}"/>
 <c:set var="assessmentResultXml" value="${candidateSessionSummaryReport.assessmentResultXml}"/>
-<page:ltipage title="Candidate Session details">
+<page:ltipage title="Candidate Session Management">
 
   <header class="actionHeader">
     <nav class="breadcrumbs">
@@ -33,7 +34,7 @@ candidateSessionSummaryReport
   </div>
   <div class="grid_4">
     <div class="infoBox">
-      <div class="cat">Session Started</div>
+      <div class="cat">Session Launched</div>
       <div class="value">${utils:formatDayDateAndTime(candidateSessionSummaryData.launchTime)}</div>
     </div>
   </div>
@@ -72,6 +73,14 @@ candidateSessionSummaryReport
 
   <h3>Actions</h3>
   <ul class="menu">
+    <c:if test="${!candidateSessionSummaryData.sessionTerminated}">
+      <li>
+        <a href="${utils:escapeLink(candidateSessionRouting['show'])}">Refresh this information</a>
+      </li>
+    </c:if>
+    <li>
+      <a href="${utils:escapeLink(candidateSessionRouting['events'])}">Show Candidate Activity Log for this session</a>
+    </li>
     <li>
       <c:choose>
         <c:when test="${!candidateSessionSummaryData.sessionTerminated}">
@@ -93,7 +102,9 @@ candidateSessionSummaryReport
   </ul>
 
   <h3>All Outcome Variables</h3>
-
+  <div class="hints">
+    <p>The current values of all outcome variables are shown below. Numerical variables are shown first, then other variables.</p>
+  </div>
   <c:set var="numericOutcomeCount" value="${fn:length(candidateSessionSummaryMetadata.numericOutcomeIdentifiers)}"/>
   <c:set var="otherOutcomeCount" value="${fn:length(candidateSessionSummaryMetadata.otherOutcomeIdentifiers)}"/>
   <table class="cellTable">
@@ -127,4 +138,12 @@ candidateSessionSummaryReport
       </c:if>
     </tbody>
   </table>
+
+  <ul class="footActions">
+    <c:if test="${!candidateSessionSummaryData.sessionTerminated}">
+      <li><a href="${utils:escapeLink(candidateSessionRouting['show'])}">Refresh this information</a></li>
+    </c:if>
+    <li><a href="${utils:escapeLink(primaryRouting['listCandidateSessions'])}">Return to reports &amp; proctoring</a></li>
+  </ul>
+
 </page:ltipage>

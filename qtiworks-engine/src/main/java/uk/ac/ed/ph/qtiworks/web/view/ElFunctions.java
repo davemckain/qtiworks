@@ -41,6 +41,8 @@ import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
+import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeKey;
+import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.utils.contentpackaging.QtiContentPackageExtractor;
 
 import java.net.URI;
@@ -82,8 +84,8 @@ public final class ElFunctions {
         return ServiceUtilities.trimSentence(sentence, maxLength.intValue());
     }
 
-    public static String formatTime(final Date time) {
-        return time!=null ? ViewUtilities.getTimeFormat().format(time) : "";
+    public static String formatTimestamp(final Date time) {
+        return time!=null ? ViewUtilities.getTimestampFormat().format(time) : "";
     }
 
     public static String formatDate(final Date time) {
@@ -127,6 +129,19 @@ public final class ElFunctions {
     public static String formatLtiResourceTitle(final LtiResource ltiResource) {
         final String title = ltiResource.getResourceLinkTitle();
         return title!=null ? title : "This Launch";
+    }
+
+    public static String formatTestPlanNodeKey(final TestPlanNodeKey testPlanNodeKey) {
+        final Identifier identifier = testPlanNodeKey.getIdentifier();
+        final int instanceNumber = testPlanNodeKey.getInstanceNumber();
+
+        final StringBuilder resultBuilder = new StringBuilder(identifier.toString());
+        if (instanceNumber>1) {
+            resultBuilder.append(" (Instance ")
+                .append(instanceNumber)
+                .append(")");
+        }
+        return resultBuilder.toString();
     }
 
     private static String escapeXml(final String rawString) {

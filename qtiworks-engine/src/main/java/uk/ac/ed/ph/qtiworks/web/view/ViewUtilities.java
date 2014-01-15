@@ -97,6 +97,10 @@ public final class ViewUtilities {
 
     //-------------------------------------------------
 
+    public static final DateFormat getTimestampFormat() {
+        return new SimpleDateFormat("dd/MM/yy\u00a0HH:mm:ss");
+    }
+
     public static final DateFormat getTimeFormat() {
         return new SimpleDateFormat("HH:mm");
     }
