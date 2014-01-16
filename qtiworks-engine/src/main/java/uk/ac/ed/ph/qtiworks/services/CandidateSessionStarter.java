@@ -156,6 +156,11 @@ public class CandidateSessionStarter {
         /* Extract Delivery to be launched */
         final Delivery delivery = candidate.getDelivery();
 
+        /* Make sure delivery is open to candidates */
+        if (!delivery.isOpen()) {
+            logAndThrowLaunchException(candidate, delivery, CandidateExceptionReason.LAUNCH_CLOSED_DELIVERY);
+        }
+
         /* Launch the session */
         return launchCandidateSession(candidate, delivery,
                 false, /* Never author mode here */
@@ -175,11 +180,17 @@ public class CandidateSessionStarter {
         /* Extract Delivery to be launched from LtiResource */
         final Delivery delivery = ltiResource.getDelivery();
 
+        /* Make sure delivery is open to candidates */
+        if (!delivery.isOpen()) {
+            logAndThrowLaunchException(candidate, delivery, CandidateExceptionReason.LAUNCH_CLOSED_DELIVERY);
+        }
+
         /* Will use author mode if candidate is an instructor */
         final boolean authorMode = candidate.getUserRole()==UserRole.INSTRUCTOR;
 
         /* Launch the session */
-        return launchCandidateSession(candidate, delivery, authorMode,
+        return launchCandidateSession(candidate, delivery,
+                authorMode,
                 sanitiseExitUrl(exitUrl), /* Don't necessarily trust exitUrl passed from TC */
                 lisOutcomeServiceUrl, lisResultSourcedid);
     }
@@ -205,7 +216,7 @@ public class CandidateSessionStarter {
     /**
      * Starts new {@link CandidateSession} for the given {@link User} on the given {@link Delivery}
      * <p>
-     * No checks are made on whether the {@link User} should be allowed to start a session
+     * NB: No checks are made on whether the {@link User} should be allowed to start a session
      * on this {@link Delivery}.
      */
     public CandidateSession launchCandidateSession(final User candidate, final Delivery delivery,
@@ -223,11 +234,6 @@ public class CandidateSessionStarter {
         /* Make sure Delivery is runnable */
         if (delivery.getAssessment()==null) {
             logAndThrowLaunchException(candidate, delivery, CandidateExceptionReason.LAUNCH_INCOMPLETE_DELIVERY);
-        }
-
-        /* Make sure delivery is open */
-        if (!delivery.isOpen()) {
-            logAndThrowLaunchException(candidate, delivery, CandidateExceptionReason.LAUNCH_CLOSED_DELIVERY);
         }
 
         /* If the candidate already has any non-terminated sessions open for this Delivery,
