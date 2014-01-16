@@ -179,6 +179,7 @@ public class InstructorRouter {
         result.put("events", buildWebUrl("/candidate-session/" + xid + "/events"));
         result.put("result", buildWebUrl("/candidate-session/" + xid + "/result"));
         result.put("terminate", buildWebUrl("/candidate-session/" + xid + "/terminate"));
+        result.put("delete", buildWebUrl("/candidate-session/" + xid + "/delete"));
         return result;
     }
 }

@@ -91,6 +91,31 @@ public class AssessmentProctoringService {
         }
     }
 
+    private void terminateCandidateSession(final CandidateSession candidateSession) {
+        /* NB: We're relying on the fact that result XMLs are stored after each candidate
+         * action, so we don't have to record a final final result here.
+         */
+        if (!candidateSession.isTerminated()) {
+            candidateSession.setTerminated(true);
+            candidateSessionDao.update(candidateSession);
+        }
+    }
+
+    public Delivery deleteCandidateSession(final long xid)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        final CandidateSession candidateSession = lookupCandidateSession(xid);
+        return deleteCandidateSession(candidateSession);
+    }
+
+    public Delivery deleteCandidateSession(final CandidateSession candidateSession) {
+        final Delivery delivery = candidateSession.getDelivery();
+        dataDeletionService.deleteCandidateSession(candidateSession);
+        auditLogger.recordEvent("Deleted CandidateSession #" + candidateSession.getId());
+        return delivery;
+    }
+
+    //-------------------------------------------------
+
     public int terminateCandidateSessionsForDelivery(final long did)
             throws PrivilegeException, DomainEntityNotFoundException {
         final Delivery delivery = assessmentManagementService.lookupDelivery(did);
@@ -105,16 +130,6 @@ public class AssessmentProctoringService {
         return terminatedCount;
     }
 
-    private void terminateCandidateSession(final CandidateSession candidateSession) {
-        /* NB: We're relying on the fact that result XMLs are stored after each candidate
-         * action, so we don't have to create anything now.
-         */
-        if (!candidateSession.isTerminated()) {
-            candidateSession.setTerminated(true);
-            candidateSessionDao.update(candidateSession);
-
-        }
-    }
 
     public int deleteCandidateSessionsForDelivery(final long did)
             throws PrivilegeException, DomainEntityNotFoundException {

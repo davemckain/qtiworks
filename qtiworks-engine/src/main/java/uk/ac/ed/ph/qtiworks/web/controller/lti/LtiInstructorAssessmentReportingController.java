@@ -167,4 +167,12 @@ public class LtiInstructorAssessmentReportingController {
         GlobalRouter.addFlashMessage(redirectAttributes, "Terminated Candidate Session #" + xid);
         return ltiInstructorRouter.buildInstructorRedirect("/candidate-session/" + xid);
     }
+
+    @RequestMapping(value="/candidate-session/{xid}/delete", method=RequestMethod.POST)
+    public String deleteCandidateSessions(@PathVariable final long xid, final RedirectAttributes redirectAttributes)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        assessmentProctoringService.deleteCandidateSession(xid);
+        GlobalRouter.addFlashMessage(redirectAttributes, "Deleted Candidate Session #" + xid);
+        return ltiInstructorRouter.buildInstructorRedirect("/candidate-sessions");
+    }
 }

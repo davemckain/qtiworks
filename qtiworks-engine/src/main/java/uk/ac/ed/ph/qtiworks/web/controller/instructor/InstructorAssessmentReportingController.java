@@ -35,6 +35,7 @@ package uk.ac.ed.ph.qtiworks.web.controller.instructor;
 
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
+import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.services.AssessmentProctoringService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentReportingService;
 import uk.ac.ed.ph.qtiworks.services.domain.DeliveryCandidateSummaryReport;
@@ -154,5 +155,13 @@ public class InstructorAssessmentReportingController {
         assessmentProctoringService.terminateCandidateSession(xid);
         GlobalRouter.addFlashMessage(redirectAttributes, "Terminated Candidate Session #" + xid);
         return instructorRouter.buildInstructorRedirect("/candidate-session/" + xid);
+    }
+
+    @RequestMapping(value="/candidate-session/{xid}/delete", method=RequestMethod.POST)
+    public String deleteCandidateSessions(@PathVariable final long xid, final RedirectAttributes redirectAttributes)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        final Delivery delivery = assessmentProctoringService.deleteCandidateSession(xid);
+        GlobalRouter.addFlashMessage(redirectAttributes, "Deleted Candidate Session #" + xid);
+        return instructorRouter.buildInstructorRedirect("/delivery/" + delivery.getId() + "/candidate-sessions");
     }
 }

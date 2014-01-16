@@ -94,7 +94,8 @@ candidateEventSummaryDataList
     <li>
       <c:choose>
         <c:when test="${!candidateSessionSummaryData.sessionTerminated}">
-          <page:postLink path="${utils:escapeLink(candidateSessionRouting['terminate'])}" title="Terminate this Candidate Session"/>
+          <page:postLink path="${utils:escapeLink(candidateSessionRouting['terminate'])}" title="Terminate this Candidate Session"
+            confirm="Are you sure?"/>
         </c:when>
         <c:otherwise>
           Terminate Candidate Session [already terminated]
@@ -108,6 +109,10 @@ candidateEventSummaryDataList
     </li>
     <li>
       <a href="${utils:escapeLink(candidateSessionRouting['result'])}">Download assessmentResult XML</a>
+    </li>
+    <li>
+      <page:postLink path="${utils:escapeLink(candidateSessionRouting['delete'])}" title="Delete this Candidate Session"
+        confirm="Are you sure?"/>
     </li>
   </ul>
 
