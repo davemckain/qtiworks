@@ -31,9 +31,9 @@ Input document: doesn't matter
         <title>Author Debug View</title>
         <xsl:call-template name="htmlHeadStuff"/>
       </head>
-      <body class="qtiworks authorInfo">
+      <body class="page authorInfo">
         <div class="container_12">
-          <header>
+          <header class="pageHeader">
             <h1>QTIWorks</h1>
           </header>
           <h2>QTI standalone item author's feedback</h2>
