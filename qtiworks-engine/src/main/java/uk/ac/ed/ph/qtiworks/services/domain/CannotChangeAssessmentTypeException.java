@@ -27,32 +27,46 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * This software is derived from (and contains code from) QTItools and MathAssessEngine.
- * QTItools is (c) 2008, University of Southampton.
+ * This software is derived from (and contains code from) QTITools and MathAssessEngine.
+ * QTITools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain;
+package uk.ac.ed.ph.qtiworks.services.domain;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.User;
+import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
+import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
+
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
- * Represents a "privilege" that a {@link User} needs to have to do something
- * or access a particular Object.
- *
- * @see PrivilegeException
+ * Exception thrown when an attempt is made to upload a {@link AssessmentPackage}
+ * containing a test into an {@link Assessment} of type test, or vice versa.
  *
  * @author David McKain
  */
-public enum Privilege {
+@ResponseStatus(value=HttpStatus.CONFLICT)
+public final class CannotChangeAssessmentTypeException extends Exception {
 
-    CREATE_ASSESSMENT,
-    MANAGE_ASSESSMENT,
+    private static final long serialVersionUID = -7034213203309557258L;
 
-    CREATE_DELIVERY_SETTINGS,
-    MANAGE_DELIVERY_SETTINGS,
+    private final Assessment assessment;
+    private final AssessmentObjectType packageAssessmentObjectType;
 
-    PROCTOR_SESSION,
+    public CannotChangeAssessmentTypeException(final Assessment assessment, final AssessmentObjectType packageAssessmentObjectType) {
+        super("Uploaded package containing assessment of type " + packageAssessmentObjectType
+                + " is not compatible with the type of the Assessment " + assessment.getId());
+        this.assessment = assessment;
+        this.packageAssessmentObjectType = packageAssessmentObjectType;
+    }
 
-    ;
+    public Assessment getAssessment() {
+        return assessment;
+    }
 
+    public AssessmentObjectType getPackageAssessmentObjectType() {
+        return packageAssessmentObjectType;
+    }
 }

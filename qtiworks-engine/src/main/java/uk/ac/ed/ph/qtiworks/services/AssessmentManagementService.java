@@ -59,9 +59,9 @@ import uk.ac.ed.ph.qtiworks.services.dao.DeliveryDao;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliverySettingsDao;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentLtiOutcomesSettingsTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageDataImportException;
-import uk.ac.ed.ph.qtiworks.services.domain.AssessmentManagementException;
-import uk.ac.ed.ph.qtiworks.services.domain.AssessmentManagementException.ManagementFailureReason;
+import uk.ac.ed.ph.qtiworks.services.domain.CannotChangeAssessmentTypeException;
 import uk.ac.ed.ph.qtiworks.services.domain.DeliveryTemplate;
+import uk.ac.ed.ph.qtiworks.services.domain.IncompatiableDeliverySettingsException;
 import uk.ac.ed.ph.qtiworks.services.domain.ItemDeliverySettingsTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.TestDeliverySettingsTemplate;
 
@@ -337,8 +337,8 @@ public class AssessmentManagementService {
     @Transactional(propagation=Propagation.REQUIRES_NEW)
     public Assessment replaceAssessmentPackage(final long aid,
             final MultipartFile multipartFile, final boolean validate)
-            throws AssessmentManagementException, PrivilegeException,
-            AssessmentPackageDataImportException, DomainEntityNotFoundException {
+            throws PrivilegeException, AssessmentPackageDataImportException,
+            DomainEntityNotFoundException, CannotChangeAssessmentTypeException {
         Assert.notNull(multipartFile, "multipartFile");
         final Assessment assessment = assessmentDao.requireFindById(aid);
         ensureCallerMayManage(assessment);
@@ -349,8 +349,7 @@ public class AssessmentManagementService {
 
         /* Make sure we haven't gone item->test or test->item */
         if (newAssessmentPackage.getAssessmentType()!=assessment.getAssessmentType()) {
-            throw new AssessmentManagementException(ManagementFailureReason.CANNOT_CHANGE_ASSESSMENT_TYPE,
-                    assessment.getAssessmentType(), newAssessmentPackage.getAssessmentType());
+            throw new CannotChangeAssessmentTypeException(assessment, newAssessmentPackage.getAssessmentType());
         }
 
         /* Terminate any outstanding CandidateSessions on this Assessment, deleting any recorded
@@ -406,7 +405,7 @@ public class AssessmentManagementService {
     }
 
     public DeliverySettings lookupAndMatchDeliverySettings(final long dsid, final Assessment assessment)
-            throws DomainEntityNotFoundException, PrivilegeException {
+            throws DomainEntityNotFoundException, PrivilegeException, IncompatiableDeliverySettingsException {
         final DeliverySettings deliverySettings = deliverySettingsDao.requireFindById(dsid);
         ensureCallerMayManage(deliverySettings);
         ensureCompatible(deliverySettings, assessment);
@@ -444,7 +443,7 @@ public class AssessmentManagementService {
     // CRUD for ItemDeliverySettings
 
     public ItemDeliverySettings lookupItemDeliverySettings(final long dsid)
-            throws DomainEntityNotFoundException, PrivilegeException {
+            throws DomainEntityNotFoundException, PrivilegeException, IncompatiableDeliverySettingsException {
         final DeliverySettings deliverySettings = deliverySettingsDao.requireFindById(dsid);
         ensureCallerMayManage(deliverySettings);
         ensureCompatible(deliverySettings, AssessmentObjectType.ASSESSMENT_ITEM);
@@ -488,7 +487,7 @@ public class AssessmentManagementService {
     }
 
     public ItemDeliverySettings updateItemDeliverySettings(final long dsid, final ItemDeliverySettingsTemplate template)
-            throws PrivilegeException, DomainEntityNotFoundException, BindException {
+            throws PrivilegeException, DomainEntityNotFoundException, BindException, IncompatiableDeliverySettingsException {
         /* Check caller privileges */
         final ItemDeliverySettings itemDeliverySettings = lookupItemDeliverySettings(dsid);
         ensureCallerMayManage(itemDeliverySettings);
@@ -508,7 +507,7 @@ public class AssessmentManagementService {
     // CRUD for TestDeliverySettings
 
     public TestDeliverySettings lookupTestDeliverySettings(final long dsid)
-            throws DomainEntityNotFoundException, PrivilegeException {
+            throws DomainEntityNotFoundException, PrivilegeException, IncompatiableDeliverySettingsException {
         final DeliverySettings deliverySettings = deliverySettingsDao.requireFindById(dsid);
         ensureCallerMayManage(deliverySettings);
         ensureCompatible(deliverySettings, AssessmentObjectType.ASSESSMENT_TEST);
@@ -551,7 +550,7 @@ public class AssessmentManagementService {
     }
 
     public TestDeliverySettings updateTestDeliverySettings(final long dsid, final TestDeliverySettingsTemplate template)
-            throws PrivilegeException, DomainEntityNotFoundException, BindException {
+            throws PrivilegeException, DomainEntityNotFoundException, BindException, IncompatiableDeliverySettingsException {
         /* Check caller privileges */
         final TestDeliverySettings testDeliverySettings = lookupTestDeliverySettings(dsid);
         ensureCallerMayManage(testDeliverySettings);
@@ -658,7 +657,7 @@ public class AssessmentManagementService {
     }
 
     public void selectCurrentLtiResourceDeliverySettings(final long dsid)
-            throws DomainEntityNotFoundException, PrivilegeException {
+            throws DomainEntityNotFoundException, PrivilegeException, IncompatiableDeliverySettingsException {
         /* Look up and check access on requested Delivery Settings */
         final LtiResource currentLtiResource = identityService.ensureCurrentThreadLtiResource();
         final Delivery delivery = currentLtiResource.getDelivery();
@@ -692,7 +691,7 @@ public class AssessmentManagementService {
 
     /** Creates a new {@link Delivery} using the given {@link DeliveryTemplate} */
     public Delivery createDelivery(final long aid, final DeliveryTemplate template)
-            throws PrivilegeException, DomainEntityNotFoundException, BindException {
+            throws PrivilegeException, DomainEntityNotFoundException, BindException, IncompatiableDeliverySettingsException {
         /* Validate template */
         validateDeliveryTemplate(template);
 
@@ -766,7 +765,7 @@ public class AssessmentManagementService {
     }
 
     public Delivery updateDelivery(final long did, final DeliveryTemplate template)
-            throws BindException, PrivilegeException, DomainEntityNotFoundException {
+            throws BindException, PrivilegeException, DomainEntityNotFoundException, IncompatiableDeliverySettingsException {
         /* Validate template */
         validateDeliveryTemplate(template);
 
@@ -832,17 +831,44 @@ public class AssessmentManagementService {
     //-------------------------------------------------
     // Assessment trying
 
-    public Delivery createDemoDelivery(final Assessment assessment, final DeliverySettings deliverySettings)
+    public Delivery createDemoDelivery(final Assessment assessment)
             throws PrivilegeException {
         Assert.notNull(assessment, "assessment");
-        if (deliverySettings!=null) {
-            ensureCompatible(deliverySettings, assessment);
-        }
 
         /* Check access rights */
         ensureCallerMayManage(assessment);
 
-        /* Create demo Delivery */
+        /* Create entity */
+        final Delivery delivery = persistDemoDelivery(assessment, null);
+
+        /* That's it! */
+        auditLogger.recordEvent("Created demo Delivery #" + delivery.getId()
+                + " for Assessment #" + assessment.getId());
+        return delivery;
+    }
+
+    public Delivery createDemoDelivery(final Assessment assessment, final DeliverySettings deliverySettings)
+            throws PrivilegeException, IncompatiableDeliverySettingsException {
+        Assert.notNull(assessment, "assessment");
+        Assert.notNull(deliverySettings, "deliverySettings");
+
+        /* Make sure DeliverySettings are compatible */
+        ensureCompatible(deliverySettings, assessment);
+
+        /* Check access rights */
+        ensureCallerMayManage(assessment);
+
+        /* Create entity */
+        final Delivery delivery = persistDemoDelivery(assessment, deliverySettings);
+
+        /* That's it! */
+        auditLogger.recordEvent("Created demo Delivery #" + delivery.getId()
+                + " for Assessment #" + assessment.getId()
+                + " using DeliverySettings #" + deliverySettings.getId());
+        return delivery;
+    }
+
+    private Delivery persistDemoDelivery(final Assessment assessment, final DeliverySettings deliverySettings) {
         final Delivery delivery = new Delivery();
         delivery.setAssessment(assessment);
         delivery.setDeliverySettings(deliverySettings);
@@ -850,9 +876,6 @@ public class AssessmentManagementService {
         delivery.setOpen(true);
         delivery.setTitle("Temporary demo delivery");
         deliveryDao.persist(delivery);
-
-        /* That's it! */
-        auditLogger.recordEvent("Created demo Delivery #" + delivery.getId() + " for Assessment #" + assessment.getId());
         return delivery;
     }
 
@@ -872,15 +895,14 @@ public class AssessmentManagementService {
     }
 
     private void ensureCompatible(final DeliverySettings deliverySettings, final Assessment assessment)
-            throws PrivilegeException {
+            throws IncompatiableDeliverySettingsException {
         ensureCompatible(deliverySettings, assessment.getAssessmentType());
     }
 
     private void ensureCompatible(final DeliverySettings deliverySettings, final AssessmentObjectType assessmentObjectType)
-            throws PrivilegeException {
-        final User caller = identityService.getCurrentThreadUser();
+            throws IncompatiableDeliverySettingsException {
         if (assessmentObjectType!=deliverySettings.getAssessmentType()) {
-            throw new PrivilegeException(caller, Privilege.MATCH_DELIVERY_SETTINGS, deliverySettings);
+            throw new IncompatiableDeliverySettingsException(assessmentObjectType, deliverySettings);
         }
     }
 

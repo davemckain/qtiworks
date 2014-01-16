@@ -52,9 +52,9 @@ import uk.ac.ed.ph.qtiworks.services.domain.AssessmentAndPackage;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentLtiOutcomesSettingsTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageDataImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageDataImportException.ImportFailureReason;
-import uk.ac.ed.ph.qtiworks.services.domain.AssessmentManagementException;
-import uk.ac.ed.ph.qtiworks.services.domain.AssessmentManagementException.ManagementFailureReason;
+import uk.ac.ed.ph.qtiworks.services.domain.CannotChangeAssessmentTypeException;
 import uk.ac.ed.ph.qtiworks.services.domain.EnumerableClientFailure;
+import uk.ac.ed.ph.qtiworks.services.domain.IncompatiableDeliverySettingsException;
 import uk.ac.ed.ph.qtiworks.services.domain.ItemDeliverySettingsTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.TestDeliverySettingsTemplate;
 import uk.ac.ed.ph.qtiworks.web.GlobalRouter;
@@ -135,7 +135,8 @@ public class LtiInstructorAssessmentManagementController {
 
     @RequestMapping(value="/try", method=RequestMethod.POST)
     public String tryThisAssessment(final HttpServletResponse response)
-            throws PrivilegeException, IOException, CandidateException {
+            throws PrivilegeException, IOException,
+            CandidateException, IncompatiableDeliverySettingsException {
         final Delivery thisDelivery = identityService.getCurrentThreadLtiResource().getDelivery();
         final Assessment thisAssessment = thisDelivery.getAssessment();
         final DeliverySettings theseDeliverySettings = thisDelivery.getDeliverySettings();
@@ -279,9 +280,8 @@ public class LtiInstructorAssessmentManagementController {
                 final EnumerableClientFailure<ImportFailureReason> failure = e.getFailure();
                 failure.registerErrors(result, "assessmentPackageUpload");
             }
-            catch (final AssessmentManagementException e) {
-                final EnumerableClientFailure<ManagementFailureReason> failure = e.getFailure();
-                failure.registerErrors(result, "assessmentPackageUpload");
+            catch (final CannotChangeAssessmentTypeException e) {
+                result.reject("assessmentPackageUpload.CANNOT_CHANGE_ASSESSMENT_TYPE");
             }
         }
         if (result.hasErrors()) {
@@ -353,14 +353,15 @@ public class LtiInstructorAssessmentManagementController {
     public String tryAssessment(final @PathVariable long aid)
             throws PrivilegeException, DomainEntityNotFoundException, CandidateException {
         final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
-        final Delivery demoDelivery = assessmentManagementService.createDemoDelivery(assessment, null);
+        final Delivery demoDelivery = assessmentManagementService.createDemoDelivery(assessment);
         final String exitUrl = ltiInstructorRouter.buildWithinContextUrl("/assessment/" + aid);
         return runDelivery(demoDelivery, true, exitUrl);
     }
 
     @RequestMapping(value="/assessment/{aid}/try/{dsid}", method=RequestMethod.POST)
     public String tryAssessment(final @PathVariable long aid, final @PathVariable long dsid)
-            throws PrivilegeException, DomainEntityNotFoundException, CandidateException {
+            throws PrivilegeException, DomainEntityNotFoundException,
+            CandidateException, IncompatiableDeliverySettingsException {
         final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
         final DeliverySettings deliverySettings = assessmentManagementService.lookupAndMatchDeliverySettings(dsid, assessment);
         final Delivery demoDelivery = assessmentManagementService.createDemoDelivery(assessment, deliverySettings);
@@ -466,7 +467,7 @@ public class LtiInstructorAssessmentManagementController {
 
     @RequestMapping(value="/deliverysettings/{dsid}/select", method=RequestMethod.POST)
     public String selectDeliverySettings(@PathVariable final long dsid)
-            throws PrivilegeException, DomainEntityNotFoundException {
+            throws PrivilegeException, DomainEntityNotFoundException, IncompatiableDeliverySettingsException {
         assessmentManagementService.selectCurrentLtiResourceDeliverySettings(dsid);
         return ltiInstructorRouter.buildInstructorRedirect("/");
     }
@@ -497,7 +498,7 @@ public class LtiInstructorAssessmentManagementController {
 
     @RequestMapping(value="/deliverysettings/item/{dsid}", method=RequestMethod.GET)
     public String showEditItemDeliverySettingsForm(@PathVariable final long dsid, final Model model)
-            throws PrivilegeException, DomainEntityNotFoundException {
+            throws PrivilegeException, DomainEntityNotFoundException, IncompatiableDeliverySettingsException {
         final ItemDeliverySettings itemDeliverySettings = assessmentManagementService.lookupItemDeliverySettings(dsid);
         final ItemDeliverySettingsTemplate template = new ItemDeliverySettingsTemplate();
         assessmentDataService.mergeItemDeliverySettings(itemDeliverySettings, template);
@@ -509,7 +510,7 @@ public class LtiInstructorAssessmentManagementController {
 
     @RequestMapping(value="/deliverysettings/test/{dsid}", method=RequestMethod.GET)
     public String showEditTestDeliverySettingsForm(@PathVariable final long dsid, final Model model)
-            throws PrivilegeException, DomainEntityNotFoundException {
+            throws PrivilegeException, DomainEntityNotFoundException, IncompatiableDeliverySettingsException {
         final TestDeliverySettings testDeliverySettings = assessmentManagementService.lookupTestDeliverySettings(dsid);
         final TestDeliverySettingsTemplate template = new TestDeliverySettingsTemplate();
         assessmentDataService.mergeTestDeliverySettings(testDeliverySettings, template);
@@ -522,7 +523,7 @@ public class LtiInstructorAssessmentManagementController {
     @RequestMapping(value="/deliverysettings/item/{dsid}", method=RequestMethod.POST)
     public String handleEditItemDeliverySettingsForm(@PathVariable final long dsid, final Model model, final RedirectAttributes redirectAttributes,
             final @Valid @ModelAttribute ItemDeliverySettingsTemplate template, final BindingResult result)
-            throws PrivilegeException, DomainEntityNotFoundException {
+            throws PrivilegeException, DomainEntityNotFoundException, IncompatiableDeliverySettingsException {
         /* Validate command Object */
         if (result.hasErrors()) {
             ltiInstructorModelHelper.setupModelForDeliverySettings(dsid, model);
@@ -545,7 +546,7 @@ public class LtiInstructorAssessmentManagementController {
     public String handleEditTestDeliverySettingsForm(@PathVariable final long dsid,
             final Model model, final RedirectAttributes redirectAttributes,
             final @Valid @ModelAttribute TestDeliverySettingsTemplate template, final BindingResult result)
-            throws PrivilegeException, DomainEntityNotFoundException {
+            throws PrivilegeException, DomainEntityNotFoundException, IncompatiableDeliverySettingsException {
         /* Validate command Object */
         if (result.hasErrors()) {
             ltiInstructorModelHelper.setupModelForDeliverySettings(dsid, model);

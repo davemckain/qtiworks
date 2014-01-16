@@ -27,53 +27,43 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * This software is derived from (and contains code from) QTItools and MathAssessEngine.
- * QTItools is (c) 2008, University of Southampton.
+ * This software is derived from (and contains code from) QTITools and MathAssessEngine.
+ * QTITools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
 package uk.ac.ed.ph.qtiworks.services.domain;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
+import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
+
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
- * Client exception thrown when attempting to perform a change to an
- * {@link Assessment} that its current state does not support.
+ * FIXME: Document this type
  *
  * @author David McKain
  */
-public final class AssessmentManagementException extends Exception {
+@ResponseStatus(value=HttpStatus.CONFLICT)
+public final class IncompatiableDeliverySettingsException extends Exception {
 
-    private static final long serialVersionUID = -699513250898841731L;
+    private static final long serialVersionUID = -7034213203309557258L;
 
-    public static enum ManagementFailureReason {
+    private final AssessmentObjectType assessmentObjectType;
+    private final DeliverySettings deliverySettings;
 
-        /** Attempted to replace an item with a test, or vice versa */
-        CANNOT_CHANGE_ASSESSMENT_TYPE,
-
-        ;
+    public IncompatiableDeliverySettingsException(final AssessmentObjectType assessmentObjectType, final DeliverySettings deliverySettings) {
+        super("DeliverySettings " + deliverySettings.getId() + " are not compatible with assessments of type " + assessmentObjectType);
+        this.assessmentObjectType = assessmentObjectType;
+        this.deliverySettings = deliverySettings;
     }
 
-    private final EnumerableClientFailure<ManagementFailureReason> failure;
-
-    public AssessmentManagementException(final EnumerableClientFailure<ManagementFailureReason> failure) {
-        super(failure.toString());
-        this.failure = failure;
+    public AssessmentObjectType getAssessmentObjectType() {
+        return assessmentObjectType;
     }
 
-    public AssessmentManagementException(final EnumerableClientFailure<ManagementFailureReason> failure, final Throwable cause) {
-        super(failure.toString(), cause);
-        this.failure = failure;
-    }
-
-    public AssessmentManagementException(final ManagementFailureReason reason) {
-        this(new EnumerableClientFailure<ManagementFailureReason>(reason));
-    }
-
-    public AssessmentManagementException(final ManagementFailureReason reason, final Object... arguments) {
-        this(new EnumerableClientFailure<ManagementFailureReason>(reason, arguments));
-    }
-
-    public EnumerableClientFailure<ManagementFailureReason> getFailure() {
-        return failure;
+    public DeliverySettings getDeliverySettings() {
+        return deliverySettings;
     }
 }

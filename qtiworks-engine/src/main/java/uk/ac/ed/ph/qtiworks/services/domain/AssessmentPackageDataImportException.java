@@ -33,6 +33,9 @@
  */
 package uk.ac.ed.ph.qtiworks.services.domain;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
 /**
  * Client exception thrown if submitted assessment package data does not conform
  * to what is expected.
@@ -41,6 +44,7 @@ package uk.ac.ed.ph.qtiworks.services.domain;
  *
  * @author David McKain
  */
+@ResponseStatus(value=HttpStatus.CONFLICT)
 public final class AssessmentPackageDataImportException extends Exception {
 
     private static final long serialVersionUID = -699513250898841731L;
