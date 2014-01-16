@@ -31,28 +31,43 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain;
+package uk.ac.ed.ph.qtiworks.services;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.User;
+import uk.ac.ed.ph.qtiworks.web.RequestTimestampFilter;
+
+import java.util.Date;
+
+import javax.servlet.Filter;
 
 /**
- * Represents a "privilege" that a {@link User} needs to have to do something
- * or access a particular Object.
+ * Simple {@link ThreadLocal} that stores a timestamp for the duration of the current "request".
+ * <p>
+ * This is set on every HTTP request by a servlet {@link Filter}, which sets a timestamp for
+ * the duration of the HTTP request and then clears it afterwards.
  *
- * @see PrivilegeException
+ * @see RequestTimestampFilter
  *
  * @author David McKain
  */
-public enum Privilege {
+public final class RequestTimestampContext {
 
-    CREATE_ASSESSMENT,
-    MANAGE_ASSESSMENT,
+    private final ThreadLocal<Date> timestampThreadLocal = new ThreadLocal<Date>();
 
-    CREATE_DELIVERY_SETTINGS,
-    MANAGE_DELIVERY_SETTINGS,
+    public Date getCurrentRequestTimestamp() {
+        Date result = timestampThreadLocal.get();
+        if (result==null) {
+            result = new Date();
+            timestampThreadLocal.set(result);
+        }
+        return result;
+    }
 
-    PROCTOR_SESSION,
-
-    ;
-
+    public void setCurrentRequestTimestamp(final Date date) {
+        if (date!=null) {
+            timestampThreadLocal.set(date);
+        }
+        else {
+            timestampThreadLocal.remove();
+        }
+    }
 }

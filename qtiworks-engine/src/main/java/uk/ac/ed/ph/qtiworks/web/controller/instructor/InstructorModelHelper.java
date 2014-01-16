@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.qtiworks.web.controller.instructor;
 
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
-import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
@@ -44,6 +43,7 @@ import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentReportingService;
 import uk.ac.ed.ph.qtiworks.services.domain.CandidateEventSummaryData;
 import uk.ac.ed.ph.qtiworks.services.domain.CandidateSessionSummaryReport;
+import uk.ac.ed.ph.qtiworks.services.domain.PrivilegeException;
 
 import java.util.List;
 

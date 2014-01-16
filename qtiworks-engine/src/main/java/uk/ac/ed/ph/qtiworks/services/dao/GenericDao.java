@@ -34,9 +34,9 @@
 package uk.ac.ed.ph.qtiworks.services.dao;
 
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
-import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.domain.entities.BaseEntity;
 import uk.ac.ed.ph.qtiworks.domain.entities.TimestampedOnCreation;
+import uk.ac.ed.ph.qtiworks.services.RequestTimestampContext;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 

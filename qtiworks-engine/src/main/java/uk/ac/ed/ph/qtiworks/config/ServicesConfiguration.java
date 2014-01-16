@@ -34,8 +34,8 @@
 package uk.ac.ed.ph.qtiworks.config;
 
 import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksDeploymentSettings;
-import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.mathassess.MathAssessExtensionPackage;
+import uk.ac.ed.ph.qtiworks.services.RequestTimestampContext;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;

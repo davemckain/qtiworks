@@ -37,8 +37,6 @@ import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
-import uk.ac.ed.ph.qtiworks.domain.Privilege;
-import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
@@ -63,6 +61,8 @@ import uk.ac.ed.ph.qtiworks.services.domain.CannotChangeAssessmentTypeException;
 import uk.ac.ed.ph.qtiworks.services.domain.DeliveryTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.IncompatiableDeliverySettingsException;
 import uk.ac.ed.ph.qtiworks.services.domain.ItemDeliverySettingsTemplate;
+import uk.ac.ed.ph.qtiworks.services.domain.Privilege;
+import uk.ac.ed.ph.qtiworks.services.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.services.domain.TestDeliverySettingsTemplate;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
