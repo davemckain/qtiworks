@@ -293,7 +293,6 @@ public final class LtiOauthUtilities {
         catch (final Exception e) {
             throw new QtiWorksLogicException("Unexpected failure computing body digest");
         }
-        final byte[] output = Base64.encodeBase64(md.digest());
-        return new String(output);
+        return Base64.encodeBase64String(md.digest());
     }
 }

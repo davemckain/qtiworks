@@ -1688,9 +1688,6 @@ public final class TestSessionController extends TestProcessingController {
 
     private TestPlanNode expectTestPartNode(final TestPlanNodeKey key) {
         final TestPlanNode testPlanNode = testSessionState.getTestPlan().getNode(key);
-        if (testPlanNode==null) {
-            throw new QtiLogicException("Failed to locate entry for testPart with key " + key + " in TestPlan");
-        }
         if (testPlanNode.getTestNodeType()!=TestNodeType.TEST_PART) {
             throw new QtiLogicException("Expected TestPlanNode with key " + key
                     + " to be of type " + TestNodeType.TEST_PART
@@ -1736,18 +1733,11 @@ public final class TestSessionController extends TestProcessingController {
         if (currentItemKey==null) {
             return null;
         }
-        final TestPlanNode itemRefNode = testSessionState.getTestPlan().getNode(currentItemKey);
-        if (itemRefNode==null) {
-            throw new QtiLogicException("Failed to locate node in TestPlan for item with key " + currentItemKey);
-        }
-        return itemRefNode;
+        return testSessionState.getTestPlan().getNode(currentItemKey);
     }
 
     private TestPlanNode assertItemRefNode(final TestPlanNodeKey key) {
         final TestPlanNode itemRefNode = testSessionState.getTestPlan().getNode(key);
-        if (itemRefNode==null) {
-            throw new IllegalArgumentException("Failed to locate entry for assessmentItemRef with key " + key + " in TestPlan");
-        }
         if (itemRefNode.getTestNodeType()!=TestNodeType.ASSESSMENT_ITEM_REF) {
             throw new IllegalArgumentException("TestPlanNode with key " + key
                     + " is of type " + itemRefNode.getTestNodeType()
@@ -1758,9 +1748,6 @@ public final class TestSessionController extends TestProcessingController {
 
     private TestPlanNode expectItemRefNode(final TestPlanNodeKey key) {
         final TestPlanNode testPlanNode = testSessionState.getTestPlan().getNode(key);
-        if (testPlanNode==null) {
-            throw new QtiLogicException("Failed to locate entry for assessmentItemRef with key " + key + " in TestPlan");
-        }
         if (testPlanNode.getTestNodeType()!=TestNodeType.ASSESSMENT_ITEM_REF) {
             throw new QtiLogicException("Expected TestPlanNode with key " + key
                     + " to be of type " + TestNodeType.ASSESSMENT_ITEM_REF
