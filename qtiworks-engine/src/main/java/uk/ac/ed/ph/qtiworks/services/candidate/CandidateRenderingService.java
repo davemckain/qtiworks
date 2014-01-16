@@ -227,7 +227,7 @@ public class CandidateRenderingService {
 
         /* If session has terminated, render appropriate state and exit */
         if (itemSessionState.isExited()) {
-            assessmentRenderer.renderTeminated(renderingRequest, result);
+            assessmentRenderer.renderTeminated(createTerminatedRenderingRequest(candidateSession, renderingRequest.getRenderingOptions()), result);
             return;
         }
 
@@ -417,7 +417,7 @@ public class CandidateRenderingService {
         /* If session has terminated, render appropriate state and exit */
         final TestSessionState testSessionState = testSessionController.getTestSessionState();
         if (candidateSession.isTerminated() || testSessionState.isExited()) {
-            assessmentRenderer.renderTeminated(renderingRequest, result);
+            assessmentRenderer.renderTeminated(createTerminatedRenderingRequest(candidateSession, renderingRequest.getRenderingOptions()), result);
             return;
         }
 
@@ -697,6 +697,7 @@ public class CandidateRenderingService {
     private TerminatedRenderingRequest createTerminatedRenderingRequest(final CandidateSession candidateSession, final AbstractRenderingOptions renderingOptions) {
         final TerminatedRenderingRequest renderingRequest = new TerminatedRenderingRequest();
         initRenderingRequest(candidateSession, renderingRequest, renderingOptions);
+        renderingRequest.setExitSessionUrl(candidateSession.getExitUrl());
         return renderingRequest;
     }
 

@@ -479,11 +479,12 @@ public class AssessmentRenderer {
      * {@link OutputStream} rather than a {@link Writer}. Remember that you are responsible for
      * closing the {@link OutputStream} or {@link Writer} afterwards!
      */
-    public void renderTeminated(final AbstractRenderingRequest<?> request, final Result result) {
+    public void renderTeminated(final TerminatedRenderingRequest request, final Result result) {
         Assert.notNull(result, "result");
 
         final Map<String, Object> xsltParameters = new HashMap<String, Object>();
         setBaseRenderingParameters(xsltParameters, request, null);
+        xsltParameters.put("exitSessionUrl", request.getExitSessionUrl());
 
         doTransform(request, null, terminatedXsltUri, xsltParameters, result);
     }
@@ -495,11 +496,12 @@ public class AssessmentRenderer {
      * {@link OutputStream} rather than a {@link Writer}. Remember that you are responsible for
      * closing the {@link OutputStream} or {@link Writer} afterwards!
      */
-    public void renderExploded(final AbstractRenderingRequest<?> request, final Result result) {
+    public void renderExploded(final TerminatedRenderingRequest request, final Result result) {
         Assert.notNull(result, "result");
 
         final Map<String, Object> xsltParameters = new HashMap<String, Object>();
         setBaseRenderingParameters(xsltParameters, request, null);
+        xsltParameters.put("exitSessionUrl", request.getExitSessionUrl());
 
         doTransform(request, null, explodedXsltUri, xsltParameters, result);
     }
@@ -566,6 +568,7 @@ public class AssessmentRenderer {
         xsltParameters.put("stateUrl", renderingOptions.getStateUrl());
         xsltParameters.put("resultUrl", renderingOptions.getResultUrl());
         xsltParameters.put("validationUrl", renderingOptions.getValidationUrl());
+
     }
 
     private void setBaseRenderingParameters(final Map<String, Object> xsltParameters) {

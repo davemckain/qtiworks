@@ -314,7 +314,6 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
         return exitUrl;
     }
 
-
     public void setExitUrl(final String exitUrl) {
         this.exitUrl = exitUrl;
     }

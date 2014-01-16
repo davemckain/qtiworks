@@ -16,13 +16,15 @@ Input document: doesn't matter
 
   <!-- ************************************************************ -->
 
-  <!-- Web Application contextPath. Starts with a '/' -->
-  <xsl:param name="webappContextPath" as="xs:string" required="yes"/>
+  <xsl:import href="qti-common.xsl"/>
+
+  <!-- Optional URL for exiting session -->
+  <xsl:param name="exitSessionUrl" as="xs:string?" required="no"/>
 
   <!-- ************************************************************ -->
 
-  <xsl:template match="/">
-    <html>
+  <xsl:template match="/" as="element(html)">
+    <html lang="en">
       <head>
         <title>Assessment Completed</title>
         <link rel="stylesheet" href="{$webappContextPath}/rendering/css/assessment.css" type="text/css" media="screen"/>
@@ -31,6 +33,11 @@ Input document: doesn't matter
         <p>
           This assessment is now closed and you can no longer interact with it.
         </p>
+        <xsl:if test="exists($exitSessionUrlAbsolute)">
+          <p>
+            <a href="{$exitSessionUrlAbsolute}">Exit and return</a>
+          </p>
+        </xsl:if>
       </body>
     </html>
   </xsl:template>

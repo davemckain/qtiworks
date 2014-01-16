@@ -64,9 +64,20 @@ rendering.
   <!-- Codebase URL for engine-provided applets -->
   <xsl:variable name="appletCodebase" select="concat($webappContextPath, '/rendering/applets')" as="xs:string"/>
 
+  <!-- Optional URL for exiting session (NB: may be relative to context) -->
+  <xsl:param name="exitSessionUrl" as="xs:string?" required="no"/>
+
+  <!--
+  Absolute version of exitSessionUrl (if specified)
+  NB: This will have been sanitised in advance, and will either be relative or http:// or https://.
+  -->
+  <xsl:variable name="exitSessionUrlAbsolute" as="xs:string?"
+    select="if (exists($exitSessionUrl)) then (
+      if (matches($exitSessionUrl, '^https?://')) then $exitSessionUrl else concat($webappContextPath, $exitSessionUrl)
+    ) else ()"/>
+
   <!-- ************************************************************ -->
 
-  <!-- Resolves a link to a resource -->
   <xsl:function name="qw:convert-link" as="xs:string">
     <xsl:param name="uri" as="xs:string"/>
     <xsl:choose>

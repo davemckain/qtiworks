@@ -20,10 +20,13 @@ Input document: doesn't matter
 
   <xsl:import href="qti-common.xsl"/>
 
+  <!-- Optional URL for exiting session -->
+  <xsl:param name="exitSessionUrl" as="xs:string?" required="no"/>
+
   <!-- ************************************************************ -->
 
   <xsl:template match="/" as="element(html)">
-    <html>
+    <html lang="en">
       <head>
         <title>Assessment failure</title>
         <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,700italic|Ubuntu:500"/>
@@ -35,13 +38,10 @@ Input document: doesn't matter
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"/>
         <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"/>
         <script src="{$webappContextPath}/includes/qtiworks.js?{$qtiWorksVersion}"/>
-
-        <!-- QTIWorks assessment styling -->
-        <link rel="stylesheet" href="{$webappContextPath}/rendering/css/assessment.css?{$qtiWorksVersion}" type="text/css" media="screen"/>
       </head>
-      <body class="qtiworks exploded">
+      <body class="page exploded">
         <div class="container_12">
-          <header>
+          <header class="pageHeader">
             <h1>QTIWorks</h1>
           </header>
           <xsl:choose>
@@ -70,6 +70,11 @@ Input document: doesn't matter
               </p>
             </xsl:otherwise>
           </xsl:choose>
+          <xsl:if test="exists($exitSessionUrlAbsolute)">
+            <p>
+              <a href="{$exitSessionUrlAbsolute}">Exit and return</a>
+            </p>
+          </xsl:if>
         </div>
       </body>
     </html>

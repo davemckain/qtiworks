@@ -61,15 +61,14 @@ public abstract class AbstractRenderingRequest<P extends AbstractRenderingOption
     @NotNull
     private URI assessmentResourceUri;
 
-    /* Validation information copied from AssessmentPackage */
+    private boolean authorMode;
 
+    /* Validation information copied from AssessmentPackage */
     private boolean validated;
     private boolean launchable;
     private int errorCount;
     private int warningCount;
     private boolean valid;
-
-    private boolean authorMode;
 
     //----------------------------------------------------
 
