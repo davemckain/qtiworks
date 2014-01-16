@@ -44,6 +44,7 @@ import uk.ac.ed.ph.qtiworks.services.AssessmentDataService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.services.FilespaceManager;
+import uk.ac.ed.ph.qtiworks.services.candidate.CandidateException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
 import uk.ac.ed.ph.qtiworks.utils.MultipartFileWrapper;
 import uk.ac.ed.ph.qtiworks.web.GlobalRouter;
@@ -156,6 +157,10 @@ public class SimpleRestRunner {
         }
         catch (final PrivilegeException e) {
             /* This should not happen if access control logic has been done correctly */
+            throw QtiWorksRuntimeException.unexpectedException(e);
+        }
+        catch (final CandidateException e) {
+            /* This should not happen if underlying logic has been done correctly */
             throw QtiWorksRuntimeException.unexpectedException(e);
         }
         finally {

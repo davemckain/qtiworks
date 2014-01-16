@@ -143,10 +143,10 @@ public class CandidateItemDeliveryService {
         Assert.notNull(sessionToken, "sessionToken");
         final CandidateSession candidateSession = candidateSessionDao.requireFindById(xid);
         if (!sessionToken.equals(candidateSession.getSessionToken())) {
-            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.SESSION_TOKEN_MISMATCH);
+            candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.SESSION_TOKEN_MISMATCH);
         }
         if (candidateSession.getDelivery().getAssessment().getAssessmentType()!=AssessmentObjectType.ASSESSMENT_ITEM) {
-            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.SESSION_IS_NOT_ASSESSMENT_ITEM);
+            candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.SESSION_IS_NOT_ASSESSMENT_ITEM);
         }
         return candidateSession;
     }
@@ -155,7 +155,7 @@ public class CandidateItemDeliveryService {
             throws CandidateException {
         if (candidateSession.isTerminated()) {
             /* No access when session has been terminated */
-            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.SESSION_IS_TERMINATED);
+            candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.SESSION_IS_TERMINATED);
         }
     }
 
@@ -163,7 +163,7 @@ public class CandidateItemDeliveryService {
             throws CandidateException {
         final CandidateEvent mostRecentEvent = candidateDataService.getMostRecentEvent(candidateSession);
         if (mostRecentEvent==null) {
-            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.SESSION_NOT_ENTERED);
+            candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.SESSION_NOT_ENTERED);
         }
         return mostRecentEvent;
     }
@@ -251,7 +251,7 @@ public class CandidateItemDeliveryService {
 
         /* Make sure an attempt is allowed */
         if (itemSessionState.isEnded()) {
-            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.RESPONSES_NOT_EXPECTED);
+            candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.RESPONSES_NOT_EXPECTED);
             return null;
         }
 
@@ -260,7 +260,7 @@ public class CandidateItemDeliveryService {
         final Delivery delivery = candidateSession.getDelivery();
         final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) assessmentDataService.getEffectiveDeliverySettings(candidate, delivery);
         if (candidateComment!=null && !itemDeliverySettings.isAllowCandidateComment()) {
-            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.CANDIDATE_COMMENT_FORBIDDEN);
+            candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.CANDIDATE_COMMENT_FORBIDDEN);
             return null;
         }
 
@@ -325,7 +325,7 @@ public class CandidateItemDeliveryService {
                 itemSessionController.setCandidateComment(timestamp, candidateComment);
             }
             catch (final QtiCandidateStateException e) {
-                candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.CANDIDATE_COMMENT_FORBIDDEN);
+                candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.CANDIDATE_COMMENT_FORBIDDEN);
                 return null;
             }
             catch (final RuntimeException e) {
@@ -366,7 +366,7 @@ public class CandidateItemDeliveryService {
             }
         }
         catch (final QtiCandidateStateException e) {
-            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.RESPONSES_NOT_EXPECTED);
+            candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.RESPONSES_NOT_EXPECTED);
             return null;
         }
         catch (final RuntimeException e) {
@@ -438,11 +438,11 @@ public class CandidateItemDeliveryService {
         final Delivery delivery = candidateSession.getDelivery();
         final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) assessmentDataService.getEffectiveDeliverySettings(candidate, delivery);
         if (itemSessionState.isEnded()) {
-            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.END_SESSION_WHEN_ALREADY_ENDED);
+            candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.END_SESSION_WHEN_ALREADY_ENDED);
             return null;
         }
         else if (!itemDeliverySettings.isAllowEnd()) {
-            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.END_SESSION_WHEN_INTERACTING_FORBIDDEN);
+            candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.END_SESSION_WHEN_INTERACTING_FORBIDDEN);
             return null;
         }
 
@@ -452,7 +452,7 @@ public class CandidateItemDeliveryService {
             itemSessionController.endItem(timestamp);
         }
         catch (final QtiCandidateStateException e) {
-            candidateAuditLogger.logCandidateException(candidateSession, itemSessionState.isEnded() ? CandidateExceptionReason.END_SESSION_WHEN_ALREADY_ENDED : CandidateExceptionReason.END_SESSION_WHEN_INTERACTING_FORBIDDEN);
+            candidateAuditLogger.logAndThrowCandidateException(candidateSession, itemSessionState.isEnded() ? CandidateExceptionReason.END_SESSION_WHEN_ALREADY_ENDED : CandidateExceptionReason.END_SESSION_WHEN_INTERACTING_FORBIDDEN);
             return null;
         }
         catch (final RuntimeException e) {
@@ -500,11 +500,11 @@ public class CandidateItemDeliveryService {
         final Delivery delivery = candidateSession.getDelivery();
         final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) assessmentDataService.getEffectiveDeliverySettings(candidate, delivery);
         if (!itemSessionState.isEnded() && !itemDeliverySettings.isAllowHardResetWhenOpen()) {
-            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.HARD_RESET_SESSION_WHEN_INTERACTING_FORBIDDEN);
+            candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.HARD_RESET_SESSION_WHEN_INTERACTING_FORBIDDEN);
             return null;
         }
         else if (itemSessionState.isEnded() && !itemDeliverySettings.isAllowHardResetWhenEnded()) {
-            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.HARD_RESET_SESSION_WHEN_ENDED_FORBIDDEN);
+            candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.HARD_RESET_SESSION_WHEN_ENDED_FORBIDDEN);
             return null;
         }
 
@@ -514,7 +514,7 @@ public class CandidateItemDeliveryService {
             itemSessionController.resetItemSessionHard(timestamp, true);
         }
         catch (final QtiCandidateStateException e) {
-            candidateAuditLogger.logCandidateException(candidateSession, itemSessionState.isEnded() ? CandidateExceptionReason.HARD_RESET_SESSION_WHEN_ENDED_FORBIDDEN : CandidateExceptionReason.HARD_RESET_SESSION_WHEN_INTERACTING_FORBIDDEN);
+            candidateAuditLogger.logAndThrowCandidateException(candidateSession, itemSessionState.isEnded() ? CandidateExceptionReason.HARD_RESET_SESSION_WHEN_ENDED_FORBIDDEN : CandidateExceptionReason.HARD_RESET_SESSION_WHEN_INTERACTING_FORBIDDEN);
             return null;
         }
         catch (final RuntimeException e) {
@@ -561,11 +561,11 @@ public class CandidateItemDeliveryService {
         final Delivery delivery = candidateSession.getDelivery();
         final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) assessmentDataService.getEffectiveDeliverySettings(candidate, delivery);
         if (!itemSessionState.isEnded() && !itemDeliverySettings.isAllowSoftResetWhenOpen()) {
-            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.SOFT_RESET_SESSION_WHEN_INTERACTING_FORBIDDEN);
+            candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.SOFT_RESET_SESSION_WHEN_INTERACTING_FORBIDDEN);
             return null;
         }
         else if (itemSessionState.isEnded() && !itemDeliverySettings.isAllowSoftResetWhenEnded()) {
-            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.SOFT_RESET_SESSION_WHEN_ENDED_FORBIDDEN);
+            candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.SOFT_RESET_SESSION_WHEN_ENDED_FORBIDDEN);
             return null;
         }
 
@@ -575,7 +575,7 @@ public class CandidateItemDeliveryService {
             itemSessionController.resetItemSessionSoft(timestamp, true);
         }
         catch (final QtiCandidateStateException e) {
-            candidateAuditLogger.logCandidateException(candidateSession, itemSessionState.isEnded() ? CandidateExceptionReason.SOFT_RESET_SESSION_WHEN_ENDED_FORBIDDEN : CandidateExceptionReason.SOFT_RESET_SESSION_WHEN_INTERACTING_FORBIDDEN);
+            candidateAuditLogger.logAndThrowCandidateException(candidateSession, itemSessionState.isEnded() ? CandidateExceptionReason.SOFT_RESET_SESSION_WHEN_ENDED_FORBIDDEN : CandidateExceptionReason.SOFT_RESET_SESSION_WHEN_INTERACTING_FORBIDDEN);
             return null;
         }
         catch (final RuntimeException e) {
@@ -619,11 +619,11 @@ public class CandidateItemDeliveryService {
         final Delivery delivery = candidateSession.getDelivery();
         final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) assessmentDataService.getEffectiveDeliverySettings(candidate, delivery);
         if (!itemSessionState.isEnded() && !itemDeliverySettings.isAllowSolutionWhenOpen()) {
-            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.SOLUTION_WHEN_INTERACTING_FORBIDDEN);
+            candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.SOLUTION_WHEN_INTERACTING_FORBIDDEN);
             return null;
         }
         else if (itemSessionState.isEnded() && !itemDeliverySettings.isAllowSoftResetWhenEnded()) {
-            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.SOLUTION_WHEN_ENDED_FORBIDDEN);
+            candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.SOLUTION_WHEN_ENDED_FORBIDDEN);
             return null;
         }
 
@@ -636,7 +636,7 @@ public class CandidateItemDeliveryService {
                 itemSessionController.endItem(timestamp);
             }
             catch (final QtiCandidateStateException e) {
-                candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.SOLUTION_WHEN_ENDED_FORBIDDEN);
+                candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.SOLUTION_WHEN_ENDED_FORBIDDEN);
                 return null;
             }
             catch (final RuntimeException e) {

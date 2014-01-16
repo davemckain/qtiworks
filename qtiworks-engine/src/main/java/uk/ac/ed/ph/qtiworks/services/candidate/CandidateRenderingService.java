@@ -555,7 +555,7 @@ public class CandidateRenderingService {
         }
         else {
             /* Blacklisted file. Log and throw Exception */
-            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.ACCESS_BLACKLISTED_ASSESSMENT_FILE);
+            candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.ACCESS_BLACKLISTED_ASSESSMENT_FILE);
         }
     }
 
@@ -751,7 +751,7 @@ public class CandidateRenderingService {
         Assert.notNull(sessionToken, "sessionToken");
         final CandidateSession candidateSession = candidateSessionDao.requireFindById(xid);
         if (!sessionToken.equals(candidateSession.getSessionToken())) {
-            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.SESSION_TOKEN_MISMATCH);
+            candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.SESSION_TOKEN_MISMATCH);
         }
         return candidateSession;
     }
@@ -760,7 +760,7 @@ public class CandidateRenderingService {
     private void ensureSessionNotTerminated(final CandidateSession candidateSession)
             throws CandidateException {
         if (candidateSession.isTerminated()) {
-            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.SESSION_IS_TERMINATED);
+            candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.SESSION_IS_TERMINATED);
         }
     }
 
@@ -768,7 +768,7 @@ public class CandidateRenderingService {
             throws CandidateException {
         final CandidateEvent mostRecentEvent = candidateDataService.getMostRecentEvent(candidateSession);
         if (mostRecentEvent==null) {
-            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.SESSION_NOT_ENTERED);
+            candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.SESSION_NOT_ENTERED);
         }
         return mostRecentEvent;
     }
@@ -776,7 +776,7 @@ public class CandidateRenderingService {
     private void ensureCallerMayAccessAuthorInfo(final CandidateSession candidateSession)
             throws CandidateException {
         if (!candidateSession.isAuthorMode()) {
-            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.AUTHOR_INFO_FORBIDDEN);
+            candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.AUTHOR_INFO_FORBIDDEN);
         }
     }
 }

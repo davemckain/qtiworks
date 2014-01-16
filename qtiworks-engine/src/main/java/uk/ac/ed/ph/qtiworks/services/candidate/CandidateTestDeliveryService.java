@@ -142,11 +142,11 @@ public class CandidateTestDeliveryService {
         Assert.notNull(sessionToken, "sessionToken");
         final CandidateSession candidateSession = candidateSessionDao.requireFindById(xid);
         if (!sessionToken.equals(candidateSession.getSessionToken())) {
-            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.SESSION_TOKEN_MISMATCH);
+            candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.SESSION_TOKEN_MISMATCH);
             return null;
         }
         if (candidateSession.getDelivery().getAssessment().getAssessmentType()!=AssessmentObjectType.ASSESSMENT_TEST) {
-            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.SESSION_IS_NOT_ASSESSMENT_TEST);
+            candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.SESSION_IS_NOT_ASSESSMENT_TEST);
             return null;
         }
         return candidateSession;
@@ -156,7 +156,7 @@ public class CandidateTestDeliveryService {
             throws CandidateException {
         if (candidateSession.isTerminated()) {
             /* No access when session has been terminated */
-            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.SESSION_IS_TERMINATED);
+            candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.SESSION_IS_TERMINATED);
         }
     }
 
@@ -164,7 +164,7 @@ public class CandidateTestDeliveryService {
             throws CandidateException {
         final CandidateEvent mostRecentEvent = candidateDataService.getMostRecentEvent(candidateSession);
         if (mostRecentEvent==null) {
-            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.SESSION_NOT_ENTERED);
+            candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.SESSION_NOT_ENTERED);
         }
         return mostRecentEvent;
     }
@@ -327,7 +327,7 @@ public class CandidateTestDeliveryService {
             testSessionController.handleResponsesToCurrentItem(timestamp, responseDataMap);
         }
         catch (final QtiCandidateStateException e) {
-            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.RESPONSES_NOT_EXPECTED);
+            candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.RESPONSES_NOT_EXPECTED);
             return null;
         }
         catch (final RuntimeException e) {
@@ -410,7 +410,7 @@ public class CandidateTestDeliveryService {
             testSessionController.selectItemNonlinear(requestTimestamp, null);
         }
         catch (final QtiCandidateStateException e) {
-            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.CANNOT_SELECT_NONLINEAR_MENU);
+            candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.CANNOT_SELECT_NONLINEAR_MENU);
             return null;
         }
         catch (final RuntimeException e) {
@@ -452,7 +452,7 @@ public class CandidateTestDeliveryService {
             testSessionController.selectItemNonlinear(requestTimestamp, itemKey);
         }
         catch (final QtiCandidateStateException e) {
-            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.CANNOT_SELECT_NONLINEAR_TEST_ITEM);
+            candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.CANNOT_SELECT_NONLINEAR_TEST_ITEM);
             return null;
         }
         catch (final RuntimeException e) {
@@ -490,12 +490,12 @@ public class CandidateTestDeliveryService {
         ensureSessionNotTerminated(candidateSession);
         try {
             if (!testSessionController.mayAdvanceItemLinear()) {
-                candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.CANNOT_FINISH_LINEAR_TEST_ITEM);
+                candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.CANNOT_FINISH_LINEAR_TEST_ITEM);
                 return null;
             }
         }
         catch (final QtiCandidateStateException e) {
-            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.CANNOT_FINISH_LINEAR_TEST_ITEM);
+            candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.CANNOT_FINISH_LINEAR_TEST_ITEM);
             return null;
         }
         catch (final RuntimeException e) {
@@ -537,12 +537,12 @@ public class CandidateTestDeliveryService {
         ensureSessionNotTerminated(candidateSession);
         try {
             if (!testSessionController.mayEndCurrentTestPart()) {
-                candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.CANNOT_END_TEST_PART);
+                candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.CANNOT_END_TEST_PART);
                 return null;
             }
         }
         catch (final QtiCandidateStateException e) {
-            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.CANNOT_END_TEST_PART);
+            candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.CANNOT_END_TEST_PART);
             return null;
         }
         catch (final RuntimeException e) {
@@ -586,7 +586,7 @@ public class CandidateTestDeliveryService {
         /* Make sure caller may do this */
         ensureSessionNotTerminated(candidateSession);
         if (testSessionState.getCurrentTestPartKey()==null || !testSessionState.getCurrentTestPartSessionState().isEnded()) {
-            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.CANNOT_REVIEW_TEST_PART);
+            candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.CANNOT_REVIEW_TEST_PART);
             return null;
         }
 
@@ -619,12 +619,12 @@ public class CandidateTestDeliveryService {
         ensureSessionNotTerminated(candidateSession);
         try {
             if (!testSessionController.mayReviewItem(itemKey)) {
-                candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.CANNOT_REVIEW_TEST_ITEM);
+                candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.CANNOT_REVIEW_TEST_ITEM);
                 return null;
             }
         }
         catch (final QtiCandidateStateException e) {
-            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.CANNOT_REVIEW_TEST_ITEM);
+            candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.CANNOT_REVIEW_TEST_ITEM);
             return null;
         }
         catch (final RuntimeException e) {
@@ -666,12 +666,12 @@ public class CandidateTestDeliveryService {
         ensureSessionNotTerminated(candidateSession);
         try {
             if (!testSessionController.mayAccessItemSolution(itemKey)) {
-                candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.CANNOT_SOLUTION_TEST_ITEM);
+                candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.CANNOT_SOLUTION_TEST_ITEM);
                 return null;
             }
         }
         catch (final QtiCandidateStateException e) {
-            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.CANNOT_SOLUTION_TEST_ITEM);
+            candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.CANNOT_SOLUTION_TEST_ITEM);
             return null;
         }
         catch (final RuntimeException e) {
@@ -716,7 +716,7 @@ public class CandidateTestDeliveryService {
             nextTestPart = testSessionController.enterNextAvailableTestPart(timestamp);
         }
         catch (final QtiCandidateStateException e) {
-            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.CANNOT_ADVANCE_TEST_PART);
+            candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.CANNOT_ADVANCE_TEST_PART);
             return null;
         }
         catch (final RuntimeException e) {
@@ -783,7 +783,7 @@ public class CandidateTestDeliveryService {
             testSessionController.exitTest(timestamp);
         }
         catch (final QtiCandidateStateException e) {
-            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.CANNOT_EXIT_TEST);
+            candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.CANNOT_EXIT_TEST);
             return null;
         }
         catch (final RuntimeException e) {

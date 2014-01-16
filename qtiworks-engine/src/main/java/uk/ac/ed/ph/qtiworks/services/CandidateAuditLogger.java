@@ -33,8 +33,11 @@
  */
 package uk.ac.ed.ph.qtiworks.services;
 
+import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
+import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
+import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateException;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateExceptionReason;
 
@@ -43,7 +46,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 /**
- * Helper to audit candidate events
+ * Helper to audit candidate events and {@link CandidateException}s.
  *
  * @author David McKain
  */
@@ -53,16 +56,6 @@ public class CandidateAuditLogger {
     /** Special logger for auditing candidate actions */
     private static final Logger candidateLogger = LoggerFactory.getLogger("CandidateAuditLogger");
 
-    private void logSessionAction(final CandidateSession candidateSession, final String message) {
-        candidateLogger.info("user={} xid={} did={} aid={} {}",
-                new Object[] {
-                    candidateSession.getCandidate().getBusinessKey(),
-                    candidateSession.getId(),
-                    candidateSession.getDelivery().getId(),
-                    candidateSession.getDelivery().getAssessment().getId(),
-                    message
-        });
-    }
 
     public void logAction(final CandidateSession candidateSession, final String actionName) {
         logSessionAction(candidateSession, "action=" + actionName);
@@ -100,20 +93,61 @@ public class CandidateAuditLogger {
         logSessionAction(candidateEvent.getCandidateSession(), messageBuilder.toString());
     }
 
-    public void logPlaybackEvent(final CandidateSession candidateSession, final CandidateEvent candidateEvent,
-            final CandidateEvent targetEvent) {
-        logSessionAction(candidateSession, "action=CANDIDATE_ITEM_PLAYBACK xeid=" + candidateEvent.getId()
-                + " event=" + candidateEvent.getItemEventType()
-                + " target_xeid=" + targetEvent.getId());
+    public void logAndThrowCandidateException(final CandidateSession candidateSession, final CandidateExceptionReason reason)
+            throws CandidateException {
+        logSessionAction(candidateSession, "error=" + reason);
+        throw new CandidateException(candidateSession, reason);
     }
 
-    public void logCandidateException(final CandidateSession candidateSession, final CandidateExceptionReason privilege)
+    public void logAndThrowCandidateException(final User candidate, final Delivery delivery, final CandidateExceptionReason reason)
             throws CandidateException {
-        logSessionAction(candidateSession, "error=" + privilege);
-        throw new CandidateException(candidateSession, privilege);
+        logPreSessionAction(candidate, delivery, "error=" + reason);
+        throw new CandidateException(candidate, delivery, reason);
+    }
+
+    public void logAndThrowCandidateException(final User candidate, final Assessment assessment, final CandidateExceptionReason reason)
+            throws CandidateException {
+        logPreSessionAction(candidate, assessment, "error=" + reason);
+        throw new CandidateException(candidate, assessment, reason);
     }
 
     public void logExplosion(final CandidateSession candidateSession) {
         logSessionAction(candidateSession, "explosion");
+    }
+
+    private void logSessionAction(final CandidateSession candidateSession, final String message) {
+        logMessage(candidateSession.getCandidate(),
+                candidateSession.getId(),
+                candidateSession.getDelivery().getId(),
+                candidateSession.getDelivery().getAssessment().getId(),
+                message);
+    }
+
+    private void logPreSessionAction(final User candidateUser, final Delivery delivery, final String message) {
+        logMessage(candidateUser,
+                null,
+                delivery.getId(),
+                delivery.getAssessment().getId(),
+                message);
+    }
+
+    private void logPreSessionAction(final User candidateUser, final Assessment assessment, final String message) {
+        logMessage(candidateUser,
+                null,
+                null,
+                assessment.getId(),
+                message);
+    }
+
+    private void logMessage(final User candidateUser, final Long xid, final Long did,
+            final Long aid, final String message) {
+        candidateLogger.info("user={} xid={} did={} aid={} {}",
+                new Object[] {
+                    candidateUser.getBusinessKey(),
+                    xid,
+                    did,
+                    aid,
+                    message
+        });
     }
 }

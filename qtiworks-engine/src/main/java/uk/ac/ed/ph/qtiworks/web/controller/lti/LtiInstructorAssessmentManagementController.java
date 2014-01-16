@@ -47,6 +47,7 @@ import uk.ac.ed.ph.qtiworks.services.AssessmentDataService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.services.IdentityService;
+import uk.ac.ed.ph.qtiworks.services.candidate.CandidateException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentAndPackage;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentLtiOutcomesSettingsTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
@@ -134,7 +135,7 @@ public class LtiInstructorAssessmentManagementController {
 
     @RequestMapping(value="/try", method=RequestMethod.POST)
     public String tryThisAssessment(final HttpServletResponse response)
-            throws PrivilegeException, IOException {
+            throws PrivilegeException, IOException, CandidateException {
         final Delivery thisDelivery = identityService.getCurrentThreadLtiResource().getDelivery();
         final Assessment thisAssessment = thisDelivery.getAssessment();
         final DeliverySettings theseDeliverySettings = thisDelivery.getDeliverySettings();
@@ -350,7 +351,7 @@ public class LtiInstructorAssessmentManagementController {
 
     @RequestMapping(value="/assessment/{aid}/try", method=RequestMethod.POST)
     public String tryAssessment(final @PathVariable long aid)
-            throws PrivilegeException, DomainEntityNotFoundException {
+            throws PrivilegeException, DomainEntityNotFoundException, CandidateException {
         final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
         final Delivery demoDelivery = assessmentManagementService.createDemoDelivery(assessment, null);
         final String exitUrl = ltiInstructorRouter.buildWithinContextUrl("/assessment/" + aid);
@@ -359,7 +360,7 @@ public class LtiInstructorAssessmentManagementController {
 
     @RequestMapping(value="/assessment/{aid}/try/{dsid}", method=RequestMethod.POST)
     public String tryAssessment(final @PathVariable long aid, final @PathVariable long dsid)
-            throws PrivilegeException, DomainEntityNotFoundException {
+            throws PrivilegeException, DomainEntityNotFoundException, CandidateException {
         final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
         final DeliverySettings deliverySettings = assessmentManagementService.lookupAndMatchDeliverySettings(dsid, assessment);
         final Delivery demoDelivery = assessmentManagementService.createDemoDelivery(assessment, deliverySettings);
@@ -368,7 +369,7 @@ public class LtiInstructorAssessmentManagementController {
     }
 
     private String runDelivery(final Delivery delivery, final boolean authorMode, final String exitUrl)
-            throws PrivilegeException {
+            throws CandidateException {
         final CandidateSession candidateSession = candidateSessionStarter.launchCandidateSession(delivery, authorMode, exitUrl, null, null);
         return GlobalRouter.buildSessionStartRedirect(candidateSession);
     }

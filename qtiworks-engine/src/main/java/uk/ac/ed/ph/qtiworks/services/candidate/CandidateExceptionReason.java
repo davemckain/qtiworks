@@ -33,8 +33,10 @@
  */
 package uk.ac.ed.ph.qtiworks.services.candidate;
 
+import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
+import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
 import uk.ac.ed.ph.qtiworks.services.CandidateAuditLogger;
 
@@ -56,7 +58,30 @@ import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
 public enum CandidateExceptionReason {
 
     //----------------------------------------------------
-    // General errors
+    // Session start errors
+
+    /**
+     * Candidate's user account is disabled
+     */
+    USER_ACCOUNT_DISABLED,
+
+    /**
+     * Attempted to launch a {@link Delivery} that is not linked to an {@link Assessment}.
+     */
+    LAUNCH_INCOMPLETE_DELIVERY,
+
+    /**
+     * Attempted to launch a {@link Delivery} which is not currently open.
+     */
+    LAUNCH_CLOSED_DELIVERY,
+
+    /**
+     * Attempted to launch a non-sample {@link Assessment} in demo mode
+     */
+    LAUNCH_ASSESSMENT_AS_SAMPLE,
+
+    //----------------------------------------------------
+    // General session errors
 
     /**
      * Caller attempted API call that requires the {@link CandidateSession} to have been

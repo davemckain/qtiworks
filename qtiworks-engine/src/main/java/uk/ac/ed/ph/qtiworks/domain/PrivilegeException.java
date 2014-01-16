@@ -45,14 +45,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import com.google.common.collect.ImmutableList;
 
 /**
- * Concrete "not allowed" {@link Exception} thrown when a {@link User} does
- * not have an appropriate {@link Privilege} (possibly to access a particular
- * entity, but not necessarily).
+ * Exception thrown when a {@link User} does not have appropriate {@link Privilege}(s),
+ * possibly required to access one or more {@link BaseEntity} objects.
  *
  * @author David McKain
  */
 @ResponseStatus(value=HttpStatus.FORBIDDEN)
-public final class PrivilegeException extends NotAllowedException {
+public final class PrivilegeException extends Exception {
 
     private static final long serialVersionUID = 963799679125087234L;
 

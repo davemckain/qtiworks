@@ -142,7 +142,12 @@ public class Assessment implements BaseEntity, TimestampedOnCreation {
     @Enumerated(EnumType.STRING)
     private AssessmentObjectType assessmentType;
 
-    /** Public? (This allows the Assessment to be accessed by anyone) */
+    /**
+     * CURRENTLY UNUSED! Ignore this for now.
+     *
+     * (This was envisaged as a simple means of sharing assessments, but hasn't been
+     * implemented.)
+     */
     @Basic(optional=false)
     @Column(name="public")
     private boolean isPublic;

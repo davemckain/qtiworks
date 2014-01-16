@@ -34,11 +34,11 @@
 package uk.ac.ed.ph.qtiworks.web.controller.anonymous;
 
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
-import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.SampleCategory;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
+import uk.ac.ed.ph.qtiworks.services.candidate.CandidateException;
 import uk.ac.ed.ph.qtiworks.services.dao.AssessmentDao;
 import uk.ac.ed.ph.qtiworks.services.dao.SampleCategoryDao;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentAndPackage;
@@ -95,7 +95,7 @@ public class AnonymousSamplesController {
      */
     @RequestMapping(value="/samples/{sampleCategoryAnchor}/{aid}", method=RequestMethod.POST)
     public String startItemSession(@PathVariable final String sampleCategoryAnchor, @PathVariable final long aid)
-            throws PrivilegeException, DomainEntityNotFoundException {
+            throws DomainEntityNotFoundException, CandidateException {
         final String exitUrl = anonymousRouter.buildWithinContextUrl("/samples") + "#" + sampleCategoryAnchor;
 
         final CandidateSession candidateSession = candidateSessionStarter.launchSystemSampleSession(aid, exitUrl);

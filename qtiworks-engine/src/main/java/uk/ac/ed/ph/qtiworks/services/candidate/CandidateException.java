@@ -33,16 +33,19 @@
  */
 package uk.ac.ed.ph.qtiworks.services.candidate;
 
-import uk.ac.ed.ph.qtiworks.domain.NotAllowedException;
+import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
+import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
+import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.services.CandidateAuditLogger;
+import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
- * This exception is thrown by the candidate service API when the caller ("candidate")
- * attempts an illegal operation, or something similar.
+ * This exception is thrown by the candidate service API when the caller
+ * (representing the candidate) attempts an inappropriate or forbidden action.
  *
  * @see CandidateExceptionReason
  * @see CandidateAuditLogger
@@ -50,22 +53,80 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @author David McKain
  */
 @ResponseStatus(value=HttpStatus.FORBIDDEN)
-public final class CandidateException extends NotAllowedException {
+public final class CandidateException extends Exception {
 
     private static final long serialVersionUID = 963799679125087234L;
 
+    private final User candidate;
+    private final Assessment assessment;
+    private final Delivery delivery;
     private final CandidateSession candidateSession;
     private final CandidateExceptionReason candidateExceptionReason;
 
-    public CandidateException(final CandidateSession candidateSession, final CandidateExceptionReason candidateExceptionReason) {
-        super("Candidate exception reason " + candidateExceptionReason + " on CandidateSession xid=" + candidateSession);
-        this.candidateSession = candidateSession;
+    /**
+     * Use this for an exception in creating a {@link CandidateSession} on an {@link Assessment}
+     * when the {@link Delivery} to be run has not yet been determined.
+     *
+     * @see CandidateSessionStarter
+     */
+    public CandidateException(final User candidate, final Assessment assessment, final CandidateExceptionReason candidateExceptionReason) {
+        super("CandidateException launching CandidateSession for User " + candidate.getId() + " on Assessment " + assessment.getId() + "; reason=" + candidateExceptionReason);
+        this.candidate = candidate;
+        this.candidateSession = null;
+        this.delivery = null;
+        this.assessment = assessment;
         this.candidateExceptionReason = candidateExceptionReason;
     }
 
+    /**
+     * Use this for an exception in creating a {@link CandidateSession} on a non-null {@link Delivery}
+     *
+     * @see CandidateSessionStarter
+     */
+    public CandidateException(final User candidate, final Delivery delivery, final CandidateExceptionReason candidateExceptionReason) {
+        super("CandidateException launching CandidateSession for User " + candidate.getId() + " on Delivery " + delivery.getId() + "; reason=" + candidateExceptionReason);
+        this.candidate = candidate;
+        this.candidateSession = null;
+        this.delivery = delivery;
+        this.assessment = delivery.getAssessment();
+        this.candidateExceptionReason = candidateExceptionReason;
+    }
+
+    /**
+     * Use this for an exception on an already established {@link CandidateSession}.
+     */
+    public CandidateException(final CandidateSession candidateSession, final CandidateExceptionReason candidateExceptionReason) {
+        super("CandidateException on CandidateSession " + candidateSession.getId() + "; reason=" + candidateExceptionReason);
+        this.candidate = candidateSession.getCandidate();
+        this.candidateSession = candidateSession;
+        this.delivery = candidateSession.getDelivery();
+        this.assessment = delivery.getAssessment();
+        this.candidateExceptionReason = candidateExceptionReason;
+    }
+
+    public User getCandidate() {
+        return candidate;
+    }
+
+    /**
+     * NB: This can return null for exceptions during session startup.
+     */
     public CandidateSession getCandidateSession() {
         return candidateSession;
     }
+
+    /**
+     * NB: This can return null for exceptions during session start on an {@link Assessment} where the
+     * required {@link Delivery} has not yet been determined.
+     */
+    public Delivery getDelivery() {
+        return delivery;
+    }
+
+    public Assessment getAssessment() {
+        return assessment;
+    }
+
 
     public CandidateExceptionReason getCandidateExceptionReason() {
         return candidateExceptionReason;

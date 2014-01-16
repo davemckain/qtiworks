@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.qtiworks.web.controller.lti;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
-import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiDomain;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiLaunchType;
@@ -42,6 +41,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.LtiResource;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.UserRole;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
+import uk.ac.ed.ph.qtiworks.services.candidate.CandidateException;
 import uk.ac.ed.ph.qtiworks.web.GlobalRouter;
 import uk.ac.ed.ph.qtiworks.web.lti.DecodedLtiLaunch;
 import uk.ac.ed.ph.qtiworks.web.lti.LtiLaunchData;
@@ -121,7 +121,7 @@ public class LtiLaunchController {
                         ltiResource, exitUrl, lisOutcomeServiceUrl, lisResultSourcedid);
                 return GlobalRouter.buildSessionStartRedirect(candidateSession);
             }
-            catch (final PrivilegeException e) {
+            catch (final CandidateException e) {
                 return "candidateLaunchError";
             }
         }
@@ -154,7 +154,7 @@ public class LtiLaunchController {
                     exitUrl, lisOutcomeServiceUrl, lisResultSourcedid);
             return GlobalRouter.buildSessionStartRedirect(candidateSession);
         }
-        catch (final PrivilegeException e) {
+        catch (final CandidateException e) {
             return "candidateLaunchError";
         }
     }

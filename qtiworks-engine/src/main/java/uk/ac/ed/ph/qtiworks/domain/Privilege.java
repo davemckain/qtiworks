@@ -46,11 +46,6 @@ import uk.ac.ed.ph.qtiworks.domain.entities.User;
  */
 public enum Privilege {
 
-    USER_ACCOUNT_ENABLED,
-    USER_INSTRUCTOR,
-    USER_CANDIDATE,
-    USER_ANONYMOUS,
-
     CREATE_ASSESSMENT,
     MANAGE_ASSESSMENT,
 
@@ -59,10 +54,6 @@ public enum Privilege {
 
     /** Actual type of {@link DeliverySettings} must be compatible with their expected user */
     MATCH_DELIVERY_SETTINGS,
-
-    LAUNCH_ASSESSMENT_AS_SAMPLE,
-    LAUNCH_CLOSED_DELIVERY,
-    LAUNCH_INCOMPLETE_DELIVERY,
 
     PROCTOR_SESSION,
 

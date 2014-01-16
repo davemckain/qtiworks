@@ -36,8 +36,6 @@ package uk.ac.ed.ph.qtiworks.services;
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
-import uk.ac.ed.ph.qtiworks.domain.Privilege;
-import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
@@ -48,6 +46,8 @@ import uk.ac.ed.ph.qtiworks.domain.entities.LtiResource;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.domain.entities.UserRole;
+import uk.ac.ed.ph.qtiworks.services.candidate.CandidateException;
+import uk.ac.ed.ph.qtiworks.services.candidate.CandidateExceptionReason;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateItemDeliveryService;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateTestDeliveryService;
 import uk.ac.ed.ph.qtiworks.services.dao.AssessmentDao;
@@ -107,16 +107,16 @@ public class CandidateSessionStarter {
     private CandidateSessionDao candidateSessionDao;
 
     //-------------------------------------------------
-    // System samples
+    // System sample launching
 
     public CandidateSession launchSystemSampleSession(final long aid, final String exitUrl)
-            throws PrivilegeException, DomainEntityNotFoundException {
+            throws DomainEntityNotFoundException, CandidateException {
         final Delivery sampleDelivery = lookupSystemSampleDelivery(aid);
         return launchCandidateSession(sampleDelivery, true, exitUrl, null, null);
     }
 
     private Delivery lookupSystemSampleDelivery(final long aid)
-            throws DomainEntityNotFoundException, PrivilegeException {
+            throws DomainEntityNotFoundException, CandidateException {
         final Assessment assessment = lookupSampleAssessment(aid);
         final List<Delivery> systemDemoDeliveries = deliveryDao.getForAssessmentAndType(assessment, DeliveryType.SYSTEM_DEMO);
         if (systemDemoDeliveries.size()!=1) {
@@ -127,11 +127,11 @@ public class CandidateSessionStarter {
     }
 
     private Assessment lookupSampleAssessment(final long aid)
-            throws DomainEntityNotFoundException, PrivilegeException {
+            throws DomainEntityNotFoundException, CandidateException {
         final Assessment assessment = assessmentDao.requireFindById(aid);
         final User caller = identityService.getCurrentThreadUser();
         if (!assessment.isPublic() || assessment.getSampleCategory()==null) {
-            throw new PrivilegeException(caller, Privilege.LAUNCH_ASSESSMENT_AS_SAMPLE, assessment);
+            logAndThrowLaunchException(caller, assessment, CandidateExceptionReason.LAUNCH_ASSESSMENT_AS_SAMPLE);
         }
         return assessment;
     }
@@ -147,7 +147,7 @@ public class CandidateSessionStarter {
      */
     public CandidateSession launchLinkLevelLtiCandidateSession(final LtiUser candidate,
             final String exitUrl, final String lisOutcomeServiceUrl, final String lisResultSourcedid)
-            throws PrivilegeException {
+            throws CandidateException {
         /* Make sure this is the correct type of user */
         Assert.notNull(candidate, "candidate");
         if (candidate.getLtiLaunchType()!=LtiLaunchType.LINK) {
@@ -156,11 +156,6 @@ public class CandidateSessionStarter {
 
         /* Extract Delivery to be launched */
         final Delivery delivery = candidate.getDelivery();
-
-        /* Make sure delivery is open */
-        if (!delivery.isOpen()) {
-            throw new PrivilegeException(candidate, Privilege.LAUNCH_CLOSED_DELIVERY, delivery);
-        }
 
         /* Launch the session */
         return launchCandidateSession(candidate, delivery,
@@ -171,7 +166,7 @@ public class CandidateSessionStarter {
 
     public CandidateSession launchDomainLevelLtiCandidateSession(final LtiUser candidate, final LtiResource ltiResource,
             final String exitUrl, final String lisOutcomeServiceUrl, final String lisResultSourcedid)
-            throws PrivilegeException {
+            throws CandidateException {
         Assert.notNull(candidate, "candidate");
         Assert.notNull(ltiResource, "ltiResource");
         if (candidate.getLtiLaunchType()!=LtiLaunchType.DOMAIN) {
@@ -180,11 +175,6 @@ public class CandidateSessionStarter {
 
         /* Extract Delivery to be launched from LtiResource */
         final Delivery delivery = ltiResource.getDelivery();
-
-        /* Make sure delivery is open */
-        if (!delivery.isOpen()) {
-            throw new PrivilegeException(candidate, Privilege.LAUNCH_CLOSED_DELIVERY, delivery);
-        }
 
         /* Will use author mode if candidate is an instructor */
         final boolean authorMode = candidate.getUserRole()==UserRole.INSTRUCTOR;
@@ -199,13 +189,15 @@ public class CandidateSessionStarter {
     // Low-level session creation
 
     /**
-     * Starts new {@link CandidateSession} for the given {@link Delivery}
+     * Starts new {@link CandidateSession} for the current thread's {@link User}
+     * on the given {@link Delivery}
      * <p>
-     * NO ACCESS controls are checked on the {@link Delivery}
+     * NB: No checks are made on whether the {@link User} should be allowed to start a session
+     * on this {@link Delivery}.
      */
     public CandidateSession launchCandidateSession(final Delivery delivery, final boolean authorMode,
             final String exitUrl, final String lisOutcomeServiceUrl, final String lisResultSourcedid)
-            throws PrivilegeException {
+            throws CandidateException {
         Assert.notNull(delivery, "delivery");
         final User candidate = identityService.getCurrentThreadUser();
         return launchCandidateSession(candidate, delivery, authorMode, exitUrl, lisOutcomeServiceUrl, lisResultSourcedid);
@@ -214,23 +206,29 @@ public class CandidateSessionStarter {
     /**
      * Starts new {@link CandidateSession} for the given {@link User} on the given {@link Delivery}
      * <p>
-     * NO ACCESS controls are checked on the {@link User} and {@link Delivery}
+     * No checks are made on whether the {@link User} should be allowed to start a session
+     * on this {@link Delivery}.
      */
     public CandidateSession launchCandidateSession(final User candidate, final Delivery delivery,
             final boolean authorMode, final String exitUrl, final String lisOutcomeServiceUrl,
             final String lisResultSourcedid)
-            throws PrivilegeException {
+            throws CandidateException {
         Assert.notNull(candidate, "candidate");
         Assert.notNull(delivery, "delivery");
 
         /* Make sure Candidate's account is not disabled */
         if (candidate.isLoginDisabled()) {
-            throw new PrivilegeException(candidate, Privilege.USER_ACCOUNT_ENABLED, delivery);
+            logAndThrowLaunchException(candidate, delivery, CandidateExceptionReason.USER_ACCOUNT_DISABLED);
         }
 
         /* Make sure Delivery is runnable */
         if (delivery.getAssessment()==null) {
-            throw new PrivilegeException(candidate, Privilege.LAUNCH_INCOMPLETE_DELIVERY, delivery);
+            logAndThrowLaunchException(candidate, delivery, CandidateExceptionReason.LAUNCH_INCOMPLETE_DELIVERY);
+        }
+
+        /* Make sure delivery is open */
+        if (!delivery.isOpen()) {
+            logAndThrowLaunchException(candidate, delivery, CandidateExceptionReason.LAUNCH_CLOSED_DELIVERY);
         }
 
         /* If the candidate already has any non-terminated sessions open for this Delivery,
@@ -265,6 +263,19 @@ public class CandidateSessionStarter {
                 + " on Delivery #" + delivery.getId());
         return candidateSession;
     }
+
+    private void logAndThrowLaunchException(final User candidate, final Delivery delivery,
+            final CandidateExceptionReason reason)
+            throws CandidateException {
+        candidateAuditLogger.logAndThrowCandidateException(candidate, delivery, reason);
+    }
+
+    private void logAndThrowLaunchException(final User candidate, final Assessment assessment,
+            final CandidateExceptionReason reason)
+            throws CandidateException {
+        candidateAuditLogger.logAndThrowCandidateException(candidate, assessment, reason);
+    }
+
 
     private String sanitiseExitUrl(final String exitUrl) {
         if (exitUrl==null) {
