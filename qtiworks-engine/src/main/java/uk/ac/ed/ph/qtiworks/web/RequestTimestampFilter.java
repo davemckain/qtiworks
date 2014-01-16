@@ -50,6 +50,8 @@ import org.springframework.web.context.WebApplicationContext;
  * Filter that sets and subsequently clears a timestamp for the current HTTP request
  * within a {@link RequestTimestampContext}.
  *
+ * @see RequestTimestampContext
+ *
  * @author David McKain
  */
 public final class RequestTimestampFilter extends AbstractFilterUsingApplicationContext {

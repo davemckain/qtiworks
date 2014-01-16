@@ -33,6 +33,8 @@
  */
 package uk.ac.ed.ph.qtiworks.domain;
 
+import uk.ac.ed.ph.qtiworks.web.RequestTimestampFilter;
+
 import java.util.Date;
 
 import javax.servlet.Filter;
@@ -41,7 +43,9 @@ import javax.servlet.Filter;
  * Simple {@link ThreadLocal} that stores a timestamp for the duration of the current "request".
  * <p>
  * This is set on every HTTP request by a servlet {@link Filter}, which sets a timestamp for
- * the duration of the HTTP request.
+ * the duration of the HTTP request and then clears it afterwards.
+ *
+ * @see RequestTimestampFilter
  *
  * @author David McKain
  */
@@ -59,6 +63,11 @@ public final class RequestTimestampContext {
     }
 
     public void setCurrentRequestTimestamp(final Date date) {
-        timestampThreadLocal.set(date);
+        if (date!=null) {
+            timestampThreadLocal.set(date);
+        }
+        else {
+            timestampThreadLocal.remove();
+        }
     }
 }
