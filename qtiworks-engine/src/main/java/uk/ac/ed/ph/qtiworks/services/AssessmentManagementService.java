@@ -58,9 +58,9 @@ import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionOutcomeDao;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliveryDao;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliverySettingsDao;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentLtiOutcomesSettingsTemplate;
-import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
-import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException;
-import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException.APSFailureReason;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageDataImportException;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentManagementException;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentManagementException.ManagementFailureReason;
 import uk.ac.ed.ph.qtiworks.services.domain.DeliveryTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.ItemDeliverySettingsTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.TestDeliverySettingsTemplate;
@@ -189,11 +189,11 @@ public class AssessmentManagementService {
      * @return newly created {@link Assessment} entity
      *
      * @throws PrivilegeException if the caller is not allowed to perform this action
-     * @throws AssessmentPackageFileImportException
+     * @throws AssessmentPackageDataImportException
      */
     @Transactional(propagation=Propagation.REQUIRES_NEW)
     public Assessment importAssessment(final MultipartFile multipartFile, final boolean validate)
-            throws PrivilegeException, AssessmentPackageFileImportException {
+            throws PrivilegeException, AssessmentPackageDataImportException {
         Assert.notNull(multipartFile, "multipartFile");
         final User caller = ensureCallerMayCreateAssessment();
 
@@ -337,8 +337,8 @@ public class AssessmentManagementService {
     @Transactional(propagation=Propagation.REQUIRES_NEW)
     public Assessment replaceAssessmentPackage(final long aid,
             final MultipartFile multipartFile, final boolean validate)
-            throws AssessmentStateException, PrivilegeException,
-            AssessmentPackageFileImportException, DomainEntityNotFoundException {
+            throws AssessmentManagementException, PrivilegeException,
+            AssessmentPackageDataImportException, DomainEntityNotFoundException {
         Assert.notNull(multipartFile, "multipartFile");
         final Assessment assessment = assessmentDao.requireFindById(aid);
         ensureCallerMayManage(assessment);
@@ -349,7 +349,7 @@ public class AssessmentManagementService {
 
         /* Make sure we haven't gone item->test or test->item */
         if (newAssessmentPackage.getAssessmentType()!=assessment.getAssessmentType()) {
-            throw new AssessmentStateException(APSFailureReason.CANNOT_CHANGE_ASSESSMENT_TYPE,
+            throw new AssessmentManagementException(ManagementFailureReason.CANNOT_CHANGE_ASSESSMENT_TYPE,
                     assessment.getAssessmentType(), newAssessmentPackage.getAssessmentType());
         }
 
@@ -894,7 +894,7 @@ public class AssessmentManagementService {
     }
 
     private AssessmentPackage importPackageFiles(final MultipartFile multipartFile, final boolean validate)
-            throws AssessmentPackageFileImportException {
+            throws AssessmentPackageDataImportException {
         final User owner = identityService.getCurrentThreadUser();
         return assessmentPackageFileService.importAssessmentPackage(owner, multipartFile, validate);
     }

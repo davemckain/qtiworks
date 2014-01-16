@@ -35,7 +35,7 @@ package uk.ac.ed.ph.qtiworks.services;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
-import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageDataImportException;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
@@ -64,7 +64,7 @@ public class StandaloneValidationService {
     private FilespaceManager filespaceManager;
 
     public AssessmentObjectValidationResult<?> importAndValidate(final MultipartFile multipartFile)
-            throws AssessmentPackageFileImportException {
+            throws AssessmentPackageDataImportException {
         Assert.notNull(multipartFile, "multipartFile");
         final User caller = identityService.getCurrentThreadUser();
         final AssessmentPackage temporaryPackage = assessmentPackageFileService.importAssessmentPackage(caller, multipartFile, false);

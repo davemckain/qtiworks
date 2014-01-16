@@ -40,7 +40,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackageImportType;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment;
-import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageDataImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.OutputStreamer;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
@@ -142,14 +142,14 @@ public class AssessmentPackageFileService {
      * Returns a partially-filled unpersisted {@link AssessmentPackage} object representing the
      * results of this.
      *
-     * @throws AssessmentPackageFileImportException
+     * @throws AssessmentPackageDataImportException
      * @throws IllegalArgumentException if any of the provided arguments are null
      * @throws QtiWorksRuntimeException if something unexpected happens, such as experiencing
      *   an {@link IOException}
      */
     public AssessmentPackage importAssessmentPackage(final User owner,
             final MultipartFile multipartFile, final boolean validate)
-            throws AssessmentPackageFileImportException {
+            throws AssessmentPackageDataImportException {
         Assert.notNull(owner, "owner");
         Assert.notNull(multipartFile, "multipartFile");
         final File packageSandbox = filespaceManager.createAssessmentPackageSandbox(owner);
@@ -183,7 +183,7 @@ public class AssessmentPackageFileService {
                 assessmentPackage.setValid(validationResult.isValid());
             }
         }
-        catch (final AssessmentPackageFileImportException e) {
+        catch (final AssessmentPackageDataImportException e) {
             filespaceManager.deleteSandbox(packageSandbox);
             throw e;
         }

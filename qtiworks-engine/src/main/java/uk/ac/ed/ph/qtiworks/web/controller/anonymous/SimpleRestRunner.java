@@ -45,7 +45,7 @@ import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.services.FilespaceManager;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateException;
-import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageDataImportException;
 import uk.ac.ed.ph.qtiworks.utils.MultipartFileWrapper;
 import uk.ac.ed.ph.qtiworks.web.GlobalRouter;
 
@@ -118,7 +118,7 @@ public class SimpleRestRunner {
         try {
             assessment = assessmentManagementService.importAssessment(multipartFile, true);
         }
-        catch (final AssessmentPackageFileImportException e) {
+        catch (final AssessmentPackageDataImportException e) {
             response.setHeader(ERROR_HEADER, "assessment-content-error (" + e.getFailure().getReason().toString() + ")");
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;

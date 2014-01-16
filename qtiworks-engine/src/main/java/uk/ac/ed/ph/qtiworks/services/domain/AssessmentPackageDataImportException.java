@@ -33,53 +33,67 @@
  */
 package uk.ac.ed.ph.qtiworks.services.domain;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
 /**
- * Client exception thrown when attempting to perform a change to an
- * {@link Assessment} that its current state does not support.
+ * Client exception thrown if submitted assessment package data does not conform
+ * to what is expected.
  *
- * TODO: This never quite expanded in the way I expected it to, and it now feels overly
- * complex for what it does.
+ * NOTE: Validation of the actual QTI data is not to be encapsulated here.
  *
  * @author David McKain
  */
-@ResponseStatus(value=HttpStatus.CONFLICT)
-public final class AssessmentStateException extends Exception {
+public final class AssessmentPackageDataImportException extends Exception {
 
     private static final long serialVersionUID = -699513250898841731L;
 
-    public static enum APSFailureReason {
+    public static enum ImportFailureReason {
 
-        CANNOT_CHANGE_ASSESSMENT_TYPE,
+        /** We expect a standalone XML file or a ZIP stream containing at least one entry */
+        NOT_XML_OR_ZIP,
+
+        /** ZIP is not an IMS Content Package */
+        NOT_CONTENT_PACKAGE,
+
+        /** IMS manifest could not be parsed */
+        BAD_IMS_MANIFEST,
+
+        /** IMS Content Package did not contain a supported combination of {0} items and {1} tests */
+        UNSUPPORTED_PACKAGE_CONTENTS,
+
+        /** URI of a referenced File {0} resolved outside the package */
+        HREF_OUTSIDE_PACKAGE,
+
+        /** Reference File with href {0} is missing */
+        FILE_MISSING,
 
         ;
     }
 
-    private final EnumerableClientFailure<APSFailureReason> failure;
+    private final EnumerableClientFailure<ImportFailureReason> failure;
 
-    public AssessmentStateException(final EnumerableClientFailure<APSFailureReason> failure) {
+    public AssessmentPackageDataImportException(final EnumerableClientFailure<ImportFailureReason> failure) {
         super(failure.toString());
         this.failure = failure;
     }
 
-    public AssessmentStateException(final EnumerableClientFailure<APSFailureReason> failure, final Throwable cause) {
+    public AssessmentPackageDataImportException(final EnumerableClientFailure<ImportFailureReason> failure, final Throwable cause) {
         super(failure.toString(), cause);
         this.failure = failure;
     }
 
-    public AssessmentStateException(final APSFailureReason reason) {
-        this(new EnumerableClientFailure<APSFailureReason>(reason));
+    public AssessmentPackageDataImportException(final ImportFailureReason reason) {
+        this(new EnumerableClientFailure<ImportFailureReason>(reason));
     }
 
-    public AssessmentStateException(final APSFailureReason reason, final Object... arguments) {
-        this(new EnumerableClientFailure<APSFailureReason>(reason, arguments));
+    public AssessmentPackageDataImportException(final ImportFailureReason reason, final Throwable cause) {
+        this(new EnumerableClientFailure<ImportFailureReason>(reason), cause);
     }
 
-    public EnumerableClientFailure<APSFailureReason> getFailure() {
+    public AssessmentPackageDataImportException(final ImportFailureReason reason, final Object... arguments) {
+        this(new EnumerableClientFailure<ImportFailureReason>(reason, arguments));
+    }
+
+
+    public EnumerableClientFailure<ImportFailureReason> getFailure() {
         return failure;
     }
 }

@@ -50,10 +50,10 @@ import uk.ac.ed.ph.qtiworks.services.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentAndPackage;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentLtiOutcomesSettingsTemplate;
-import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
-import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException.APFIFailureReason;
-import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException;
-import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException.APSFailureReason;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageDataImportException;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageDataImportException.ImportFailureReason;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentManagementException;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentManagementException.ManagementFailureReason;
 import uk.ac.ed.ph.qtiworks.services.domain.EnumerableClientFailure;
 import uk.ac.ed.ph.qtiworks.services.domain.ItemDeliverySettingsTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.TestDeliverySettingsTemplate;
@@ -194,8 +194,8 @@ public class LtiInstructorAssessmentManagementController {
                 /* Use this assessment */
                 assessmentManagementService.selectCurrentLtiResourceAssessment(assessment.getId());
             }
-            catch (final AssessmentPackageFileImportException e) {
-                final EnumerableClientFailure<APFIFailureReason> failure = e.getFailure();
+            catch (final AssessmentPackageDataImportException e) {
+                final EnumerableClientFailure<ImportFailureReason> failure = e.getFailure();
                 failure.registerErrors(result, "assessmentPackageUpload");
             }
             catch (final DomainEntityNotFoundException e) {
@@ -230,8 +230,8 @@ public class LtiInstructorAssessmentManagementController {
         try {
             assessment = assessmentManagementService.importAssessment(command.getFile(), true);
         }
-        catch (final AssessmentPackageFileImportException e) {
-            final EnumerableClientFailure<APFIFailureReason> failure = e.getFailure();
+        catch (final AssessmentPackageDataImportException e) {
+            final EnumerableClientFailure<ImportFailureReason> failure = e.getFailure();
             failure.registerErrors(result, "assessmentPackageUpload");
             return "instructor/uploadAssessmentForm";
         }
@@ -275,12 +275,12 @@ public class LtiInstructorAssessmentManagementController {
             try {
                 assessmentManagementService.replaceAssessmentPackage(aid, uploadFile, true);
             }
-            catch (final AssessmentPackageFileImportException e) {
-                final EnumerableClientFailure<APFIFailureReason> failure = e.getFailure();
+            catch (final AssessmentPackageDataImportException e) {
+                final EnumerableClientFailure<ImportFailureReason> failure = e.getFailure();
                 failure.registerErrors(result, "assessmentPackageUpload");
             }
-            catch (final AssessmentStateException e) {
-                final EnumerableClientFailure<APSFailureReason> failure = e.getFailure();
+            catch (final AssessmentManagementException e) {
+                final EnumerableClientFailure<ManagementFailureReason> failure = e.getFailure();
                 failure.registerErrors(result, "assessmentPackageUpload");
             }
         }

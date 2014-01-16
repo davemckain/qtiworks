@@ -33,66 +33,47 @@
  */
 package uk.ac.ed.ph.qtiworks.services.domain;
 
+import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
+
 /**
- * Client exception thrown if submitted assessment package data does not conform
- * to what is expected.
- *
- * NOTE: Validation of the actual QTI data is not to be encapsulated here.
+ * Client exception thrown when attempting to perform a change to an
+ * {@link Assessment} that its current state does not support.
  *
  * @author David McKain
  */
-public final class AssessmentPackageFileImportException extends Exception {
+public final class AssessmentManagementException extends Exception {
 
     private static final long serialVersionUID = -699513250898841731L;
 
-    public static enum APFIFailureReason {
-        /** We expect a standalone XML file or a ZIP stream containing at least one entry */
-        NOT_XML_OR_ZIP,
+    public static enum ManagementFailureReason {
 
-        /** ZIP is not an IMS Content Package */
-        NOT_CONTENT_PACKAGE,
-
-        /** IMS manifest could not be parsed */
-        BAD_IMS_MANIFEST,
-
-        /** IMS Content Package did not contain a supported combination of {0} items and {1} tests */
-        UNSUPPORTED_PACKAGE_CONTENTS,
-
-        /** URI of a referenced File {0} resolved outside the package */
-        HREF_OUTSIDE_PACKAGE,
-
-        /** Reference File with href {0} is missing */
-        FILE_MISSING,
+        /** Attempted to replace an item with a test, or vice versa */
+        CANNOT_CHANGE_ASSESSMENT_TYPE,
 
         ;
     }
 
-    private final EnumerableClientFailure<APFIFailureReason> failure;
+    private final EnumerableClientFailure<ManagementFailureReason> failure;
 
-    public AssessmentPackageFileImportException(final EnumerableClientFailure<APFIFailureReason> failure) {
+    public AssessmentManagementException(final EnumerableClientFailure<ManagementFailureReason> failure) {
         super(failure.toString());
         this.failure = failure;
     }
 
-    public AssessmentPackageFileImportException(final EnumerableClientFailure<APFIFailureReason> failure, final Throwable cause) {
+    public AssessmentManagementException(final EnumerableClientFailure<ManagementFailureReason> failure, final Throwable cause) {
         super(failure.toString(), cause);
         this.failure = failure;
     }
 
-    public AssessmentPackageFileImportException(final APFIFailureReason reason) {
-        this(new EnumerableClientFailure<APFIFailureReason>(reason));
+    public AssessmentManagementException(final ManagementFailureReason reason) {
+        this(new EnumerableClientFailure<ManagementFailureReason>(reason));
     }
 
-    public AssessmentPackageFileImportException(final APFIFailureReason reason, final Throwable cause) {
-        this(new EnumerableClientFailure<APFIFailureReason>(reason), cause);
+    public AssessmentManagementException(final ManagementFailureReason reason, final Object... arguments) {
+        this(new EnumerableClientFailure<ManagementFailureReason>(reason, arguments));
     }
 
-    public AssessmentPackageFileImportException(final APFIFailureReason reason, final Object... arguments) {
-        this(new EnumerableClientFailure<APFIFailureReason>(reason, arguments));
-    }
-
-
-    public EnumerableClientFailure<APFIFailureReason> getFailure() {
+    public EnumerableClientFailure<ManagementFailureReason> getFailure() {
         return failure;
     }
 }

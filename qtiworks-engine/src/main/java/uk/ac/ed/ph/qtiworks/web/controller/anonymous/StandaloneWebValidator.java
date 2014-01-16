@@ -34,8 +34,8 @@
 package uk.ac.ed.ph.qtiworks.web.controller.anonymous;
 
 import uk.ac.ed.ph.qtiworks.services.StandaloneValidationService;
-import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
-import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException.APFIFailureReason;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageDataImportException;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageDataImportException.ImportFailureReason;
 import uk.ac.ed.ph.qtiworks.services.domain.EnumerableClientFailure;
 import uk.ac.ed.ph.qtiworks.web.domain.UploadAssessmentPackageCommand;
 
@@ -82,8 +82,8 @@ public class StandaloneWebValidator {
             model.addAttribute("validationResult", result);
             return "validator/validationResult";
         }
-        catch (final AssessmentPackageFileImportException e) {
-            final EnumerableClientFailure<APFIFailureReason> failure = e.getFailure();
+        catch (final AssessmentPackageDataImportException e) {
+            final EnumerableClientFailure<ImportFailureReason> failure = e.getFailure();
             failure.registerErrors(errors, "assessmentPackageUpload");
             return "validator/uploadForm";
         }

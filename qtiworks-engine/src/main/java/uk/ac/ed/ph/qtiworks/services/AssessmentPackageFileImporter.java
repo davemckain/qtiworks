@@ -36,8 +36,8 @@ package uk.ac.ed.ph.qtiworks.services;
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackageImportType;
-import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
-import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException.APFIFailureReason;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageDataImportException;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageDataImportException.ImportFailureReason;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
@@ -91,14 +91,14 @@ public class AssessmentPackageFileImporter {
      * Returns a partially-filled unpersisted {@link AssessmentPackage} object representing the
      * results of this.
      *
-     * @throws AssessmentPackageFileImportException
+     * @throws AssessmentPackageDataImportException
      * @throws IllegalArgumentException if any of the provided arguments are null
      * @throws QtiWorksRuntimeException if something unexpected happens, such as experiencing
      *   an {@link IOException}
      */
     public AssessmentPackage importAssessmentPackageData(final File importSandboxDirectory,
             final MultipartFile multipartFile)
-            throws AssessmentPackageFileImportException {
+            throws AssessmentPackageDataImportException {
         Assert.notNull(importSandboxDirectory, "importSandboxDirectory");
         Assert.notNull(multipartFile, "multipartFile");
         AssessmentPackage assessmentPackage = null;
@@ -118,7 +118,7 @@ public class AssessmentPackageFileImporter {
             }
             else {
                 logger.warn("Import data with MIME type {} was not a supported XML MIME type and no ZIP entries were found within", contentType);
-                throw new AssessmentPackageFileImportException(APFIFailureReason.NOT_XML_OR_ZIP);
+                throw new AssessmentPackageDataImportException(ImportFailureReason.NOT_XML_OR_ZIP);
             }
         }
 
@@ -193,7 +193,7 @@ public class AssessmentPackageFileImporter {
     }
 
     private AssessmentPackage processUnpackedZip(final File importSandboxDirectory)
-            throws AssessmentPackageFileImportException {
+            throws AssessmentPackageDataImportException {
         /* Expand content package */
         final QtiContentPackageExtractor contentPackageExtractor = new QtiContentPackageExtractor(importSandboxDirectory);
         QtiContentPackageSummary contentPackageSummary;
@@ -201,10 +201,10 @@ public class AssessmentPackageFileImporter {
             contentPackageSummary = contentPackageExtractor.parse();
         }
         catch (final XmlResourceNotFoundException e) {
-            throw new AssessmentPackageFileImportException(APFIFailureReason.NOT_CONTENT_PACKAGE, e);
+            throw new AssessmentPackageDataImportException(ImportFailureReason.NOT_CONTENT_PACKAGE, e);
         }
         catch (final ImsManifestException e) {
-            throw new AssessmentPackageFileImportException(APFIFailureReason.BAD_IMS_MANIFEST, e);
+            throw new AssessmentPackageDataImportException(ImportFailureReason.BAD_IMS_MANIFEST, e);
         }
         logger.trace("Submitted content package was successfully parsed as {}", contentPackageSummary);
 
@@ -231,7 +231,7 @@ public class AssessmentPackageFileImporter {
         else {
             /* Barf */
             logger.debug("Package contains {} items and {} tests. Don't know how to deal with this", itemCount, testCount);
-            throw new AssessmentPackageFileImportException(APFIFailureReason.UNSUPPORTED_PACKAGE_CONTENTS, itemCount, testCount);
+            throw new AssessmentPackageDataImportException(ImportFailureReason.UNSUPPORTED_PACKAGE_CONTENTS, itemCount, testCount);
         }
 
         /* Build up Set of all files in the package. We need to be a bit careful to flag up the
@@ -256,7 +256,7 @@ public class AssessmentPackageFileImporter {
     private void buildPackageFileMap(final File importSandboxDirectory,
             final Set<String> packageQtiFileBuilder, final Set<String> packageSafeFileBuilder,
             final List<ContentPackageResource> qtiResources)
-            throws AssessmentPackageFileImportException {
+            throws AssessmentPackageDataImportException {
         for (final ContentPackageResource qtiResource : qtiResources) {
             final List<URI> fileHrefs = qtiResource.getFileHrefs();
             boolean isFirst = true;
@@ -276,23 +276,23 @@ public class AssessmentPackageFileImporter {
     /**
      * Checks the given file URI (href) and makes sure it exists within the sandbox.
      * Returns the original href as a String if successful, otherwise throws
-     * {@link AssessmentPackageFileImportException}.
+     * {@link AssessmentPackageDataImportException}.
      */
     private String checkPackageFile(final File importSandboxDirectory, final URI href)
-            throws AssessmentPackageFileImportException {
+            throws AssessmentPackageDataImportException {
         final String hrefString = href.toString();
         final URI sandboxUri = importSandboxDirectory.toURI();
         final URI resolvedFileUri = sandboxUri.resolve(href);
 
         /* Make sure href points to something within the sandbox */
         if (!resolvedFileUri.toString().startsWith(sandboxUri.toString())) {
-            throw new AssessmentPackageFileImportException(APFIFailureReason.HREF_OUTSIDE_PACKAGE, hrefString);
+            throw new AssessmentPackageDataImportException(ImportFailureReason.HREF_OUTSIDE_PACKAGE, hrefString);
         }
 
         /* Make sure file exists */
         final File resolvedFile = new File(resolvedFileUri);
         if (!resolvedFile.exists()) {
-            throw new AssessmentPackageFileImportException(APFIFailureReason.FILE_MISSING, hrefString);
+            throw new AssessmentPackageDataImportException(ImportFailureReason.FILE_MISSING, hrefString);
         }
 
         return hrefString;

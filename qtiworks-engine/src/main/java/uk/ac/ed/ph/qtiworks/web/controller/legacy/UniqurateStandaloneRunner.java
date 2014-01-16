@@ -43,8 +43,8 @@ import uk.ac.ed.ph.qtiworks.services.AssessmentDataService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateException;
-import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
-import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException.APFIFailureReason;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageDataImportException;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageDataImportException.ImportFailureReason;
 import uk.ac.ed.ph.qtiworks.services.domain.EnumerableClientFailure;
 import uk.ac.ed.ph.qtiworks.web.GlobalRouter;
 import uk.ac.ed.ph.qtiworks.web.domain.StandaloneRunCommand;
@@ -106,8 +106,8 @@ public class UniqurateStandaloneRunner {
             /* Redirect to candidate dispatcher */
             return GlobalRouter.buildSessionStartRedirect(candidateSession);
         }
-        catch (final AssessmentPackageFileImportException e) {
-            final EnumerableClientFailure<APFIFailureReason> failure = e.getFailure();
+        catch (final AssessmentPackageDataImportException e) {
+            final EnumerableClientFailure<ImportFailureReason> failure = e.getFailure();
             failure.registerErrors(errors, "assessmentPackageUpload");
             return "standalonerunner/uploadForm";
         }

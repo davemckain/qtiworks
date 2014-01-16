@@ -35,8 +35,8 @@ package uk.ac.ed.ph.qtiworks.services;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackageImportType;
-import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
-import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException.APFIFailureReason;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageDataImportException;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageDataImportException.ImportFailureReason;
 import uk.ac.ed.ph.qtiworks.testutils.ClassPathMultipartFile;
 
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
@@ -128,8 +128,8 @@ public class AssessmentPackageFileImporterTest {
             assessmentPackageFileImporter.importAssessmentPackageData(importSandboxDirectory, multipartFile);
             Assert.fail("Should have failed");
         }
-        catch (final AssessmentPackageFileImportException e) {
-            Assert.assertEquals(APFIFailureReason.NOT_XML_OR_ZIP, e.getFailure().getReason());
+        catch (final AssessmentPackageDataImportException e) {
+            Assert.assertEquals(ImportFailureReason.NOT_XML_OR_ZIP, e.getFailure().getReason());
         }
     }
 
@@ -140,8 +140,8 @@ public class AssessmentPackageFileImporterTest {
             assessmentPackageFileImporter.importAssessmentPackageData(importSandboxDirectory, multipartFile);
             Assert.fail("Should have failed");
         }
-        catch (final AssessmentPackageFileImportException e) {
-            Assert.assertEquals(APFIFailureReason.NOT_XML_OR_ZIP, e.getFailure().getReason());
+        catch (final AssessmentPackageDataImportException e) {
+            Assert.assertEquals(ImportFailureReason.NOT_XML_OR_ZIP, e.getFailure().getReason());
         }
     }
 
@@ -152,8 +152,8 @@ public class AssessmentPackageFileImporterTest {
             assessmentPackageFileImporter.importAssessmentPackageData(importSandboxDirectory, multipartFile);
             Assert.fail("Should have failed");
         }
-        catch (final AssessmentPackageFileImportException e) {
-            Assert.assertEquals(APFIFailureReason.NOT_CONTENT_PACKAGE, e.getFailure().getReason());
+        catch (final AssessmentPackageDataImportException e) {
+            Assert.assertEquals(ImportFailureReason.NOT_CONTENT_PACKAGE, e.getFailure().getReason());
         }
     }
 
@@ -164,8 +164,8 @@ public class AssessmentPackageFileImporterTest {
             assessmentPackageFileImporter.importAssessmentPackageData(importSandboxDirectory, multipartFile);
             Assert.fail("Should have failed");
         }
-        catch (final AssessmentPackageFileImportException e) {
-            Assert.assertEquals(APFIFailureReason.BAD_IMS_MANIFEST, e.getFailure().getReason());
+        catch (final AssessmentPackageDataImportException e) {
+            Assert.assertEquals(ImportFailureReason.BAD_IMS_MANIFEST, e.getFailure().getReason());
         }
     }
 
@@ -176,8 +176,8 @@ public class AssessmentPackageFileImporterTest {
             assessmentPackageFileImporter.importAssessmentPackageData(importSandboxDirectory, multipartFile);
             Assert.fail("Should have failed");
         }
-        catch (final AssessmentPackageFileImportException e) {
-            Assert.assertEquals(APFIFailureReason.UNSUPPORTED_PACKAGE_CONTENTS, e.getFailure().getReason());
+        catch (final AssessmentPackageDataImportException e) {
+            Assert.assertEquals(ImportFailureReason.UNSUPPORTED_PACKAGE_CONTENTS, e.getFailure().getReason());
             final List<?> failureArguments = e.getFailure().getArguments();
             Assert.assertEquals(2, failureArguments.size());
             Assert.assertEquals(Integer.valueOf(1), failureArguments.get(0)); /* 1 item */
@@ -192,8 +192,8 @@ public class AssessmentPackageFileImporterTest {
             assessmentPackageFileImporter.importAssessmentPackageData(importSandboxDirectory, multipartFile);
             Assert.fail("Should have failed");
         }
-        catch (final AssessmentPackageFileImportException e) {
-            Assert.assertEquals(APFIFailureReason.HREF_OUTSIDE_PACKAGE, e.getFailure().getReason());
+        catch (final AssessmentPackageDataImportException e) {
+            Assert.assertEquals(ImportFailureReason.HREF_OUTSIDE_PACKAGE, e.getFailure().getReason());
             final List<?> failureArguments = e.getFailure().getArguments();
             Assert.assertEquals(1, failureArguments.size());
             Assert.assertEquals("../outside.xml", failureArguments.get(0));
@@ -207,8 +207,8 @@ public class AssessmentPackageFileImporterTest {
             assessmentPackageFileImporter.importAssessmentPackageData(importSandboxDirectory, multipartFile);
             Assert.fail("Should have failed");
         }
-        catch (final AssessmentPackageFileImportException e) {
-            Assert.assertEquals(APFIFailureReason.FILE_MISSING, e.getFailure().getReason());
+        catch (final AssessmentPackageDataImportException e) {
+            Assert.assertEquals(ImportFailureReason.FILE_MISSING, e.getFailure().getReason());
             final List<?> failureArguments = e.getFailure().getArguments();
             Assert.assertEquals(1, failureArguments.size());
             Assert.assertEquals("missing.xml", failureArguments.get(0));
