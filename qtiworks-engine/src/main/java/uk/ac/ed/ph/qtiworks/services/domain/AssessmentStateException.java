@@ -42,6 +42,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * Client exception thrown when attempting to perform a change to an
  * {@link Assessment} that its current state does not support.
  *
+ * TODO: This never quite expanded in the way I expected it to, and it now feels overly
+ * complex for what it does.
+ *
  * @author David McKain
  */
 @ResponseStatus(value=HttpStatus.CONFLICT)

@@ -135,36 +135,36 @@ public class CandidateTestDeliveryService {
      * @param xid ID (xid) of the session to look up
      *
      * @throws DomainEntityNotFoundException
-     * @throws CandidateForbiddenException
+     * @throws CandidateException
      */
     public CandidateSession lookupCandidateTestSession(final long xid, final String sessionToken)
-            throws DomainEntityNotFoundException, CandidateForbiddenException {
+            throws DomainEntityNotFoundException, CandidateException {
         Assert.notNull(sessionToken, "sessionToken");
         final CandidateSession candidateSession = candidateSessionDao.requireFindById(xid);
         if (!sessionToken.equals(candidateSession.getSessionToken())) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.ACCESS_CANDIDATE_SESSION);
+            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.SESSION_TOKEN_MISMATCH);
             return null;
         }
         if (candidateSession.getDelivery().getAssessment().getAssessmentType()!=AssessmentObjectType.ASSESSMENT_TEST) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.ACCESS_CANDIDATE_SESSION_AS_TEST);
+            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.SESSION_IS_NOT_ASSESSMENT_TEST);
             return null;
         }
         return candidateSession;
     }
 
     private void ensureSessionNotTerminated(final CandidateSession candidateSession)
-            throws CandidateSessionTerminatedException {
+            throws CandidateException {
         if (candidateSession.isTerminated()) {
             /* No access when session has been terminated */
-            candidateAuditLogger.logTerminated(candidateSession);
+            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.SESSION_IS_TERMINATED);
         }
     }
 
     private CandidateEvent ensureSessionEntered(final CandidateSession candidateSession)
-            throws CandidateForbiddenException {
+            throws CandidateException {
         final CandidateEvent mostRecentEvent = candidateDataService.getMostRecentEvent(candidateSession);
         if (mostRecentEvent==null) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.ACCESS_ENTERED_SESSION);
+            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.SESSION_NOT_ENTERED);
         }
         return mostRecentEvent;
     }
@@ -173,7 +173,7 @@ public class CandidateTestDeliveryService {
     // Session entry
 
     public CandidateSession enterOrReenterCandidateSession(final long xid, final String sessionToken)
-            throws CandidateForbiddenException, DomainEntityNotFoundException {
+            throws CandidateException, DomainEntityNotFoundException {
         final CandidateSession candidateSession = lookupCandidateTestSession(xid, sessionToken);
         final CandidateEvent mostRecentEvent = candidateDataService.getMostRecentEvent(candidateSession);
         if (mostRecentEvent==null && !candidateSession.isTerminated()) {
@@ -240,7 +240,7 @@ public class CandidateTestDeliveryService {
             final Map<Identifier, StringResponseData> stringResponseMap,
             final Map<Identifier, MultipartFile> fileResponseMap,
             final String candidateComment)
-            throws CandidateForbiddenException, DomainEntityNotFoundException, CandidateSessionTerminatedException {
+            throws CandidateException, DomainEntityNotFoundException {
         final CandidateSession candidateSession = lookupCandidateTestSession(xid, sessionToken);
         return handleResponses(candidateSession, stringResponseMap, fileResponseMap, candidateComment);
     }
@@ -249,7 +249,7 @@ public class CandidateTestDeliveryService {
             final Map<Identifier, StringResponseData> stringResponseMap,
             final Map<Identifier, MultipartFile> fileResponseMap,
             final String candidateComment)
-            throws CandidateForbiddenException, CandidateSessionTerminatedException {
+            throws CandidateException {
         Assert.notNull(candidateSession, "candidateSession");
         ensureSessionNotTerminated(candidateSession);
 
@@ -327,7 +327,7 @@ public class CandidateTestDeliveryService {
             testSessionController.handleResponsesToCurrentItem(timestamp, responseDataMap);
         }
         catch (final QtiCandidateStateException e) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.MAKE_RESPONSES);
+            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.RESPONSES_NOT_EXPECTED);
             return null;
         }
         catch (final RuntimeException e) {
@@ -388,13 +388,13 @@ public class CandidateTestDeliveryService {
     // Navigation
 
     public CandidateSession selectNavigationMenu(final long xid, final String sessionToken)
-            throws CandidateForbiddenException, DomainEntityNotFoundException, CandidateSessionTerminatedException {
+            throws CandidateException, DomainEntityNotFoundException {
         final CandidateSession candidateSession = lookupCandidateTestSession(xid, sessionToken);
         return selectNavigationMenu(candidateSession);
     }
 
     public CandidateSession selectNavigationMenu(final CandidateSession candidateSession)
-            throws CandidateForbiddenException, CandidateSessionTerminatedException {
+            throws CandidateException {
         Assert.notNull(candidateSession, "candidateSession");
         ensureSessionNotTerminated(candidateSession);
 
@@ -408,10 +408,9 @@ public class CandidateTestDeliveryService {
             /* Perform action */
             final Date requestTimestamp = requestTimestampContext.getCurrentRequestTimestamp();
             testSessionController.selectItemNonlinear(requestTimestamp, null);
-
         }
         catch (final QtiCandidateStateException e) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.SELECT_NONLINEAR_MENU);
+            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.CANNOT_SELECT_NONLINEAR_MENU);
             return null;
         }
         catch (final RuntimeException e) {
@@ -430,13 +429,13 @@ public class CandidateTestDeliveryService {
     }
 
     public CandidateSession selectNonlinearItem(final long xid, final String sessionToken, final TestPlanNodeKey itemKey)
-            throws CandidateForbiddenException, DomainEntityNotFoundException, CandidateSessionTerminatedException {
+            throws CandidateException, DomainEntityNotFoundException {
         final CandidateSession candidateSession = lookupCandidateTestSession(xid, sessionToken);
         return selectNonlinearItem(candidateSession, itemKey);
     }
 
     public CandidateSession selectNonlinearItem(final CandidateSession candidateSession, final TestPlanNodeKey itemKey)
-            throws CandidateForbiddenException, CandidateSessionTerminatedException {
+            throws CandidateException {
         Assert.notNull(candidateSession, "candidateSession");
         Assert.notNull(itemKey, "key");
         ensureSessionNotTerminated(candidateSession);
@@ -453,7 +452,7 @@ public class CandidateTestDeliveryService {
             testSessionController.selectItemNonlinear(requestTimestamp, itemKey);
         }
         catch (final QtiCandidateStateException e) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.SELECT_NONLINEAR_TEST_ITEM);
+            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.CANNOT_SELECT_NONLINEAR_TEST_ITEM);
             return null;
         }
         catch (final RuntimeException e) {
@@ -472,13 +471,13 @@ public class CandidateTestDeliveryService {
     }
 
     public CandidateSession finishLinearItem(final long xid, final String sessionToken)
-            throws CandidateForbiddenException, DomainEntityNotFoundException, CandidateSessionTerminatedException {
+            throws CandidateException, DomainEntityNotFoundException {
         final CandidateSession candidateSession = lookupCandidateTestSession(xid, sessionToken);
         return finishLinearItem(candidateSession);
     }
 
     public CandidateSession finishLinearItem(final CandidateSession candidateSession)
-            throws CandidateForbiddenException, CandidateSessionTerminatedException {
+            throws CandidateException {
         Assert.notNull(candidateSession, "candidateSession");
 
         /* Get current JQTI state and create JQTI controller */
@@ -491,12 +490,12 @@ public class CandidateTestDeliveryService {
         ensureSessionNotTerminated(candidateSession);
         try {
             if (!testSessionController.mayAdvanceItemLinear()) {
-                candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.FINISH_LINEAR_TEST_ITEM);
+                candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.CANNOT_FINISH_LINEAR_TEST_ITEM);
                 return null;
             }
         }
         catch (final QtiCandidateStateException e) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.FINISH_LINEAR_TEST_ITEM);
+            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.CANNOT_FINISH_LINEAR_TEST_ITEM);
             return null;
         }
         catch (final RuntimeException e) {
@@ -519,13 +518,13 @@ public class CandidateTestDeliveryService {
     }
 
     public CandidateSession endCurrentTestPart(final long xid, final String sessionToken)
-            throws CandidateForbiddenException, DomainEntityNotFoundException, CandidateSessionTerminatedException {
+            throws CandidateException, DomainEntityNotFoundException {
         final CandidateSession candidateSession = lookupCandidateTestSession(xid, sessionToken);
         return endCurrentTestPart(candidateSession);
     }
 
     public CandidateSession endCurrentTestPart(final CandidateSession candidateSession)
-            throws CandidateForbiddenException, CandidateSessionTerminatedException {
+            throws CandidateException {
         Assert.notNull(candidateSession, "candidateSession");
 
         /* Get current JQTI state and create JQTI controller */
@@ -538,12 +537,12 @@ public class CandidateTestDeliveryService {
         ensureSessionNotTerminated(candidateSession);
         try {
             if (!testSessionController.mayEndCurrentTestPart()) {
-                candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.END_TEST_PART);
+                candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.CANNOT_END_TEST_PART);
                 return null;
             }
         }
         catch (final QtiCandidateStateException e) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.END_TEST_PART);
+            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.CANNOT_END_TEST_PART);
             return null;
         }
         catch (final RuntimeException e) {
@@ -569,13 +568,13 @@ public class CandidateTestDeliveryService {
     // Review
 
     public CandidateSession reviewTestPart(final long xid, final String sessionToken)
-            throws CandidateForbiddenException, DomainEntityNotFoundException, CandidateSessionTerminatedException {
+            throws CandidateException, DomainEntityNotFoundException {
         final CandidateSession candidateSession = lookupCandidateTestSession(xid, sessionToken);
         return reviewTestPart(candidateSession);
     }
 
     public CandidateSession reviewTestPart(final CandidateSession candidateSession)
-            throws CandidateForbiddenException, CandidateSessionTerminatedException {
+            throws CandidateException {
         Assert.notNull(candidateSession, "candidateSession");
 
         /* Get current JQTI state and create JQTI controller */
@@ -587,7 +586,7 @@ public class CandidateTestDeliveryService {
         /* Make sure caller may do this */
         ensureSessionNotTerminated(candidateSession);
         if (testSessionState.getCurrentTestPartKey()==null || !testSessionState.getCurrentTestPartSessionState().isEnded()) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.REVIEW_TEST_PART);
+            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.CANNOT_REVIEW_TEST_PART);
             return null;
         }
 
@@ -600,13 +599,13 @@ public class CandidateTestDeliveryService {
     }
 
     public CandidateSession reviewItem(final long xid, final String sessionToken, final TestPlanNodeKey itemKey)
-            throws CandidateForbiddenException, DomainEntityNotFoundException, CandidateSessionTerminatedException {
+            throws CandidateException, DomainEntityNotFoundException {
         final CandidateSession candidateSession = lookupCandidateTestSession(xid, sessionToken);
         return reviewItem(candidateSession, itemKey);
     }
 
     public CandidateSession reviewItem(final CandidateSession candidateSession, final TestPlanNodeKey itemKey)
-            throws CandidateForbiddenException, CandidateSessionTerminatedException {
+            throws CandidateException {
         Assert.notNull(candidateSession, "candidateSession");
         Assert.notNull(itemKey, "itemKey");
 
@@ -620,12 +619,12 @@ public class CandidateTestDeliveryService {
         ensureSessionNotTerminated(candidateSession);
         try {
             if (!testSessionController.mayReviewItem(itemKey)) {
-                candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.REVIEW_TEST_ITEM);
+                candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.CANNOT_REVIEW_TEST_ITEM);
                 return null;
             }
         }
         catch (final QtiCandidateStateException e) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.REVIEW_TEST_ITEM);
+            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.CANNOT_REVIEW_TEST_ITEM);
             return null;
         }
         catch (final RuntimeException e) {
@@ -647,13 +646,13 @@ public class CandidateTestDeliveryService {
     // Solution request
 
     public CandidateSession requestSolution(final long xid, final String sessionToken, final TestPlanNodeKey itemKey)
-            throws CandidateForbiddenException, DomainEntityNotFoundException, CandidateSessionTerminatedException {
+            throws CandidateException, DomainEntityNotFoundException {
         final CandidateSession candidateSession = lookupCandidateTestSession(xid, sessionToken);
         return requestSolution(candidateSession, itemKey);
     }
 
     public CandidateSession requestSolution(final CandidateSession candidateSession, final TestPlanNodeKey itemKey)
-            throws CandidateForbiddenException, CandidateSessionTerminatedException {
+            throws CandidateException {
         Assert.notNull(candidateSession, "candidateSession");
         Assert.notNull(itemKey, "itemKey");
 
@@ -667,12 +666,12 @@ public class CandidateTestDeliveryService {
         ensureSessionNotTerminated(candidateSession);
         try {
             if (!testSessionController.mayAccessItemSolution(itemKey)) {
-                candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.SOLUTION_TEST_ITEM);
+                candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.CANNOT_SOLUTION_TEST_ITEM);
                 return null;
             }
         }
         catch (final QtiCandidateStateException e) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.SOLUTION_TEST_ITEM);
+            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.CANNOT_SOLUTION_TEST_ITEM);
             return null;
         }
         catch (final RuntimeException e) {
@@ -694,13 +693,13 @@ public class CandidateTestDeliveryService {
     // Advance TestPart
 
     public CandidateSession advanceTestPart(final long xid, final String sessionToken)
-            throws CandidateForbiddenException, DomainEntityNotFoundException, CandidateSessionTerminatedException {
+            throws CandidateException, DomainEntityNotFoundException {
         final CandidateSession candidateSession = lookupCandidateTestSession(xid, sessionToken);
         return advanceTestPart(candidateSession);
     }
 
     public CandidateSession advanceTestPart(final CandidateSession candidateSession)
-            throws CandidateForbiddenException, CandidateSessionTerminatedException {
+            throws CandidateException {
         Assert.notNull(candidateSession, "candidateSession");
         ensureSessionNotTerminated(candidateSession);
 
@@ -717,7 +716,7 @@ public class CandidateTestDeliveryService {
             nextTestPart = testSessionController.enterNextAvailableTestPart(timestamp);
         }
         catch (final QtiCandidateStateException e) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.ADVANCE_TEST_PART);
+            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.CANNOT_ADVANCE_TEST_PART);
             return null;
         }
         catch (final RuntimeException e) {
@@ -762,13 +761,13 @@ public class CandidateTestDeliveryService {
     // Exit (multi-part) test
 
     public CandidateSession exitTest(final long xid, final String sessionToken)
-            throws CandidateForbiddenException, DomainEntityNotFoundException, CandidateSessionTerminatedException {
+            throws CandidateException, DomainEntityNotFoundException {
         final CandidateSession candidateSession = lookupCandidateTestSession(xid, sessionToken);
         return exitTest(candidateSession);
     }
 
     public CandidateSession exitTest(final CandidateSession candidateSession)
-            throws CandidateForbiddenException, CandidateSessionTerminatedException {
+            throws CandidateException {
         Assert.notNull(candidateSession, "candidateSession");
         ensureSessionNotTerminated(candidateSession);
 
@@ -784,7 +783,7 @@ public class CandidateTestDeliveryService {
             testSessionController.exitTest(timestamp);
         }
         catch (final QtiCandidateStateException e) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.EXIT_TEST);
+            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.CANNOT_EXIT_TEST);
             return null;
         }
         catch (final RuntimeException e) {

@@ -40,10 +40,9 @@ import uk.ac.ed.ph.qtiworks.rendering.AbstractRenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.AuthorViewRenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.ItemRenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
-import uk.ac.ed.ph.qtiworks.services.candidate.CandidateForbiddenException;
+import uk.ac.ed.ph.qtiworks.services.candidate.CandidateException;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateItemDeliveryService;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateRenderingService;
-import uk.ac.ed.ph.qtiworks.services.candidate.CandidateSessionTerminatedException;
 import uk.ac.ed.ph.qtiworks.web.ServletOutputStreamer;
 import uk.ac.ed.ph.qtiworks.web.WebUtilities;
 
@@ -61,7 +60,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -94,7 +92,7 @@ public class CandidateItemController extends CandidateControllerBase {
 
     @RequestMapping(value="/itemsession/{xid}/{sessionToken}/enter", method=RequestMethod.POST)
     public String enterSession(@PathVariable final long xid, @PathVariable final String sessionToken)
-            throws DomainEntityNotFoundException, CandidateForbiddenException {
+            throws DomainEntityNotFoundException, CandidateException {
         candidateItemDeliveryService.enterOrReenterCandidateSession(xid, sessionToken);
 
         /* Redirect to rendering of current session state */
@@ -108,12 +106,12 @@ public class CandidateItemController extends CandidateControllerBase {
      * Renders the current state of the given session
      *
      * @throws IOException
-     * @throws CandidateForbiddenException
+     * @throws CandidateException
      */
     @RequestMapping(value="/itemsession/{xid}/{sessionToken}/render", method=RequestMethod.GET)
     public void renderCurrentItemSessionState(@PathVariable final long xid, @PathVariable final String sessionToken,
             final HttpServletResponse response)
-            throws DomainEntityNotFoundException, IOException, CandidateForbiddenException {
+            throws DomainEntityNotFoundException, IOException, CandidateException {
         /* Create appropriate options that link back to this controller */
         final String sessionBaseUrl = "/candidate/itemsession/" + xid + "/" + sessionToken;
         final ItemRenderingOptions renderingOptions = new ItemRenderingOptions();
@@ -132,12 +130,12 @@ public class CandidateItemController extends CandidateControllerBase {
      * Renders the authoring view of the given session
      *
      * @throws IOException
-     * @throws CandidateForbiddenException
+     * @throws CandidateException
      */
     @RequestMapping(value="/itemsession/{xid}/{sessionToken}/author-view", method=RequestMethod.GET)
     public void renderCurrentItemAuthoringView(@PathVariable final long xid, @PathVariable final String sessionToken,
             final HttpServletResponse response)
-            throws DomainEntityNotFoundException, IOException, CandidateForbiddenException {
+            throws DomainEntityNotFoundException, IOException, CandidateException {
         /* Create appropriate options that link back to this controller */
         final String sessionBaseUrl = "/candidate/itemsession/" + xid + "/" + sessionToken;
         final AuthorViewRenderingOptions renderingOptions = new AuthorViewRenderingOptions();
@@ -159,14 +157,6 @@ public class CandidateItemController extends CandidateControllerBase {
     }
 
     //----------------------------------------------------
-
-    @ExceptionHandler(CandidateSessionTerminatedException.class)
-    public String handleTerminatedSession(final CandidateSessionTerminatedException e) {
-        final CandidateSession candidateSession = e.getCandidateSession();
-        return redirectToRenderSession(candidateSession);
-    }
-
-    //----------------------------------------------------
     // Attempt handling
 
     /**
@@ -175,7 +165,7 @@ public class CandidateItemController extends CandidateControllerBase {
     @RequestMapping(value="/itemsession/{xid}/{sessionToken}/response", method=RequestMethod.POST)
     public String handleResponses(final HttpServletRequest request, @PathVariable final long xid,
             @PathVariable final String sessionToken)
-            throws DomainEntityNotFoundException, CandidateForbiddenException, CandidateSessionTerminatedException {
+            throws DomainEntityNotFoundException, CandidateException {
         /* First need to extract responses */
         final Map<Identifier, StringResponseData> stringResponseMap = extractStringResponseData(request);
 
@@ -203,7 +193,7 @@ public class CandidateItemController extends CandidateControllerBase {
      */
     @RequestMapping(value="/itemsession/{xid}/{sessionToken}/reset-soft", method=RequestMethod.POST)
     public String resetSessionSoft(@PathVariable final long xid, @PathVariable final String sessionToken)
-            throws DomainEntityNotFoundException, CandidateForbiddenException, CandidateSessionTerminatedException {
+            throws DomainEntityNotFoundException, CandidateException {
         candidateItemDeliveryService.resetCandidateSessionSoft(xid, sessionToken);
 
         /* Redirect to rendering of current session state */
@@ -215,7 +205,7 @@ public class CandidateItemController extends CandidateControllerBase {
      */
     @RequestMapping(value="/itemsession/{xid}/{sessionToken}/reset-hard", method=RequestMethod.POST)
     public String resetSessionHard(@PathVariable final long xid, @PathVariable final String sessionToken)
-            throws DomainEntityNotFoundException, CandidateForbiddenException, CandidateSessionTerminatedException {
+            throws DomainEntityNotFoundException, CandidateException {
         candidateItemDeliveryService.resetCandidateSessionHard(xid, sessionToken);
 
         /* Redirect to rendering of current session state */
@@ -227,7 +217,7 @@ public class CandidateItemController extends CandidateControllerBase {
      */
     @RequestMapping(value="/itemsession/{xid}/{sessionToken}/close", method=RequestMethod.POST)
     public String closeSession(@PathVariable final long xid, @PathVariable final String sessionToken)
-            throws DomainEntityNotFoundException, CandidateForbiddenException, CandidateSessionTerminatedException {
+            throws DomainEntityNotFoundException, CandidateException {
         candidateItemDeliveryService.endCandidateSession(xid, sessionToken);
 
         /* Redirect to rendering of current session state */
@@ -239,7 +229,7 @@ public class CandidateItemController extends CandidateControllerBase {
      */
     @RequestMapping(value="/itemsession/{xid}/{sessionToken}/solution", method=RequestMethod.POST)
     public String transitionSessionToSolutionState(@PathVariable final long xid, @PathVariable final String sessionToken)
-            throws DomainEntityNotFoundException, CandidateForbiddenException, CandidateSessionTerminatedException {
+            throws DomainEntityNotFoundException, CandidateException {
         candidateItemDeliveryService.requestSolution(xid, sessionToken);
 
         /* Redirect to rendering of current session state */
@@ -251,7 +241,7 @@ public class CandidateItemController extends CandidateControllerBase {
      */
     @RequestMapping(value="/itemsession/{xid}/{sessionToken}/exit", method=RequestMethod.POST)
     public String exitSession(@PathVariable final long xid, @PathVariable final String sessionToken)
-            throws DomainEntityNotFoundException, CandidateForbiddenException, CandidateSessionTerminatedException {
+            throws DomainEntityNotFoundException, CandidateException {
         final CandidateSession candidateSession = candidateItemDeliveryService.exitCandidateSession(xid, sessionToken);
         return redirectToExitUrl(candidateSession);
     }
@@ -267,7 +257,7 @@ public class CandidateItemController extends CandidateControllerBase {
     public void streamAssessmentPackageFile(@PathVariable final long xid, @PathVariable final String sessionToken,
             @RequestParam("href") final String fileHref,
             final HttpServletRequest request, final HttpServletResponse response)
-            throws IOException, DomainEntityNotFoundException, CandidateForbiddenException, CandidateSessionTerminatedException {
+            throws IOException, DomainEntityNotFoundException, CandidateException {
         final String fingerprint = "session/" + xid + "/file/" + fileHref;
         final String resourceEtag = WebUtilities.computeEtag(fingerprint);
         final String requestEtag = request.getHeader("If-None-Match");
@@ -291,7 +281,7 @@ public class CandidateItemController extends CandidateControllerBase {
     public void streamAssessmentSource(@PathVariable final long xid,
             @PathVariable final String sessionToken,
             final HttpServletRequest request, final HttpServletResponse response)
-            throws DomainEntityNotFoundException, IOException, CandidateForbiddenException, CandidateSessionTerminatedException {
+            throws DomainEntityNotFoundException, IOException, CandidateException {
         super.streamAssessmentSource(xid, sessionToken, request, response);
     }
 
@@ -301,7 +291,7 @@ public class CandidateItemController extends CandidateControllerBase {
      */
     @RequestMapping(value="/itemsession/{xid}/{sessionToken}/state", method=RequestMethod.GET)
     public void streamItemSessionState(@PathVariable final long xid, @PathVariable final String sessionToken, final HttpServletResponse response)
-            throws DomainEntityNotFoundException, IOException, CandidateForbiddenException {
+            throws DomainEntityNotFoundException, IOException, CandidateException {
         super.streamSessionState(xid, sessionToken, response);
     }
 
@@ -313,7 +303,7 @@ public class CandidateItemController extends CandidateControllerBase {
     @RequestMapping(value="/itemsession/{xid}/{sessionToken}/result", method=RequestMethod.GET)
     public void streamAssessmentResult(@PathVariable final long xid, @PathVariable final String sessionToken,
             final HttpServletResponse response)
-            throws DomainEntityNotFoundException, IOException, CandidateForbiddenException {
+            throws DomainEntityNotFoundException, IOException, CandidateException {
         super.streamAssessmentResult(xid, sessionToken, response);
     }
 
@@ -322,7 +312,7 @@ public class CandidateItemController extends CandidateControllerBase {
     @RequestMapping(value="/itemsession/{xid}/{sessionToken}/validation", method=RequestMethod.GET)
     public String showPackageValidationResult(@PathVariable final long xid, @PathVariable final String sessionToken,
             final Model model)
-            throws DomainEntityNotFoundException, CandidateForbiddenException {
+            throws DomainEntityNotFoundException, CandidateException {
         return super.showPackageValidationResult(xid, sessionToken, model);
     }
 

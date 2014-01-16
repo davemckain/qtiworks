@@ -36,9 +36,8 @@ package uk.ac.ed.ph.qtiworks.web.controller.candidate;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
-import uk.ac.ed.ph.qtiworks.services.candidate.CandidateForbiddenException;
+import uk.ac.ed.ph.qtiworks.services.candidate.CandidateException;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateRenderingService;
-import uk.ac.ed.ph.qtiworks.services.candidate.CandidateSessionTerminatedException;
 import uk.ac.ed.ph.qtiworks.web.ServletOutputStreamer;
 import uk.ac.ed.ph.qtiworks.web.WebUtilities;
 
@@ -143,7 +142,7 @@ public abstract class CandidateControllerBase {
     public void streamAssessmentPackageFile(@PathVariable final long xid, @PathVariable final String sessionToken,
             @RequestParam("href") final String fileHref,
             final HttpServletRequest request, final HttpServletResponse response)
-            throws IOException, DomainEntityNotFoundException, CandidateForbiddenException, CandidateSessionTerminatedException {
+            throws IOException, DomainEntityNotFoundException, CandidateException {
         final String fingerprint = "session/" + xid + "/file/" + fileHref;
         final String resourceEtag = WebUtilities.computeEtag(fingerprint);
         final String requestEtag = request.getHeader("If-None-Match");
@@ -164,7 +163,7 @@ public abstract class CandidateControllerBase {
      */
     protected void streamAssessmentSource(final long xid, final String sessionToken,
             final HttpServletRequest request, final HttpServletResponse response)
-            throws DomainEntityNotFoundException, IOException, CandidateForbiddenException, CandidateSessionTerminatedException {
+            throws DomainEntityNotFoundException, IOException, CandidateException {
         final String fingerprint = "session/" + xid + "/source";
         final String resourceEtag = WebUtilities.computeEtag(fingerprint);
         final String requestEtag = request.getHeader("If-None-Match");
@@ -182,7 +181,7 @@ public abstract class CandidateControllerBase {
      * the current state of the given {@link CandidateSession}
      */
     protected void streamSessionState(final long xid, final String sessionToken, final HttpServletResponse response)
-            throws DomainEntityNotFoundException, IOException, CandidateForbiddenException {
+            throws DomainEntityNotFoundException, IOException, CandidateException {
         final ServletOutputStreamer outputStreamer = new ServletOutputStreamer(response, null /* No caching */);
         candidateRenderingService.streamAssessmentState(xid, sessionToken, outputStreamer);
     }
@@ -192,7 +191,7 @@ public abstract class CandidateControllerBase {
      * {@link CandidateSession}
      */
     protected void streamAssessmentResult(final long xid, final String sessionToken, final HttpServletResponse response)
-            throws DomainEntityNotFoundException, IOException, CandidateForbiddenException {
+            throws DomainEntityNotFoundException, IOException, CandidateException {
         response.setContentType("application/xml");
         final ServletOutputStreamer outputStreamer = new ServletOutputStreamer(response, null /* No caching */);
         candidateRenderingService.streamAssessmentResult(xid, sessionToken, outputStreamer);
@@ -200,7 +199,7 @@ public abstract class CandidateControllerBase {
 
 
     protected String showPackageValidationResult(final long xid, final String sessionToken, final Model model)
-            throws DomainEntityNotFoundException, CandidateForbiddenException {
+            throws DomainEntityNotFoundException, CandidateException {
         model.addAttribute("validationResult", candidateRenderingService.generateValidationResult(xid, sessionToken));
         return "validationResult";
     }

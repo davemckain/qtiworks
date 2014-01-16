@@ -35,36 +35,39 @@ package uk.ac.ed.ph.qtiworks.services.candidate;
 
 import uk.ac.ed.ph.qtiworks.domain.NotAllowedException;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
-import uk.ac.ed.ph.qtiworks.domain.entities.User;
+import uk.ac.ed.ph.qtiworks.services.CandidateAuditLogger;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
- * Concrete "not allowed" {@link Exception} thrown when a candidate {@link User} does
- * not have an appropriate {@link CandidatePrivilege} on a {@link CandidateSession}
+ * This exception is thrown by the candidate service API when the caller ("candidate")
+ * attempts an illegal operation, or something similar.
+ *
+ * @see CandidateExceptionReason
+ * @see CandidateAuditLogger
  *
  * @author David McKain
  */
 @ResponseStatus(value=HttpStatus.FORBIDDEN)
-public final class CandidateForbiddenException extends NotAllowedException {
+public final class CandidateException extends NotAllowedException {
 
     private static final long serialVersionUID = 963799679125087234L;
 
     private final CandidateSession candidateSession;
-    private final CandidatePrivilege privilege;
+    private final CandidateExceptionReason candidateExceptionReason;
 
-    public CandidateForbiddenException(final CandidateSession candidateSession, final CandidatePrivilege privilege) {
-        super("Candidate does not have privilege " + privilege + " on CandidateSession xid=" + candidateSession);
+    public CandidateException(final CandidateSession candidateSession, final CandidateExceptionReason candidateExceptionReason) {
+        super("Candidate exception reason " + candidateExceptionReason + " on CandidateSession xid=" + candidateSession);
         this.candidateSession = candidateSession;
-        this.privilege = privilege;
+        this.candidateExceptionReason = candidateExceptionReason;
     }
 
     public CandidateSession getCandidateSession() {
         return candidateSession;
     }
 
-    public CandidatePrivilege getCandidatePrivilege() {
-        return privilege;
+    public CandidateExceptionReason getCandidateExceptionReason() {
+        return candidateExceptionReason;
     }
 }

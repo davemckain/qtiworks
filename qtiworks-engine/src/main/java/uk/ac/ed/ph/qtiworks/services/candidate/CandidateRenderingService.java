@@ -144,7 +144,7 @@ public class CandidateRenderingService {
      */
     public void renderCurrentCandidateItemSessionState(final long xid, final String sessionToken,
             final ItemRenderingOptions renderingOptions, final OutputStreamer outputStreamer)
-            throws CandidateForbiddenException, DomainEntityNotFoundException, IOException {
+            throws CandidateException, DomainEntityNotFoundException, IOException {
         Assert.notNull(sessionToken, "sessionToken");
         final CandidateSession candidateSession = candidateItemDeliveryService.lookupCandidateItemSession(xid, sessionToken);
         renderCurrentCandidateItemSessionState(candidateSession, renderingOptions, outputStreamer);
@@ -152,7 +152,7 @@ public class CandidateRenderingService {
 
     public void renderCurrentCandidateItemSessionState(final CandidateSession candidateSession,
             final ItemRenderingOptions renderingOptions, final OutputStreamer outputStreamer)
-            throws IOException, CandidateForbiddenException {
+            throws IOException, CandidateException {
         Assert.notNull(candidateSession, "candidateSession");
         Assert.notNull(renderingOptions, "renderingOptions");
         Assert.notNull(outputStreamer, "outputStreamer");
@@ -185,7 +185,7 @@ public class CandidateRenderingService {
 
     private void renderCurrentCandidateItemSessionState(final CandidateSession candidateSession,
             final ItemRenderingOptions renderingOptions, final StreamResult result)
-            throws CandidateForbiddenException {
+            throws CandidateException {
         if (candidateSession.isExploded()) {
             renderExploded(candidateSession, renderingOptions, result);
         }
@@ -271,7 +271,7 @@ public class CandidateRenderingService {
 
     public void renderCurrentCandidateItemSessionStateAuthorView(final long xid, final String sessionToken,
             final AuthorViewRenderingOptions renderingOptions, final OutputStreamer outputStreamer)
-            throws CandidateForbiddenException, DomainEntityNotFoundException, IOException {
+            throws CandidateException, DomainEntityNotFoundException, IOException {
         Assert.notNull(sessionToken, "sessionToken");
         final CandidateSession candidateSession = candidateItemDeliveryService.lookupCandidateItemSession(xid, sessionToken);
         renderCurrentCandidateItemSessionStateAuthorView(candidateSession, renderingOptions, outputStreamer);
@@ -279,7 +279,7 @@ public class CandidateRenderingService {
 
     public void renderCurrentCandidateItemSessionStateAuthorView(final CandidateSession candidateSession,
             final AuthorViewRenderingOptions renderingOptions, final OutputStreamer outputStreamer)
-            throws IOException, CandidateForbiddenException {
+            throws IOException, CandidateException {
         Assert.notNull(candidateSession, "candidateSession");
         Assert.notNull(renderingOptions, "renderingOptions");
         Assert.notNull(outputStreamer, "outputStreamer");
@@ -337,7 +337,7 @@ public class CandidateRenderingService {
      */
     public void renderCurrentCandidateTestSessionState(final long xid, final String sessionToken,
             final TestRenderingOptions renderingOptions, final OutputStreamer outputStreamer)
-            throws CandidateForbiddenException, DomainEntityNotFoundException, IOException {
+            throws CandidateException, DomainEntityNotFoundException, IOException {
         final CandidateSession candidateSession = candidateTestDeliveryService.lookupCandidateTestSession(xid, sessionToken);
         renderCurrentCandidateTestSessionState(candidateSession, renderingOptions, outputStreamer);
     }
@@ -345,7 +345,7 @@ public class CandidateRenderingService {
     public void renderCurrentCandidateTestSessionState(final CandidateSession candidateSession,
             final TestRenderingOptions renderingOptions,
             final OutputStreamer outputStreamer)
-            throws IOException, CandidateForbiddenException {
+            throws IOException, CandidateException {
         Assert.notNull(candidateSession, "candidateSession");
         Assert.notNull(renderingOptions, "renderingOptions");
         Assert.notNull(outputStreamer, "outputStreamer");
@@ -378,7 +378,7 @@ public class CandidateRenderingService {
 
     private void renderCurrentCandidateTestSessionState(final CandidateSession candidateSession,
             final TestRenderingOptions renderingOptions, final StreamResult result)
-            throws CandidateForbiddenException {
+            throws CandidateException {
         if (candidateSession.isExploded()) {
             renderExploded(candidateSession, renderingOptions, result);
         }
@@ -456,7 +456,7 @@ public class CandidateRenderingService {
 
     public void renderCurrentCandidateTestSessionStateAuthorView(final long xid, final String sessionToken,
             final AuthorViewRenderingOptions renderingOptions, final OutputStreamer outputStreamer)
-            throws CandidateForbiddenException, DomainEntityNotFoundException, IOException {
+            throws CandidateException, DomainEntityNotFoundException, IOException {
         Assert.notNull(sessionToken, "sessionToken");
         final CandidateSession candidateSession = candidateTestDeliveryService.lookupCandidateTestSession(xid, sessionToken);
         renderCurrentCandidateTestSessionStateAuthorView(candidateSession, renderingOptions, outputStreamer);
@@ -464,7 +464,7 @@ public class CandidateRenderingService {
 
     public void renderCurrentCandidateTestSessionStateAuthorView(final CandidateSession candidateSession,
             final AuthorViewRenderingOptions renderingOptions, final OutputStreamer outputStreamer)
-            throws IOException, CandidateForbiddenException {
+            throws IOException, CandidateException {
         Assert.notNull(candidateSession, "candidateSession");
         Assert.notNull(renderingOptions, "renderingOptions");
         Assert.notNull(outputStreamer, "outputStreamer");
@@ -519,7 +519,7 @@ public class CandidateRenderingService {
 
     public void streamAssessmentPackageFile(final long xid, final String sessionToken, final String fileSystemIdString,
             final OutputStreamer outputStreamer)
-            throws CandidateForbiddenException, IOException, DomainEntityNotFoundException, CandidateSessionTerminatedException {
+            throws CandidateException, IOException, DomainEntityNotFoundException {
         Assert.notNull(sessionToken, "sessionToken");
         Assert.notNull(fileSystemIdString, "fileSystemIdString");
         Assert.notNull(outputStreamer, "outputStreamer");
@@ -529,7 +529,7 @@ public class CandidateRenderingService {
 
     public void streamAssessmentPackageFile(final CandidateSession candidateSession, final String fileSystemIdString,
             final OutputStreamer outputStreamer)
-            throws CandidateForbiddenException, IOException, CandidateSessionTerminatedException {
+            throws CandidateException, IOException {
         Assert.notNull(candidateSession, "candidateSession");
         Assert.notNull(fileSystemIdString, "fileSystemIdString");
         Assert.notNull(outputStreamer, "outputStreamer");
@@ -555,7 +555,7 @@ public class CandidateRenderingService {
         }
         else {
             /* Blacklisted file. Log and throw Exception */
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.ACCESS_BLACKLISTED_ASSESSMENT_FILE);
+            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.ACCESS_BLACKLISTED_ASSESSMENT_FILE);
         }
     }
 
@@ -563,14 +563,14 @@ public class CandidateRenderingService {
     // Candidate Source access
 
     public void streamAssessmentSource(final long xid, final String sessionToken, final OutputStreamer outputStreamer)
-            throws CandidateForbiddenException, IOException, DomainEntityNotFoundException, CandidateSessionTerminatedException {
+            throws CandidateException, IOException, DomainEntityNotFoundException {
         Assert.notNull(outputStreamer, "outputStreamer");
         final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
         streamAssessmentSource(candidateSession, outputStreamer);
     }
 
     public void streamAssessmentSource(final CandidateSession candidateSession, final OutputStreamer outputStreamer)
-            throws CandidateForbiddenException, IOException, CandidateSessionTerminatedException {
+            throws CandidateException, IOException {
         Assert.notNull(candidateSession, "candidateSession");
         Assert.notNull(outputStreamer, "outputStreamer");
         ensureCallerMayAccessAuthorInfo(candidateSession);
@@ -591,14 +591,14 @@ public class CandidateRenderingService {
     // Candidate state access
 
     public void streamAssessmentState(final long xid, final String sessionToken, final OutputStreamer outputStreamer)
-            throws CandidateForbiddenException, DomainEntityNotFoundException, IOException {
+            throws CandidateException, DomainEntityNotFoundException, IOException {
         Assert.notNull(outputStreamer, "outputStreamer");
         final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
         streamAssessmentState(candidateSession, outputStreamer);
     }
 
     public void streamAssessmentState(final CandidateSession candidateSession, final OutputStreamer outputStreamer)
-            throws CandidateForbiddenException, IOException {
+            throws CandidateException, IOException {
         Assert.notNull(candidateSession, "candidateSession");
         Assert.notNull(outputStreamer, "outputStreamer");
 
@@ -623,14 +623,14 @@ public class CandidateRenderingService {
     // Candidate Result access
 
     public void streamAssessmentResult(final long xid, final String sessionToken, final OutputStreamer outputStreamer)
-            throws CandidateForbiddenException, DomainEntityNotFoundException, IOException {
+            throws CandidateException, DomainEntityNotFoundException, IOException {
         Assert.notNull(outputStreamer, "outputStreamer");
         final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
         streamAssessmentResult(candidateSession, outputStreamer);
     }
 
     public void streamAssessmentResult(final CandidateSession candidateSession, final OutputStreamer outputStreamer)
-            throws CandidateForbiddenException, IOException {
+            throws CandidateException, IOException {
         Assert.notNull(candidateSession, "candidateSession");
         Assert.notNull(outputStreamer, "outputStreamer");
 
@@ -652,14 +652,14 @@ public class CandidateRenderingService {
 
     public <E extends AssessmentObjectValidationResult<?>> E
     generateValidationResult(final long xid, final String sessionToken)
-            throws CandidateForbiddenException, DomainEntityNotFoundException {
+            throws CandidateException, DomainEntityNotFoundException {
         final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
         return generateValidationResult(candidateSession);
     }
 
     public <E extends AssessmentObjectValidationResult<?>> E
     generateValidationResult(final CandidateSession candidateSession)
-            throws CandidateForbiddenException {
+            throws CandidateException {
         Assert.notNull(candidateSession, "candidateSession");
 
         /* Make sure candidate can access authoring info */
@@ -747,36 +747,36 @@ public class CandidateRenderingService {
     // Access controls
 
     private CandidateSession lookupCandidateSession(final long xid, final String sessionToken)
-            throws DomainEntityNotFoundException, CandidateForbiddenException {
+            throws DomainEntityNotFoundException, CandidateException {
         Assert.notNull(sessionToken, "sessionToken");
         final CandidateSession candidateSession = candidateSessionDao.requireFindById(xid);
         if (!sessionToken.equals(candidateSession.getSessionToken())) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.ACCESS_CANDIDATE_SESSION);
+            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.SESSION_TOKEN_MISMATCH);
         }
         return candidateSession;
     }
 
 
     private void ensureSessionNotTerminated(final CandidateSession candidateSession)
-            throws CandidateSessionTerminatedException {
+            throws CandidateException {
         if (candidateSession.isTerminated()) {
-            candidateAuditLogger.logTerminated(candidateSession);
+            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.SESSION_IS_TERMINATED);
         }
     }
 
     private CandidateEvent ensureSessionEntered(final CandidateSession candidateSession)
-            throws CandidateForbiddenException {
+            throws CandidateException {
         final CandidateEvent mostRecentEvent = candidateDataService.getMostRecentEvent(candidateSession);
         if (mostRecentEvent==null) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.ACCESS_ENTERED_SESSION);
+            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.SESSION_NOT_ENTERED);
         }
         return mostRecentEvent;
     }
 
     private void ensureCallerMayAccessAuthorInfo(final CandidateSession candidateSession)
-            throws CandidateForbiddenException {
+            throws CandidateException {
         if (!candidateSession.isAuthorMode()) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.ACCESS_AUTHOR_INFO);
+            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.AUTHOR_INFO_FORBIDDEN);
         }
     }
 }

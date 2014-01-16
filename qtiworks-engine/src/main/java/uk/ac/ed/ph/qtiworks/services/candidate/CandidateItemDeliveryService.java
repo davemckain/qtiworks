@@ -136,34 +136,34 @@ public class CandidateItemDeliveryService {
      * @param xid ID (xid) of the session to look up
      *
      * @throws DomainEntityNotFoundException
-     * @throws CandidateForbiddenException
+     * @throws CandidateException
      */
     public CandidateSession lookupCandidateItemSession(final long xid, final String sessionToken)
-            throws DomainEntityNotFoundException, CandidateForbiddenException {
+            throws DomainEntityNotFoundException, CandidateException {
         Assert.notNull(sessionToken, "sessionToken");
         final CandidateSession candidateSession = candidateSessionDao.requireFindById(xid);
         if (!sessionToken.equals(candidateSession.getSessionToken())) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.ACCESS_CANDIDATE_SESSION);
+            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.SESSION_TOKEN_MISMATCH);
         }
         if (candidateSession.getDelivery().getAssessment().getAssessmentType()!=AssessmentObjectType.ASSESSMENT_ITEM) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.ACCESS_CANDIDATE_SESSION_AS_ITEM);
+            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.SESSION_IS_NOT_ASSESSMENT_ITEM);
         }
         return candidateSession;
     }
 
     private void ensureSessionNotTerminated(final CandidateSession candidateSession)
-            throws CandidateSessionTerminatedException {
+            throws CandidateException {
         if (candidateSession.isTerminated()) {
             /* No access when session has been terminated */
-            candidateAuditLogger.logTerminated(candidateSession);
+            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.SESSION_IS_TERMINATED);
         }
     }
 
     private CandidateEvent ensureSessionEntered(final CandidateSession candidateSession)
-            throws CandidateForbiddenException {
+            throws CandidateException {
         final CandidateEvent mostRecentEvent = candidateDataService.getMostRecentEvent(candidateSession);
         if (mostRecentEvent==null) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.ACCESS_ENTERED_SESSION);
+            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.SESSION_NOT_ENTERED);
         }
         return mostRecentEvent;
     }
@@ -172,7 +172,7 @@ public class CandidateItemDeliveryService {
     // Session entry
 
     public CandidateSession enterOrReenterCandidateSession(final long xid, final String sessionToken)
-            throws CandidateForbiddenException, DomainEntityNotFoundException {
+            throws CandidateException, DomainEntityNotFoundException {
         final CandidateSession candidateSession = lookupCandidateItemSession(xid, sessionToken);
         final CandidateEvent mostRecentEvent = candidateDataService.getMostRecentEvent(candidateSession);
         if (mostRecentEvent==null && !candidateSession.isTerminated()) {
@@ -227,7 +227,7 @@ public class CandidateItemDeliveryService {
             final Map<Identifier, StringResponseData> stringResponseMap,
             final Map<Identifier, MultipartFile> fileResponseMap,
             final String candidateComment)
-            throws CandidateForbiddenException, DomainEntityNotFoundException, CandidateSessionTerminatedException {
+            throws CandidateException, DomainEntityNotFoundException {
         final CandidateSession candidateSession = lookupCandidateItemSession(xid, sessionToken);
         return handleResponses(candidateSession, stringResponseMap, fileResponseMap, candidateComment);
     }
@@ -239,7 +239,7 @@ public class CandidateItemDeliveryService {
             final Map<Identifier, StringResponseData> stringResponseMap,
             final Map<Identifier, MultipartFile> fileResponseMap,
             final String candidateComment)
-            throws CandidateForbiddenException, CandidateSessionTerminatedException {
+            throws CandidateException {
         Assert.notNull(candidateSession, "candidateSession");
         ensureSessionNotTerminated(candidateSession);
 
@@ -251,7 +251,7 @@ public class CandidateItemDeliveryService {
 
         /* Make sure an attempt is allowed */
         if (itemSessionState.isEnded()) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.MAKE_RESPONSES);
+            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.RESPONSES_NOT_EXPECTED);
             return null;
         }
 
@@ -260,7 +260,7 @@ public class CandidateItemDeliveryService {
         final Delivery delivery = candidateSession.getDelivery();
         final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) assessmentDataService.getEffectiveDeliverySettings(candidate, delivery);
         if (candidateComment!=null && !itemDeliverySettings.isAllowCandidateComment()) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.SUBMIT_COMMENT);
+            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.CANDIDATE_COMMENT_FORBIDDEN);
             return null;
         }
 
@@ -325,7 +325,7 @@ public class CandidateItemDeliveryService {
                 itemSessionController.setCandidateComment(timestamp, candidateComment);
             }
             catch (final QtiCandidateStateException e) {
-                candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.SUBMIT_COMMENT);
+                candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.CANDIDATE_COMMENT_FORBIDDEN);
                 return null;
             }
             catch (final RuntimeException e) {
@@ -366,7 +366,7 @@ public class CandidateItemDeliveryService {
             }
         }
         catch (final QtiCandidateStateException e) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.MAKE_RESPONSES);
+            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.RESPONSES_NOT_EXPECTED);
             return null;
         }
         catch (final RuntimeException e) {
@@ -417,13 +417,13 @@ public class CandidateItemDeliveryService {
      * into ended state.
      */
     public CandidateSession endCandidateSession(final long xid, final String sessionToken)
-            throws CandidateForbiddenException, DomainEntityNotFoundException, CandidateSessionTerminatedException {
+            throws CandidateException, DomainEntityNotFoundException {
         final CandidateSession candidateSession = lookupCandidateItemSession(xid, sessionToken);
         return endCandidateSession(candidateSession);
     }
 
     public CandidateSession endCandidateSession(final CandidateSession candidateSession)
-            throws CandidateForbiddenException, CandidateSessionTerminatedException {
+            throws CandidateException {
         Assert.notNull(candidateSession, "candidateSession");
         ensureSessionNotTerminated(candidateSession);
 
@@ -438,11 +438,11 @@ public class CandidateItemDeliveryService {
         final Delivery delivery = candidateSession.getDelivery();
         final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) assessmentDataService.getEffectiveDeliverySettings(candidate, delivery);
         if (itemSessionState.isEnded()) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.END_SESSION_WHEN_ENDED);
+            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.END_SESSION_WHEN_ALREADY_ENDED);
             return null;
         }
         else if (!itemDeliverySettings.isAllowEnd()) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.END_SESSION_WHEN_INTERACTING);
+            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.END_SESSION_WHEN_INTERACTING_FORBIDDEN);
             return null;
         }
 
@@ -452,7 +452,7 @@ public class CandidateItemDeliveryService {
             itemSessionController.endItem(timestamp);
         }
         catch (final QtiCandidateStateException e) {
-            candidateAuditLogger.logAndForbid(candidateSession, itemSessionState.isEnded() ? CandidatePrivilege.END_SESSION_WHEN_ENDED : CandidatePrivilege.END_SESSION_WHEN_INTERACTING);
+            candidateAuditLogger.logCandidateException(candidateSession, itemSessionState.isEnded() ? CandidateExceptionReason.END_SESSION_WHEN_ALREADY_ENDED : CandidateExceptionReason.END_SESSION_WHEN_INTERACTING_FORBIDDEN);
             return null;
         }
         catch (final RuntimeException e) {
@@ -480,13 +480,13 @@ public class CandidateItemDeliveryService {
      * @see ItemSessionController#resetItemSessionHard(Date, boolean)
      */
     public CandidateSession resetCandidateSessionHard(final long xid, final String sessionToken)
-            throws CandidateForbiddenException, DomainEntityNotFoundException, CandidateSessionTerminatedException {
+            throws CandidateException, DomainEntityNotFoundException {
         final CandidateSession candidateSession = lookupCandidateItemSession(xid, sessionToken);
         return resetCandidateSessionHard(candidateSession);
     }
 
     public CandidateSession resetCandidateSessionHard(final CandidateSession candidateSession)
-            throws CandidateForbiddenException, CandidateSessionTerminatedException {
+            throws CandidateException {
         Assert.notNull(candidateSession, "candidateSession");
         ensureSessionNotTerminated(candidateSession);
 
@@ -500,11 +500,11 @@ public class CandidateItemDeliveryService {
         final Delivery delivery = candidateSession.getDelivery();
         final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) assessmentDataService.getEffectiveDeliverySettings(candidate, delivery);
         if (!itemSessionState.isEnded() && !itemDeliverySettings.isAllowHardResetWhenOpen()) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.HARD_RESET_SESSION_WHEN_INTERACTING);
+            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.HARD_RESET_SESSION_WHEN_INTERACTING_FORBIDDEN);
             return null;
         }
         else if (itemSessionState.isEnded() && !itemDeliverySettings.isAllowHardResetWhenEnded()) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.HARD_RESET_SESSION_WHEN_ENDED);
+            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.HARD_RESET_SESSION_WHEN_ENDED_FORBIDDEN);
             return null;
         }
 
@@ -514,7 +514,7 @@ public class CandidateItemDeliveryService {
             itemSessionController.resetItemSessionHard(timestamp, true);
         }
         catch (final QtiCandidateStateException e) {
-            candidateAuditLogger.logAndForbid(candidateSession, itemSessionState.isEnded() ? CandidatePrivilege.HARD_RESET_SESSION_WHEN_ENDED : CandidatePrivilege.HARD_RESET_SESSION_WHEN_INTERACTING);
+            candidateAuditLogger.logCandidateException(candidateSession, itemSessionState.isEnded() ? CandidateExceptionReason.HARD_RESET_SESSION_WHEN_ENDED_FORBIDDEN : CandidateExceptionReason.HARD_RESET_SESSION_WHEN_INTERACTING_FORBIDDEN);
             return null;
         }
         catch (final RuntimeException e) {
@@ -540,13 +540,13 @@ public class CandidateItemDeliveryService {
      * @see ItemSessionController#resetItemSessionSoft(Date, boolean)
      */
     public CandidateSession resetCandidateSessionSoft(final long xid, final String sessionToken)
-            throws CandidateForbiddenException, DomainEntityNotFoundException, CandidateSessionTerminatedException {
+            throws CandidateException, DomainEntityNotFoundException {
         final CandidateSession candidateSession = lookupCandidateItemSession(xid, sessionToken);
         return resetCandidateSessionSoft(candidateSession);
     }
 
     public CandidateSession resetCandidateSessionSoft(final CandidateSession candidateSession)
-            throws CandidateForbiddenException, CandidateSessionTerminatedException {
+            throws CandidateException {
         Assert.notNull(candidateSession, "candidateSession");
         ensureSessionNotTerminated(candidateSession);
 
@@ -561,11 +561,11 @@ public class CandidateItemDeliveryService {
         final Delivery delivery = candidateSession.getDelivery();
         final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) assessmentDataService.getEffectiveDeliverySettings(candidate, delivery);
         if (!itemSessionState.isEnded() && !itemDeliverySettings.isAllowSoftResetWhenOpen()) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.SOFT_RESET_SESSION_WHEN_INTERACTING);
+            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.SOFT_RESET_SESSION_WHEN_INTERACTING_FORBIDDEN);
             return null;
         }
         else if (itemSessionState.isEnded() && !itemDeliverySettings.isAllowSoftResetWhenEnded()) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.SOFT_RESET_SESSION_WHEN_ENDED);
+            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.SOFT_RESET_SESSION_WHEN_ENDED_FORBIDDEN);
             return null;
         }
 
@@ -575,7 +575,7 @@ public class CandidateItemDeliveryService {
             itemSessionController.resetItemSessionSoft(timestamp, true);
         }
         catch (final QtiCandidateStateException e) {
-            candidateAuditLogger.logAndForbid(candidateSession, itemSessionState.isEnded() ? CandidatePrivilege.SOFT_RESET_SESSION_WHEN_ENDED : CandidatePrivilege.SOFT_RESET_SESSION_WHEN_INTERACTING);
+            candidateAuditLogger.logCandidateException(candidateSession, itemSessionState.isEnded() ? CandidateExceptionReason.SOFT_RESET_SESSION_WHEN_ENDED_FORBIDDEN : CandidateExceptionReason.SOFT_RESET_SESSION_WHEN_INTERACTING_FORBIDDEN);
             return null;
         }
         catch (final RuntimeException e) {
@@ -598,13 +598,13 @@ public class CandidateItemDeliveryService {
      * already been closed (and if this is allowed).
      */
     public CandidateSession requestSolution(final long xid, final String sessionToken)
-            throws CandidateForbiddenException, DomainEntityNotFoundException, CandidateSessionTerminatedException {
+            throws CandidateException, DomainEntityNotFoundException {
         final CandidateSession candidateSession = lookupCandidateItemSession(xid, sessionToken);
         return requestSolution(candidateSession);
     }
 
     public CandidateSession requestSolution(final CandidateSession candidateSession)
-            throws CandidateForbiddenException, CandidateSessionTerminatedException {
+            throws CandidateException {
         Assert.notNull(candidateSession, "candidateSession");
         ensureSessionNotTerminated(candidateSession);
 
@@ -619,11 +619,11 @@ public class CandidateItemDeliveryService {
         final Delivery delivery = candidateSession.getDelivery();
         final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) assessmentDataService.getEffectiveDeliverySettings(candidate, delivery);
         if (!itemSessionState.isEnded() && !itemDeliverySettings.isAllowSolutionWhenOpen()) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.SOLUTION_WHEN_INTERACTING);
+            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.SOLUTION_WHEN_INTERACTING_FORBIDDEN);
             return null;
         }
         else if (itemSessionState.isEnded() && !itemDeliverySettings.isAllowSoftResetWhenEnded()) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.SOLUTION_WHEN_ENDED);
+            candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.SOLUTION_WHEN_ENDED_FORBIDDEN);
             return null;
         }
 
@@ -636,7 +636,7 @@ public class CandidateItemDeliveryService {
                 itemSessionController.endItem(timestamp);
             }
             catch (final QtiCandidateStateException e) {
-                candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.SOLUTION_WHEN_ENDED);
+                candidateAuditLogger.logCandidateException(candidateSession, CandidateExceptionReason.SOLUTION_WHEN_ENDED_FORBIDDEN);
                 return null;
             }
             catch (final RuntimeException e) {
@@ -668,13 +668,13 @@ public class CandidateItemDeliveryService {
      * interacting or closed states.
      */
     public CandidateSession exitCandidateSession(final long xid, final String sessionToken)
-            throws CandidateForbiddenException, DomainEntityNotFoundException, CandidateSessionTerminatedException {
+            throws CandidateException, DomainEntityNotFoundException {
         final CandidateSession candidateSession = lookupCandidateItemSession(xid, sessionToken);
         return exitCandidateSession(candidateSession);
     }
 
     public CandidateSession exitCandidateSession(final CandidateSession candidateSession)
-            throws CandidateForbiddenException, CandidateSessionTerminatedException {
+            throws CandidateException {
         Assert.notNull(candidateSession, "candidateSession");
         ensureSessionNotTerminated(candidateSession);
 
