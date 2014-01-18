@@ -66,7 +66,7 @@ public class LtiInstructorRouter {
     private String contextPath;
 
     public String buildWithinContextUrl(final String actionUrl) {
-        final LtiResource currentLtiResource = identityService.ensureCurrentThreadLtiResource();
+        final LtiResource currentLtiResource = identityService.ensureCurrentThreadLtiAuthenticationTicket().getLtiResource();
         return "/lti/resource/" + currentLtiResource.getId() + actionUrl;
     }
 
@@ -79,11 +79,12 @@ public class LtiInstructorRouter {
     }
 
     public Map<String, String> buildPrimaryRouting() {
-        final LtiResource currentLtiResource = identityService.ensureCurrentThreadLtiResource();
+        final LtiResource currentLtiResource = identityService.ensureCurrentThreadLtiAuthenticationTicket().getLtiResource();
         final Long lrid = currentLtiResource.getId();
 
         final Map<String, String> primaryRouting = new HashMap<String, String>();
         primaryRouting.put("resourceDashboard", buildWebUrl(""));
+        primaryRouting.put("exit", buildWebUrl("/exit"));
         primaryRouting.put("debug", buildWebUrl("/debug"));
         primaryRouting.put("try", buildWebUrl("/try"));
         primaryRouting.put("toggleAvailability", buildWebUrl("/toggle-availability"));

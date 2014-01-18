@@ -34,14 +34,17 @@
 package uk.ac.ed.ph.qtiworks.services;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
-import uk.ac.ed.ph.qtiworks.domain.entities.LtiResource;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
+import uk.ac.ed.ph.qtiworks.web.lti.LtiAuthenticationTicket;
 
 import org.springframework.stereotype.Service;
 
 /**
- * {@link ThreadLocal} storing details about the current {@link User} and {@link LtiResource}
+ * {@link ThreadLocal} storing details about the current {@link User} and {@link LtiAuthenticationTicket}
  * (when accessing QTIWorks via a domain-level launch on a particular resource)
+ *
+ * @see User
+ * @see LtiAuthenticationTicket
  *
  * @author David McKain
  */
@@ -49,7 +52,7 @@ import org.springframework.stereotype.Service;
 public final class IdentityService {
 
     private final ThreadLocal<User> currentUserThreadLocal = new ThreadLocal<User>();
-    private final ThreadLocal<LtiResource> currentLtiResourceThreadLocal = new ThreadLocal<LtiResource>();
+    private final ThreadLocal<LtiAuthenticationTicket> currentLtiAuthenticationTicketThreadLocal = new ThreadLocal<LtiAuthenticationTicket>();
 
     public User getCurrentThreadUser() {
         return currentUserThreadLocal.get();
@@ -65,23 +68,23 @@ public final class IdentityService {
     }
 
 
-    public LtiResource getCurrentThreadLtiResource() {
-        return currentLtiResourceThreadLocal.get();
+    public LtiAuthenticationTicket getCurrentThreadLtiAuthenticationTicket() {
+        return currentLtiAuthenticationTicketThreadLocal.get();
     }
 
-    public void setCurrentThreadLtiResource(final LtiResource ltiResource) {
-        if (ltiResource!=null) {
-            currentLtiResourceThreadLocal.set(ltiResource);
+    public void setCurrentThreadLtiAuthenticationTicket(final LtiAuthenticationTicket ltiAuthenticationTicket) {
+        if (ltiAuthenticationTicket!=null) {
+            currentLtiAuthenticationTicketThreadLocal.set(ltiAuthenticationTicket);
         }
         else {
-            currentLtiResourceThreadLocal.remove();
+            currentLtiAuthenticationTicketThreadLocal.remove();
         }
     }
 
-    public LtiResource ensureCurrentThreadLtiResource() {
-        final LtiResource result = getCurrentThreadLtiResource();
+    public LtiAuthenticationTicket ensureCurrentThreadLtiAuthenticationTicket() {
+        final LtiAuthenticationTicket result = getCurrentThreadLtiAuthenticationTicket();
         if (result==null) {
-            throw new QtiWorksLogicException("Expected current LtiResource to be set for current Thread");
+            throw new QtiWorksLogicException("Expected current LtiAuthenticationTicket to be set for current Thread");
         }
         return result;
     }

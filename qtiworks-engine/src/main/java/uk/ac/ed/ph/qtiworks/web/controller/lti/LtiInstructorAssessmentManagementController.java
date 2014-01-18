@@ -59,6 +59,7 @@ import uk.ac.ed.ph.qtiworks.services.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.services.domain.TestDeliverySettingsTemplate;
 import uk.ac.ed.ph.qtiworks.web.GlobalRouter;
 import uk.ac.ed.ph.qtiworks.web.domain.UploadAssessmentPackageCommand;
+import uk.ac.ed.ph.qtiworks.web.lti.LtiAuthenticationTicket;
 
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
@@ -120,13 +121,38 @@ public class LtiInstructorAssessmentManagementController {
     @RequestMapping(value="", method=RequestMethod.GET)
     public String resourceTopPage(final Model model) {
         ltiInstructorModelHelper.setupModel(model);
-        final Assessment thisAssessment = identityService.getCurrentThreadLtiResource().getDelivery().getAssessment();
+        final Assessment thisAssessment = identityService.getCurrentThreadLtiAuthenticationTicket().getLtiResource().getDelivery().getAssessment();
         if (thisAssessment==null) {
             return "instructor/initialSetup";
         }
         return "instructor/resourceDashboard";
     }
 
+    /**
+     * Exits this management session, returning to the URL that was specified in
+     * the LTI launch data.
+     * <p>
+     * NB: The view layer does not include this option if no such URL was sent
+     * by the TC, so we simply response with an error in that case.
+     */
+    @RequestMapping(value="/exit", method=RequestMethod.POST)
+    public String exit(final HttpServletResponse response) throws IOException {
+        /* Extract return URL */
+        final LtiAuthenticationTicket ltiAuthenticationTicket = identityService.ensureCurrentThreadLtiAuthenticationTicket();
+        final String returnUrl = ltiAuthenticationTicket.getReturnUrl();
+
+        /* Invalidate ticket */
+        identityService.setCurrentThreadLtiAuthenticationTicket(null);
+
+        /* Finally redirect if possible */
+        if (returnUrl==null) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "The tool consumer did not send a return URL to exit to");
+            return null;
+        }
+        return "redirect:" + returnUrl;
+    }
+
+    /** FIXME: This is temporary for debugging purposes. Remove this some time later on... */
     @RequestMapping(value="/debug", method=RequestMethod.GET)
     public String diagnosticsPage(final Model model) {
         ltiInstructorModelHelper.setupModel(model);
@@ -137,7 +163,7 @@ public class LtiInstructorAssessmentManagementController {
     public String tryThisAssessment(final HttpServletResponse response)
             throws PrivilegeException, IOException,
             CandidateException, IncompatiableDeliverySettingsException {
-        final Delivery thisDelivery = identityService.getCurrentThreadLtiResource().getDelivery();
+        final Delivery thisDelivery = identityService.getCurrentThreadLtiAuthenticationTicket().getLtiResource().getDelivery();
         final Assessment thisAssessment = thisDelivery.getAssessment();
         final DeliverySettings theseDeliverySettings = thisDelivery.getDeliverySettings();
         if (thisAssessment==null) {
@@ -153,7 +179,7 @@ public class LtiInstructorAssessmentManagementController {
     @RequestMapping(value="/toggle-availability", method=RequestMethod.POST)
     public String toggleThisDeliveryOpenStatus()
             throws PrivilegeException {
-        final Delivery thisDelivery = identityService.getCurrentThreadLtiResource().getDelivery();
+        final Delivery thisDelivery = identityService.getCurrentThreadLtiAuthenticationTicket().getLtiResource().getDelivery();
         try {
             assessmentManagementService.setDeliveryOpenStatus(thisDelivery.getId(), !thisDelivery.isOpen());
         }

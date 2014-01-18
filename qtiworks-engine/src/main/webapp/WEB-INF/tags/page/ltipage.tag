@@ -7,6 +7,7 @@ Skeleton for an LTI instructor-role page
 
 Core Model:
 
+thisLtiAuthenticationTicket
 thisLtiUser
 thisLtiResource
 thisDelivery
@@ -31,6 +32,7 @@ primaryRouting (action -> URL)
 <%-- Add additional data to model --%>
 <c:set var="ltiContext" value="${thisLtiResource.ltiContext}" scope="request"/>
 <c:set var="ltiDomain" value="${ltiContext.ltiDomain}" scope="request"/>
+<c:set var="canExit" value=${!empty(thisLtiAuthenticationTicket.returnUrl" scope="request"/>
 
 <%-- Extract config beans stashed in ServletContext during AppContext setup --%>
 <c:set var="qtiWorksProperties" value="${applicationScope['qtiWorksProperties']}" scope="request"/>
@@ -54,6 +56,11 @@ primaryRouting (action -> URL)
     <script src="${utils:internalLink(pageContext, '/includes/qtiworks.js')}?${qtiWorksVersion}"></script>
   </head>
   <body class="<c:out value='${cssClass}' default='ltipage'/>">
+    <c:if test="${canExit}">
+      <div class="ltiExit">
+        <page:postLink path="${primaryRouting['exit']}" title="Exit"/>
+      </div>
+    </c:if>
     <div class="container_12">
       <header class="pageHeader">
         <h1>QTIWorks Assessment Launch</h1>

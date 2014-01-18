@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.qtiworks.web.controller.lti;
 
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
-import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.services.AssessmentProctoringService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentReportingService;
@@ -57,7 +56,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
- * Controller providing reporting and proctoring functions for {@link Assessment}s
+ * Controller providing reporting and proctoring functions for the current launch
  *
  * @author David McKain
  */
@@ -92,7 +91,7 @@ public class LtiInstructorAssessmentReportingController {
     @RequestMapping(value="/candidate-sessions", method=RequestMethod.GET)
     public String showCandidateSummaryReport(final Model model)
             throws PrivilegeException, DomainEntityNotFoundException {
-        final Delivery thisDelivery = identityService.getCurrentThreadLtiResource().getDelivery();
+        final Delivery thisDelivery = identityService.ensureCurrentThreadLtiAuthenticationTicket().getLtiResource().getDelivery();
         final DeliveryCandidateSummaryReport report = assessmentReportingService.buildDeliveryCandidateSummaryReport(thisDelivery.getId());
 
         model.addAttribute(report);
@@ -103,7 +102,7 @@ public class LtiInstructorAssessmentReportingController {
     @RequestMapping(value="/terminate-all-sessions", method=RequestMethod.POST)
     public String terminateAllCandidateSessions(final RedirectAttributes redirectAttributes)
             throws PrivilegeException, DomainEntityNotFoundException {
-        final Delivery thisDelivery = identityService.getCurrentThreadLtiResource().getDelivery();
+        final Delivery thisDelivery = identityService.ensureCurrentThreadLtiAuthenticationTicket().getLtiResource().getDelivery();
         final int terminatedCount = assessmentProctoringService.terminateCandidateSessionsForDelivery(thisDelivery.getId());
 
         GlobalRouter.addFlashMessage(redirectAttributes, "Terminated " + terminatedCount + " candidate session" + (terminatedCount!=1 ? "s" : ""));
@@ -113,7 +112,7 @@ public class LtiInstructorAssessmentReportingController {
     @RequestMapping(value="/delete-all-sessions", method=RequestMethod.POST)
     public String deleteAllCandidateSessions(final RedirectAttributes redirectAttributes)
             throws PrivilegeException, DomainEntityNotFoundException {
-        final Delivery thisDelivery = identityService.getCurrentThreadLtiResource().getDelivery();
+        final Delivery thisDelivery = identityService.ensureCurrentThreadLtiAuthenticationTicket().getLtiResource().getDelivery();
         final int deletedCount = assessmentProctoringService.deleteCandidateSessionsForDelivery(thisDelivery.getId());
 
         GlobalRouter.addFlashMessage(redirectAttributes, "Deleted " + deletedCount + " candidate session" + (deletedCount!=1 ? "s" : ""));
@@ -123,7 +122,7 @@ public class LtiInstructorAssessmentReportingController {
     @RequestMapping(value="/candidate-summary-report-{lrid}.csv", method=RequestMethod.GET)
     public void streamDeliveryCandidateSummaryReportCsv(final HttpServletResponse response)
             throws PrivilegeException, DomainEntityNotFoundException, IOException {
-        final Delivery thisDelivery = identityService.getCurrentThreadLtiResource().getDelivery();
+        final Delivery thisDelivery = identityService.ensureCurrentThreadLtiAuthenticationTicket().getLtiResource().getDelivery();
         response.setContentType("text/plain");
         response.setCharacterEncoding("UTF-8");
         assessmentReportingService.streamDeliveryCandidateSummaryReportCsv(thisDelivery.getId(), response.getOutputStream());
@@ -132,7 +131,7 @@ public class LtiInstructorAssessmentReportingController {
     @RequestMapping(value="/candidate-results-{lrid}.zip", method=RequestMethod.GET)
     public void streamDeliveryCandidateResults(final HttpServletResponse response)
             throws PrivilegeException, DomainEntityNotFoundException, IOException {
-        final Delivery thisDelivery = identityService.getCurrentThreadLtiResource().getDelivery();
+        final Delivery thisDelivery = identityService.ensureCurrentThreadLtiAuthenticationTicket().getLtiResource().getDelivery();
         response.setContentType("application/zip");
         assessmentReportingService.streamAssessmentReports(thisDelivery.getId(), response.getOutputStream());
     }

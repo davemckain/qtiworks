@@ -432,7 +432,7 @@ public class LtiLaunchService {
         /* Extract/create LtiContext */
         final LtiContext ltiContext = provideLtiContext(ltiDomain, ltiLaunchData);
 
-        /* Now extract/create LtiResource */
+        /* Now extract/create LtiResource (if instructor) */
         return provideLtiResource(ltiContext, ltiLaunchData, ltiUser);
     }
 

@@ -49,6 +49,7 @@ import uk.ac.ed.ph.qtiworks.services.domain.CandidateEventSummaryData;
 import uk.ac.ed.ph.qtiworks.services.domain.CandidateSessionSummaryReport;
 import uk.ac.ed.ph.qtiworks.services.domain.DeliveryStatusReport;
 import uk.ac.ed.ph.qtiworks.services.domain.PrivilegeException;
+import uk.ac.ed.ph.qtiworks.web.lti.LtiAuthenticationTicket;
 
 import java.util.List;
 
@@ -86,7 +87,8 @@ public class LtiInstructorModelHelper {
 
     @ModelAttribute
     public void setupModel(final Model model) {
-        final LtiResource ltiResource = identityService.ensureCurrentThreadLtiResource();
+        final LtiAuthenticationTicket ltiAuthenticationTicket = identityService.ensureCurrentThreadLtiAuthenticationTicket();
+        final LtiResource ltiResource = ltiAuthenticationTicket.getLtiResource();
         final Delivery thisDelivery = ltiResource.getDelivery();
         final Assessment thisAssessment = thisDelivery.getAssessment();
         final DeliverySettings theseDeliverySettings = thisDelivery.getDeliverySettings();
@@ -101,6 +103,7 @@ public class LtiInstructorModelHelper {
             thisAssessmentStatusReport = null;
             thisAssessmentPackage = null;
         }
+        model.addAttribute("thisLtiAuthenticationTicket", ltiAuthenticationTicket);
         model.addAttribute("thisLtiUser", identityService.getCurrentThreadUser());
         model.addAttribute("thisLtiResource", ltiResource);
         model.addAttribute("thisDelivery", thisDelivery);

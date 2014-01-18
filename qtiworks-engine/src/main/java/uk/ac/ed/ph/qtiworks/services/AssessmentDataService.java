@@ -41,7 +41,6 @@ import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiContext;
-import uk.ac.ed.ph.qtiworks.domain.entities.LtiResource;
 import uk.ac.ed.ph.qtiworks.domain.entities.TestDeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.domain.entities.UserRole;
@@ -57,6 +56,7 @@ import uk.ac.ed.ph.qtiworks.services.domain.DeliveryTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.ItemDeliverySettingsTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.Privilege;
 import uk.ac.ed.ph.qtiworks.services.domain.TestDeliverySettingsTemplate;
+import uk.ac.ed.ph.qtiworks.web.lti.LtiAuthenticationTicket;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
@@ -275,8 +275,8 @@ public class AssessmentDataService {
     }
 
     private LtiContext ensureLtiContext() {
-        final LtiResource ltiResource = identityService.ensureCurrentThreadLtiResource();
-        return ltiResource.getLtiContext();
+        final LtiAuthenticationTicket ltiAuthenticationTicket = identityService.ensureCurrentThreadLtiAuthenticationTicket();
+        return ltiAuthenticationTicket.getLtiContext();
     }
 
     //-------------------------------------------------

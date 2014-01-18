@@ -44,6 +44,7 @@ import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateException;
 import uk.ac.ed.ph.qtiworks.web.GlobalRouter;
 import uk.ac.ed.ph.qtiworks.web.lti.DecodedLtiLaunch;
+import uk.ac.ed.ph.qtiworks.web.lti.LtiAuthenticationTicket;
 import uk.ac.ed.ph.qtiworks.web.lti.LtiLaunchData;
 import uk.ac.ed.ph.qtiworks.web.lti.LtiLaunchService;
 import uk.ac.ed.ph.qtiworks.web.lti.LtiResourceAuthenticationFilter;
@@ -84,6 +85,7 @@ public class LtiLaunchController {
             response.sendError(decodedLtiLaunch.getErrorCode(), decodedLtiLaunch.getErrorMessage());
             return null;
         }
+        final LtiLaunchData ltiLaunchData = decodedLtiLaunch.getLtiLaunchData();
 
         /* Make sure this is a domain launch */
         final LtiUser ltiUser = decodedLtiLaunch.getLtiUser();
@@ -99,8 +101,10 @@ public class LtiLaunchController {
 
         if (userRole==UserRole.INSTRUCTOR) {
             /* If user is an instructor, we'll forward to the LTI instructor MVC after
-             * "authenticating" the user */
-            LtiResourceAuthenticationFilter.authenticateUserForResource(request.getSession(), ltiResource, ltiUser);
+             * "authenticating" the user by creating and storing an LtiDomainTicket
+             * in the session */
+            final LtiAuthenticationTicket ltiDomainTicket = new LtiAuthenticationTicket(ltiUser, ltiResource, ltiResource.getLtiContext(), ltiLaunchData.getLaunchPresentationReturnUrl());
+            LtiResourceAuthenticationFilter.authenticateUserForResource(request.getSession(), ltiResource, ltiDomainTicket);
             return "redirect:/lti/resource/" + ltiResource.getId();
         }
         else if (userRole==UserRole.CANDIDATE) {
@@ -110,7 +114,6 @@ public class LtiLaunchController {
             }
 
             /* Extract relevant data */
-            final LtiLaunchData ltiLaunchData = decodedLtiLaunch.getLtiLaunchData();
             final String exitUrl = ltiLaunchData.getLaunchPresentationReturnUrl();
             final String lisOutcomeServiceUrl = ltiLaunchData.getLisOutcomeServiceUrl();
             final String lisResultSourcedid = ltiLaunchData.getLisResultSourcedid();

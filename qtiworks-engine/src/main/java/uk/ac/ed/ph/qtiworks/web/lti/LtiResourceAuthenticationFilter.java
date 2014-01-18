@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.qtiworks.web.lti;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiResource;
-import uk.ac.ed.ph.qtiworks.domain.entities.LtiUser;
 import uk.ac.ed.ph.qtiworks.services.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.dao.LtiResourceDao;
 import uk.ac.ed.ph.qtiworks.web.authn.AbstractWebAuthenticationFilter;
@@ -58,9 +57,9 @@ import org.springframework.web.context.WebApplicationContext;
  * Authentication filter for gaining access to a particular {@link LtiResource}.
  * Such resources exist in URLs paths of the form:
  *
- * <code>lti/resource/{lrid}</code>
+ * <code>lti/resource/{lrid}/...</code>
  *
- * Note that this filter only works <em>strong</em> after the initial LTI launch URL has been
+ * Note that this filter only works <em>after</em> the initial LTI launch URL has been
  * accessed to set up the HTTP session correctly.
  *
  * @author David McKain
@@ -69,7 +68,7 @@ public final class LtiResourceAuthenticationFilter extends AbstractWebAuthentica
 
     private static final Logger logger = LoggerFactory.getLogger(LtiResourceAuthenticationFilter.class);
 
-    public static final String LTI_USER_ATTRIBUTE_BASE_NAME = "qtiworks.web.authn.lti.ltiUserForResource";
+    public static final String LTI_TICKET_ATTRIBUTE_BASE_NAME = "qtiworks.web.authn.ltiAuthenticationTicketForResource.";
 
     private LtiResourceDao ltiResourceDao;
     private IdentityService identityService;
@@ -114,36 +113,36 @@ public final class LtiResourceAuthenticationFilter extends AbstractWebAuthentica
             return;
         }
 
-        /* The user's identity for this resource should have been stored in the session previously */
-        final LtiUser ltiUser = getAuthenticatedUserForResource(session, lrid);
-        if (ltiUser==null) {
+        /* The user's ticket for accessing this resource should have been stored in the session previously */
+        final LtiAuthenticationTicket ltiAuthenticationTicket = getLtiAuthenticationTicketForResource(session, lrid);
+        if (ltiAuthenticationTicket==null) {
             logger.warn("Failed to retrieve LtiUser from HttpSession corresponding to LTIResource with lrid {}", lrid);
-            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden. This resource is only available via an LTI link from a Tool Provider. Please try the launch again.");
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden. This resource is only available via an LTI domain link from a Tool Provider. Please try the launch from your Tool Provider again.");
             return;
         }
 
         /* Finally set up identity and continue with filter chain */
-        identityService.setCurrentThreadUser(ltiUser);
-        identityService.setCurrentThreadLtiResource(ltiResource);
+        identityService.setCurrentThreadUser(ltiAuthenticationTicket.getLtiUser());
+        identityService.setCurrentThreadLtiAuthenticationTicket(ltiAuthenticationTicket);
         try {
             chain.doFilter(request, response);
         }
         finally {
             identityService.setCurrentThreadUser(null);
-            identityService.setCurrentThreadLtiResource(null);
+            identityService.setCurrentThreadLtiAuthenticationTicket(null);
         }
     }
 
-    public static void authenticateUserForResource(final HttpSession session, final LtiResource ltiResource, final LtiUser ltiUser) {
+    public static void authenticateUserForResource(final HttpSession session, final LtiResource ltiResource, final LtiAuthenticationTicket ltiDomainTicket) {
         final Long lrid = ltiResource.getId();
-        session.setAttribute(getLtiUserSessionKey(lrid), ltiUser);
+        session.setAttribute(getLtiUserSessionKey(lrid), ltiDomainTicket);
     }
 
-    private static LtiUser getAuthenticatedUserForResource(final HttpSession session, final long lrid) {
-        return (LtiUser) session.getAttribute(getLtiUserSessionKey(lrid));
+    private static LtiAuthenticationTicket getLtiAuthenticationTicketForResource(final HttpSession session, final long lrid) {
+        return (LtiAuthenticationTicket) session.getAttribute(getLtiUserSessionKey(lrid));
     }
 
     private static String getLtiUserSessionKey(final long lrid) {
-        return LTI_USER_ATTRIBUTE_BASE_NAME + Long.toString(lrid);
+        return LTI_TICKET_ATTRIBUTE_BASE_NAME + Long.toString(lrid);
     }
 }

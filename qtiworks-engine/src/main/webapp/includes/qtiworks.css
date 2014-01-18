@@ -133,6 +133,12 @@ header.actionHeader h2 a:visited {
 
 /* ========== LTI Instructor Mode header ========== */
 
+.ltiExit {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
 .ltipage header.pageHeader {
   font-family: 'Ubuntu', sans-serif;
   background: url(images/bigcog.png) left top no-repeat;
