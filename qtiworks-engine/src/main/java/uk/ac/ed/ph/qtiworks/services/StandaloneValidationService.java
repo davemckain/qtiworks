@@ -66,7 +66,7 @@ public class StandaloneValidationService {
     public AssessmentObjectValidationResult<?> importAndValidate(final MultipartFile multipartFile)
             throws AssessmentPackageDataImportException {
         Assert.notNull(multipartFile, "multipartFile");
-        final User caller = identityService.getCurrentThreadUser();
+        final User caller = identityService.assertCurrentThreadUser();
         final AssessmentPackage temporaryPackage = assessmentPackageFileService.importAssessmentPackage(caller, multipartFile, false);
         try {
             return assessmentPackageFileService.loadAndValidateAssessment(temporaryPackage);

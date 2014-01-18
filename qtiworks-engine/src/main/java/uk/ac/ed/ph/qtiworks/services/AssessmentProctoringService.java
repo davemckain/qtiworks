@@ -141,7 +141,7 @@ public class AssessmentProctoringService {
 
     private User ensureCallerMayProctor(final CandidateSession candidateSession)
             throws PrivilegeException {
-        final User caller = identityService.getCurrentThreadUser();
+        final User caller = identityService.assertCurrentThreadUser();
         final User assessmentOwner = candidateSession.getDelivery().getAssessment().getOwnerUser();
         if (!assessmentOwner.equals(caller)) {
             throw new PrivilegeException(caller, Privilege.PROCTOR_SESSION, candidateSession);

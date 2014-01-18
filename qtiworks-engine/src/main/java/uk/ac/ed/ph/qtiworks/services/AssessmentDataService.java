@@ -115,7 +115,7 @@ public class AssessmentDataService {
     //-------------------------------------------------
 
     public List<AssessmentAndPackage> getCallerUserAssessments() {
-        final User currentUser = identityService.getCurrentThreadUser();
+        final User currentUser = identityService.assertCurrentThreadUser();
         return assessmentDao.getForOwnerUser(currentUser);
     }
 
@@ -251,15 +251,15 @@ public class AssessmentDataService {
     //-------------------------------------------------
 
     public List<DeliverySettings> getCallerUserDeliverySettings() {
-        return deliverySettingsDao.getForOwnerUser(identityService.getCurrentThreadUser());
+        return deliverySettingsDao.getForOwnerUser(identityService.assertCurrentThreadUser());
     }
 
     public List<DeliverySettings> getCallerUserDeliverySettingsForType(final AssessmentObjectType assessmentType) {
-        return deliverySettingsDao.getForOwnerUserAndType(identityService.getCurrentThreadUser(), assessmentType);
+        return deliverySettingsDao.getForOwnerUserAndType(identityService.assertCurrentThreadUser(), assessmentType);
     }
 
     public long countCallerUserDeliverySettings(final AssessmentObjectType assessmentType) {
-        return deliverySettingsDao.countForOwnerUserAndType(identityService.getCurrentThreadUser(), assessmentType);
+        return deliverySettingsDao.countForOwnerUserAndType(identityService.assertCurrentThreadUser(), assessmentType);
     }
 
     public List<DeliverySettings> getCallerLtiContextDeliverySettings() {
@@ -275,7 +275,7 @@ public class AssessmentDataService {
     }
 
     private LtiContext ensureLtiContext() {
-        final LtiAuthenticationTicket ltiAuthenticationTicket = identityService.ensureCurrentThreadLtiAuthenticationTicket();
+        final LtiAuthenticationTicket ltiAuthenticationTicket = identityService.assertCurrentThreadLtiAuthenticationTicket();
         return ltiAuthenticationTicket.getLtiContext();
     }
 

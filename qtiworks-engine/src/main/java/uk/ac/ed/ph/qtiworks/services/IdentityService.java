@@ -33,18 +33,30 @@
  */
 package uk.ac.ed.ph.qtiworks.services;
 
-import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
+import uk.ac.ed.ph.qtiworks.web.authn.AnonymousAuthenticationFilter;
+import uk.ac.ed.ph.qtiworks.web.authn.SystemUserAuthenticationFilter;
 import uk.ac.ed.ph.qtiworks.web.lti.LtiAuthenticationTicket;
+import uk.ac.ed.ph.qtiworks.web.lti.LtiResourceAuthenticationFilter;
 
 import org.springframework.stereotype.Service;
 
 /**
  * {@link ThreadLocal} storing details about the current {@link User} and {@link LtiAuthenticationTicket}
  * (when accessing QTIWorks via a domain-level launch on a particular resource)
+ * <p>
+ * Identity setting is done in the web layer via {@link AnonymousAuthenticationFilter},
+ * {@link SystemUserAuthenticationFilter} and {@link LtiResourceAuthenticationFilter}.
+ * <p>
+ * If you use this service outside the web layer, you must ensure you call
+ * {@link #setCurrentThreadUser(User)} before using any other service bean that needs
+ * to know about user identity.
  *
  * @see User
  * @see LtiAuthenticationTicket
+ * @see AnonymousAuthenticationFilter
+ * @see SystemUserAuthenticationFilter
+ * @see LtiResourceAuthenticationFilter
  *
  * @author David McKain
  */
@@ -54,8 +66,37 @@ public final class IdentityService {
     private final ThreadLocal<User> currentUserThreadLocal = new ThreadLocal<User>();
     private final ThreadLocal<LtiAuthenticationTicket> currentLtiAuthenticationTicketThreadLocal = new ThreadLocal<LtiAuthenticationTicket>();
 
+    /**
+     * Returns the {@link User} registered for the current Thread, if it has been set.
+     *
+     * @return {@link User} for the current thread, which may be null.
+     *
+     * @see #assertCurrentThreadUser()
+     * @see #setCurrentThreadUser(User)
+     */
     public User getCurrentThreadUser() {
         return currentUserThreadLocal.get();
+    }
+
+    /**
+     * Returns the {@link User} registered for the current Thread, checking that this returns
+     * a non-null result.
+     * <p>
+     * A user must previously have been set for this Thread via {@link #setCurrentThreadUser(User)}.
+     *
+     * @return {@link User} for the current thread, which will not be null.
+     *
+     * @throws IllegalArgumentException if no {@link User} is currently registered.
+     *
+     * @see #getCurrentThreadUser()
+     * @see #setCurrentThreadUser(User)
+     */
+    public User assertCurrentThreadUser() {
+        final User result = getCurrentThreadUser();
+        if (result==null) {
+            throw new IllegalStateException("No User registered for the current Thread in IdentityService");
+        }
+        return result;
     }
 
     public void setCurrentThreadUser(final User user) {
@@ -68,8 +109,37 @@ public final class IdentityService {
     }
 
 
+    /**
+     * Returns the {@link LtiAuthenticationTicket} for the current Thread, if it has been set.
+     * <p>
+     * This is only set on LTI domain instructor launches, and will require null otherwise.
+     *
+     * @return {@link LtiAuthenticationTicket} for the current Thread, which may be null.
+     *
+     * @see #setCurrentThreadLtiAuthenticationTicket(LtiAuthenticationTicket)
+     * @see #assertCurrentThreadLtiAuthenticationTicket()
+     */
     public LtiAuthenticationTicket getCurrentThreadLtiAuthenticationTicket() {
         return currentLtiAuthenticationTicketThreadLocal.get();
+    }
+
+    /**
+     * Returns the {@link LtiAuthenticationTicket} for the current Thread, expecting it
+     * to return null.
+     *
+     * @return {@link LtiAuthenticationTicket} for the current Thread, which will not be null.
+     *
+     * @throws IllegalStateException if an {@link LtiAuthenticationTicket} is not set for the current Thread.
+     *
+     * @see #setCurrentThreadLtiAuthenticationTicket(LtiAuthenticationTicket)
+     * @see #assertCurrentThreadLtiAuthenticationTicket()
+     */
+    public LtiAuthenticationTicket assertCurrentThreadLtiAuthenticationTicket() {
+        final LtiAuthenticationTicket result = getCurrentThreadLtiAuthenticationTicket();
+        if (result==null) {
+            throw new IllegalStateException("An LtiAuthenticationTicket is required for the current Thread, but has not been set");
+        }
+        return result;
     }
 
     public void setCurrentThreadLtiAuthenticationTicket(final LtiAuthenticationTicket ltiAuthenticationTicket) {
@@ -81,11 +151,4 @@ public final class IdentityService {
         }
     }
 
-    public LtiAuthenticationTicket ensureCurrentThreadLtiAuthenticationTicket() {
-        final LtiAuthenticationTicket result = getCurrentThreadLtiAuthenticationTicket();
-        if (result==null) {
-            throw new QtiWorksLogicException("Expected current LtiAuthenticationTicket to be set for current Thread");
-        }
-        return result;
-    }
 }

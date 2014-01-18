@@ -138,7 +138,7 @@ public class LtiInstructorAssessmentManagementController {
     @RequestMapping(value="/exit", method=RequestMethod.POST)
     public String exit(final HttpServletResponse response) throws IOException {
         /* Extract return URL */
-        final LtiAuthenticationTicket ltiAuthenticationTicket = identityService.ensureCurrentThreadLtiAuthenticationTicket();
+        final LtiAuthenticationTicket ltiAuthenticationTicket = identityService.assertCurrentThreadLtiAuthenticationTicket();
         final String returnUrl = ltiAuthenticationTicket.getReturnUrl();
 
         /* Invalidate ticket */

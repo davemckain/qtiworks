@@ -128,7 +128,7 @@ public class CandidateSessionStarter {
     private Assessment lookupSampleAssessment(final long aid)
             throws DomainEntityNotFoundException, CandidateException {
         final Assessment assessment = assessmentDao.requireFindById(aid);
-        final User caller = identityService.getCurrentThreadUser();
+        final User caller = identityService.assertCurrentThreadUser();
         if (!assessment.isPublic() || assessment.getSampleCategory()==null) {
             logAndThrowLaunchException(caller, assessment, CandidateExceptionReason.LAUNCH_ASSESSMENT_AS_SAMPLE);
         }
@@ -209,7 +209,7 @@ public class CandidateSessionStarter {
             final String exitUrl, final String lisOutcomeServiceUrl, final String lisResultSourcedid)
             throws CandidateException {
         Assert.notNull(delivery, "delivery");
-        final User candidate = identityService.getCurrentThreadUser();
+        final User candidate = identityService.assertCurrentThreadUser();
         return launchCandidateSession(candidate, delivery, authorMode, exitUrl, lisOutcomeServiceUrl, lisResultSourcedid);
     }
 

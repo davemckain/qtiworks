@@ -87,7 +87,7 @@ public class LtiInstructorModelHelper {
 
     @ModelAttribute
     public void setupModel(final Model model) {
-        final LtiAuthenticationTicket ltiAuthenticationTicket = identityService.ensureCurrentThreadLtiAuthenticationTicket();
+        final LtiAuthenticationTicket ltiAuthenticationTicket = identityService.assertCurrentThreadLtiAuthenticationTicket();
         final LtiResource ltiResource = ltiAuthenticationTicket.getLtiResource();
         final Delivery thisDelivery = ltiResource.getDelivery();
         final Assessment thisAssessment = thisDelivery.getAssessment();
@@ -104,7 +104,7 @@ public class LtiInstructorModelHelper {
             thisAssessmentPackage = null;
         }
         model.addAttribute("thisLtiAuthenticationTicket", ltiAuthenticationTicket);
-        model.addAttribute("thisLtiUser", identityService.getCurrentThreadUser());
+        model.addAttribute("thisLtiUser", identityService.assertCurrentThreadUser());
         model.addAttribute("thisLtiResource", ltiResource);
         model.addAttribute("thisDelivery", thisDelivery);
         model.addAttribute("thisDeliveryStatusReport", thisDeliveryStatusReport);

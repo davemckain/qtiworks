@@ -154,7 +154,7 @@ public class AssessmentManagementService {
 
     public User ensureCallerMayManage(final Assessment assessment)
             throws PrivilegeException {
-        final User caller = identityService.getCurrentThreadUser();
+        final User caller = identityService.assertCurrentThreadUser();
         final LtiAuthenticationTicket ltiAuthenticationTicket = identityService.getCurrentThreadLtiAuthenticationTicket();
         if (ltiAuthenticationTicket!=null) {
             /* Manager access is shared with all instructors in the LTI context */
@@ -242,7 +242,7 @@ public class AssessmentManagementService {
      * users to create assignments.
      */
     private User ensureCallerMayCreateAssessment() throws PrivilegeException {
-        final User caller = identityService.getCurrentThreadUser();
+        final User caller = identityService.assertCurrentThreadUser();
         final UserRole userRole = caller.getUserRole();
         if (!(userRole==UserRole.ANONYMOUS || userRole==UserRole.INSTRUCTOR)) {
             throw new PrivilegeException(caller, Privilege.CREATE_ASSESSMENT);
@@ -416,7 +416,7 @@ public class AssessmentManagementService {
 
     private User ensureCallerMayManage(final DeliverySettings deliverySettings)
             throws PrivilegeException {
-        final User caller = identityService.getCurrentThreadUser();
+        final User caller = identityService.assertCurrentThreadUser();
         final LtiAuthenticationTicket ltiAuthenticationTicket = identityService.getCurrentThreadLtiAuthenticationTicket();
         if (ltiAuthenticationTicket!=null) {
             /* Manager access is shared with all instructors in the LTI context */
@@ -434,7 +434,7 @@ public class AssessmentManagementService {
     }
 
     private User ensureCallerMayCreateDeliverySettings() throws PrivilegeException {
-        final User caller = identityService.getCurrentThreadUser();
+        final User caller = identityService.assertCurrentThreadUser();
         if (caller.getUserRole()!=UserRole.INSTRUCTOR) {
             throw new PrivilegeException(caller, Privilege.CREATE_DELIVERY_SETTINGS);
         }
@@ -617,7 +617,7 @@ public class AssessmentManagementService {
     public void selectCurrentLtiResourceAssessment(final long aid)
             throws DomainEntityNotFoundException, PrivilegeException {
         /* Look up and check access on requested Assessment */
-        final LtiAuthenticationTicket ltiAuthenticationTicket = identityService.ensureCurrentThreadLtiAuthenticationTicket();
+        final LtiAuthenticationTicket ltiAuthenticationTicket = identityService.assertCurrentThreadLtiAuthenticationTicket();
         final Assessment newAssessment = lookupAssessment(aid);
 
         /* Terminate any candidate sessions on the currently Associated assessment (if appropriate),
@@ -663,7 +663,7 @@ public class AssessmentManagementService {
     public void selectCurrentLtiResourceDeliverySettings(final long dsid)
             throws DomainEntityNotFoundException, PrivilegeException, IncompatiableDeliverySettingsException {
         /* Look up and check access on requested Delivery Settings */
-        final LtiResource currentLtiResource = identityService.ensureCurrentThreadLtiAuthenticationTicket().getLtiResource();
+        final LtiResource currentLtiResource = identityService.assertCurrentThreadLtiAuthenticationTicket().getLtiResource();
         final Delivery delivery = currentLtiResource.getDelivery();
         final DeliverySettings deliverySettings = lookupDeliverySettings(dsid);
 
@@ -921,7 +921,7 @@ public class AssessmentManagementService {
 
     private AssessmentPackage importPackageFiles(final MultipartFile multipartFile, final boolean validate)
             throws AssessmentPackageDataImportException {
-        final User owner = identityService.getCurrentThreadUser();
+        final User owner = identityService.assertCurrentThreadUser();
         return assessmentPackageFileService.importAssessmentPackage(owner, multipartFile, validate);
     }
 }
