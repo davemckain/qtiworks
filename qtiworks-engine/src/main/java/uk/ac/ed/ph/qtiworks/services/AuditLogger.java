@@ -49,19 +49,26 @@ import org.springframework.stereotype.Service;
 @Service
 public final class AuditLogger {
 
-    /** NOTE: The name of this logger is specially defined in log4j.xml to go to correct appender */
+    /**
+     * NOTE: This uses a special logger name so that this can be handled
+     * easily in your logback configuration.
+     */
     private static final Logger logger = LoggerFactory.getLogger("AuditLogger");
 
     @Resource
     private IdentityService identityService;
 
     public void recordEvent(final String message) {
-        logger.info(createEventLogEntry(message));
+        final User currentThreadUser = identityService.getCurrentThreadUser();
+        logger.info(createEventLogEntry(currentThreadUser, message));
     }
 
-    private String createEventLogEntry(final String message) {
-        final User currentThreadUser = identityService.getCurrentThreadUser();
-        final String currentUserKey = currentThreadUser!=null ? currentThreadUser.getBusinessKey() : "<unknown>";
-        return currentUserKey + ": " + message;
+    public void recordEvent(final User user, final String message) {
+        logger.info(createEventLogEntry(user, message));
+    }
+
+    private String createEventLogEntry(final User user, final String message) {
+        final String userKey = user!=null ? user.getBusinessKey() : "<unknown>";
+        return userKey + ": " + message;
     }
 }

@@ -138,7 +138,7 @@ public final class SystemUserAuthenticationServlet extends HttpServlet {
             /* Store user details in session and redirect to the page we were supposed to be
              * going originally, and remove referral details from session
              */
-            auditLogger.recordEvent("System/form authentication succeeded for " + userId);
+            auditLogger.recordEvent(authenticatedUser, "System/form authentication succeeded for " + userId);
             logger.debug("Authentication succeeded - redirecting to {}", protectedResourceUri);
             request.getSession().setAttribute(SystemUserAuthenticationFilter.SYSTEM_USER_IDENTITY_ATTRIBUTE_NAME, authenticatedUser);
             response.sendRedirect(protectedResourceUri.toString()); /* (This is safe as we have sanitised this URI) */

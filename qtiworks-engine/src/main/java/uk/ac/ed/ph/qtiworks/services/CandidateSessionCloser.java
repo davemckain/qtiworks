@@ -39,6 +39,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
 import uk.ac.ed.ph.qtiworks.domain.entities.LisOutcomeReportingStatus;
+import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
@@ -244,7 +245,8 @@ public class CandidateSessionCloser {
     }
 
     private void recordLtiRecordingSkipped(final CandidateSession candidateSession, final LisOutcomeReportingStatus status, final String message) {
-        auditLogger.recordEvent("LTI Outcomes recording: " + message);
+        final User candidate = candidateSession.getCandidate();
+        auditLogger.recordEvent(candidate, "LTI Outcomes recording: " + message);
         candidateSession.setLisOutcomeReportingStatus(status);
         candidateSessionDao.update(candidateSession);
     }

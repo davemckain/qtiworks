@@ -119,7 +119,8 @@ public class LtiOutcomeService {
         queuedLtiOutcomeDao.persist(outcome);
 
         /* (Data will be sent to TC next time the service wakes up) */
-        auditLogger.recordEvent("Queued new LTI outcome #" + outcome.getId()
+        final User candidate = candidateSession.getCandidate();
+        auditLogger.recordEvent(candidate, "Queued new LTI outcome #" + outcome.getId()
                 + " containing score " + lisScore
                 + " to be returned to for CandidateSession #" + candidateSession.getId());
         logger.info("Queued new LTI outcome #{} containing score {} to be returned to for CandidateSession #{}",
@@ -157,6 +158,7 @@ public class LtiOutcomeService {
         final LinkedHashMap<Long, QueuedLtiOutcome> outcomesBySessionMap = new LinkedHashMap<Long, QueuedLtiOutcome>();
         for (final QueuedLtiOutcome queuedLtiOutcome : pendingOutcomes) {
             final CandidateSession candidateSession = queuedLtiOutcome.getCandidateSession();
+            final User candidate = candidateSession.getCandidate();
             final Long candidateSessionId = candidateSession.getId();
             final QueuedLtiOutcome earlierQueuedOutcomeForSession = outcomesBySessionMap.get(candidateSessionId);
             if (earlierQueuedOutcomeForSession!=null) {
@@ -164,7 +166,7 @@ public class LtiOutcomeService {
                 candidateSession.setLisOutcomeReportingStatus(LisOutcomeReportingStatus.TC_RETURN_SCHEDULED);
                 candidateSessionDao.update(candidateSession);
                 queuedLtiOutcomeDao.remove(earlierQueuedOutcomeForSession);
-                auditLogger.recordEvent("De-queued LTI outcome #" + earlierQueuedOutcomeForSession.getId()
+                auditLogger.recordEvent(candidate, "De-queued LTI outcome #" + earlierQueuedOutcomeForSession.getId()
                         + " as a later one for the same CandidateSession is already queued up");
                 logger.info("De-queued LTI outcome #{} as a later one for the same CandidateSession is already queued up",
                         earlierQueuedOutcomeForSession.getId());
@@ -190,13 +192,14 @@ public class LtiOutcomeService {
 
     private boolean handleQueuedLtiOutcome(final QueuedLtiOutcome queuedLtiOutcome) {
         final CandidateSession candidateSession = queuedLtiOutcome.getCandidateSession();
+        final User candidate = candidateSession.getCandidate();
         final boolean successful = trySendQueuedLtiOutcome(queuedLtiOutcome);
         if (successful) {
             /* Outcome sent successfully, so remove from queue */
             candidateSession.setLisOutcomeReportingStatus(LisOutcomeReportingStatus.TC_RETURN_SUCCESS);
             queuedLtiOutcomeDao.remove(queuedLtiOutcome);
             candidateSessionDao.update(candidateSession);
-            auditLogger.recordEvent("Successfully sent LTI outcome #" + queuedLtiOutcome.getId()
+            auditLogger.recordEvent(candidate, "Successfully sent LTI outcome #" + queuedLtiOutcome.getId()
                     + " to LIS outcome service at " + candidateSession.getLisOutcomeServiceUrl());
             logger.info("Successfully sent LTI outcome #{} to LIS outcome service at {}",
                     queuedLtiOutcome.getId(), candidateSession.getLisOutcomeServiceUrl());
@@ -210,7 +213,7 @@ public class LtiOutcomeService {
                 candidateSession.setLisOutcomeReportingStatus(LisOutcomeReportingStatus.TC_RETURN_FAIL_TERMINAL);
                 queuedLtiOutcomeDao.update(queuedLtiOutcome);
                 candidateSessionDao.update(candidateSession);
-                auditLogger.recordEvent("Failure #" + (failureCount+1)
+                auditLogger.recordEvent(candidate, "Failure #" + (failureCount+1)
                         + " to send LTI outcome #" + queuedLtiOutcome.getId()
                         + " to LIS outcome service at " + candidateSession.getLisOutcomeServiceUrl()
                         + ". Will try again at " + queuedLtiOutcome.getRetryTime());
@@ -221,7 +224,7 @@ public class LtiOutcomeService {
                 candidateSession.setLisOutcomeReportingStatus(LisOutcomeReportingStatus.TC_RETURN_FAIL_TERMINAL);
                 queuedLtiOutcomeDao.remove(queuedLtiOutcome);
                 candidateSessionDao.update(candidateSession);
-                auditLogger.recordEvent("Final failure #" + (failureCount+1)
+                auditLogger.recordEvent(candidate, "Final failure #" + (failureCount+1)
                         + " to send LTI outcome #" + queuedLtiOutcome.getId()
                         + " to LIS outcome service at " + candidateSession.getLisOutcomeServiceUrl()
                         + ". Outcome has been removed from queue");
