@@ -11,11 +11,18 @@ sessionEntryPath
 
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
+
+<%-- Extract config beans stashed in ServletContext during AppContext setup --%>
+<c:set var="qtiWorksProperties" value="${applicationScope['qtiWorksProperties']}"/>
+<c:set var="qtiWorksDeploymentSettings" value="${applicationScope['qtiWorksDeploymentSettings']}"/>
+<c:set var="qtiWorksVersion" value="${qtiWorksProperties.qtiWorksVersion}"/>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8">
     <title>QTIWorks Assessment Launcher</title>
+    <link rel="stylesheet" href="${utils:internalLink(pageContext, '/rendering/css/assessment.css')}?${qtiWorksVersion}">
     <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.css">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
@@ -38,36 +45,6 @@ $(window).ready(function() {
 // The next line should ensure ready event gets called again if we browse back here
 $(window).bind('unload', function() {} );
     </script>
-    <style type="text/css">
-body {
-  font-size: smaller;
-}
-
-h1 {
-  font-size: 1.5em;
-}
-
-#launchBox {
-  width: 50em;
-  margin: 5em auto;
-  text-align: center;
-  display: none; /* Will be made visible by JS */
-}
-
-#progress {
-  border-radius: 1em;
-  margin: 1.5em 0;
-}
-
-#launchButton {
-  background: none;
-  border: none;
-}
-
-#launchButton:hover {
-  text-decoration: underline;
-}
-    </style>
   </head>
   <body>
     <div id="launchBox">

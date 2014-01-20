@@ -18,6 +18,31 @@ h2 {
 }
 
 /************************************************************/
+/* Launcher */
+
+#launchBox {
+  width: 50em;
+  margin: 5em auto;
+  text-align: center;
+  display: none; /* Will be made visible by JS */
+}
+
+#launchBox #progress {
+  border-radius: 1em;
+  margin: 1.5em 0;
+}
+
+#launchBox #launchButton {
+  background: none;
+  border: none;
+}
+
+#launchBox #launchButton:hover {
+  text-decoration: underline;
+}
+
+
+/************************************************************/
 /* Session control */
 
 ul.sessionControl {
