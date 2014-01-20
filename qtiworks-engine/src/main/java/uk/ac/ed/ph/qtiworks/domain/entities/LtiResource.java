@@ -42,6 +42,7 @@ import uk.ac.ed.ph.jqtiplus.internal.util.PropertyOptions;
 import java.util.Date;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -142,7 +143,7 @@ public class LtiResource implements BaseEntity, TimestampedOnCreation {
     private String toolConsumerInstanceDescription;
 
     /** {@link Delivery} matched to this resource */
-    @ManyToOne(optional=true, fetch=FetchType.EAGER)
+    @ManyToOne(optional=true, fetch=FetchType.EAGER, cascade=CascadeType.REFRESH)
     @JoinColumn(name="did")
     private Delivery delivery;
 

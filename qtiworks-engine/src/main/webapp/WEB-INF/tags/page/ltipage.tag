@@ -7,7 +7,7 @@ Skeleton for an LTI instructor-role page
 
 Core Model:
 
-thisLtiAuthenticationTicket
+thisLtiIdentityContext
 thisLtiUser
 thisLtiResource
 thisDelivery
@@ -32,7 +32,7 @@ primaryRouting (action -> URL)
 <%-- Add additional data to model --%>
 <c:set var="ltiContext" value="${thisLtiResource.ltiContext}" scope="request"/>
 <c:set var="ltiDomain" value="${ltiContext.ltiDomain}" scope="request"/>
-<c:set var="mayExit" value="${!empty(thisLtiAuthenticationTicket.returnUrl)}" scope="request"/>
+<c:set var="mayExit" value="${!empty(thisLtiIdentityContext.returnUrl)}" scope="request"/>
 
 <%-- Extract config beans stashed in ServletContext during AppContext setup --%>
 <c:set var="qtiWorksProperties" value="${applicationScope['qtiWorksProperties']}" scope="request"/>

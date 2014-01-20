@@ -56,7 +56,7 @@ import uk.ac.ed.ph.qtiworks.services.domain.DeliveryTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.ItemDeliverySettingsTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.Privilege;
 import uk.ac.ed.ph.qtiworks.services.domain.TestDeliverySettingsTemplate;
-import uk.ac.ed.ph.qtiworks.web.lti.LtiAuthenticationTicket;
+import uk.ac.ed.ph.qtiworks.web.lti.LtiIdentityContext;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
@@ -275,8 +275,8 @@ public class AssessmentDataService {
     }
 
     private LtiContext ensureLtiContext() {
-        final LtiAuthenticationTicket ltiAuthenticationTicket = identityService.assertCurrentThreadLtiAuthenticationTicket();
-        return ltiAuthenticationTicket.getLtiContext();
+        final LtiIdentityContext ltiIdentityContext = identityService.assertCurrentThreadLtiIdentityContext();
+        return ltiIdentityContext.getLtiContext();
     }
 
     //-------------------------------------------------

@@ -66,7 +66,7 @@ public class LtiInstructorRouter {
     private String contextPath;
 
     public String buildWithinContextUrl(final String actionUrl) {
-        final LtiResource currentLtiResource = identityService.assertCurrentThreadLtiAuthenticationTicket().getLtiResource();
+        final LtiResource currentLtiResource = identityService.assertCurrentThreadLtiIdentityContext().getLtiResource();
         return "/lti/resource/" + currentLtiResource.getId() + actionUrl;
     }
 
@@ -79,7 +79,7 @@ public class LtiInstructorRouter {
     }
 
     public Map<String, String> buildPrimaryRouting() {
-        final LtiResource currentLtiResource = identityService.assertCurrentThreadLtiAuthenticationTicket().getLtiResource();
+        final LtiResource currentLtiResource = identityService.assertCurrentThreadLtiIdentityContext().getLtiResource();
         final Long lrid = currentLtiResource.getId();
 
         final Map<String, String> primaryRouting = new HashMap<String, String>();

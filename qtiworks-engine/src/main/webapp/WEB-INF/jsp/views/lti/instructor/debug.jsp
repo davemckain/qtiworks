@@ -32,11 +32,17 @@ assessmentRouting (aid -> action -> URL)
   <h3>This LTI Resource</h3>
   <pre>${utils:dumpObject(thisLtiResource)}</pre>
 
+  <h3>This LTI Identity Context</h3>
+  <pre>${utils:dumpObject(thisLtiIdentityContext)}</pre>
+
   <h3>This LTI User</h3>
   <pre>${utils:dumpObject(thisLtiUser)}</pre>
 
   <h3>This LTI Context</h3>
   <pre>${utils:dumpObject(ltiContext)}</pre>
+
+  <h3>This LTI Domain</h3>
+  <pre>${utils:dumpObject(ltiDomain)}</pre>
 
   <h3>This LTI Domain</h3>
   <pre>${utils:dumpObject(ltiDomain)}</pre>

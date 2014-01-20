@@ -103,8 +103,8 @@ public class LtiLaunchController {
             /* If user is an instructor, we'll forward to the LTI instructor MVC after
              * "authenticating" the user by creating and storing an LtiDomainTicket
              * in the session */
-            final LtiAuthenticationTicket ltiDomainTicket = new LtiAuthenticationTicket(ltiUser, ltiResource, ltiResource.getLtiContext(), ltiLaunchData.getLaunchPresentationReturnUrl());
-            LtiResourceAuthenticationFilter.authenticateUserForResource(request.getSession(), ltiResource, ltiDomainTicket);
+            final LtiAuthenticationTicket ltiDomainTicket = new LtiAuthenticationTicket(ltiUser.getId(), ltiResource.getId(),ltiLaunchData.getLaunchPresentationReturnUrl());
+            LtiResourceAuthenticationFilter.authenticateUserForResource(request.getSession(), ltiDomainTicket);
             return "redirect:/lti/resource/" + ltiResource.getId();
         }
         else if (userRole==UserRole.CANDIDATE) {

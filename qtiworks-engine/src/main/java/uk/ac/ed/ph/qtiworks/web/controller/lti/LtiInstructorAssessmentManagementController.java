@@ -59,7 +59,8 @@ import uk.ac.ed.ph.qtiworks.services.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.services.domain.TestDeliverySettingsTemplate;
 import uk.ac.ed.ph.qtiworks.web.GlobalRouter;
 import uk.ac.ed.ph.qtiworks.web.domain.UploadAssessmentPackageCommand;
-import uk.ac.ed.ph.qtiworks.web.lti.LtiAuthenticationTicket;
+import uk.ac.ed.ph.qtiworks.web.lti.LtiIdentityContext;
+import uk.ac.ed.ph.qtiworks.web.lti.LtiResourceAuthenticationFilter;
 
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
@@ -69,6 +70,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.stereotype.Controller;
@@ -121,7 +123,7 @@ public class LtiInstructorAssessmentManagementController {
     @RequestMapping(value="", method=RequestMethod.GET)
     public String resourceTopPage(final Model model) {
         ltiInstructorModelHelper.setupModel(model);
-        final Assessment thisAssessment = identityService.getCurrentThreadLtiAuthenticationTicket().getLtiResource().getDelivery().getAssessment();
+        final Assessment thisAssessment = identityService.assertCurrentThreadLtiIdentityContext().getLtiResource().getDelivery().getAssessment();
         if (thisAssessment==null) {
             return "instructor/initialSetup";
         }
@@ -136,13 +138,13 @@ public class LtiInstructorAssessmentManagementController {
      * by the TC, so we simply response with an error in that case.
      */
     @RequestMapping(value="/exit", method=RequestMethod.POST)
-    public String exit(final HttpServletResponse response) throws IOException {
+    public String exit(final HttpSession httpSession, final HttpServletResponse response) throws IOException {
         /* Extract return URL */
-        final LtiAuthenticationTicket ltiAuthenticationTicket = identityService.assertCurrentThreadLtiAuthenticationTicket();
-        final String returnUrl = ltiAuthenticationTicket.getReturnUrl();
+        final LtiIdentityContext ltiIdentityContext = identityService.assertCurrentThreadLtiIdentityContext();
+        final String returnUrl = ltiIdentityContext.getReturnUrl();
 
-        /* Invalidate ticket */
-        identityService.setCurrentThreadLtiAuthenticationTicket(null);
+        /* Revoke user's access to this resource */
+        LtiResourceAuthenticationFilter.deauthenticateUserFromResource(httpSession, ltiIdentityContext.getLtiResource());
 
         /* Finally redirect if possible */
         if (returnUrl==null) {
@@ -163,7 +165,7 @@ public class LtiInstructorAssessmentManagementController {
     public String tryThisAssessment(final HttpServletResponse response)
             throws PrivilegeException, IOException,
             CandidateException, IncompatiableDeliverySettingsException {
-        final Delivery thisDelivery = identityService.getCurrentThreadLtiAuthenticationTicket().getLtiResource().getDelivery();
+        final Delivery thisDelivery = identityService.getCurrentThreadLtiIdentityContext().getLtiResource().getDelivery();
         final Assessment thisAssessment = thisDelivery.getAssessment();
         if (thisAssessment==null) {
             /* Assessment hasn't been matched to this resource yet */
@@ -179,7 +181,7 @@ public class LtiInstructorAssessmentManagementController {
     @RequestMapping(value="/toggle-availability", method=RequestMethod.POST)
     public String toggleThisDeliveryOpenStatus()
             throws PrivilegeException {
-        final Delivery thisDelivery = identityService.getCurrentThreadLtiAuthenticationTicket().getLtiResource().getDelivery();
+        final Delivery thisDelivery = identityService.getCurrentThreadLtiIdentityContext().getLtiResource().getDelivery();
         try {
             assessmentManagementService.setDeliveryOpenStatus(thisDelivery.getId(), !thisDelivery.isOpen());
         }

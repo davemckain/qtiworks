@@ -36,13 +36,13 @@ package uk.ac.ed.ph.qtiworks.services;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.web.authn.AnonymousAuthenticationFilter;
 import uk.ac.ed.ph.qtiworks.web.authn.SystemUserAuthenticationFilter;
-import uk.ac.ed.ph.qtiworks.web.lti.LtiAuthenticationTicket;
+import uk.ac.ed.ph.qtiworks.web.lti.LtiIdentityContext;
 import uk.ac.ed.ph.qtiworks.web.lti.LtiResourceAuthenticationFilter;
 
 import org.springframework.stereotype.Service;
 
 /**
- * {@link ThreadLocal} storing details about the current {@link User} and {@link LtiAuthenticationTicket}
+ * {@link ThreadLocal} storing details about the current {@link User} and {@link LtiIdentityContext}
  * (when accessing QTIWorks via a domain-level launch on a particular resource)
  * <p>
  * Identity setting is done in the web layer via {@link AnonymousAuthenticationFilter},
@@ -53,7 +53,7 @@ import org.springframework.stereotype.Service;
  * to know about user identity.
  *
  * @see User
- * @see LtiAuthenticationTicket
+ * @see LtiIdentityContext
  * @see AnonymousAuthenticationFilter
  * @see SystemUserAuthenticationFilter
  * @see LtiResourceAuthenticationFilter
@@ -64,7 +64,7 @@ import org.springframework.stereotype.Service;
 public final class IdentityService {
 
     private final ThreadLocal<User> currentUserThreadLocal = new ThreadLocal<User>();
-    private final ThreadLocal<LtiAuthenticationTicket> currentLtiAuthenticationTicketThreadLocal = new ThreadLocal<LtiAuthenticationTicket>();
+    private final ThreadLocal<LtiIdentityContext> currentLtiIdentityContextThreadLocal = new ThreadLocal<LtiIdentityContext>();
 
     /**
      * Returns the {@link User} registered for the current Thread, if it has been set.
@@ -110,44 +110,44 @@ public final class IdentityService {
 
 
     /**
-     * Returns the {@link LtiAuthenticationTicket} for the current Thread, if it has been set.
+     * Returns the {@link LtiIdentityContext} for the current Thread, if it has been set.
      * <p>
      * This is only set on LTI domain instructor launches, and will require null otherwise.
      *
-     * @return {@link LtiAuthenticationTicket} for the current Thread, which may be null.
+     * @return {@link LtiIdentityContext} for the current Thread, which may be null.
      *
-     * @see #setCurrentThreadLtiAuthenticationTicket(LtiAuthenticationTicket)
-     * @see #assertCurrentThreadLtiAuthenticationTicket()
+     * @see #setCurrentThreadLtiIdentityContext(LtiIdentityContext)
+     * @see #assertCurrentThreadLtiIdentityContext()
      */
-    public LtiAuthenticationTicket getCurrentThreadLtiAuthenticationTicket() {
-        return currentLtiAuthenticationTicketThreadLocal.get();
+    public LtiIdentityContext getCurrentThreadLtiIdentityContext() {
+        return currentLtiIdentityContextThreadLocal.get();
     }
 
     /**
-     * Returns the {@link LtiAuthenticationTicket} for the current Thread, expecting it
+     * Returns the {@link LtiIdentityContext} for the current Thread, expecting it
      * to return null.
      *
-     * @return {@link LtiAuthenticationTicket} for the current Thread, which will not be null.
+     * @return {@link LtiIdentityContext} for the current Thread, which will not be null.
      *
-     * @throws IllegalStateException if an {@link LtiAuthenticationTicket} is not set for the current Thread.
+     * @throws IllegalStateException if an {@link LtiIdentityContext} is not set for the current Thread.
      *
-     * @see #setCurrentThreadLtiAuthenticationTicket(LtiAuthenticationTicket)
-     * @see #assertCurrentThreadLtiAuthenticationTicket()
+     * @see #setCurrentThreadLtiIdentityContext(LtiIdentityContext)
+     * @see #assertCurrentThreadLtiIdentityContext()
      */
-    public LtiAuthenticationTicket assertCurrentThreadLtiAuthenticationTicket() {
-        final LtiAuthenticationTicket result = getCurrentThreadLtiAuthenticationTicket();
+    public LtiIdentityContext assertCurrentThreadLtiIdentityContext() {
+        final LtiIdentityContext result = getCurrentThreadLtiIdentityContext();
         if (result==null) {
-            throw new IllegalStateException("An LtiAuthenticationTicket is required for the current Thread, but has not been set");
+            throw new IllegalStateException("An LtiIdentityContext is required for the current Thread, but has not been set");
         }
         return result;
     }
 
-    public void setCurrentThreadLtiAuthenticationTicket(final LtiAuthenticationTicket ltiAuthenticationTicket) {
-        if (ltiAuthenticationTicket!=null) {
-            currentLtiAuthenticationTicketThreadLocal.set(ltiAuthenticationTicket);
+    public void setCurrentThreadLtiIdentityContext(final LtiIdentityContext ltiIdentityContext) {
+        if (ltiIdentityContext!=null) {
+            currentLtiIdentityContextThreadLocal.set(ltiIdentityContext);
         }
         else {
-            currentLtiAuthenticationTicketThreadLocal.remove();
+            currentLtiIdentityContextThreadLocal.remove();
         }
     }
 

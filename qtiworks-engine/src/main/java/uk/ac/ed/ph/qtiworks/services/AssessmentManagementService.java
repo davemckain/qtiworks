@@ -64,7 +64,7 @@ import uk.ac.ed.ph.qtiworks.services.domain.ItemDeliverySettingsTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.Privilege;
 import uk.ac.ed.ph.qtiworks.services.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.services.domain.TestDeliverySettingsTemplate;
-import uk.ac.ed.ph.qtiworks.web.lti.LtiAuthenticationTicket;
+import uk.ac.ed.ph.qtiworks.web.lti.LtiIdentityContext;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
@@ -155,10 +155,10 @@ public class AssessmentManagementService {
     public User ensureCallerMayManage(final Assessment assessment)
             throws PrivilegeException {
         final User caller = identityService.assertCurrentThreadUser();
-        final LtiAuthenticationTicket ltiAuthenticationTicket = identityService.getCurrentThreadLtiAuthenticationTicket();
-        if (ltiAuthenticationTicket!=null) {
+        final LtiIdentityContext ltiIdentityContext = identityService.getCurrentThreadLtiIdentityContext();
+        if (ltiIdentityContext!=null) {
             /* Manager access is shared with all instructors in the LTI context */
-            final LtiContext ltiContext = ltiAuthenticationTicket.getLtiContext();
+            final LtiContext ltiContext = ltiIdentityContext.getLtiContext();
             final LtiContext assessmentLtiContext = assessment.getOwnerLtiContext();
             if (!caller.isInstructor() || assessmentLtiContext==null || !ltiContext.businessEquals(assessmentLtiContext)) {
                 throw new PrivilegeException(caller, Privilege.MANAGE_ASSESSMENT, assessment);
@@ -212,9 +212,9 @@ public class AssessmentManagementService {
             assessment.setOwnerUser(caller);
 
             /* If LTI domain launch, link this assessment to the LtiContext */
-            final LtiAuthenticationTicket ltiAuthenticationTicket = identityService.getCurrentThreadLtiAuthenticationTicket();
-            if (ltiAuthenticationTicket!=null) {
-                assessment.setOwnerLtiContext(ltiAuthenticationTicket.getLtiContext());
+            final LtiIdentityContext ltiIdentityContext = identityService.getCurrentThreadLtiIdentityContext();
+            if (ltiIdentityContext!=null) {
+                assessment.setOwnerLtiContext(ltiIdentityContext.getLtiContext());
             }
 
             /* Relate Assessment & AssessmentPackage */
@@ -417,10 +417,10 @@ public class AssessmentManagementService {
     private User ensureCallerMayManage(final DeliverySettings deliverySettings)
             throws PrivilegeException {
         final User caller = identityService.assertCurrentThreadUser();
-        final LtiAuthenticationTicket ltiAuthenticationTicket = identityService.getCurrentThreadLtiAuthenticationTicket();
-        if (ltiAuthenticationTicket!=null) {
+        final LtiIdentityContext ltiIdentityContext = identityService.getCurrentThreadLtiIdentityContext();
+        if (ltiIdentityContext!=null) {
             /* Manager access is shared with all instructors in the LTI context */
-            final LtiContext ltiContext = ltiAuthenticationTicket.getLtiContext();
+            final LtiContext ltiContext = ltiIdentityContext.getLtiContext();
             final LtiContext dsLtiContext = deliverySettings.getOwnerLtiContext();
             if (!caller.isInstructor() || dsLtiContext==null || !ltiContext.businessEquals(dsLtiContext)) {
                 throw new PrivilegeException(caller, Privilege.MANAGE_DELIVERY_SETTINGS, deliverySettings);
@@ -467,9 +467,9 @@ public class AssessmentManagementService {
 
         /* Set ownership and LTI context (if specified) */
         result.setOwnerUser(caller);
-        final LtiAuthenticationTicket ltiAuthenticationTicket = identityService.getCurrentThreadLtiAuthenticationTicket();
-        if (ltiAuthenticationTicket!=null) {
-            result.setOwnerLtiContext(ltiAuthenticationTicket.getLtiContext());
+        final LtiIdentityContext ltiIdentityContext = identityService.getCurrentThreadLtiIdentityContext();
+        if (ltiIdentityContext!=null) {
+            result.setOwnerLtiContext(ltiIdentityContext.getLtiContext());
         }
 
         deliverySettingsDao.persist(result);
@@ -533,9 +533,9 @@ public class AssessmentManagementService {
         result.setOwnerUser(caller);
 
         /* Set ownership LTI context (if specified) */
-        final LtiAuthenticationTicket ltiAuthenticationTicket = identityService.getCurrentThreadLtiAuthenticationTicket();
-        if (ltiAuthenticationTicket!=null) {
-            result.setOwnerLtiContext(ltiAuthenticationTicket.getLtiContext());
+        final LtiIdentityContext ltiIdentityContext = identityService.getCurrentThreadLtiIdentityContext();
+        if (ltiIdentityContext!=null) {
+            result.setOwnerLtiContext(ltiIdentityContext.getLtiContext());
         }
         deliverySettingsDao.persist(result);
 
@@ -617,14 +617,14 @@ public class AssessmentManagementService {
     public void selectCurrentLtiResourceAssessment(final long aid)
             throws DomainEntityNotFoundException, PrivilegeException {
         /* Look up and check access on requested Assessment */
-        final LtiAuthenticationTicket ltiAuthenticationTicket = identityService.assertCurrentThreadLtiAuthenticationTicket();
+        final LtiIdentityContext ltiIdentityContext = identityService.assertCurrentThreadLtiIdentityContext();
         final Assessment newAssessment = lookupAssessment(aid);
 
         /* Terminate any candidate sessions on the currently Associated assessment (if appropriate),
          * deleting any recording outcome values too as the variables will have completely changed
          * and will confuse the scoreboard.
          */
-        final Delivery delivery = ltiAuthenticationTicket.getLtiResource().getDelivery();
+        final Delivery delivery = ltiIdentityContext.getLtiResource().getDelivery();
         final Assessment oldAssessment = delivery.getAssessment();
         int terminatedSessions = 0;
         if (oldAssessment!=null) {
@@ -663,7 +663,7 @@ public class AssessmentManagementService {
     public void selectCurrentLtiResourceDeliverySettings(final long dsid)
             throws DomainEntityNotFoundException, PrivilegeException, IncompatiableDeliverySettingsException {
         /* Look up and check access on requested Delivery Settings */
-        final LtiResource currentLtiResource = identityService.assertCurrentThreadLtiAuthenticationTicket().getLtiResource();
+        final LtiResource currentLtiResource = identityService.assertCurrentThreadLtiIdentityContext().getLtiResource();
         final Delivery delivery = currentLtiResource.getDelivery();
         final DeliverySettings deliverySettings = lookupDeliverySettings(dsid);
 
@@ -800,6 +800,7 @@ public class AssessmentManagementService {
 
         /* Update */
         delivery.setOpen(open);
+        delivery.setTitle("BOB!");
         deliveryDao.update(delivery);
 
         auditLogger.recordEvent("Set open status for Delivery #" + delivery.getId() + " to " + open);

@@ -34,8 +34,10 @@
 package uk.ac.ed.ph.qtiworks.web.lti;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiResource;
+import uk.ac.ed.ph.qtiworks.domain.entities.LtiUser;
 import uk.ac.ed.ph.qtiworks.services.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.dao.LtiResourceDao;
+import uk.ac.ed.ph.qtiworks.services.dao.LtiUserDao;
 import uk.ac.ed.ph.qtiworks.web.authn.AbstractWebAuthenticationFilter;
 
 import java.io.IOException;
@@ -68,15 +70,17 @@ public final class LtiResourceAuthenticationFilter extends AbstractWebAuthentica
 
     private static final Logger logger = LoggerFactory.getLogger(LtiResourceAuthenticationFilter.class);
 
-    public static final String LTI_TICKET_ATTRIBUTE_BASE_NAME = "qtiworks.web.authn.ltiAuthenticationTicketForResource.";
+    public static final String LTI_TICKET_ATTRIBUTE_BASE_NAME = "qtiworks.web.authn.ltiAuthenticationTickets.lrid.";
 
     private LtiResourceDao ltiResourceDao;
+    private LtiUserDao ltiUserDao;
     private IdentityService identityService;
 
     @Override
     protected void initWithApplicationContext(final FilterConfig filterConfig, final WebApplicationContext webApplicationContext)
             throws Exception {
         ltiResourceDao = webApplicationContext.getBean(LtiResourceDao.class);
+        ltiUserDao = webApplicationContext.getBean(LtiUserDao.class);
         identityService = webApplicationContext.getBean(IdentityService.class);
     }
 
@@ -121,28 +125,43 @@ public final class LtiResourceAuthenticationFilter extends AbstractWebAuthentica
             return;
         }
 
+        /* Look up fresh entity state. (We've already refreshed LtiResource above.) */
+        final long ltiUserId = ltiAuthenticationTicket.getLtiUserId();
+        final LtiUser ltiUser = ltiUserDao.findById(ltiUserId);
+        if (ltiUser==null) {
+            logger.warn("LtiUser {} in LtiAuthenticationTicket does not exist", lrid);
+            response.sendError(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
+
         /* Finally set up identity and continue with filter chain */
-        identityService.setCurrentThreadUser(ltiAuthenticationTicket.getLtiUser());
-        identityService.setCurrentThreadLtiAuthenticationTicket(ltiAuthenticationTicket);
+        final LtiIdentityContext ltiIdentityContext = new LtiIdentityContext(ltiResource, ltiAuthenticationTicket.getReturnUrl());
+        identityService.setCurrentThreadUser(ltiUser);
+        identityService.setCurrentThreadLtiIdentityContext(ltiIdentityContext);
         try {
             chain.doFilter(request, response);
         }
         finally {
             identityService.setCurrentThreadUser(null);
-            identityService.setCurrentThreadLtiAuthenticationTicket(null);
+            identityService.setCurrentThreadLtiIdentityContext(null);
         }
     }
 
-    public static void authenticateUserForResource(final HttpSession session, final LtiResource ltiResource, final LtiAuthenticationTicket ltiDomainTicket) {
+    public static void authenticateUserForResource(final HttpSession httpSsession, final LtiAuthenticationTicket ltiDomainTicket) {
+        final Long lrid = ltiDomainTicket.getLtiResouceId();
+        httpSsession.setAttribute(getLtiTicketSessionKey(lrid), ltiDomainTicket);
+    }
+
+    public static void deauthenticateUserFromResource(final HttpSession httpSession, final LtiResource ltiResource) {
         final Long lrid = ltiResource.getId();
-        session.setAttribute(getLtiUserSessionKey(lrid), ltiDomainTicket);
+        httpSession.removeAttribute(getLtiTicketSessionKey(lrid));
     }
 
     private static LtiAuthenticationTicket getLtiAuthenticationTicketForResource(final HttpSession session, final long lrid) {
-        return (LtiAuthenticationTicket) session.getAttribute(getLtiUserSessionKey(lrid));
+        return (LtiAuthenticationTicket) session.getAttribute(getLtiTicketSessionKey(lrid));
     }
 
-    private static String getLtiUserSessionKey(final long lrid) {
+    private static String getLtiTicketSessionKey(final long lrid) {
         return LTI_TICKET_ATTRIBUTE_BASE_NAME + Long.toString(lrid);
     }
 }

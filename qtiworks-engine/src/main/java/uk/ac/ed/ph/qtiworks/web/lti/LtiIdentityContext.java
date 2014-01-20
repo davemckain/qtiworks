@@ -33,60 +33,54 @@
  */
 package uk.ac.ed.ph.qtiworks.web.lti;
 
+import uk.ac.ed.ph.qtiworks.domain.entities.LtiContext;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiResource;
-import uk.ac.ed.ph.qtiworks.domain.entities.LtiUser;
-import uk.ac.ed.ph.qtiworks.domain.entities.User;
-import uk.ac.ed.ph.qtiworks.domain.entities.UserRole;
 import uk.ac.ed.ph.qtiworks.services.IdentityService;
-import uk.ac.ed.ph.qtiworks.web.controller.lti.LtiLaunchController;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
 import java.io.Serializable;
 
 /**
- * This "ticket" is created and stored in the HTTP session once a
- * {@link User} with role {@link UserRole#INSTRUCTOR} successfully
- * authenticates on a particular {@link LtiResource} via an LTI
- * domain launch. It is used to allow access to this resource
- * for this user for the remainder of the session, and to provide
- * other pieces of useful information.
+ * This provides LTI-specific information about the "current" LTI instructor user. It is
+ * stored in the current thread by the {@link IdentityService} whenever the current user
+ * is of this type.
  * <p>
- * Developer note: Instances of this class will be stored in the
- * session, so should be immutable.
+ * It provides access to the that this user has been given access to {@link LtiResource}, as
+ * well as some other useful information.
  *
- * @see LtiResourceAuthenticationFilter
- * @see LtiLaunchController
- * @see LtiIdentityContext
  * @see IdentityService
+ * @see LtiAuthenticationTicket
+ * @see LtiResourceAuthenticationFilter
  *
  * @author David McKain
  */
-public final class LtiAuthenticationTicket implements Serializable {
+public final class LtiIdentityContext implements Serializable {
 
     private static final long serialVersionUID = 1412636123357858458L;
 
-    /** ID of the {@link LtiUser} in question */
-    private final long ltiUserId;
-
-    /** ID of the {@link LtiResource} in question */
-    private final long ltiResourceId;
+    /**
+     * Indicates which {@link LtiResource} this tickets provides access to,
+     * i.e. that on which the LTI domain launch was invoked on.
+     */
+    private final LtiResource ltiResource;
 
     /** Optional return URL, as provided by DecodedLtiLaunch#getLaunchPresentationReturnUrl() */
     private final String returnUrl;
 
-    public LtiAuthenticationTicket(final long ltiUserId, final long ltiResourceId, final String returnUrl) {
-        this.ltiUserId = ltiUserId;
-        this.ltiResourceId = ltiResourceId;
+    public LtiIdentityContext(final LtiResource ltiResource, final String returnUrl) {
+        Assert.notNull(ltiResource, "ltiResource");
+        this.ltiResource = ltiResource;
         this.returnUrl = returnUrl;
     }
 
-    public long getLtiUserId() {
-        return ltiUserId;
+    public LtiResource getLtiResource() {
+        return ltiResource;
     }
 
-    public long getLtiResouceId() {
-        return ltiResourceId;
+    public LtiContext getLtiContext() {
+        return ltiResource.getLtiContext();
     }
 
     public String getReturnUrl() {
