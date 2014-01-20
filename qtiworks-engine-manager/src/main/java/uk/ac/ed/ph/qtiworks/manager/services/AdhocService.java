@@ -112,7 +112,7 @@ public class AdhocService {
         final List<CandidateSession> candidateSessions = candidateSessionDao.getForDelivery(bemaDelivery);
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
         for (final CandidateSession candidateSession : candidateSessions) {
-            if (!candidateSession.isClosed()) {
+            if (!candidateSession.isClosed() && !candidateSession.isTerminated()) {
                 final CandidateEvent mostRecentEvent = candidateDataService.getMostRecentEvent(candidateSession);
                 if (mostRecentEvent!=null) {
                     final TestSessionController testSessionController = candidateDataService.createTestSessionController(mostRecentEvent, notificationRecorder);
