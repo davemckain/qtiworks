@@ -19,8 +19,8 @@ everyone involved where possible.
 
 This work has also benefited greatly from contributions and advice from
 the many people, in particular Sue Milne, Niall Barr, Graham Smith,
-Wilbert Kraan, Dick Bacon, Steve Lay, Zack Pierce and Jon Mason. (Sorry
-to anyone I've missed!)
+Wilbert Kraan, Dick Bacon, Steve Lay, Zack Pierce, Jon Mason and Stephen
+Vickers. (Sorry to anyone I've missed!)
 
 David McKain
 January 2014
