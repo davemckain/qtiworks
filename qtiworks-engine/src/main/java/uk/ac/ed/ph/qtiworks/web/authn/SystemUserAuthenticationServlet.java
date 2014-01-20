@@ -130,22 +130,22 @@ public final class SystemUserAuthenticationServlet extends HttpServlet {
         }
 
         /* Get supplied login credentials */
-        final String userId = request.getParameter(USER_ID_PARAM);
+        final String loginName = request.getParameter(USER_ID_PARAM);
         final String password = request.getParameter(PASSWORD_PARAM);
         final List<String> errors = new ArrayList<String>();
-        final SystemUser authenticatedUser = tryAuthentication(userId, password, errors);
+        final SystemUser authenticatedUser = tryAuthentication(loginName, password, errors);
         if (authenticatedUser!=null) {
             /* Store user details in session and redirect to the page we were supposed to be
              * going originally, and remove referral details from session
              */
-            auditLogger.recordEvent(authenticatedUser, "System/form authentication succeeded for " + userId);
+            auditLogger.recordEvent(authenticatedUser, "System/form authentication succeeded for " + loginName);
             logger.debug("Authentication succeeded - redirecting to {}", protectedResourceUri);
-            request.getSession().setAttribute(SystemUserAuthenticationFilter.SYSTEM_USER_IDENTITY_ATTRIBUTE_NAME, authenticatedUser);
+            request.getSession().setAttribute(SystemUserAuthenticationFilter.SYSTEM_USER_ID_IDENTITY_ATTRIBUTE_NAME, authenticatedUser.getId());
             response.sendRedirect(protectedResourceUri.toString()); /* (This is safe as we have sanitised this URI) */
         }
         else {
             /* Forward to login error page, keeping the referral details in session */
-            auditLogger.recordEvent("System/form authentication failed for " + userId);
+            auditLogger.recordEvent("System/form authentication failed for " + loginName);
             logger.debug("Authentication failed - redirecting to {}", loginErrorJspPath);
             request.setAttribute("errors", errors);
             request.getRequestDispatcher(loginErrorJspPath).forward(request, response);
@@ -154,22 +154,23 @@ public final class SystemUserAuthenticationServlet extends HttpServlet {
 
     protected SystemUser tryAuthentication(final String loginName, final String password, final List<String> errors) {
         /* Make sure details have been specified */
-        if (loginName == null) {
+        final String badDetails = "Incorrect user ID or password";
+        if (loginName==null) {
             errors.add("No user ID specified");
         }
-        if (password == null) {
+        if (password==null) {
             errors.add("No password specified");
         }
         /* Then look up user */
         final SystemUser user = systemUserDao.findByLoginName(loginName);
-        if (user == null) {
-            errors.add("User '" + loginName + " ' does not exist");
+        if (user==null) {
+            errors.add(badDetails);
             return null;
         }
         /* Then check password */
         final String passwordDigest = ServiceUtilities.computePasswordDigest(user.getPasswordSalt(), password);
         if (!passwordDigest.equals(user.getPasswordDigest())) {
-            errors.add("Invalid Password");
+            errors.add(badDetails);
             return null;
         }
         /* Make sure account is not disabled */

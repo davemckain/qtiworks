@@ -61,15 +61,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
 
 /**
- * Authentication filter for instructor users. This selects a delegating
- * {@link AbstractSystemUserAuthenticator} as directed by the webapp config.
- * It supports the {@link IdentityService} notion and the {@link User} entity.
- *
- * <h2>Tomcat Note</h2>
- *
- * Tomcat's AccessLogValve logs the <strong>original</strong> request, which will only contain
- * user ID information if there is some kind of front-end authentication going on. In this case,
- * you will want to log the {@link #SYSTEM_USER_IDENTITY_ATTRIBUTE_NAME} request attribute instead.
+ * Authentication filter for system users.
  *
  * @author David McKain
  */
@@ -80,7 +72,7 @@ public final class SystemUserAuthenticationFilter extends AbstractWebAuthenticat
     public static final String ALLOWED_ROLES_INIT_PARAM_NAME = "allowedRoles";
 
     /** Name of request Attribute that will contain the underlying {@link SystemUser} identity of the client */
-    public static final String SYSTEM_USER_IDENTITY_ATTRIBUTE_NAME = "qtiworks.web.authn.systemUser";
+    public static final String SYSTEM_USER_ID_IDENTITY_ATTRIBUTE_NAME = "qtiworks.web.authn.systemUserId";
 
     protected IdentityService identityService;
     protected UserDao userDao;
@@ -115,12 +107,20 @@ public final class SystemUserAuthenticationFilter extends AbstractWebAuthenticat
     @Override
     protected void doFilterAuthentication(final HttpServletRequest request, final HttpServletResponse response,
             final FilterChain chain, final HttpSession session) throws IOException, ServletException {
-        /* Try to extract existing authenticated User Object from Session */
-        SystemUser currentUser = (SystemUser) session.getAttribute(SYSTEM_USER_IDENTITY_ATTRIBUTE_NAME);
-        logger.trace("Extracted SystemUser from Session: {}", currentUser);
-        if (currentUser==null) {
-            /* If there are no User details, we ask subclass to do whatever is required to
-             * authenticate
+        /* Try to extract authenticated User ID from Session */
+        User currentUser = null;
+        final Long currentUserId = (Long) session.getAttribute(SYSTEM_USER_ID_IDENTITY_ATTRIBUTE_NAME);
+        if (currentUserId!=null) {
+            /* Already authenticated */
+            currentUser = userDao.findById(currentUserId);
+            if (currentUser==null) {
+                /* User no longer exists. (Unlikely to happen!) */
+                response.sendError(HttpServletResponse.SC_FORBIDDEN, "Your account no longer exists");
+                return;
+            }
+        }
+        else {
+            /* Not authenticated. Ask subclass to do whatever is required to authenticate
              */
             currentUser = abstractSystemUserAuthenticator.doAuthentication(request, response);
             if (currentUser==null) {
@@ -130,6 +130,7 @@ public final class SystemUserAuthenticationFilter extends AbstractWebAuthenticat
                 return;
             }
         }
+        logger.trace("Extracted SystemUser from Session: {}", currentUser);
 
         /* Make sure account is available */
         if (currentUser.isLoginDisabled()) {
@@ -143,13 +144,8 @@ public final class SystemUserAuthenticationFilter extends AbstractWebAuthenticat
             return;
         }
 
-        /* Store back into Session so that we can avoid later lookups, and allow things
-         * further down the chain to access
-         */
-        session.setAttribute(SYSTEM_USER_IDENTITY_ATTRIBUTE_NAME, currentUser);
-
-        /* Store identity as request attributes for convenience */
-        request.setAttribute(SYSTEM_USER_IDENTITY_ATTRIBUTE_NAME, currentUser);
+        /* Indicate successful authn by storing user ID in session */
+        session.setAttribute(SYSTEM_USER_ID_IDENTITY_ATTRIBUTE_NAME, currentUserId);
 
         /* Then continue with the next link in the chain, passing the wrapped request so that
          * the next handler in the chain doesn't can pull out authentication details as normal.

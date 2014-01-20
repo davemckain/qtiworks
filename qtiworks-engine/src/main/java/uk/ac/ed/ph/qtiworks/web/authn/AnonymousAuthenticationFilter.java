@@ -62,7 +62,7 @@ public final class AnonymousAuthenticationFilter extends AbstractWebAuthenticati
     private static final Logger logger = LoggerFactory.getLogger(AnonymousAuthenticationFilter.class);
 
     /** Name of session Attribute that will contain the resulting {@link AnonymousUser} for the caller */
-    private static final String ANONYMOUS_USER_ATTRIBUTE_NAME = "qtiworks.web.authn.anonymousUser";
+    private static final String ANONYMOUS_USER_ID_ATTRIBUTE_NAME = "qtiworks.web.authn.anonymousUserId";
 
     private IdentityService identityService;
     private AnonymousUserDao anonymousUserDao;
@@ -79,11 +79,17 @@ public final class AnonymousAuthenticationFilter extends AbstractWebAuthenticati
             final FilterChain chain, final HttpSession session)
             throws IOException, ServletException {
         /* See if we already have something in the session */
-        AnonymousUser anonymousUser = (AnonymousUser) session.getAttribute(ANONYMOUS_USER_ATTRIBUTE_NAME);
-        if (anonymousUser==null) {
+        AnonymousUser anonymousUser = null;
+        final Long anonymousUserId = (Long) session.getAttribute(ANONYMOUS_USER_ID_ATTRIBUTE_NAME);
+        if (anonymousUserId!=null) {
+            /* Try to reuse existing anonymous user */
+            anonymousUser = anonymousUserDao.findById(anonymousUserId);
+        }
+        if (anonymousUserId==null || anonymousUser==null) {
+            /* Nothing in session or user with existing ID not found, so create new anonymous user */
             anonymousUser = createAnonymousUser(session);
-            session.setAttribute(ANONYMOUS_USER_ATTRIBUTE_NAME, anonymousUser);
-            logger.debug("Created AnonymousUser {} for his/her session", anonymousUser);
+            session.setAttribute(ANONYMOUS_USER_ID_ATTRIBUTE_NAME, anonymousUser.getId());
+            logger.debug("Created AnonymousUser {} for this session", anonymousUser);
         }
 
         /* Make sure account is available (slightly pathological here) */
@@ -101,8 +107,8 @@ public final class AnonymousAuthenticationFilter extends AbstractWebAuthenticati
         }
     }
 
-    protected AnonymousUser createAnonymousUser(final HttpSession session) {
-        final String sessionId = session.getId();
+    protected AnonymousUser createAnonymousUser(final HttpSession httpSession) {
+        final String sessionId = httpSession.getId();
         AnonymousUser anonymousUser = anonymousUserDao.findBySessionId(sessionId);
         if (anonymousUser!=null) {
             throw new QtiWorksLogicException("AnonymousUser with session ID " + sessionId + " already exists in DB");
