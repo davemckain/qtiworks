@@ -12,6 +12,58 @@ All Rights Reserved
   </nav>
   <h2>QTIWorks Release Notes</h2>
 
+  <h3>Release 1.0-beta5 (20/01/2014)</h3>
+  <p>
+    Further bug fixes and minor feature enhancements, some done to support the pilot use of QTIWorks
+    for delivering a diagnostic test at the University of Edinburgh.
+  </p>
+  <p>
+    Issues resolved:
+  </p>
+  <ul>
+    <li>
+      <a href="https://github.com/davemckain/qtiworks/issues/42">#42</a>: Duration timers are now
+      updated before test outcome processing runs.
+    </li>
+    <li>
+      <a href="https://github.com/davemckain/qtiworks/issues/39">#39</a>: LTI candidate users created
+      for domain-level launches are now deleted when such users are no longer associated with any
+      candidate sessions.
+    </li>
+    <li>
+      Fix to ResolvedAssessmentTest to make it possible to perform lookups on the built-in duration
+      variable. (NB: Lookups of duration restricted to testPart or
+      assessmentSection level are still not implemented.)
+    </li>
+    <li>
+      Some fixes and changes to rendering: XSLT now processes rubricBlocks in testPart navigation correctly,
+      and some fixes to validity of resulting HTML. CSS now renders things a bit smaller.
+    </li>
+    <li>
+      Refactoring of HTTP cache control in rendering MVC.
+    </li>
+    <li>
+      Tidy-up of client exceptions in service layer.
+    </li>
+    <li>
+      Improvements to LTI domain authentication.
+    </li>
+  </ul>
+  <p>
+    New features:
+  </p>
+  <ul>
+    <li>
+      Minor enhancements to proctoring functionality: candidate activity log, terminate individual session, delete session.
+    </li>
+    <li>
+      New facade API (<code>SimpleJqtiFacade</code>) for JQTI+, making it a bit easier to perform basic functions.
+    </li>
+    <li>
+      Implemented exit button for the LTI instructor web interface.
+    </li>
+  </ul>
+
   <h3>Release 1.0-beta4 (09/01/2014)</h3>
   <p>
     Bug-fix release addressing problems reported since beta3, as well as including a few
@@ -31,7 +83,7 @@ All Rights Reserved
       Result return now works for them for <em>domain</em> launches, but not <em>link</em> launches.
       It is currently believe that the issues with the latter are problems with Moodle, rather than
       QTIWorks. Some refactoring of the LTI code within QTIWorks was done to assist with the investigation,
-      including a few improvements to the result resturn's HTTP headers.
+      including a few improvements to the result return's HTTP headers.
     </li>
     <li>
       <a href="https://github.com/davemckain/qtiworks/issues/41">#41</a>: Empty
@@ -103,7 +155,7 @@ All Rights Reserved
     </li>
     <li>
       <a href="https://github.com/davemckain/qtiworks/issues/31">#31</a>: There has
-      been a change to the validation logic to associate mistmatches in the
+      been a change to the validation logic to associate mismatches in the
       cardinality/baseType of the values produced by child expressions against what
       is required by the parent. Mismatches are now reported as problems of the parent,
       rather than the child. This makes issue #31 disappear.
@@ -114,7 +166,7 @@ All Rights Reserved
       in the manner defined by the specification for items within tests. This is fixed here.
     </li>
     <li>
-      <a href="https://github.com/davemckain/qtiworks/issues/35">#35</a>: The intialisation
+      <a href="https://github.com/davemckain/qtiworks/issues/35">#35</a>: The initialisation
       of outcome variables now correctly sets numeric OVs to 0 instead of NULL if there are no defaults provided.
     </li>
   </ul>
@@ -207,7 +259,7 @@ All Rights Reserved
     of its current funding.
   </p>
   <p>
-    This development snapshot mainaly includes some reorganisation and tidying of the MVC
+    This development snapshot mainly includes some reorganisation and tidying of the MVC
     layer, in particular the new domain-level LTI instructor interface and the
     existing instructor interface. The latter has been simplified a bit and
     tidied up visually.
@@ -332,7 +384,7 @@ All Rights Reserved
     be considered stable.
   </p>
   <p>
-    This snapshot also includes signficant refactorings to the higher-level code for running assessments, including the
+    This snapshot also includes significant refactorings to the higher-level code for running assessments, including the
     rendering packages. Assessment result XMLs are now generated and stored after each interaction a candidate makes with an
     assessment, so instructors can see and download partial results much
     earlier if they need to. A few further changes will be needed, but the API
@@ -447,7 +499,7 @@ All Rights Reserved
   <p>
     Filled in initial sketch of support for <code>allowReview</code> and
     <code>showFeedback</code> in the test delivery. Fixed issue with mixed
-    namepsaces when serializing <code>assessmentResult</code> XML. Added
+    namespaces when serializing <code>assessmentResult</code> XML. Added
     basic functionality for getting at candidate data (summary table, CSV summary,
     ZIP bundle containing all <code>assessmentResult</code> files).
   </p>
@@ -536,7 +588,7 @@ All Rights Reserved
       This snapshot now includes the final (final?!) schema.
     </li>
     <li>
-      The validation API has been signficantly refactored, merging with a newer more general
+      The validation API has been significantly refactored, merging with a newer more general
       "notification" API. This notification API can be used to report informational messages,
       warnings and errors at "runtime" (e.g. template, response or outcome processing),
       and will replace the currently inconsistent behaviour or either dying horribly or silently
@@ -638,7 +690,7 @@ All Rights Reserved
   <h3>Release 1.0-DEV7 (25/05/2012)</h3>
   <p>
     This snapshot finally includes all of the internal logic for successfully
-    delivering - and recording the delivery of - a single asseesment item to a
+    delivering - and recording the delivery of - a single assessment item to a
     candidate, as well as much of the logic for managing assessments within the
     system. However, not much of this is yet visible to end users, apart from a
     revised version of the "play sample items" functionality that uses the new
