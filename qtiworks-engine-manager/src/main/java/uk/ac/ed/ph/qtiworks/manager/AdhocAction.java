@@ -61,6 +61,6 @@ public final class AdhocAction extends ManagerAction {
 			throws Exception {
 		logger.warn("Running 'adhoc' developer code");
 		final AdhocService adhocService = applicationContext.getBean(AdhocService.class);
-		adhocService.doWork();
+		adhocService.doWork(parameters);
     }
 }
