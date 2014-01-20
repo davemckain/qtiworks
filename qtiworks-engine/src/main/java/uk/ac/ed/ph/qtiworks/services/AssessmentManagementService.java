@@ -837,27 +837,23 @@ public class AssessmentManagementService {
 
     public Delivery createDemoDelivery(final Assessment assessment)
             throws PrivilegeException {
-        Assert.notNull(assessment, "assessment");
-
-        /* Check access rights */
-        ensureCallerMayManage(assessment);
-
-        /* Create entity */
-        final Delivery delivery = persistDemoDelivery(assessment, null);
-
-        /* That's it! */
-        auditLogger.recordEvent("Created demo Delivery #" + delivery.getId()
-                + " for Assessment #" + assessment.getId());
-        return delivery;
+        try {
+            return createDemoDelivery(assessment, null);
+        }
+        catch (final IncompatiableDeliverySettingsException e) {
+            /* This can't happen here */
+            throw QtiWorksLogicException.unexpectedException(e);
+        }
     }
 
     public Delivery createDemoDelivery(final Assessment assessment, final DeliverySettings deliverySettings)
             throws PrivilegeException, IncompatiableDeliverySettingsException {
         Assert.notNull(assessment, "assessment");
-        Assert.notNull(deliverySettings, "deliverySettings");
 
-        /* Make sure DeliverySettings are compatible */
-        ensureCompatible(deliverySettings, assessment);
+        /* Make sure DeliverySettings are compatible, if provided */
+        if (deliverySettings!=null) {
+            ensureCompatible(deliverySettings, assessment);
+        }
 
         /* Check access rights */
         ensureCallerMayManage(assessment);
@@ -865,10 +861,16 @@ public class AssessmentManagementService {
         /* Create entity */
         final Delivery delivery = persistDemoDelivery(assessment, deliverySettings);
 
-        /* That's it! */
-        auditLogger.recordEvent("Created demo Delivery #" + delivery.getId()
-                + " for Assessment #" + assessment.getId()
-                + " using DeliverySettings #" + deliverySettings.getId());
+        /* Audit event */
+        if (deliverySettings!=null) {
+            auditLogger.recordEvent("Created demo Delivery #" + delivery.getId()
+                    + " for Assessment #" + assessment.getId()
+                    + " using DeliverySettings #" + deliverySettings.getId());
+        }
+        else {
+            auditLogger.recordEvent("Created demo Delivery #" + delivery.getId()
+                    + " for Assessment #" + assessment.getId());
+        }
         return delivery;
     }
 

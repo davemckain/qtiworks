@@ -165,12 +165,12 @@ public class LtiInstructorAssessmentManagementController {
             CandidateException, IncompatiableDeliverySettingsException {
         final Delivery thisDelivery = identityService.getCurrentThreadLtiAuthenticationTicket().getLtiResource().getDelivery();
         final Assessment thisAssessment = thisDelivery.getAssessment();
-        final DeliverySettings theseDeliverySettings = thisDelivery.getDeliverySettings();
         if (thisAssessment==null) {
             /* Assessment hasn't been matched to this resource yet */
             response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, "An Assessment has not been selected for this resource yet");
             return null;
         }
+        final DeliverySettings theseDeliverySettings = thisDelivery.getDeliverySettings(); /* NB: May be null */
         final Delivery demoDelivery = assessmentManagementService.createDemoDelivery(thisAssessment, theseDeliverySettings);
         final String exitUrl = ltiInstructorRouter.buildWithinContextUrl(""); /* (Back to dashboard) */
         return runDelivery(demoDelivery, true, exitUrl);
