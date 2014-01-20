@@ -56,7 +56,7 @@ public class SyntaxAttribute extends SingleEnumerateAttribute<SyntaxType> {
     }
 
     @Override
-	public SyntaxType parseDomAttributeValue(final String domAttributeValue) {
+    public SyntaxType parseDomAttributeValue(final String domAttributeValue) {
         return SyntaxType.parseSyntaxType(domAttributeValue);
     }
 

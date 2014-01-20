@@ -48,18 +48,18 @@ import org.springframework.context.ApplicationContext;
  */
 public final class RunMaintenanceJobs extends ManagerAction {
 
-	private static final Logger logger = LoggerFactory.getLogger(RunMaintenanceJobs.class);
+    private static final Logger logger = LoggerFactory.getLogger(RunMaintenanceJobs.class);
 
-	@Override
-	public String getActionSummary() {
-		return "Invokes ScheduledService.maintenanceJobs()";
-	}
+    @Override
+    public String getActionSummary() {
+        return "Invokes ScheduledService.maintenanceJobs()";
+    }
 
-	@Override
-	public void run(final ApplicationContext applicationContext, final List<String> parameters) {
-	    final ScheduledService scheduledService = applicationContext.getBean(ScheduledService.class);
-	    logger.info("Maintenance jobs starting");
-	    scheduledService.maintenanceJobs();
-	    logger.info("Maintenance jobs complete");
+    @Override
+    public void run(final ApplicationContext applicationContext, final List<String> parameters) {
+        final ScheduledService scheduledService = applicationContext.getBean(ScheduledService.class);
+        logger.info("Maintenance jobs starting");
+        scheduledService.maintenanceJobs();
+        logger.info("Maintenance jobs complete");
     }
 }

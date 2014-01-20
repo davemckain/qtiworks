@@ -43,7 +43,7 @@ public final class QtiCandidateStateException extends JqtiRuntimeException {
 
     private static final long serialVersionUID = 2924118614829800754L;
 
-	public QtiCandidateStateException(final String message) {
+    public QtiCandidateStateException(final String message) {
         super(message);
     }
 

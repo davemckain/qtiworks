@@ -48,22 +48,22 @@ import org.springframework.context.ApplicationContext;
  */
 public final class ExportLtiDomainsAction extends ManagerAction {
 
-	@Override
-	public String getActionSummary() {
-		return "Exports all registered LTI domain data to STDOUT in CSV format";
-	}
+    @Override
+    public String getActionSummary() {
+        return "Exports all registered LTI domain data to STDOUT in CSV format";
+    }
 
-	@Override
-	public void run(final ApplicationContext applicationContext, final List<String> parameters) {
-	    final LtiDomainDao ltiDomainDao = applicationContext.getBean(LtiDomainDao.class);
-	    final List<LtiDomain> ltiDomains = ltiDomainDao.getAll();
-	    final PrintWriter printWriter = new PrintWriter(System.out);
-	    for (final LtiDomain ltiDomain : ltiDomains) {
-	    	printWriter.write(ltiDomain.getConsumerKey());
-	    	printWriter.write(',');
-	    	printWriter.write(ltiDomain.getConsumerSecret());
-	    	printWriter.println();
-	    }
-	    printWriter.close();
+    @Override
+    public void run(final ApplicationContext applicationContext, final List<String> parameters) {
+        final LtiDomainDao ltiDomainDao = applicationContext.getBean(LtiDomainDao.class);
+        final List<LtiDomain> ltiDomains = ltiDomainDao.getAll();
+        final PrintWriter printWriter = new PrintWriter(System.out);
+        for (final LtiDomain ltiDomain : ltiDomains) {
+            printWriter.write(ltiDomain.getConsumerKey());
+            printWriter.write(',');
+            printWriter.write(ltiDomain.getConsumerSecret());
+            printWriter.println();
+        }
+        printWriter.close();
     }
 }

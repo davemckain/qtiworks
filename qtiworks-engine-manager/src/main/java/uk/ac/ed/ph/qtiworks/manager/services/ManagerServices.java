@@ -72,7 +72,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly=false, propagation=Propagation.REQUIRED)
 public class ManagerServices {
 
-	public static final int LTI_SHARED_SECRET_MIN_LENGTH = 8;
+    public static final int LTI_SHARED_SECRET_MIN_LENGTH = 8;
 
     private static final Logger logger = LoggerFactory.getLogger(ManagerServices.class);
 
@@ -105,13 +105,13 @@ public class ManagerServices {
 
     public SystemUser ensureInternalSystemUser(final UserRole userRole,
             final String loginName, final String firstName, final String lastName) {
-    	SystemUser result = instructorUserDao.findByLoginName(loginName);
-    	if (result==null) {
+        SystemUser result = instructorUserDao.findByLoginName(loginName);
+        if (result==null) {
             result = createSystemUser(userRole, loginName, firstName, lastName,
                     qtiWorksDeploymentSettings.getAdminEmailAddress(),
                     "(Login is disabled)", false, true);
-        	logger.info("Created internal system user {}", result);
-    	}
+            logger.info("Created internal system user {}", result);
+        }
         return result;
     }
 
@@ -126,7 +126,7 @@ public class ManagerServices {
         final SystemUser result = createSystemUserIfRequired(userRole, loginName, firstName, lastName,
                 emailAddress, password, sysAdmin, false);
         if (result!=null) {
-        	logger.info("Created system user {}", result);
+            logger.info("Created system user {}", result);
         }
         return result;
     }
@@ -136,8 +136,8 @@ public class ManagerServices {
             final boolean sysAdmin, final boolean loginDisabled) {
         final SystemUser result = instructorUserDao.findByLoginName(loginName);
         if (result!=null) {
-        	/* User already exists */
-        	return null;
+            /* User already exists */
+            return null;
         }
         return createSystemUser(userRole, loginName, firstName, lastName, emailAddress, password, sysAdmin, loginDisabled);
     }
@@ -145,7 +145,7 @@ public class ManagerServices {
     private SystemUser createSystemUser(final UserRole userRole, final String loginName, final String firstName,
             final String lastName, final String emailAddress, final String password,
             final boolean sysAdmin, final boolean loginDisabled) {
-    	final String passwordSalt = ServiceUtilities.createSalt();
+        final String passwordSalt = ServiceUtilities.createSalt();
         final SystemUser result = new SystemUser(userRole);
         result.setLoginName(loginName);
         result.setFirstName(firstName);
@@ -162,85 +162,85 @@ public class ManagerServices {
     //-------------------------------------------------
 
     public boolean findAndDeleteUser(final String loginNameOrUid) {
-		final User user = findUserByLoginNameOrUid(loginNameOrUid);
-		if (user==null) {
-		    logger.warn("Could not find user having loginName or ID {}", loginNameOrUid);
+        final User user = findUserByLoginNameOrUid(loginNameOrUid);
+        if (user==null) {
+            logger.warn("Could not find user having loginName or ID {}", loginNameOrUid);
             return false;
-		}
-		logger.info("Deleting user {}", user);
-		dataDeletionService.deleteUser(user);
-		return true;
+        }
+        logger.info("Deleting user {}", user);
+        dataDeletionService.deleteUser(user);
+        return true;
     }
 
     public boolean findAndResetUser(final String loginNameOrUid) {
-		/* Try to look up by loginName first */
-		final User user = findUserByLoginNameOrUid(loginNameOrUid);
-		if (user==null) {
-	        logger.warn("Could not find user having loginName or ID {}", loginNameOrUid);
+        /* Try to look up by loginName first */
+        final User user = findUserByLoginNameOrUid(loginNameOrUid);
+        if (user==null) {
+            logger.warn("Could not find user having loginName or ID {}", loginNameOrUid);
             return false;
-		}
-		logger.info("Resetting user {}", user);
-		dataDeletionService.resetUser(user);
-		return true;
+        }
+        logger.info("Resetting user {}", user);
+        dataDeletionService.resetUser(user);
+        return true;
     }
 
     private User findUserByLoginNameOrUid(final String loginNameOrUid) {
-		/* Try to look up by loginName first */
-		User user = instructorUserDao.findByLoginName(loginNameOrUid);
-		if (user==null) {
-			/* Try by ID */
-			try {
-				final long uid = Long.parseLong(loginNameOrUid);
-				user = userDao.findById(uid);
-			}
-			catch (final NumberFormatException e) {
-				/* (Continue) */
-			}
-		}
-		return user;
+        /* Try to look up by loginName first */
+        User user = instructorUserDao.findByLoginName(loginNameOrUid);
+        if (user==null) {
+            /* Try by ID */
+            try {
+                final long uid = Long.parseLong(loginNameOrUid);
+                user = userDao.findById(uid);
+            }
+            catch (final NumberFormatException e) {
+                /* (Continue) */
+            }
+        }
+        return user;
     }
 
     //-------------------------------------------------
 
     public boolean createOrUpdateLtiDomain(final String consumerKey, final String sharedSecret) {
-    	Assert.notNull(consumerKey, "consumerKey");
-    	Assert.notNull(sharedSecret, "consumerSecret");
+        Assert.notNull(consumerKey, "consumerKey");
+        Assert.notNull(sharedSecret, "consumerSecret");
 
-    	/* Validate key & secret */
-    	if (consumerKey.length() > DomainConstants.LTI_TOKEN_LENGTH) {
-    		logger.error("Consumer key {} must not be longer than {} characters", DomainConstants.LTI_TOKEN_LENGTH, consumerKey);
-    		return false;
-    	}
-    	if (!consumerKey.matches("[\\w-\\./]+")) {
-    		logger.error("Consumer key {} must contain only alphanumeric characters, '-', '/' and '.'", consumerKey);
-    		return false;
-    	}
-    	if (sharedSecret.length() < LTI_SHARED_SECRET_MIN_LENGTH || sharedSecret.length() > DomainConstants.LTI_SECRET_LENGTH) {
-    		logger.error("Shared secret {} must be between {} and {} characters", new Object[] { sharedSecret, LTI_SHARED_SECRET_MIN_LENGTH, DomainConstants.LTI_TOKEN_LENGTH });
-    		return false;
-    	}
-    	if (!sharedSecret.matches("[\\w-\\.]+")) {
-    		logger.error("Shared secret {} must contain only alphanumeric characters, '-' and '.'", sharedSecret);
-    		return false;
-    	}
+        /* Validate key & secret */
+        if (consumerKey.length() > DomainConstants.LTI_TOKEN_LENGTH) {
+            logger.error("Consumer key {} must not be longer than {} characters", DomainConstants.LTI_TOKEN_LENGTH, consumerKey);
+            return false;
+        }
+        if (!consumerKey.matches("[\\w-\\./]+")) {
+            logger.error("Consumer key {} must contain only alphanumeric characters, '-', '/' and '.'", consumerKey);
+            return false;
+        }
+        if (sharedSecret.length() < LTI_SHARED_SECRET_MIN_LENGTH || sharedSecret.length() > DomainConstants.LTI_SECRET_LENGTH) {
+            logger.error("Shared secret {} must be between {} and {} characters", new Object[] { sharedSecret, LTI_SHARED_SECRET_MIN_LENGTH, DomainConstants.LTI_TOKEN_LENGTH });
+            return false;
+        }
+        if (!sharedSecret.matches("[\\w-\\.]+")) {
+            logger.error("Shared secret {} must contain only alphanumeric characters, '-' and '.'", sharedSecret);
+            return false;
+        }
 
-    	/* Create/update LtiDomain entity as appropriate */
+        /* Create/update LtiDomain entity as appropriate */
         LtiDomain ltiDomain = ltiDomainDao.findByConsumerKey(consumerKey);
         if (ltiDomain!=null) {
-        	/* Already registered - update secret if required */
-        	if (!sharedSecret.equals(ltiDomain.getConsumerSecret())) {
-        		ltiDomain.setConsumerSecret(sharedSecret);
-        		ltiDomainDao.update(ltiDomain);
-        		logger.info("Updated LTI domain data for consumer key {} and shared secret {}", consumerKey, sharedSecret);
-        	}
+            /* Already registered - update secret if required */
+            if (!sharedSecret.equals(ltiDomain.getConsumerSecret())) {
+                ltiDomain.setConsumerSecret(sharedSecret);
+                ltiDomainDao.update(ltiDomain);
+                logger.info("Updated LTI domain data for consumer key {} and shared secret {}", consumerKey, sharedSecret);
+            }
         }
         else {
-        	/* New domain */
-        	ltiDomain = new LtiDomain();
-        	ltiDomain.setConsumerKey(consumerKey);
-        	ltiDomain.setConsumerSecret(sharedSecret);
-    		ltiDomainDao.persist(ltiDomain);
-    		logger.info("Added new LTI domain for consumer key {} and shared secret {}", consumerKey, sharedSecret);
+            /* New domain */
+            ltiDomain = new LtiDomain();
+            ltiDomain.setConsumerKey(consumerKey);
+            ltiDomain.setConsumerSecret(sharedSecret);
+            ltiDomainDao.persist(ltiDomain);
+            logger.info("Added new LTI domain for consumer key {} and shared secret {}", consumerKey, sharedSecret);
         }
         return true;
     }
@@ -257,9 +257,9 @@ public class ManagerServices {
     }
 
     public void validateAllAssessmentPackages() {
-    	for (final AssessmentPackage assessmentPackage : assessmentPackageDao.getAll()) {
-    		assessmentDataService.validateAssessmentPackage(assessmentPackage);
-    	}
+        for (final AssessmentPackage assessmentPackage : assessmentPackageDao.getAll()) {
+            assessmentDataService.validateAssessmentPackage(assessmentPackage);
+        }
     }
 
     public void deleteAllCandidateSessionFilesystemData() {

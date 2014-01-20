@@ -136,10 +136,10 @@ public class SampleResourceImporter {
         final SystemUser sampleOwner = ensureSampleOwner();
 
         /* Reset user (which will delete all existing samples) */
-    	dataDeletionService.resetUser(sampleOwner);
+        dataDeletionService.resetUser(sampleOwner);
 
-    	/* Then import samples */
-    	doUpdateQtiSamples(sampleOwner);
+        /* Then import samples */
+        doUpdateQtiSamples(sampleOwner);
     }
 
     /**
@@ -189,7 +189,7 @@ public class SampleResourceImporter {
         for (final QtiSampleSet qtiSampleSet : qtiSampleSets) {
             final int importCount = handleSampleSet(sampleOwner, qtiSampleSet, sampleCategories, importedSampleAssessments, deliverySettingsMap);
             if (importCount>0) {
-            	logger.info("Imported {} sample(s) into set '{}'", importCount, qtiSampleSet.getTitle());
+                logger.info("Imported {} sample(s) into set '{}'", importCount, qtiSampleSet.getTitle());
             }
         }
     }

@@ -50,21 +50,21 @@ import org.springframework.context.ApplicationContext;
  */
 public final class SendQueuedLtiOutcomesAction extends ManagerAction {
 
-	private static final Logger logger = LoggerFactory.getLogger(SendQueuedLtiOutcomesAction.class);
+    private static final Logger logger = LoggerFactory.getLogger(SendQueuedLtiOutcomesAction.class);
 
-	@Override
-	public String getActionSummary() {
-		return "Sends all currently queued LTI outcomes back to the relevant Tool Consumers";
-	}
+    @Override
+    public String getActionSummary() {
+        return "Sends all currently queued LTI outcomes back to the relevant Tool Consumers";
+    }
 
-	@Override
-	public void run(final ApplicationContext applicationContext, final List<String> parameters) {
-	    final LtiOutcomeService ltiOutcomeService = applicationContext.getBean(LtiOutcomeService.class);
-	    final Pair<Integer, Integer> result = ltiOutcomeService.sendQueuedLtiOutcomes(true);
+    @Override
+    public void run(final ApplicationContext applicationContext, final List<String> parameters) {
+        final LtiOutcomeService ltiOutcomeService = applicationContext.getBean(LtiOutcomeService.class);
+        final Pair<Integer, Integer> result = ltiOutcomeService.sendQueuedLtiOutcomes(true);
 
         final int failureCount = result.getFirst().intValue();
         final int sendCount = result.getSecond().intValue();
-		logger.info("Sent {} pending LTI outcome(s) back, with {} failure(s)",
-		        sendCount, failureCount);
+        logger.info("Sent {} pending LTI outcome(s) back, with {} failure(s)",
+                sendCount, failureCount);
     }
 }

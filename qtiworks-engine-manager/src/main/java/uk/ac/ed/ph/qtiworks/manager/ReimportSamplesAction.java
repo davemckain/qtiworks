@@ -49,20 +49,20 @@ import org.springframework.context.ApplicationContext;
  */
 public final class ReimportSamplesAction extends ManagerAction {
 
-	private static final Logger logger = LoggerFactory.getLogger(ReimportSamplesAction.class);
+    private static final Logger logger = LoggerFactory.getLogger(ReimportSamplesAction.class);
 
-	@Override
-	public String getActionSummary() {
-		return "Deletes then re-imports all QTIWorks sample assessments";
-	}
+    @Override
+    public String getActionSummary() {
+        return "Deletes then re-imports all QTIWorks sample assessments";
+    }
 
-	@Override
-	public void run(final ApplicationContext applicationContext, final List<String> parameters) {
-    	logger.info("Reimporting QTI samples");
+    @Override
+    public void run(final ApplicationContext applicationContext, final List<String> parameters) {
+        logger.info("Reimporting QTI samples");
         final SampleResourceImporter sampleResourceImporter = applicationContext.getBean(SampleResourceImporter.class);
         sampleResourceImporter.reimportQtiSamples();
 
-		logger.info("Completed successfully");
-	}
+        logger.info("Completed successfully");
+    }
 
 }

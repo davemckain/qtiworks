@@ -56,7 +56,7 @@ public class ReturnTypeAttribute extends SingleEnumerateAttribute<ReturnTypeType
     }
 
     @Override
-	public ReturnTypeType parseDomAttributeValue(final String domAttributeValue) {
+    public ReturnTypeType parseDomAttributeValue(final String domAttributeValue) {
         return ReturnTypeType.parseReturnType(domAttributeValue);
     }
 

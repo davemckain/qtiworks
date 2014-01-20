@@ -85,7 +85,7 @@ public final class XmlMarshallerCore {
     /** Namespace used for custom QTIWorks XML */
     public static final String QTIWORKS_NAMESPACE = "http://www.ph.ed.ac.uk/qtiworks";
 
-	private static final String dateFormatString = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZ";
+    private static final String dateFormatString = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZ";
 
     //----------------------------------------------
     // Marshalling to XML
@@ -130,7 +130,7 @@ public final class XmlMarshallerCore {
     }
 
     static void addAbstractPartSessionStateAttributes(final Element element, final AbstractPartSessionState abstractPartSessionState) {
-    	addControlObjectSessionStateAttributes(element, abstractPartSessionState);
+        addControlObjectSessionStateAttributes(element, abstractPartSessionState);
         element.setAttribute("preConditionFailed", StringUtilities.toTrueFalse(abstractPartSessionState.isPreConditionFailed()));
         element.setAttribute("jumpedByBranchRule", StringUtilities.toTrueFalse(abstractPartSessionState.isJumpedByBranchRule()));
         final String branchRuleTarget = abstractPartSessionState.getBranchRuleTarget();
@@ -345,10 +345,10 @@ public final class XmlMarshallerCore {
     }
 
     static void parseAbstractPartSessionStateAttributes(final AbstractPartSessionState target, final Element element) {
-    	parseControlObjectSessionStateAttributes(target, element);
-    	target.setPreConditionFailed(parseOptionalBooleanAttribute(element, "preConditionFailed", false));
-    	target.setJumpedByBranchRule(parseOptionalBooleanAttribute(element, "jumpedByBranchRule", false));
-    	target.setBranchRuleTarget(parseOptionalStringAttribute(element, "branchRuleTarget"));
+        parseControlObjectSessionStateAttributes(target, element);
+        target.setPreConditionFailed(parseOptionalBooleanAttribute(element, "preConditionFailed", false));
+        target.setJumpedByBranchRule(parseOptionalBooleanAttribute(element, "jumpedByBranchRule", false));
+        target.setBranchRuleTarget(parseOptionalStringAttribute(element, "branchRuleTarget"));
     }
 
     static void parseControlObjectSessionStateAttributes(final ControlObjectSessionState target, final Element element) {

@@ -58,37 +58,37 @@ import org.springframework.context.ApplicationContext;
  */
 public final class ImportUsersAction extends ManagerAction {
 
-	private static final Logger logger = LoggerFactory.getLogger(ImportUsersAction.class);
+    private static final Logger logger = LoggerFactory.getLogger(ImportUsersAction.class);
 
-	private File userImportCsv;
+    private File userImportCsv;
 
-	@Override
-	public String getActionSummary() {
-		return "Imports (instructor) users into the system using data from a CSV file";
-	}
+    @Override
+    public String getActionSummary() {
+        return "Imports (instructor) users into the system using data from a CSV file";
+    }
 
-	@Override
-	public String getActionParameterSummary() {
-		return "<importFile.csv>";
-	}
+    @Override
+    public String getActionParameterSummary() {
+        return "<importFile.csv>";
+    }
 
-	@Override
-	public String validateParameters(final List<String> parameters) {
-		if (parameters.size()!=1) {
-			return "Required parameter: path to user import CSV";
-		}
-		final String userImportPath = parameters.get(0);
-		userImportCsv = new File(userImportPath);
-		if (!userImportCsv.isFile()) {
-			return "Path " + userImportPath + " not found";
-		}
-		return null;
-	}
+    @Override
+    public String validateParameters(final List<String> parameters) {
+        if (parameters.size()!=1) {
+            return "Required parameter: path to user import CSV";
+        }
+        final String userImportPath = parameters.get(0);
+        userImportCsv = new File(userImportPath);
+        if (!userImportCsv.isFile()) {
+            return "Path " + userImportPath + " not found";
+        }
+        return null;
+    }
 
-	@Override
-	public void run(final ApplicationContext applicationContext, final List<String> parameters)
-			throws UnsupportedEncodingException, FileNotFoundException {
-    	logger.info("Importing users from {}", userImportCsv);
+    @Override
+    public void run(final ApplicationContext applicationContext, final List<String> parameters)
+            throws UnsupportedEncodingException, FileNotFoundException {
+        logger.info("Importing users from {}", userImportCsv);
 
         final BufferedReader importReader = new BufferedReader(new InputStreamReader(new FileInputStream(userImportCsv), "UTF-8"));
         String line;
@@ -105,7 +105,7 @@ public final class ImportUsersAction extends ManagerAction {
                 }
                 fields = line.split(",\\s*", -1);
                 if (handleUserLine(managerServices, fields)) {
-                	++usersCreatedCount;
+                    ++usersCreatedCount;
                 }
             }
         }

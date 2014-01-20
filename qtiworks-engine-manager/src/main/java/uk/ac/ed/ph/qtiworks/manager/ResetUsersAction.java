@@ -49,35 +49,35 @@ import org.springframework.context.ApplicationContext;
  */
 public final class ResetUsersAction extends ManagerAction {
 
-	private static final Logger logger = LoggerFactory.getLogger(ResetUsersAction.class);
+    private static final Logger logger = LoggerFactory.getLogger(ResetUsersAction.class);
 
-	@Override
-	public String getActionSummary() {
-		return "Wipes data for the user(s) having the given login name(s) or ID(s)";
-	}
+    @Override
+    public String getActionSummary() {
+        return "Wipes data for the user(s) having the given login name(s) or ID(s)";
+    }
 
-	@Override
-	public String getActionParameterSummary() {
-		return "<loginNameOrUid> ...";
-	}
+    @Override
+    public String getActionParameterSummary() {
+        return "<loginNameOrUid> ...";
+    }
 
-	@Override
-	public String validateParameters(final List<String> parameters) {
-		if (parameters.isEmpty()) {
-			return "Required parameters: <loginName|uid> ...";
-		}
-		return null;
-	}
+    @Override
+    public String validateParameters(final List<String> parameters) {
+        if (parameters.isEmpty()) {
+            return "Required parameters: <loginName|uid> ...";
+        }
+        return null;
+    }
 
-	@Override
-	public void run(final ApplicationContext applicationContext, final List<String> parameters) {
-		final ManagerServices managerServices = applicationContext.getBean(ManagerServices.class);
-		int resetCount = 0;
-		for (final String param : parameters) {
-			if (managerServices.findAndResetUser(param)) {
-				++resetCount;
-			}
-		}
-		logger.info("Reset stored data for {} user(s) in the system", resetCount);
+    @Override
+    public void run(final ApplicationContext applicationContext, final List<String> parameters) {
+        final ManagerServices managerServices = applicationContext.getBean(ManagerServices.class);
+        int resetCount = 0;
+        for (final String param : parameters) {
+            if (managerServices.findAndResetUser(param)) {
+                ++resetCount;
+            }
+        }
+        logger.info("Reset stored data for {} user(s) in the system", resetCount);
     }
 }

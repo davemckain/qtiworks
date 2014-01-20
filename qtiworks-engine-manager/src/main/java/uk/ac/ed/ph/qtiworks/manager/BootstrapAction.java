@@ -50,33 +50,33 @@ import org.springframework.context.ApplicationContext;
  */
 public final class BootstrapAction extends ManagerAction {
 
-	private static final Logger logger = LoggerFactory.getLogger(BootstrapAction.class);
+    private static final Logger logger = LoggerFactory.getLogger(BootstrapAction.class);
 
-	@Override
-	public String getActionSummary() {
-		return "Bootstraps the QTIWorks database and imports sample assessments";
-	}
+    @Override
+    public String getActionSummary() {
+        return "Bootstraps the QTIWorks database and imports sample assessments";
+    }
 
-	@Override
-	public String getSpringProfileName() {
-		return QtiWorksProfiles.BOOTSTRAP;
-	}
+    @Override
+    public String getSpringProfileName() {
+        return QtiWorksProfiles.BOOTSTRAP;
+    }
 
-	@Override
-	public void beforeApplicationContextInit() {
-		logger.warn("QTIWorks database is being bootstrapped. Any existing data will be deleted!!!");
-		logger.warn("Make sure you have created the QTIWorks database already. Refer to the documentation for help");
-	}
+    @Override
+    public void beforeApplicationContextInit() {
+        logger.warn("QTIWorks database is being bootstrapped. Any existing data will be deleted!!!");
+        logger.warn("Make sure you have created the QTIWorks database already. Refer to the documentation for help");
+    }
 
-	@Override
-	public void run(final ApplicationContext applicationContext, final List<String> parameters) {
-		/* Delete filesystem data too */
-		logger.info("Deleting any existing user data from filesystem");
-		final FilespaceManager filespaceManager = applicationContext.getBean(FilespaceManager.class);
-		filespaceManager.deleteAllUserData();
+    @Override
+    public void run(final ApplicationContext applicationContext, final List<String> parameters) {
+        /* Delete filesystem data too */
+        logger.info("Deleting any existing user data from filesystem");
+        final FilespaceManager filespaceManager = applicationContext.getBean(FilespaceManager.class);
+        filespaceManager.deleteAllUserData();
 
-    	logger.info("Importing QTI samples");
+        logger.info("Importing QTI samples");
         final SampleResourceImporter sampleResourceImporter = applicationContext.getBean(SampleResourceImporter.class);
         sampleResourceImporter.updateQtiSamples();
-	}
+    }
 }

@@ -185,14 +185,14 @@ public final class TestPlanNode implements Serializable {
     }
 
     public TestPlanNode getChildAt(final int index) {
-    	if (index<0 || index>=children.size()) {
-    		throw new IndexOutOfBoundsException();
-    	}
-    	return children.get(index);
+        if (index<0 || index>=children.size()) {
+            throw new IndexOutOfBoundsException();
+        }
+        return children.get(index);
     }
 
     public int getChildCount() {
-    	return children.size();
+        return children.size();
     }
 
     public void addChild(final TestPlanNode childNode) {

@@ -126,12 +126,12 @@ public abstract class AbstractPart extends ControlObject<Identifier> implements 
      * @return false if any {@link PreCondition} fails to be met, true otherwise.
      */
     public boolean arePreConditionsMet(final TestProcessingContext testProcessingContext) {
-      	for (final PreCondition preCondition : getPreConditions()) {
-    		if (!preCondition.evaluatesTrue(testProcessingContext)) {
-    			return false;
-    		}
-    	}
-      	return true;
+          for (final PreCondition preCondition : getPreConditions()) {
+            if (!preCondition.evaluatesTrue(testProcessingContext)) {
+                return false;
+            }
+        }
+          return true;
     }
 
     /**

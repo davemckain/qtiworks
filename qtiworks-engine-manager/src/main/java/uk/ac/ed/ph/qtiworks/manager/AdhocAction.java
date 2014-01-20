@@ -49,18 +49,18 @@ import org.springframework.context.ApplicationContext;
  */
 public final class AdhocAction extends ManagerAction {
 
-	private static final Logger logger = LoggerFactory.getLogger(AdhocAction.class);
+    private static final Logger logger = LoggerFactory.getLogger(AdhocAction.class);
 
-	@Override
-	public String getActionSummary() {
-		return "(Internal developer action)";
-	}
+    @Override
+    public String getActionSummary() {
+        return "(Internal developer action)";
+    }
 
-	@Override
-	public void run(final ApplicationContext applicationContext, final List<String> parameters)
-			throws Exception {
-		logger.warn("Running 'adhoc' developer code");
-		final AdhocService adhocService = applicationContext.getBean(AdhocService.class);
-		adhocService.doWork(parameters);
+    @Override
+    public void run(final ApplicationContext applicationContext, final List<String> parameters)
+            throws Exception {
+        logger.warn("Running 'adhoc' developer code");
+        final AdhocService adhocService = applicationContext.getBean(AdhocService.class);
+        adhocService.doWork(parameters);
     }
 }

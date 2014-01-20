@@ -48,26 +48,26 @@ import org.springframework.context.ApplicationContext;
  */
 public final class M4ToBeta1UpdateAction extends ManagerAction {
 
-	private static final Logger logger = LoggerFactory.getLogger(M4ToBeta1UpdateAction.class);
+    private static final Logger logger = LoggerFactory.getLogger(M4ToBeta1UpdateAction.class);
 
-	@Override
-	public String getActionSummary() {
-		return "Fixes existing data after schema update for M4->BETA1 upgrade";
-	}
+    @Override
+    public String getActionSummary() {
+        return "Fixes existing data after schema update for M4->BETA1 upgrade";
+    }
 
-	@Override
-	public void run(final ApplicationContext applicationContext, final List<String> parameters) {
-		final ManagerServices managerServices = applicationContext.getBean(ManagerServices.class);
-		int deletedCount = managerServices.deleteUnusedAssessmentPackages();
-		logger.info("Deleted {} AssessmentPackage(s) from the system", deletedCount);
+    @Override
+    public void run(final ApplicationContext applicationContext, final List<String> parameters) {
+        final ManagerServices managerServices = applicationContext.getBean(ManagerServices.class);
+        int deletedCount = managerServices.deleteUnusedAssessmentPackages();
+        logger.info("Deleted {} AssessmentPackage(s) from the system", deletedCount);
 
-		managerServices.validateAllAssessmentPackages();
-		logger.info("Validated all remaining AssessmentPackages");
+        managerServices.validateAllAssessmentPackages();
+        logger.info("Validated all remaining AssessmentPackages");
 
-		managerServices.deleteAllCandidateSessionFilesystemData();
+        managerServices.deleteAllCandidateSessionFilesystemData();
         logger.info("Deleted candidate data from filesystem (DB data was deleted earlier during schema migration script)");
 
-		deletedCount = managerServices.deleteLtiCandidateUsers();
-		logger.info("Deleted {} LTI Candidate users", deletedCount);
+        deletedCount = managerServices.deleteLtiCandidateUsers();
+        logger.info("Deleted {} LTI Candidate users", deletedCount);
     }
 }

@@ -47,7 +47,7 @@ import java.util.Iterator;
 public final class StringUtilities {
 
     /** Shared instance of an empty array of Strings, which is sometimes useful! */
-	public static final String[] EMPTY_STRING_ARRAY = new String[0];
+    public static final String[] EMPTY_STRING_ARRAY = new String[0];
 
     /**
      * Joins the given collection of Objects using the given
@@ -92,7 +92,7 @@ public final class StringUtilities {
      * @param separator separator to use
      */
     public static void join(final StringBuilder resultBuilder, final Object[] objects,
-    		final CharSequence separator) {
+            final CharSequence separator) {
         join(resultBuilder, objects, separator, 0, objects.length);
     }
 
@@ -106,7 +106,7 @@ public final class StringUtilities {
      * @param endIndex index after last one to join
      */
     public static String join(final Object[] objects, final CharSequence separator,
-    		final int startIndex, final int endIndex) {
+            final int startIndex, final int endIndex) {
         final StringBuilder result = new StringBuilder();
         join(result, objects, separator, startIndex, endIndex);
         return result.toString();
@@ -124,7 +124,7 @@ public final class StringUtilities {
      * @param endIndex index after last one to join
      */
     public static void join(final StringBuilder resultBuilder, final Object[] objects,
-    		final CharSequence separator, final int startIndex, final int endIndex) {
+            final CharSequence separator, final int startIndex, final int endIndex) {
         boolean hasDoneFirst = false;
         for (int i=startIndex; i<endIndex; i++) {
             if (hasDoneFirst) {
@@ -233,7 +233,7 @@ public final class StringUtilities {
      *   neither "yes" nor "no"
      */
     public static boolean fromYesNo(final String value) {
-    	return fromBinaryValues(value, "yes", "no");
+        return fromBinaryValues(value, "yes", "no");
     }
 
     /**
@@ -248,7 +248,7 @@ public final class StringUtilities {
      *   neither "true" nor "false"
      */
     public static boolean fromTrueFalse(final String value) {
-    	return fromBinaryValues(value, "true", "false");
+        return fromBinaryValues(value, "true", "false");
     }
 
     /**
@@ -264,7 +264,7 @@ public final class StringUtilities {
      *   neither trueValue nor falseValue
      */
     public static boolean fromBinaryValues(final String value,
-    		final String trueValue, final String falseValue) {
+            final String trueValue, final String falseValue) {
         if (value!=null) {
             if (value.equals(trueValue)) {
                 return true;
@@ -275,7 +275,7 @@ public final class StringUtilities {
         }
         throw new IllegalArgumentException("Argument '" + value
                 + "' must be "
-        		+ trueValue + " or " + falseValue);
+                + trueValue + " or " + falseValue);
     }
 
     //------------------------------------------------------------------------

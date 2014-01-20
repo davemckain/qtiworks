@@ -59,16 +59,16 @@ public abstract class AbstractPartSessionState extends ControlObjectSessionState
      * Indicates whether a {@link PreCondition} on the corresponding {@link AbstractPart}
      * has failed.
      */
-	protected boolean preConditionFailed;
+    protected boolean preConditionFailed;
 
-	/**
-	 * Indicates whether this {@link AbstractPart} was skipped because a {@link BranchRule}
-	 * caused a jump to a later node.
-	 * <p>
-	 * NB: This will be set as appropriate for descendants of {@link AssessmentSection} nodes,
-	 * but not for descendants of {@link TestPart} nodes.
-	 */
-	protected boolean jumpedByBranchRule;
+    /**
+     * Indicates whether this {@link AbstractPart} was skipped because a {@link BranchRule}
+     * caused a jump to a later node.
+     * <p>
+     * NB: This will be set as appropriate for descendants of {@link AssessmentSection} nodes,
+     * but not for descendants of {@link TestPart} nodes.
+     */
+    protected boolean jumpedByBranchRule;
 
     /**
      * If not null, then a {@link BranchRule} on the corresponding {@link AbstractPart} evaluated to
@@ -76,24 +76,24 @@ public abstract class AbstractPartSessionState extends ControlObjectSessionState
      * {@link BranchRule#EXIT_SECTION}, {@link BranchRule#EXIT_TESTPART}, {@link BranchRule#EXIT_TEST}
      * or the key of the {@link TestPlanNode} corresponding to an explicit branch target.
      */
-	protected String branchRuleTarget;
+    protected String branchRuleTarget;
 
     @Override
     public void reset() {
         super.reset();
-    	this.preConditionFailed = false;
-    	this.branchRuleTarget = null;
+        this.preConditionFailed = false;
+        this.branchRuleTarget = null;
     }
 
     //----------------------------------------------------------------
 
     public boolean isPreConditionFailed() {
-		return preConditionFailed;
-	}
+        return preConditionFailed;
+    }
 
-	public void setPreConditionFailed(final boolean preConditionFailed) {
-		this.preConditionFailed = preConditionFailed;
-	}
+    public void setPreConditionFailed(final boolean preConditionFailed) {
+        this.preConditionFailed = preConditionFailed;
+    }
 
 
     public boolean isJumpedByBranchRule() {
@@ -131,9 +131,9 @@ public abstract class AbstractPartSessionState extends ControlObjectSessionState
     public int hashCode() {
         return Arrays.hashCode(new Object[] {
                 super.hashCode(),
-        		preConditionFailed,
-        		jumpedByBranchRule,
-        		branchRuleTarget
+                preConditionFailed,
+                jumpedByBranchRule,
+                branchRuleTarget
         });
     }
 

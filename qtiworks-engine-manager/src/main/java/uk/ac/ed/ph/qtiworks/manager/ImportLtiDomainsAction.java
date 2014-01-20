@@ -57,38 +57,38 @@ import org.springframework.context.ApplicationContext;
  */
 public final class ImportLtiDomainsAction extends ManagerAction {
 
-	private static final Logger logger = LoggerFactory.getLogger(ImportLtiDomainsAction.class);
+    private static final Logger logger = LoggerFactory.getLogger(ImportLtiDomainsAction.class);
 
-	private File ltiDomainsCsv;
+    private File ltiDomainsCsv;
 
-	@Override
-	public String getActionSummary() {
-		return "Imports LTI domain data into the system using data from a CSV file (key,secret)";
-	}
+    @Override
+    public String getActionSummary() {
+        return "Imports LTI domain data into the system using data from a CSV file (key,secret)";
+    }
 
-	@Override
-	public String getActionParameterSummary() {
-		return "<ltiDomainsCsv.csv>";
-	}
+    @Override
+    public String getActionParameterSummary() {
+        return "<ltiDomainsCsv.csv>";
+    }
 
-	@Override
-	public String validateParameters(final List<String> parameters) {
-		if (parameters.size()!=1) {
-			return "Required parameter: path to LTI domain CSV";
-		}
-		final String ltiDomainsImportPath = parameters.get(0);
-		ltiDomainsCsv = new File(ltiDomainsImportPath);
-		if (!ltiDomainsCsv.isFile()) {
-			return "Path " + ltiDomainsImportPath + " not found";
-		}
-		return null;
-	}
+    @Override
+    public String validateParameters(final List<String> parameters) {
+        if (parameters.size()!=1) {
+            return "Required parameter: path to LTI domain CSV";
+        }
+        final String ltiDomainsImportPath = parameters.get(0);
+        ltiDomainsCsv = new File(ltiDomainsImportPath);
+        if (!ltiDomainsCsv.isFile()) {
+            return "Path " + ltiDomainsImportPath + " not found";
+        }
+        return null;
+    }
 
-	@Override
-	public void run(final ApplicationContext applicationContext, final List<String> parameters)
-			throws UnsupportedEncodingException, FileNotFoundException {
-    	logger.info("Importing LTI domain data from {}", ltiDomainsCsv);
-    	final ManagerServices managerServices = applicationContext.getBean(ManagerServices.class);
+    @Override
+    public void run(final ApplicationContext applicationContext, final List<String> parameters)
+            throws UnsupportedEncodingException, FileNotFoundException {
+        logger.info("Importing LTI domain data from {}", ltiDomainsCsv);
+        final ManagerServices managerServices = applicationContext.getBean(ManagerServices.class);
         final BufferedReader importReader = new BufferedReader(new InputStreamReader(new FileInputStream(ltiDomainsCsv), "UTF-8"));
         String line;
         String[] fields;

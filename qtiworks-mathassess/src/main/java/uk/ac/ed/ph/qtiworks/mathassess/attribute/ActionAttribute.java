@@ -56,7 +56,7 @@ public final class ActionAttribute extends SingleEnumerateAttribute<ActionType> 
     }
 
     @Override
-	public ActionType parseDomAttributeValue(final String domAttributeValue) {
+    public ActionType parseDomAttributeValue(final String domAttributeValue) {
         return ActionType.parseActionType(domAttributeValue);
     }
 

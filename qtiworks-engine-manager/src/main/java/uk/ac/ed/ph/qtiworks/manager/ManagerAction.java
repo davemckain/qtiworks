@@ -46,47 +46,47 @@ import org.springframework.context.ApplicationContext;
  */
 public abstract class ManagerAction {
 
-	/**
-	 * Return details about any required parameters
-	 */
-	public String getActionParameterSummary() {
-		/* None usually required */
-		return "";
-	}
+    /**
+     * Return details about any required parameters
+     */
+    public String getActionParameterSummary() {
+        /* None usually required */
+        return "";
+    }
 
-	/**
-	 * Return a one line summary of usage for this action
-	 */
-	public abstract String getActionSummary();
+    /**
+     * Return a one line summary of usage for this action
+     */
+    public abstract String getActionSummary();
 
-	/**
-	 * Returns name of the Spring <code>@Profile</code> to use.
-	 */
-	public String getSpringProfileName() {
-		return QtiWorksProfiles.MANAGER;
-	}
+    /**
+     * Returns name of the Spring <code>@Profile</code> to use.
+     */
+    public String getSpringProfileName() {
+        return QtiWorksProfiles.MANAGER;
+    }
 
-	/**
-	 * Perform any action-specific validation on the user-provided parameters.
-	 * Return null on success, otherwise an error message.
-	 *
-	 * @param parameters list of parameters for this action
-	 */
-	public String validateParameters(final List<String> parameters) {
-		return null;
-	}
+    /**
+     * Perform any action-specific validation on the user-provided parameters.
+     * Return null on success, otherwise an error message.
+     *
+     * @param parameters list of parameters for this action
+     */
+    public String validateParameters(final List<String> parameters) {
+        return null;
+    }
 
-	/**
-	 * Override if you want to say or do something before the Spring
-	 * ApplicationContext is set up.
-	 */
-	public void beforeApplicationContextInit() {
-		/* Do nothing */
-	}
+    /**
+     * Override if you want to say or do something before the Spring
+     * ApplicationContext is set up.
+     */
+    public void beforeApplicationContextInit() {
+        /* Do nothing */
+    }
 
-	/**
-	 * Put the action logic in here.
-	 */
-	public abstract void run(ApplicationContext applicationContext, List<String> parameters) throws Exception;
+    /**
+     * Put the action logic in here.
+     */
+    public abstract void run(ApplicationContext applicationContext, List<String> parameters) throws Exception;
 
 }

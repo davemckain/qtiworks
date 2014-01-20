@@ -68,22 +68,22 @@ public final class QtiWorksEngineManager {
 
     private static final Map<String, ManagerAction> actionMap;
     static {
-    	actionMap = new LinkedHashMap<String, ManagerAction>();
-    	actionMap.put("bootstrap", new BootstrapAction());
-    	actionMap.put("rebuildSchema", new RebuildSchemaAction());
-    	actionMap.put("importUsers", new ImportUsersAction());
-    	actionMap.put("reimportSamples", new ReimportSamplesAction());
-    	actionMap.put("updateSamples", new UpdateSamplesAction());
-    	actionMap.put("generateSecret", new GenerateSecretAction());
-    	actionMap.put("registerLtiDomain", new RegisterLtiDomainAction());
-    	actionMap.put("importLtiDomains", new ImportLtiDomainsAction());
-    	actionMap.put("exportLtiDomains", new ExportLtiDomainsAction());
-    	actionMap.put("deleteUsers", new DeleteUsersAction());
-    	actionMap.put("resetUsers", new ResetUsersAction());
-    	actionMap.put("runMaintenanceJobs", new RunMaintenanceJobs());
-    	actionMap.put("sendQueuedLtiOutcomes", new SendQueuedLtiOutcomesAction());
-    	actionMap.put("update", new M4ToBeta1UpdateAction());
-    	actionMap.put("adhoc", new AdhocAction());
+        actionMap = new LinkedHashMap<String, ManagerAction>();
+        actionMap.put("bootstrap", new BootstrapAction());
+        actionMap.put("rebuildSchema", new RebuildSchemaAction());
+        actionMap.put("importUsers", new ImportUsersAction());
+        actionMap.put("reimportSamples", new ReimportSamplesAction());
+        actionMap.put("updateSamples", new UpdateSamplesAction());
+        actionMap.put("generateSecret", new GenerateSecretAction());
+        actionMap.put("registerLtiDomain", new RegisterLtiDomainAction());
+        actionMap.put("importLtiDomains", new ImportLtiDomainsAction());
+        actionMap.put("exportLtiDomains", new ExportLtiDomainsAction());
+        actionMap.put("deleteUsers", new DeleteUsersAction());
+        actionMap.put("resetUsers", new ResetUsersAction());
+        actionMap.put("runMaintenanceJobs", new RunMaintenanceJobs());
+        actionMap.put("sendQueuedLtiOutcomes", new SendQueuedLtiOutcomesAction());
+        actionMap.put("update", new M4ToBeta1UpdateAction());
+        actionMap.put("adhoc", new AdhocAction());
     }
 
     private Resource deploymentPropertiesResource;
@@ -92,56 +92,56 @@ public final class QtiWorksEngineManager {
     private ManagerAction action;
 
     public QtiWorksEngineManager() {
-    	this.deploymentPropertiesResource = null;
-    	this.actionName = null;
-    	this.actionParameters = new ArrayList<String>();
+        this.deploymentPropertiesResource = null;
+        this.actionName = null;
+        this.actionParameters = new ArrayList<String>();
     }
 
     public String parseArguments(final String[] args) {
-    	/* Parse arguments to work out action, config and parameters */
-    	boolean expectingDeploymentConfig = false;
-    	String deploymentPropertiesResourceUri = DEFAULT_DEPLOYMENT_PROPERTIES_NAME;
-    	for (final String arg : args) {
-    		if (expectingDeploymentConfig) {
-    			deploymentPropertiesResourceUri = arg;
-    			expectingDeploymentConfig = false;
-    		}
-    		else if ("-config".equals(arg)) {
-    			expectingDeploymentConfig = true;
-    		}
-    		else if (actionName==null) {
-    			actionName = arg;
-    		}
-    		else {
-    			actionParameters.add(arg);
-    		}
-    	}
-    	logger.debug("Parsed arguments and got: deploymentPropertiesResourceUri={}, actionName={}, actionParameters={}",
-    			new Object[] { deploymentPropertiesResourceUri, actionName, actionParameters });
+        /* Parse arguments to work out action, config and parameters */
+        boolean expectingDeploymentConfig = false;
+        String deploymentPropertiesResourceUri = DEFAULT_DEPLOYMENT_PROPERTIES_NAME;
+        for (final String arg : args) {
+            if (expectingDeploymentConfig) {
+                deploymentPropertiesResourceUri = arg;
+                expectingDeploymentConfig = false;
+            }
+            else if ("-config".equals(arg)) {
+                expectingDeploymentConfig = true;
+            }
+            else if (actionName==null) {
+                actionName = arg;
+            }
+            else {
+                actionParameters.add(arg);
+            }
+        }
+        logger.debug("Parsed arguments and got: deploymentPropertiesResourceUri={}, actionName={}, actionParameters={}",
+                new Object[] { deploymentPropertiesResourceUri, actionName, actionParameters });
 
-    	/* Check config location */
-    	deploymentPropertiesResource = extractDeploymentPropertiesResource(deploymentPropertiesResourceUri);
-    	if (deploymentPropertiesResource==null) {
-    		return "Could not resolve QTIWorks deployment properties specified by " + deploymentPropertiesResourceUri;
-    	}
+        /* Check config location */
+        deploymentPropertiesResource = extractDeploymentPropertiesResource(deploymentPropertiesResourceUri);
+        if (deploymentPropertiesResource==null) {
+            return "Could not resolve QTIWorks deployment properties specified by " + deploymentPropertiesResourceUri;
+        }
 
-    	/* Validate action */
-    	if (actionName==null) {
-    		return "No action selected";
-    	}
-    	action = actionMap.get(actionName);
-    	if (action==null) {
-    		return "Unknown action '" + actionName + "'";
-    	}
+        /* Validate action */
+        if (actionName==null) {
+            return "No action selected";
+        }
+        action = actionMap.get(actionName);
+        if (action==null) {
+            return "Unknown action '" + actionName + "'";
+        }
 
-    	/* Perform action-specific validation on arguments */
-    	final String error = action.validateParameters(actionParameters);
-    	if (error!=null) {
-    		return error;
-    	}
+        /* Perform action-specific validation on arguments */
+        final String error = action.validateParameters(actionParameters);
+        if (error!=null) {
+            return error;
+        }
 
-    	/* Success */
-    	return null;
+        /* Success */
+        return null;
     }
 
     public void performAction() {
@@ -157,20 +157,20 @@ public final class QtiWorksEngineManager {
         applicationContext.getEnvironment().setActiveProfiles(profileName);
         QtiWorksApplicationContextHelper.registerConfigPropertySources(applicationContext, deploymentPropertiesResource);
         applicationContext.register(
-        		PropertiesConfiguration.class,
-        		JpaProductionConfiguration.class,
-        		JpaBootstrapConfiguration.class,
-        		ServicesConfiguration.class,
-        		ManagerConfiguration.class
+                PropertiesConfiguration.class,
+                JpaProductionConfiguration.class,
+                JpaBootstrapConfiguration.class,
+                ServicesConfiguration.class,
+                ManagerConfiguration.class
         );
         applicationContext.refresh();
 
         /* Now let action class do its work*/
         try {
-        	action.run(applicationContext, actionParameters);
+            action.run(applicationContext, actionParameters);
         }
         catch (final Exception e) {
-        	logger.warn("Unexpected Exception performing action", e);
+            logger.warn("Unexpected Exception performing action", e);
         }
         finally {
             applicationContext.close();
@@ -181,22 +181,22 @@ public final class QtiWorksEngineManager {
         /* First check if we were passed a file path */
         File tryFile = new File(path);
         if (tryFile.isFile()) {
-        	logger.debug("Path {} successfully resolved to a file", path);
-        	return new FileSystemResource(tryFile);
+            logger.debug("Path {} successfully resolved to a file", path);
+            return new FileSystemResource(tryFile);
         }
 
         /* If not a file path, see if it's a File relative to the current directory */
         tryFile = new File(System.getProperty("user.dir"), path);
         if (tryFile.isFile()) {
-        	logger.debug("Path {} successfully resolved to relative file {}", path, tryFile.getAbsolutePath());
-        	return new FileSystemResource(tryFile);
+            logger.debug("Path {} successfully resolved to relative file {}", path, tryFile.getAbsolutePath());
+            return new FileSystemResource(tryFile);
         }
 
         /* See if the resource exists in the ClassPath */
         final ClassPathResource classPathResource = new ClassPathResource(path);
         if (classPathResource.exists()) {
-        	logger.debug("Path {} successfully found in ClassPath", path);
-        	return classPathResource;
+            logger.debug("Path {} successfully found in ClassPath", path);
+            return classPathResource;
         }
 
         /* No luck then, Ted? */
@@ -204,48 +204,48 @@ public final class QtiWorksEngineManager {
     }
 
     public static void printUsage() {
-		final String separator = System.getProperty("line.separator");
-		System.out.println("QTIWorks Engine Manager" + separator + separator
-				+ "Specify final required action as final a command final line argument,"
-				+ separator
-				+ "plus any further parameters required by chosen action."
-				+ separator + separator
-				+ "Manager will load your QTIWorks deployment properties from a file "
-				+ separator
-				+ DEFAULT_DEPLOYMENT_PROPERTIES_NAME
-				+ separator
-				+ "in the current directory, use -config <path> to specify an"
-				+ "alternate location."
-				+ separator + separator
-				+ "Avilable actions are:"
-				+ separator);
-		for (final Entry<String, ManagerAction> actionEntry : actionMap.entrySet()) {
-			final String actionKey = actionEntry.getKey();
-			final ManagerAction action = actionEntry.getValue();
-			System.out.println(actionKey
-					+ " "
-					+ action.getActionParameterSummary()
-					+ separator
-					+ "    "
-					+ actionEntry.getValue().getActionSummary()
-					+ separator);
-		}
+        final String separator = System.getProperty("line.separator");
+        System.out.println("QTIWorks Engine Manager" + separator + separator
+                + "Specify final required action as final a command final line argument,"
+                + separator
+                + "plus any further parameters required by chosen action."
+                + separator + separator
+                + "Manager will load your QTIWorks deployment properties from a file "
+                + separator
+                + DEFAULT_DEPLOYMENT_PROPERTIES_NAME
+                + separator
+                + "in the current directory, use -config <path> to specify an"
+                + "alternate location."
+                + separator + separator
+                + "Avilable actions are:"
+                + separator);
+        for (final Entry<String, ManagerAction> actionEntry : actionMap.entrySet()) {
+            final String actionKey = actionEntry.getKey();
+            final ManagerAction action = actionEntry.getValue();
+            System.out.println(actionKey
+                    + " "
+                    + action.getActionParameterSummary()
+                    + separator
+                    + "    "
+                    + actionEntry.getValue().getActionSummary()
+                    + separator);
+        }
     }
 
     public static void main(final String[] args) {
-    	if (args.length==0) {
-    		/* No args provided, so print usage summary and exit */
-    		printUsage();
-    		System.exit(1);
-    	}
-    	final QtiWorksEngineManager qtiWorksEngineManager = new QtiWorksEngineManager();
-    	final String errorMessage = qtiWorksEngineManager.parseArguments(args);
-    	if (errorMessage!=null) {
-    		System.err.println(errorMessage);
-    		printUsage();
-    		System.exit(1);
-    	}
-    	qtiWorksEngineManager.performAction();
+        if (args.length==0) {
+            /* No args provided, so print usage summary and exit */
+            printUsage();
+            System.exit(1);
+        }
+        final QtiWorksEngineManager qtiWorksEngineManager = new QtiWorksEngineManager();
+        final String errorMessage = qtiWorksEngineManager.parseArguments(args);
+        if (errorMessage!=null) {
+            System.err.println(errorMessage);
+            printUsage();
+            System.exit(1);
+        }
+        qtiWorksEngineManager.performAction();
     }
 
 }

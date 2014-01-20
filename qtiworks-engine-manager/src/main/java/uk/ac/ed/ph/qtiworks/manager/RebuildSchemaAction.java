@@ -48,32 +48,32 @@ import org.springframework.context.ApplicationContext;
  */
 public final class RebuildSchemaAction extends ManagerAction {
 
-	private static final Logger logger = LoggerFactory.getLogger(RebuildSchemaAction.class);
+    private static final Logger logger = LoggerFactory.getLogger(RebuildSchemaAction.class);
 
-	@Override
-	public String getActionSummary() {
-		return "Rebuilds the QTIWorks database schema and file store without loading any samples";
-	}
+    @Override
+    public String getActionSummary() {
+        return "Rebuilds the QTIWorks database schema and file store without loading any samples";
+    }
 
-	@Override
-	public String getSpringProfileName() {
-		return "bootstrap";
-	}
+    @Override
+    public String getSpringProfileName() {
+        return "bootstrap";
+    }
 
-	@Override
-	public void beforeApplicationContextInit() {
-		logger.warn("QTIWorks database and file store is being reset!!!");
-		logger.warn("Make sure you have created the QTIWorks database already. Refer to the documentation for help");
-	}
+    @Override
+    public void beforeApplicationContextInit() {
+        logger.warn("QTIWorks database and file store is being reset!!!");
+        logger.warn("Make sure you have created the QTIWorks database already. Refer to the documentation for help");
+    }
 
-	@Override
-	public void run(final ApplicationContext applicationContext, final List<String> parameters) {
-		/* Delete filesystem data too */
-		logger.info("Deleting all user data from filesystem");
-		final FilespaceManager filespaceManager = applicationContext.getBean(FilespaceManager.class);
-		filespaceManager.deleteAllUserData();
+    @Override
+    public void run(final ApplicationContext applicationContext, final List<String> parameters) {
+        /* Delete filesystem data too */
+        logger.info("Deleting all user data from filesystem");
+        final FilespaceManager filespaceManager = applicationContext.getBean(FilespaceManager.class);
+        filespaceManager.deleteAllUserData();
 
-		logger.info("Completed successfully");
-	}
+        logger.info("Completed successfully");
+    }
 
 }

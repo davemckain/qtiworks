@@ -49,35 +49,35 @@ import org.springframework.context.ApplicationContext;
  */
 public final class DeleteUsersAction extends ManagerAction {
 
-	private static final Logger logger = LoggerFactory.getLogger(DeleteUsersAction.class);
+    private static final Logger logger = LoggerFactory.getLogger(DeleteUsersAction.class);
 
-	@Override
-	public String getActionSummary() {
-		return "Deletes the user(s) having the given login name(s) or ID(s)";
-	}
+    @Override
+    public String getActionSummary() {
+        return "Deletes the user(s) having the given login name(s) or ID(s)";
+    }
 
-	@Override
-	public String getActionParameterSummary() {
-		return "<loginNameOrUid> ...";
-	}
+    @Override
+    public String getActionParameterSummary() {
+        return "<loginNameOrUid> ...";
+    }
 
-	@Override
-	public String validateParameters(final List<String> parameters) {
-		if (parameters.isEmpty()) {
-			return "Required parameters: <loginName|uid> ...";
-		}
-		return null;
-	}
+    @Override
+    public String validateParameters(final List<String> parameters) {
+        if (parameters.isEmpty()) {
+            return "Required parameters: <loginName|uid> ...";
+        }
+        return null;
+    }
 
-	@Override
-	public void run(final ApplicationContext applicationContext, final List<String> parameters) {
-		final ManagerServices managerServices = applicationContext.getBean(ManagerServices.class);
-		int deletedCount = 0;
-		for (final String param : parameters) {
-			if (managerServices.findAndDeleteUser(param)) {
-				++deletedCount;
-			}
-		}
-		logger.info("Deleted {} user(s) from the system", deletedCount);
+    @Override
+    public void run(final ApplicationContext applicationContext, final List<String> parameters) {
+        final ManagerServices managerServices = applicationContext.getBean(ManagerServices.class);
+        int deletedCount = 0;
+        for (final String param : parameters) {
+            if (managerServices.findAndDeleteUser(param)) {
+                ++deletedCount;
+            }
+        }
+        logger.info("Deleted {} user(s) from the system", deletedCount);
     }
 }
