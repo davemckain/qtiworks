@@ -32,7 +32,7 @@ primaryRouting (action -> URL)
 <%-- Add additional data to model --%>
 <c:set var="ltiContext" value="${thisLtiResource.ltiContext}" scope="request"/>
 <c:set var="ltiDomain" value="${ltiContext.ltiDomain}" scope="request"/>
-<c:set var="canExit" value=${!empty(thisLtiAuthenticationTicket.returnUrl" scope="request"/>
+<c:set var="mayExit" value="${!empty(thisLtiAuthenticationTicket.returnUrl)}" scope="request"/>
 
 <%-- Extract config beans stashed in ServletContext during AppContext setup --%>
 <c:set var="qtiWorksProperties" value="${applicationScope['qtiWorksProperties']}" scope="request"/>
@@ -56,9 +56,11 @@ primaryRouting (action -> URL)
     <script src="${utils:internalLink(pageContext, '/includes/qtiworks.js')}?${qtiWorksVersion}"></script>
   </head>
   <body class="<c:out value='${cssClass}' default='ltipage'/>">
-    <c:if test="${canExit}">
+    <c:if test="${mayExit}">
       <div class="ltiExit">
-        <page:postLink path="${primaryRouting['exit']}" title="Exit"/>
+        <form action="${utils:escapeLink(primaryRouting['exit'])}" method="post" class="postLink">
+          <input type="submit" value="Exit QTIWorks">
+        </form>
       </div>
     </c:if>
     <div class="container_12">

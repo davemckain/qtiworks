@@ -137,6 +137,13 @@ header.actionHeader h2 a:visited {
   position: absolute;
   top: 0;
   right: 0;
+  width: auto;
+  z-index: 127;
+  background: white url(images/bluegradient.png) left top repeat-x;
+  border: 1px solid #ccdbf0;
+  border-bottom-left-radius: 1em;
+  padding: 0.5em 1em;
+  color: #666666;
 }
 
 .ltipage header.pageHeader {
