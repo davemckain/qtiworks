@@ -42,8 +42,8 @@ import uk.ac.ed.ph.jqtiplus.value.StringValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
- * The stringMatch operator takes two sub-expressions which must have single and A base-type of string.
- * The result is A single boolean with A value of true if the two strings match according to the comparison
+ * The stringMatch operator takes two sub-expressions which must have single and a base-type of string.
+ * The result is a single boolean with a value of true if the two strings match according to the comparison
  * rules defined by the attributes below and false if they don't.
  * If either sub-expression is NULL then the operator results in NULL.
  * <p>

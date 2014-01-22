@@ -49,9 +49,9 @@ import java.util.List;
 /**
  * A response declaration may assign an optional correctResponse.
  * <p>
- * This value may indicate the only possible value of the response variable to be considered correct or merely just A correct value.
+ * This value may indicate the only possible value of the response variable to be considered correct or merely just a correct value.
  * <p>
- * For responses that are being measured against A more complex scale than correct/incorrect this value should be set to the (or an) optimal value.
+ * For responses that are being measured against a more complex scale than correct/incorrect this value should be set to the (or an) optimal value.
  * <p>
  * Finally, for responses for which no such optimal value is defined the correctResponse must be omitted.
  *

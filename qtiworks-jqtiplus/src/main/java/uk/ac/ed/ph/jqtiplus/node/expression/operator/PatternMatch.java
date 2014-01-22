@@ -44,8 +44,8 @@ import uk.ac.ed.ph.jqtiplus.value.StringValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
- * The patternMatch operator takes A sub-expression which must have single cardinality and A base-type
- * of string. The result is A single boolean with A value of true if the sub-expression matches the regular
+ * The patternMatch operator takes a sub-expression which must have single cardinality and a base-type
+ * of string. The result is a single boolean with a value of true if the sub-expression matches the regular
  * expression given by pattern and false if it doesn't.
  * If the sub-expression is NULL then the operator results in NULL.
  * <p>

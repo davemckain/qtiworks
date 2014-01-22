@@ -38,7 +38,7 @@ import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 
 /**
  * This expression, which can only be used in outcomes processing, simultaneously looks up the normalMinimum value
- * of an outcome variable in A sub-set of the items referred to in A test. Only variables with single cardinality are
+ * of an outcome variable in a sub-set of the items referred to in a test. Only variables with single cardinality are
  * considered. Items with no declared minimum are ignored. The result has cardinality multiple and base-type float.
  *
  * @author Jiri Kajaba

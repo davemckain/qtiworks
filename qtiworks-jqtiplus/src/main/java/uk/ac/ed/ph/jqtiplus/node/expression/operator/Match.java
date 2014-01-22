@@ -45,11 +45,11 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
  * The match operator takes two sub-expressions which must both have the same base-type and cardinality.
- * The result is A single boolean with A value of true if the two expressions represent the same value
+ * The result is a single boolean with a value of true if the two expressions represent the same value
  * and false if they do not. If either sub-expression is NULL then the operator results in NULL.
  * <p>
  * The match operator must not be confused with broader notions of equality such as numerical equality. To avoid confusion, the match operator should not be
- * used to compare subexpressions with base-types of float and must not be used on sub-expressions with A base-type of duration.
+ * used to compare subexpressions with base-types of float and must not be used on sub-expressions with a base-type of duration.
  *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType

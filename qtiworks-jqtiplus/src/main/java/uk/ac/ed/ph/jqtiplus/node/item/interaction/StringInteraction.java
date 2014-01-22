@@ -39,11 +39,11 @@ import uk.ac.ed.ph.jqtiplus.types.Identifier;
 /**
  * String interactions can be bound to numeric response variables,
  * instead of strings, if desired.
- * If detailed information about A numeric response is required then
- * the string interaction can be bound to A response variable with
+ * If detailed information about a numeric response is required then
+ * the string interaction can be bound to a response variable with
  * record cardinality. The resulting value contains the following fields:
  * stringValue: the string, as typed by the candidate.
- * floatValue: the numeric value of the string typed by the candidate, as A float.
+ * floatValue: the numeric value of the string typed by the candidate, as a float.
  * integerValue: the numeric value of the string typed by the candidate if no
  * fractional digits or exponent were specified, otherwise NULL. An integer.
  * leftDigits: the number of digits to the left of the point. An integer.
@@ -53,22 +53,22 @@ import uk.ac.ed.ph.jqtiplus.types.Identifier;
  * nsf: the number of significant digits specified by the candidate. An integer.
  * exponent: the integer exponent given by the candidate or NULL if none was specified.
  * Attribute : base [0..1]: integer = 10
- * If the string interaction is bound to A numeric response variable then the base
+ * If the string interaction is bound to a numeric response variable then the base
  * attribute must be used to set the number base in which to interpret the value entered by the candidate.
  * Attribute : stringIdentifier [0..1]: identifier
- * If the string interaction is bound to A numeric response variable then the actual
+ * If the string interaction is bound to a numeric response variable then the actual
  * string entered by the candidate can also be captured by binding the interaction to A
  * second response variable (of base-type string).
  * Attribute : expectedLength [0..1]: integer
- * The expectedLength attribute provides A hint to the candidate as to the expected
+ * The expectedLength attribute provides a hint to the candidate as to the expected
  * overall length of the desired response. A Delivery Engine should use the value of
- * this attribute to set the size of the response box, where applicable. This is not A validity constraint.
+ * this attribute to set the size of the response box, where applicable. This is not a validity constraint.
  * Attribute : patternMask [0..1]: string
- * If given, the pattern mask specifies A regular expression that the candidate's
+ * If given, the pattern mask specifies a regular expression that the candidate's
  * response must match in order to be considered valid. The regular expression language
  * used is defined in Appendix F of [XML_SCHEMA2]. Care is needed to ensure that the
  * format of the required input is clear to the candidate, especially when validity
- * checking of responses is required for progression through A test. This could be done
+ * checking of responses is required for progression through a test. This could be done
  * by providing an illustrative sample response in the prompt, for example.
  * Attribute : placeholderText [0..1]: string
  * In visual environments, string interactions are typically represented by empty
@@ -101,28 +101,28 @@ public interface StringInteraction {
     /** Name of placeholderText attribute in xml schema. */
     static final String ATTR_PLACEHOLDER_TEXT_NAME = "placeholderText";
 
-    /** Name of stringValue key if response is bound to A record container. */
+    /** Name of stringValue key if response is bound to a record container. */
     static final Identifier KEY_STRING_VALUE_NAME = Identifier.assumedLegal("stringValue");
 
-    /** Name of floatValue key if response is bound to A record container. */
+    /** Name of floatValue key if response is bound to a record container. */
     static final Identifier KEY_FLOAT_VALUE_NAME = Identifier.assumedLegal("floatValue");
 
-    /** Name of integerValue key if response is bound to A record container. */
+    /** Name of integerValue key if response is bound to a record container. */
     static final Identifier KEY_INTEGER_VALUE_NAME = Identifier.assumedLegal("integerValue");
 
-    /** Name of leftDigits key if response is bound to A record container. */
+    /** Name of leftDigits key if response is bound to a record container. */
     static final Identifier KEY_LEFT_DIGITS_NAME = Identifier.assumedLegal("leftDigits");
 
-    /** Name of rightDigits key if response is bound to A record container. */
+    /** Name of rightDigits key if response is bound to a record container. */
     static final Identifier KEY_RIGHT_DIGITS_NAME = Identifier.assumedLegal("rightDigits");
 
-    /** Name of ndp key if response is bound to A record container. */
+    /** Name of ndp key if response is bound to a record container. */
     static final Identifier KEY_NDP_NAME = Identifier.assumedLegal("ndp");
 
-    /** Name of nsf key if response is bound to A record container. */
+    /** Name of nsf key if response is bound to a record container. */
     static final Identifier KEY_NSF_NAME = Identifier.assumedLegal("nsf");
 
-    /** Name of exponent key if response is bound to A record container. */
+    /** Name of exponent key if response is bound to a record container. */
     static final Identifier KEY_EXPONENT_NAME = Identifier.assumedLegal("exponent");
 
     int getBase();

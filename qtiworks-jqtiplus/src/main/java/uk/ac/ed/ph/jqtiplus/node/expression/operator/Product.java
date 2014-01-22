@@ -37,7 +37,7 @@ import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 
 /**
  * The product operator takes 1 or more sub-expressions which all have single cardinality and have
- * numerical base-types. The result is A single float or, if all sub-expressions are of integer type,
+ * numerical base-types. The result is a single float or, if all sub-expressions are of integer type,
  * A single integer that corresponds to the product of the numerical values of the sub-expressions.
  * If any of the sub-expressions are NULL then the operator results in NULL.
  *

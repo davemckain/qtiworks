@@ -45,13 +45,13 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
  * The member operator takes two sub-expressions which must both have the same base-type. The first
- * sub-expression must have single cardinality and the second must be A multiple or ordered container.
- * The result is A single boolean with A value of true if the value given by the first sub-expression
+ * sub-expression must have single cardinality and the second must be a multiple or ordered container.
+ * The result is a single boolean with a value of true if the value given by the first sub-expression
  * is in the container defined by the second sub-expression.
  * If either sub-expression is NULL then the result of the operator is NULL.
  * <p>
- * The member operator should not be used on sub-expressions with A base-type of float because of the poorly defined comparison of values. It must not be used
- * on sub-expressions with A base-type of duration.
+ * The member operator should not be used on sub-expressions with a base-type of float because of the poorly defined comparison of values. It must not be used
+ * on sub-expressions with a base-type of duration.
  *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType

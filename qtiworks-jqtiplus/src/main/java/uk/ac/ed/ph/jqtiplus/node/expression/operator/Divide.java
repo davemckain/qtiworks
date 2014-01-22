@@ -42,7 +42,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
  * The divide operator takes 2 sub-expressions which both have single cardinality and numerical base-types.
- * The result is A single float that corresponds to the first expression divided by the second expression.
+ * The result is a single float that corresponds to the first expression divided by the second expression.
  * If either of the sub-expressions is NULL then the operator results in NULL.
  * <p>
  * Item authors should make every effort to ensure that the value of the second expression is never 0, however, if it is zero or the resulting value is outside

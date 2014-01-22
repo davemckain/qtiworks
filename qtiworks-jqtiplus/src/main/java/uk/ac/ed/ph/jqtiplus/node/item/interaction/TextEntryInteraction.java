@@ -64,7 +64,7 @@ import java.util.Map;
  * simple piece of text from the candidate. Like inlineChoiceInteraction,
  * the delivery engine must allow the candidate to review their choice
  * within the context of the surrounding text.
- * The textEntryInteraction must be bound to A response variable with single
+ * The textEntryInteraction must be bound to a response variable with single
  * cardinality only. The baseType must be one of string, integer, or float.
  * Note: Spec is slightly wrong: record response is also allowed from inherited
  * StringInteraction

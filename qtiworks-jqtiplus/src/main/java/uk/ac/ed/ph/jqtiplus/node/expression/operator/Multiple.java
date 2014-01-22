@@ -51,7 +51,7 @@ import java.util.List;
 /**
  * The multiple operator takes 0 or more sub-expressions all of which must have either single or multiple
  * cardinality. Although the sub-expressions may be of any base-type they must all be of the same base-type.
- * The result is A container with multiple cardinality containing the values of the sub-expressions,
+ * The result is a container with multiple cardinality containing the values of the sub-expressions,
  * sub-expressions with multiple cardinality have their individual values added to the result:
  * containers cannot contain other containers.
  * <p>

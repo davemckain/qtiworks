@@ -43,7 +43,8 @@ import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import java.net.URI;
 
 /**
- * Although a inherits from simpleInline it must not contain, either directly or indirectly, another a.
+ * Although A inherits from simpleInline it must not contain, either directly or indirectly, another A.
+ *
  * Attribute : href [1]: uri
  * Attribute : type [0..1]: mimeType
  *
@@ -90,7 +91,7 @@ public final class A extends AbstractSimpleInline {
     @Override
     public void validateThis(final ValidationContext context) {
         super.validateThis(context);
-        /* Although a inherits from simpleInline it must not contain, either directly or indirectly, another a. */
+        /* Although A inherits from simpleInline it must not contain, either directly or indirectly, another A. */
         if (QueryUtils.hasDescendant(A.class, this)) {
             context.fireValidationError(this, "The " + QTI_CLASS_NAME + " class cannot contain " + QTI_CLASS_NAME + " children");
         }

@@ -50,8 +50,8 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * A special class used to create A mapping from A source set of any baseType
- * (except file and duration) to A single float. Note that mappings from values
+ * A special class used to create a mapping from a source set of any baseType
+ * (except file and duration) to a single float. Note that mappings from values
  * of base type float should be avoided due to the difficulty of matching floating
  * point values, see the match operator for more details. When mapping containers
  * the result is the sum of the mapped values from the target set.

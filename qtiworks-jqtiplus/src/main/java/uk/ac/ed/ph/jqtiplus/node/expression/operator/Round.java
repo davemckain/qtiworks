@@ -41,8 +41,8 @@ import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
- * The round operator takes A single sub-expression which must have single cardinality and base-type float.
- * The result is A value of base-type integer formed by rounding the value of the sub-expression.
+ * The round operator takes a single sub-expression which must have single cardinality and base-type float.
+ * The result is a value of base-type integer formed by rounding the value of the sub-expression.
  * The result is the integer n for all input values in the range [n-0.5,n+0.5).
  * In other words, 6.8 and 6.5 both round up to 7, 6.49 rounds down to 6 and -6.5 rounds up to -6.
  * If the sub-expression is NULL then the operator results in NULL.

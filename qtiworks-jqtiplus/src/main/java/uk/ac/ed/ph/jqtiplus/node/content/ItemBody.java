@@ -60,7 +60,7 @@ import java.util.List;
  * presented to the candidate in the solution state, in which case the correct values of
  * the response variables must be visible and the associated interactions disabled.
  * The content model employed by this specification uses many concepts taken directly
- * from [XHTML]. In effect, this part of the specification defines A profile of XHTML. Only
+ * from [XHTML]. In effect, this part of the specification defines a profile of XHTML. Only
  * some of the elements defined in XHTML are allowable in an assessmentItem and of those that
  * are, some have additional constraints placed on their attributes. Only those elements from
  * XHTML that are explicitly defined within this specification can be used. See XHTML Elements

@@ -218,7 +218,7 @@ public enum Shape implements Stringifiable {
                 final double a = Math.sqrt(Math.pow(bx - cx, 2) + Math.pow(by - cy, 2));
                 // Distance between C and A.
                 final double b = Math.sqrt(Math.pow(cx - ax, 2) + Math.pow(cy - ay, 2));
-                // Distance between A and B.
+                // Distance between a and B.
                 final double c = Math.sqrt(Math.pow(ax - bx, 2) + Math.pow(ay - by, 2));
 
                 // Computes angle ABC.

@@ -45,7 +45,7 @@ import java.util.List;
 /**
  * This expression, which can only be used in outcomes processing, calculates the number of items in
  * A given sub-set that have been attempted (at least once). In other words, items with which the user
- * has interacted, whether or not they provided A response.
+ * has interacted, whether or not they provided a response.
  * <p>
  * The result is an integer with single cardinality.
  *

@@ -37,7 +37,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.BooleanAttribute;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 
 /**
- * The ordering class specifies the rule used to arrange the child elements of A section following
+ * The ordering class specifies the rule used to arrange the child elements of a section following
  * selection. If no ordering rule is given we assume that the elements are to be ordered in the order
  * in which they are defined.
  *

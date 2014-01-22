@@ -44,10 +44,10 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 import java.util.List;
 
 /**
- * An abstract class associated with an outcomeDeclaration used to create A lookup table from A numeric source value
- * to A single outcome value in the declared value set. A lookup table works in the reverse sense to the similar mapping
- * as it defines how A source numeric value is transformed into the outcome value, whereas A (response) mapping defines
- * how the response value is mapped onto A target numeric value.
+ * An abstract class associated with an outcomeDeclaration used to create a lookup table from a numeric source value
+ * to a single outcome value in the declared value set. A lookup table works in the reverse sense to the similar mapping
+ * as it defines how a source numeric value is transformed into the outcome value, whereas A (response) mapping defines
+ * how the response value is mapped onto a target numeric value.
  * <p>
  * The transformation takes place using the lookupOutcomeValue rule within responseProcessing or outcomeProcessing.
  *

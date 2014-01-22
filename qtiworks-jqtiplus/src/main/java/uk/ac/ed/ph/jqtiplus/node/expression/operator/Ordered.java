@@ -51,7 +51,7 @@ import java.util.List;
 /**
  * The ordered operator takes 0 or more sub-expressions all of which must have either single or ordered
  * cardinality. Although the sub-expressions may be of any base-type they must all be of the same base-type.
- * The result is A container with ordered cardinality containing the values of the sub-expressions,
+ * The result is a container with ordered cardinality containing the values of the sub-expressions,
  * sub-expressions with ordered cardinality have their individual values added (in order) to the result:
  * contains cannot contain other containers.
  * <p>

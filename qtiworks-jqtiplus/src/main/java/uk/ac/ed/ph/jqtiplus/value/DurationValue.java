@@ -39,7 +39,7 @@ import uk.ac.ed.ph.jqtiplus.types.DataTypeBinder;
 /**
  * Implementation of <code>BaseType</code> duration value.
  * <p>
- * The number of seconds, expressed as A floating point number and bound according to the rules for the simple type float.
+ * The number of seconds, expressed as a floating point number and bound according to the rules for the simple type float.
  * <p>
  * This class is not mutable and cannot contain NULL value.
  * <p>

@@ -47,9 +47,9 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 import java.util.List;
 
 /**
- * The inside operator takes A single sub-expression which must have A baseType of point. The result
- * is A single boolean with A value of true if the given point is inside the area defined by shape and
- * coords. If the sub-expression is A container the result is true if any of the points are inside the
+ * The inside operator takes a single sub-expression which must have a baseType of point. The result
+ * is a single boolean with a value of true if the given point is inside the area defined by shape and
+ * coords. If the sub-expression is a container the result is true if any of the points are inside the
  * area. If either sub-expression is NULL then the operator results in NULL.
  * <p>
  * This implementation doesn't support record container, default shape and percentage values.

@@ -50,16 +50,16 @@ import java.util.List;
 
 /**
  * The delete operator takes two sub-expressions which must both have the same base-type. The first
- * sub-expression must have single cardinality and the second must be A multiple or ordered container.
- * The result is A new container derived from the second sub-expression with all instances of the first
+ * sub-expression must have single cardinality and the second must be a multiple or ordered container.
+ * The result is a new container derived from the second sub-expression with all instances of the first
  * sub-expression removed.
  * <p>
- * For example, when applied to A and {B,A,C,A} the result is the container {B,C}.
+ * For example, when applied to a and {B,A,C,A} the result is the container {B,C}.
  * <p>
  * If either sub-expression is NULL the result of the operator is NULL.
  * <p>
- * The delete operator should not be used on sub-expressions with A base-type of float because of the poorly defined comparison of values. It must not be used
- * on sub-expressions with A base-type of duration.
+ * The delete operator should not be used on sub-expressions with a base-type of float because of the poorly defined comparison of values. It must not be used
+ * on sub-expressions with a base-type of duration.
  *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType

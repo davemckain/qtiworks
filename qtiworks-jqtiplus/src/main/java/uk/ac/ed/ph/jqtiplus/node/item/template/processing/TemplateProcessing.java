@@ -42,7 +42,7 @@ import java.util.List;
 
 /**
  * Template processing takes place each time the candidate submits the responses for an item (when in individual submission mode)
- * or A group of items (when in simultaneous submission mode). It happens after any (item level) response processing triggered
+ * or a group of items (when in simultaneous submission mode). It happens after any (item level) response processing triggered
  * by the submission. The values of the test's outcome variables are always reset to their defaults prior to carrying out the
  * instructions described by the outcomeRules. Because outcome processing happens each time the candidate submits responses the
  * resulting values of the test-level outcomes may be used to activate test-level feedback during the test or to control the behaviour

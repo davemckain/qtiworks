@@ -43,8 +43,8 @@ import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
- * The random operator takes A sub-expression with A multiple or ordered container value and any base-type.
- * The result is A single value randomly selected from the container. The result has the same base-type
+ * The random operator takes a sub-expression with a multiple or ordered container value and any base-type.
+ * The result is a single value randomly selected from the container. The result has the same base-type
  * as the sub-expression but single cardinality.
  * If the sub-expression is NULL then the result is also NULL.
  *

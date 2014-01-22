@@ -50,21 +50,21 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 import java.util.List;
 
 /**
- * The end attempt interaction is A special type of interaction which allows item
+ * The end attempt interaction is a special type of interaction which allows item
  * authors to provide the candidate with control over the way in which the candidate
  * terminates an attempt. The candidate can use the interaction to terminate the
- * attempt (triggering response processing) immediately, typically to request A hint.
- * It must be bound to A response variable with base-type boolean and single cardinality.
+ * attempt (triggering response processing) immediately, typically to request a hint.
+ * It must be bound to a response variable with base-type boolean and single cardinality.
  * If the candidate invokes response processing using an endAttemptInteraction then the
  * associated response variable is set to true. If response processing is invoked in any
- * other way, either through A different endAttemptInteraction or through the default
+ * other way, either through a different endAttemptInteraction or through the default
  * method for the delivery engine, then the associated response variable is set to false.
  * The default value of the response variable is always ignored.
  * Attribute : title [1]: string
- * The string that should be displayed to the candidate as A prompt for ending the attempt
+ * The string that should be displayed to the candidate as a prompt for ending the attempt
  * using this interaction. This should be short, preferably one word. A typical value would
- * be "Hint". For example, in A graphical environment it would be presented as the label
- * on A button that, when pressed, ends the attempt.
+ * be "Hint". For example, in a graphical environment it would be presented as the label
+ * on a button that, when pressed, ends the attempt.
  * Attribute: countAttempt [0..1]: boolean = true
  *
  * @author Jonathon Hare

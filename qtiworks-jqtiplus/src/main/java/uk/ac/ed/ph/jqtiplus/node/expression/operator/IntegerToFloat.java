@@ -41,8 +41,8 @@ import uk.ac.ed.ph.jqtiplus.value.NumberValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
- * The integer to float conversion operator takes A single sub-expression which must have single cardinality
- * and base-type integer. The result is A value of base type float with the same numeric value.
+ * The integer to float conversion operator takes a single sub-expression which must have single cardinality
+ * and base-type integer. The result is a value of base type float with the same numeric value.
  * If the sub-expression is NULL then the operator results in NULL.
  *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality

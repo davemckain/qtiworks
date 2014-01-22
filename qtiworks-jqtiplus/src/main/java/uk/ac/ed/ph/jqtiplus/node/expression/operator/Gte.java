@@ -41,8 +41,8 @@ import uk.ac.ed.ph.jqtiplus.value.NumberValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
- * The gte operator takes two sub-expressions which must both have single cardinality and have A numerical
- * base-type. The result is A single boolean with A value of true if the first expression is numerically
+ * The gte operator takes two sub-expressions which must both have single cardinality and have a numerical
+ * base-type. The result is a single boolean with a value of true if the first expression is numerically
  * less than or equal to the second and false if it is greater than the second.
  * If either sub-expression is NULL then the operator results in NULL.
  * <p>

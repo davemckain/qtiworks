@@ -48,7 +48,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
  * The equalRounded operator takes two sub-expressions which must both have single cardinality and
- * have A numerical base-type. The result is A single boolean with A value of true if the two
+ * have a numerical base-type. The result is a single boolean with a value of true if the two
  * expressions are numerically equal after rounding and false if they are not.
  * If either sub-expression is NULL then the operator results in NULL.
  *

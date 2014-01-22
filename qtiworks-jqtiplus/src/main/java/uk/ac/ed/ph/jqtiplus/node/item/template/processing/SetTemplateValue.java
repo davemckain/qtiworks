@@ -43,9 +43,9 @@ import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
- * The setTemplateValue rule sets the value of A template variable to the value
+ * The setTemplateValue rule sets the value of a template variable to the value
  * obtained from the associated expression. A template variable can be updated
- * with reference to A previously assigned value, in other words, the template
+ * with reference to a previously assigned value, in other words, the template
  * variable being set may appear in the expression where it takes the value
  * previously assigned to it.
  *

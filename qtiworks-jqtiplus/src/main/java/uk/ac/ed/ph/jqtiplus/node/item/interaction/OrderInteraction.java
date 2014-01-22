@@ -58,17 +58,17 @@ import java.util.Set;
 /**
  * In an order interaction the candidate's task is to reorder the choices, the
  * order in which the choices are displayed initially is significant. By default
- * the candidate's task is to order all of the choices but A subset of the choices
+ * the candidate's task is to order all of the choices but a subset of the choices
  * can be requested using the maxChoices and minChoices attributes. When specified,
- * the candidate must select A subset of the choices and impose an ordering on them.
- * If A default value is specified for the response variable associated with an
+ * the candidate must select a subset of the choices and impose an ordering on them.
+ * If a default value is specified for the response variable associated with an
  * order interaction then its value should be used to override the order of the
  * choices specified here.
  * By its nature, an order interaction may be difficult to render in an unanswered
  * state, especially in the default case where all choices are to be ordered.
  * Implementors should be aware of the issues concerning the use of default values
  * described in the section on Response Variables.
- * The orderInteraction must be bound to A response variable with A baseType of
+ * The orderInteraction must be bound to a response variable with a baseType of
  * identifier and ordered cardinality only.
  * Contains : simpleChoice [1..*]
  * An ordered list of the choices that are displayed to the user. The order is the
@@ -87,7 +87,7 @@ import java.util.Set;
  * maxChoices must be greater than or equal to minChoices and must not exceed the number
  * of choices available. If unspecified, all of the choices may be ordered.
  * Attribute : orientation [0..1]: orientation
- * The orientation attribute provides A hint to rendering systems that the ordering has
+ * The orientation attribute provides a hint to rendering systems that the ordering has
  * an inherent vertical or horizontal interpretation.
  *
  * @author Jonathon Hare

@@ -42,7 +42,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
  * The power operator takes 2 sub-expression which both have single cardinality and numerical base-types.
- * The result is A single float that corresponds to the first expression raised to the power of the second.
+ * The result is a single float that corresponds to the first expression raised to the power of the second.
  * If either or the sub-expressions is NULL then the operator results in NULL.
  * <p>
  * If the resulting value is outside the value set defined by float (not including positive and negative infinity) then the operator shall result in NULL.

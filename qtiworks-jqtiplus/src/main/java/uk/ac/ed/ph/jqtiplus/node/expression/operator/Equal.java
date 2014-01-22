@@ -52,14 +52,14 @@ import java.util.List;
 
 /**
  * The equal operator takes two sub-expressions which must both have single cardinality and have A
- * numerical base-type. The result is A single boolean with A value of true if the two expressions
+ * numerical base-type. The result is a single boolean with a value of true if the two expressions
  * are numerically equal and false if they are not. If either sub-expression is NULL then the
  * operator results in NULL.
  * <p>
  * Attribute : toleranceMode [1]: toleranceMode = exact
  * <p>
- * When comparing two floating point numbers for equality it is often desirable to have A tolerance to ensure that spurious errors in scoring are not introduced
- * by rounding errors. The tolerance mode determines whether the comparison is done exactly, using an absolute range or A relative range.
+ * When comparing two floating point numbers for equality it is often desirable to have a tolerance to ensure that spurious errors in scoring are not introduced
+ * by rounding errors. The tolerance mode determines whether the comparison is done exactly, using an absolute range or a relative range.
  * <p>
  * Attribute : tolerance [0..2]: floatOrTemplateRef
  * <p>

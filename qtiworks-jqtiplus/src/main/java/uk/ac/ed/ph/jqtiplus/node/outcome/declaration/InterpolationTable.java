@@ -43,11 +43,11 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 import java.util.List;
 
 /**
- * An interpolationTable transforms A source float (or integer) by finding the first interpolationTableEntry
- * with A sourceValue that is less than or equal to (subject to includeBoundary) the source value.
+ * An interpolationTable transforms a source float (or integer) by finding the first interpolationTableEntry
+ * with a sourceValue that is less than or equal to (subject to includeBoundary) the source value.
  * <p>
- * For example, an interpolation table can be used to map A raw numeric score onto an identifier representing A grade. It may also be used to implement numeric
- * transformations such as those from A simple raw score to A value on A calibrated scale.
+ * For example, an interpolation table can be used to map a raw numeric score onto an identifier representing a grade. It may also be used to implement numeric
+ * transformations such as those from a simple raw score to a value on a calibrated scale.
  *
  * @author Jiri Kajaba
  */

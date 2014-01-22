@@ -41,8 +41,8 @@ import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
- * The truncate operator takes A single sub-expression which must have single cardinality and base-type float.
- * The result is A value of base-type integer formed by truncating the value of the sub-expression towards zero.
+ * The truncate operator takes a single sub-expression which must have single cardinality and base-type float.
+ * The result is a value of base-type integer formed by truncating the value of the sub-expression towards zero.
  * For example, the value 6.8 becomes 6 and the value -6.8 becomes -6.
  * If the sub-expression is NULL then the operator results in NULL.
  *

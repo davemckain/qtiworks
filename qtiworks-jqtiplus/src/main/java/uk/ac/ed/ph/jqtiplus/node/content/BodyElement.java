@@ -47,14 +47,14 @@ import javax.xml.XMLConstants;
 
 /**
  * The root class of all content objects in the item content model is the
- * bodyElement. It defines A number of attributes that are common to all
+ * bodyElement. It defines a number of attributes that are common to all
  * elements of the content model.
  * Attribute : id [0..1]: identifier
- * The id of A body element must be unique within the item.
+ * The id of a body element must be unique within the item.
  * Attribute : class [*]: styleclass
  * Classes can be assigned to individual body elements. Multiple class names
- * can be given. These class names identify the element as being A member of
- * the listed classes. Membership of A class can be used by authoring systems
+ * can be given. These class names identify the element as being a member of
+ * the listed classes. Membership of a class can be used by authoring systems
  * to distinguish between content objects that are not differentiated by this
  * specification. Typically, this information is used to apply different
  * formatting based on definitions in an associated stylesheet.
@@ -62,7 +62,7 @@ import javax.xml.XMLConstants;
  * The main language of the element. This attribute is optional and will
  * usually be inherited from the enclosing element.
  * Attribute : label [0..1]: string256
- * The label attribute provides authoring systems with A mechanism for labeling
+ * The label attribute provides authoring systems with a mechanism for labeling
  * elements of the content model with application specific data. If an item uses
  * labels then values for the associated toolName and toolVersion attributes must
  * also be provided.

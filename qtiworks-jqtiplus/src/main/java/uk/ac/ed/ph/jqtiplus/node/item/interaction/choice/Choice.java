@@ -54,7 +54,7 @@ import java.util.List;
  * The identifier of the choice. This identifier must not be used by any
  * other choice or item variable.
  * Attribute : fixed [0..1]: boolean = false
- * If fixed is true for A choice then the position of this choice within the
+ * If fixed is true for a choice then the position of this choice within the
  * interaction must not be changed by the delivery engine even if the
  * immediately enclosing interaction supports the shuffling of choices. If no
  * value is specified then the choice is free to be shuffled.
@@ -62,10 +62,10 @@ import java.util.List;
  * the value(s) of an associated template variable during template processing.
  * For information about item templates see Item Templates.
  * Attribute : templateIdentifier [0..1]: identifier
- * The identifier of A template variable that must have A base-type of
+ * The identifier of a template variable that must have a base-type of
  * identifier and be either single of multiple cardinality. When the associated
  * interaction is part of an Item Template the value of the identified template
- * variable is used to control the visibility of the choice. When A choice is
+ * variable is used to control the visibility of the choice. When a choice is
  * hidden it is not selectable and its content is not visible to the candidate
  * unless otherwise stated.
  * Attribute : showHide [0..1]: showHide = show

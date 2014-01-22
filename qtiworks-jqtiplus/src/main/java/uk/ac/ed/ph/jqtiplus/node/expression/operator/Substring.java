@@ -43,8 +43,8 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
  * The substring operator takes two sub-expressions which must both have an effective base-type of string
- * and single cardinality. The result is A single boolean with A value of true if the first expression
- * is A substring of the second expression and false if it isn't. If either sub-expression is NULL then
+ * and single cardinality. The result is a single boolean with a value of true if the first expression
+ * is a substring of the second expression and false if it isn't. If either sub-expression is NULL then
  * the result of the operator is NULL.
  *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality

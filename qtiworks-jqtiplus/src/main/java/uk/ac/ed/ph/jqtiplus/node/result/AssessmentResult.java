@@ -44,10 +44,10 @@ import java.net.URI;
 import java.util.List;
 
 /**
- * An Assessment Result is used to report the results of A candidate's interaction with A test and/or one or more items
+ * An Assessment Result is used to report the results of a candidate's interaction with a test and/or one or more items
  * attempted. Information about the test is optional, in some systems it may be possible to interact with items that are
- * not organized into A test at all. For example, items that are organized with learning resources and presented
- * individually in A formative context.
+ * not organized into a test at all. For example, items that are organized with learning resources and presented
+ * individually in a formative context.
  *
  * @author Jiri Kajaba
  */

@@ -53,7 +53,7 @@ import java.util.Map;
  */
 public enum RoundingMode implements Stringifiable {
     /**
-     * Number is rounded to A given number of significant figures.
+     * Number is rounded to a given number of significant figures.
      */
     SIGNIFICANT_FIGURES("significantFigures") {
 
@@ -112,7 +112,7 @@ public enum RoundingMode implements Stringifiable {
     },
 
     /**
-     * Number is rounded to A given number of decimal places.
+     * Number is rounded to a given number of decimal places.
      */
     DECIMAL_PLACES("decimalPlaces") {
 

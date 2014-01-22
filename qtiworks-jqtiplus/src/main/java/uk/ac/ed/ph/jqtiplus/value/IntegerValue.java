@@ -38,7 +38,7 @@ import uk.ac.ed.ph.jqtiplus.types.DataTypeBinder;
 /**
  * Implementation of <code>BaseType</code> integer value.
  * <p>
- * An integer value is A whole number in the range [-2147483648, 2147483647].
+ * An integer value is a whole number in the range [-2147483648, 2147483647].
  * <p>
  * Example values: 1, +3, -4.
  * <p>

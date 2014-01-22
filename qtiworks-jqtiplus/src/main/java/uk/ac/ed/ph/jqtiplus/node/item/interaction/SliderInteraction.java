@@ -49,9 +49,9 @@ import uk.ac.ed.ph.jqtiplus.value.Signature;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
- * The slider interaction presents the candidate with A control for selecting A numerical
- * value between A lower and upper bound. It must be bound to A response variable with single
- * cardinality with A base-type of either integer or float.
+ * The slider interaction presents the candidate with a control for selecting a numerical
+ * value between a lower and upper bound. It must be bound to a response variable with single
+ * cardinality with a base-type of either integer or float.
  * Attribute : lowerBound [1]: float
  * If the associated response variable is of type integer then the lowerBound must be rounded
  * down to the greatest integer less than or equal to the value given.
@@ -68,18 +68,18 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * or not each step on the slider should also be labeled. It is unlikely that delivery engines
  * will be able to guarantee to label steps so this attribute should be treated only as request.
  * Attribute : orientation [0..1]: orientation
- * The orientation attribute provides A hint to rendering systems that the slider is being used
- * to indicate the value of A quantity with an inherent vertical or horizontal interpretation.
+ * The orientation attribute provides a hint to rendering systems that the slider is being used
+ * to indicate the value of a quantity with an inherent vertical or horizontal interpretation.
  * For example, an interaction that is used to indicate the value of height might set the
  * orientation to vertical to indicate that rendering it horizontally could spuriously increase
  * the difficulty of the item.
  * Attribute : reverse [0..1]: boolean
- * The reverse attribute provides A hint to rendering systems that the slider is being used to
- * indicate the value of A quantity for which the normal sense of the upper and lower bounds is
- * reversed. For example, an interaction that is used to indicate A depth below sea level might
- * specify both A vertical orientation and set reverse.
- * Note that A slider interaction does not have A default or initial position except where
- * specified by A default value for the associated response variable. The currently selected value,
+ * The reverse attribute provides a hint to rendering systems that the slider is being used to
+ * indicate the value of a quantity for which the normal sense of the upper and lower bounds is
+ * reversed. For example, an interaction that is used to indicate a depth below sea level might
+ * specify both a vertical orientation and set reverse.
+ * Note that a slider interaction does not have a default or initial position except where
+ * specified by a default value for the associated response variable. The currently selected value,
  * if any, must be clearly indicated to the candidate.
  *
  * @author Jonathon Hare
