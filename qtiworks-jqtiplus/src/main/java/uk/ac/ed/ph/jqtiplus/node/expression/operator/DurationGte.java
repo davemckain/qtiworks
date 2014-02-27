@@ -42,7 +42,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
  * The durationGTE operator takes two sub-expressions which must both have single cardinality and base-type
- * duration. The result is A single boolean with A value of true if the first duration is longer (or equal)
+ * duration. The result is a single boolean with a value of true if the first duration is longer (or equal)
  * than the second and false if it is shorter than the second.
  * If either sub-expression is NULL then the operator results in NULL.
  *

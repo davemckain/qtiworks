@@ -49,12 +49,12 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * An inline choice is an inlineInteraction that presents the user with A set of
- * choices, each of which is A simple piece of text. The candidate's task is to
+ * An inline choice is an inlineInteraction that presents the user with a set of
+ * choices, each of which is a simple piece of text. The candidate's task is to
  * select one of the choices. Unlike the choiceInteraction, the delivery engine
  * must allow the candidate to review their choice within the context of the
  * surrounding text.
- * The inlineChoiceInteraction must be bound to A response variable with A
+ * The inlineChoiceInteraction must be bound to a response variable with A
  * baseType of identifier and single cardinality only.
  * Contains : inlineChoice [1..*]
  * An ordered list of the choices that are displayed to the user. The order is
@@ -63,7 +63,7 @@ import java.util.Set;
  * If the shuffle attribute is true then the delivery engine must randomize the
  * order in which the choices are presented subject to the fixed attribute.
  * Attribute : required [0..1]: boolean = false
- * If true then A choice must be selected by the candidate in order to form A
+ * If true then a choice must be selected by the candidate in order to form A
  * valid response to the interaction.
  *
  * @author Jonathon Hare

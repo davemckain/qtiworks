@@ -65,7 +65,7 @@ import java.util.List;
 
 /**
  * Interactions allow the candidate to interact with the item.
- * Through an interaction, the candidate selects or constructs A response.
+ * Through an interaction, the candidate selects or constructs a response.
  * The candidate's responses are stored in the response variables. Each
  * interaction is associated with (at least) one response variable.
  *

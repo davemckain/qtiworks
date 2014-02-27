@@ -39,7 +39,7 @@ import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
  * The sum operator takes one or more sub-expressions which have single or multiple or ordered
  * cardinality (it is possible to mix different cardinalities) and have numerical base-types.
  * <p>
- * The result is A single float or, if all sub-expressions are of integer type, A single integer that corresponds to the sum of the numerical values of the
+ * The result is a single float or, if all sub-expressions are of integer type, A single integer that corresponds to the sum of the numerical values of the
  * sub-expressions.
  * <p>
  * If any of the sub-expressions are NULL then the operator results in NULL.

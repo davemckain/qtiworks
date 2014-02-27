@@ -45,7 +45,7 @@ import uk.ac.ed.ph.jqtiplus.value.RecordValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
- * The field-value operator takes A sub-expression with A record container value. The result is the value
+ * The field-value operator takes a sub-expression with a record container value. The result is the value
  * of the field with the specified fieldIdentifier. If there is no field with that identifier then the
  * result of the operator is NULL.
  *

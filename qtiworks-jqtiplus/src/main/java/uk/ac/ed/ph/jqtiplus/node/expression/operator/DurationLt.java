@@ -42,7 +42,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
  * The durationLT operator takes two sub-expressions which must both have single cardinality and base-type
- * duration. The result is A single boolean with A value of true if the first duration is shorter than
+ * duration. The result is a single boolean with a value of true if the first duration is shorter than
  * the second and false if it is longer than (or equal) to the second.
  * If either sub-expression is NULL then the operator results in NULL.
  *

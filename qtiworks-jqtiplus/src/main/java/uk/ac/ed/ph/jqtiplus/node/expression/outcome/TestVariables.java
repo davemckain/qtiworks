@@ -56,7 +56,7 @@ import java.util.List;
 
 /**
  * This expression, which can only be used in outcomes processing, simultaneously looks up the value
- * of an itemVariable in A sub-set of the items referred to in A test. Only variables with single
+ * of an itemVariable in a sub-set of the items referred to in a test. Only variables with single
  * cardinality are considered, all NULL values are ignored. The result has cardinality multiple and
  * base-type as specified below.
  *

@@ -46,17 +46,17 @@ import uk.ac.ed.ph.jqtiplus.value.ParamType;
  * Attribute : value [1]: string
  * The value to pass to the object for the named parameter. This value
  * is subject to template variable expansion. If the value is the name
- * of A template variable that was declared with the paramVariable set
+ * of a template variable that was declared with the paramVariable set
  * to true then the template variable's value is passed to the object
  * as the value for the given parameter.
- * When expanding A template variable as A parameter value, types other
+ * When expanding a template variable as a parameter value, types other
  * than identifiers, strings and uris must be converted to strings.
  * Numeric types are converted to strings using the "%i" or "%G" formats
- * as appropriate (see printedVariable for A discussion of numeric formatting).
+ * as appropriate (see printedVariable for a discussion of numeric formatting).
  * Values of base-type boolean are expanded to one of the strings "true" or
  * "false". Values of base-type point are expanded to two space-separated integers
  * in the order horizontal coordinate, vertical coordinate, using "%i" format.
- * Values of base-type pair and directedPair are converted to A string
+ * Values of base-type pair and directedPair are converted to a string
  * consisting of the two identifiers, space separated. Values of base-type
  * duration are converted using "%G" format. Values of base-type file cannot
  * be used in parameter expansion.
@@ -64,7 +64,7 @@ import uk.ac.ed.ph.jqtiplus.value.ParamType;
  * Attribute : valuetype [1]: paramType = DATA
  * This specification supports the use of DATA and REF but not OBJECT.
  * Attribute : type [0..1]: mimeType
- * Used to provide A type for values valuetype REF.
+ * Used to provide a type for values valuetype REF.
  *
  * @author Jonathon Hare
  */

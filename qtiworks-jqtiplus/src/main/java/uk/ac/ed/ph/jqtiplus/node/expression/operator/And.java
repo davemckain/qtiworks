@@ -40,8 +40,8 @@ import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
- * The and operator takes one or more sub-expressions each with A base-type of boolean and single
- * cardinality. The result is A single boolean which is true if all sub-expressions are true and false
+ * The and operator takes one or more sub-expressions each with a base-type of boolean and single
+ * cardinality. The result is a single boolean which is true if all sub-expressions are true and false
  * if any of them are false. If one or more sub-expressions are NULL and all others are true then the
  * operator also results in NULL.
  *

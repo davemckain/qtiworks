@@ -54,11 +54,11 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * The choice interaction presents A set of choices to the candidate. The
- * candidate's task is to select one or more of the choices, up to A maximum of
+ * The choice interaction presents a set of choices to the candidate. The
+ * candidate's task is to select one or more of the choices, up to a maximum of
  * maxChoices. There is no corresponding minimum number of choices. The interaction
  * is always initialized with no choices selected.
- * The choiceInteraction must be bound to A response variable with A baseType of
+ * The choiceInteraction must be bound to a response variable with a baseType of
  * identifier and single or multiple cardinality.
  * Attribute : shuffle [1]: boolean = false
  * If the shuffle attribute is true then the delivery engine must randomize the
@@ -66,9 +66,9 @@ import java.util.Set;
  * Attribute : maxChoices [1]: integer = 1
  * The maximum number of choices that the candidate is allowed to select. If
  * maxChoices is 0 then there is no restriction. If maxChoices is greater than 1 (or 0)
- * then the interaction must be bound to A response with multiple cardinality.
+ * then the interaction must be bound to a response with multiple cardinality.
  * Attribute : minChoices [0..1]: integer = 0
- * The minimum number of choices that the candidate is required to select to form A valid
+ * The minimum number of choices that the candidate is required to select to form a valid
  * response. If minChoices is 0 then the candidate is not required to select any choices.
  * minChoices must be less than or equal to the limit imposed by maxChoices.
  * Contains : simpleChoice [1..*]

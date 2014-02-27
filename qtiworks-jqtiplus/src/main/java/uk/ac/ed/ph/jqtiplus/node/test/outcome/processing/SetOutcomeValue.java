@@ -47,7 +47,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
  * The setOutcomeValue rule sets the value of an outcome variable to the value obtained from the associated expression.
- * An outcome variable can be updated with reference to A previously assigned value, in other words, the outcome variable
+ * An outcome variable can be updated with reference to a previously assigned value, in other words, the outcome variable
  * being set may appear in the expression where it takes the value previously assigned to it.
  * <p>
  * Special care is required when using the numeric base-types because floating point values can not be assigned to integer variables and vice-versa. The

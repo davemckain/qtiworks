@@ -48,7 +48,7 @@ import java.net.URI;
  * The custom operator provides an extension mechanism for defining operations not currently supported
  * by this specification.
  * <p>
- * use the class attr to point to A java class (fully qualified) that implements Expression (and possibly extends AbstractExpression). If you do extend
+ * use the class attr to point to a java class (fully qualified) that implements Expression (and possibly extends AbstractExpression). If you do extend
  * AbstractExpression, set the QTI_CLASS_NAME to "customOperator", or override relevant methods required for validation that might call getType() to stop
  * unsupportedExpression exceptions at runtime.
  *

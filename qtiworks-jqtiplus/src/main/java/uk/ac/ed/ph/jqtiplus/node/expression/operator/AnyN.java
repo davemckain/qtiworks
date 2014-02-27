@@ -44,8 +44,8 @@ import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
- * The anyN operator takes one or more sub-expressions each with A base-type of boolean and single cardinality.
- * The result is A single boolean which is true if at least min of the sub-expressions are true and
+ * The anyN operator takes one or more sub-expressions each with a base-type of boolean and single cardinality.
+ * The result is a single boolean which is true if at least min of the sub-expressions are true and
  * at most max of the sub-expressions are true. If more than n - min sub-expressions are false (where n
  * is the total number of sub-expressions) or more than max sub-expressions are true then the result
  * is false. If one or more sub-expressions are NULL then it is possible that neither of these conditions

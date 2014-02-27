@@ -39,7 +39,7 @@ import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
- * Null is A simple expression that returns the NULL value -
+ * Null is a simple expression that returns the NULL value -
  * the null value is treated as if it is of
  * any desired baseType.
  *

@@ -46,7 +46,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 import java.util.Random;
 
 /**
- * Selects A random integer from the specified range [min,max] satisfying min + step * n for some integer n.
+ * Selects a random integer from the specified range [min,max] satisfying min + step * n for some integer n.
  * For example, with min=2, max=11 and step=3 the values {2,5,8,11} are possible.
  * <p>
  * Additional conditions: max >= min, step >= 1

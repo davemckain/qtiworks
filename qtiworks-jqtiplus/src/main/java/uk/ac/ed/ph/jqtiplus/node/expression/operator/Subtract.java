@@ -45,7 +45,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
  * The subtract operator takes 2 sub-expressions which all have single cardinality and numerical base-types.
- * The result is A single float or, if both sub-expressions are of integer type, A single integer that
+ * The result is a single float or, if both sub-expressions are of integer type, A single integer that
  * corresponds to the first value minus the second. If either of the sub-expressions is NULL then the
  * operator results in NULL.
  * 

@@ -42,7 +42,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 import java.util.List;
 
 /**
- * A matchTable transforms A source integer by finding the first matchTableEntry with an exact match to the source.
+ * A matchTable transforms a source integer by finding the first matchTableEntry with an exact match to the source.
  *
  * @author Jiri Kajaba
  */

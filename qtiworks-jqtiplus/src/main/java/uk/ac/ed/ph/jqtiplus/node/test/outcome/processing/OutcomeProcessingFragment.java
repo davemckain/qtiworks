@@ -42,8 +42,8 @@ import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import java.util.List;
 
 /**
- * An outcomeProcessingFragment is A simple group of outcomeRules which are grouped together in order to allow them
- * to be managed as A separate resource. It should not be used for any other purpose.
+ * An outcomeProcessingFragment is a simple group of outcomeRules which are grouped together in order to allow them
+ * to be managed as a separate resource. It should not be used for any other purpose.
  *
  * @author Jiri Kajaba
  */

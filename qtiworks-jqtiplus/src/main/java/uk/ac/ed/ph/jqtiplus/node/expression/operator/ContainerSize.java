@@ -40,11 +40,11 @@ import uk.ac.ed.ph.jqtiplus.value.ListValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
- * The containerSize operator takes A sub-expression with any base-type and either multiple or ordered
+ * The containerSize operator takes a sub-expression with any base-type and either multiple or ordered
  * cardinality. The result is an integer giving the number of values in the sub-expression, in other
  * words, the size of the container. If the sub-expression is NULL the result is 0.
  * <p>
- * This operator can be used for determining how many choices were selected in A multiple-response choiceInteraction, for example.
+ * This operator can be used for determining how many choices were selected in a multiple-response choiceInteraction, for example.
  *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType

@@ -39,8 +39,8 @@ import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
- * The isNull operator takes A sub-expression with any base-type and cardinality.
- * The result is A single boolean with A value of true if the sub-expression is NULL and false otherwise.
+ * The isNull operator takes a sub-expression with any base-type and cardinality.
+ * The result is a single boolean with a value of true if the sub-expression is NULL and false otherwise.
  * Note that empty containers and empty strings are both treated as NULL.
  *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality

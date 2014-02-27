@@ -39,7 +39,7 @@ import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 
 /**
- * The selection class specifies the rules used to select the child elements of A section for each test
+ * The selection class specifies the rules used to select the child elements of a section for each test
  * session. If no selection rules are given we assume that all elements are to be selected.
  *
  * @author Jiri Kajaba

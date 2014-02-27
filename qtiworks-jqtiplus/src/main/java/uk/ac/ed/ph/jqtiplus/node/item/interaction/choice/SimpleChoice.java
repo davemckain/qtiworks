@@ -40,7 +40,7 @@ import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
 import java.util.List;
 
 /**
- * simpleChoice is A choice that contains flowStatic objects.
+ * simpleChoice is a choice that contains flowStatic objects.
  * A simpleChoice must not contain any nested interactions.
  *
  * @author Jonathon Hare

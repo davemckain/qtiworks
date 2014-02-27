@@ -43,7 +43,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This class describes paramType of A param. Supported paramTypes are:
+ * This class describes paramType of a param. Supported paramTypes are:
  * <p>
  * DATA
  * <p>

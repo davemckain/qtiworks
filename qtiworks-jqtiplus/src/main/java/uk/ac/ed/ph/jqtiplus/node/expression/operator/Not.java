@@ -40,8 +40,8 @@ import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
- * The not operator takes A single sub-expression with A base-type of boolean and single cardinality.
- * The result is A single boolean with A value obtained by the logical negation of the sub-expression's
+ * The not operator takes a single sub-expression with a base-type of boolean and single cardinality.
+ * The result is a single boolean with a value obtained by the logical negation of the sub-expression's
  * value. If the sub-expression is NULL then the not operator also results in NULL.
  *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality

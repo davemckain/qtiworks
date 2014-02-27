@@ -47,7 +47,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
  * The contains operator takes two sub-expressions which must both have the same base-type and cardinality
- * - either multiple or ordered. The result is A single boolean with A value of true if the container
+ * - either multiple or ordered. The result is a single boolean with a value of true if the container
  * given by the first sub-expression contains the value given by the second sub-expression and false
  * if it doesn't. Note that the contains operator works differently depending on the cardinality of
  * the two sub-expressions.
@@ -55,12 +55,12 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * For unordered containers the values are compared without regard for ordering, for example, [A,B,C] contains [C,A]. Note that [A,B,C] does not contain [B,B]
  * but that [A,B,B,C] does.
  * <p>
- * For ordered containers the second sub-expression must be A strict sub-sequence within the first. In other words, [A,B,C] does not contain [C,A] but it does
+ * For ordered containers the second sub-expression must be a strict sub-sequence within the first. In other words, [A,B,C] does not contain [C,A] but it does
  * contain [B,C].
  * <p>
  * If either sub-expression is NULL then the result of the operator is NULL.
  * <p>
- * Like the member operator, the contains operator should not be used on sub-expressions with A base-type of float and must not be used on sub-expressions with
+ * Like the member operator, the contains operator should not be used on sub-expressions with a base-type of float and must not be used on sub-expressions with
  * A base-type of duration.
  *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality

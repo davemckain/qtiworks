@@ -65,7 +65,7 @@ import java.util.List;
 import javax.xml.XMLConstants;
 
 /**
- * AssessmentItem encompasses the information that is presented to A candidate and information about how to score the item.
+ * AssessmentItem encompasses the information that is presented to a candidate and information about how to score the item.
  * Scoring takes place when candidate responses are transformed into outcomes by response processing rules. It is sometimes
  * desirable to have several different items that appear the same to the candidate but which are scored differently.
  * In this specification, these are distinct items by definition and must therefore have distinct identifiers.

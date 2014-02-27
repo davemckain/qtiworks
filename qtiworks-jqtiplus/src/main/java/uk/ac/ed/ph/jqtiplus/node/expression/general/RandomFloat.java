@@ -46,7 +46,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 import java.util.Random;
 
 /**
- * Selects A random float from the specified range [min,max].
+ * Selects a random float from the specified range [min,max].
  * <p>
  * This implementation returns random double from range &lt;min, max).
  * <p>
