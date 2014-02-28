@@ -37,18 +37,19 @@ import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.SampleCategory;
-import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateException;
 import uk.ac.ed.ph.qtiworks.services.dao.AssessmentDao;
 import uk.ac.ed.ph.qtiworks.services.dao.SampleCategoryDao;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentAndPackage;
 import uk.ac.ed.ph.qtiworks.web.GlobalRouter;
+import uk.ac.ed.ph.qtiworks.web.candidate.CandidateSessionLaunchService;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -62,7 +63,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * @author David McKain
  */
 @Controller
-public class AnonymousSamplesController {
+public class SystemSamplesController {
 
     @Resource
     private SampleCategoryDao sampleCategoryDao;
@@ -71,7 +72,7 @@ public class AnonymousSamplesController {
     private AssessmentDao assessmentDao;
 
     @Resource
-    private CandidateSessionStarter candidateSessionStarter;
+    private CandidateSessionLaunchService candidateSessionLaunchService;
 
     @Resource
     private AnonymousRouter anonymousRouter;
@@ -94,11 +95,11 @@ public class AnonymousSamplesController {
      * {@link Delivery} created when bootstrapping the samples.
      */
     @RequestMapping(value="/samples/{sampleCategoryAnchor}/{aid}", method=RequestMethod.POST)
-    public String startItemSession(@PathVariable final String sampleCategoryAnchor, @PathVariable final long aid)
+    public String startItemSession(@PathVariable final String sampleCategoryAnchor, @PathVariable final long aid,
+            final HttpSession httpSession)
             throws DomainEntityNotFoundException, CandidateException {
-        final String exitUrl = anonymousRouter.buildWithinContextUrl("/samples") + "#" + sampleCategoryAnchor;
-
-        final CandidateSession candidateSession = candidateSessionStarter.launchSystemSampleSession(aid, exitUrl);
+        final String returnUrl = anonymousRouter.buildWithinContextUrl("/samples") + "#" + sampleCategoryAnchor;
+        final CandidateSession candidateSession = candidateSessionLaunchService.launchSystemSampleSession(httpSession, aid, returnUrl);
         return GlobalRouter.buildSessionStartRedirect(candidateSession);
     }
 }

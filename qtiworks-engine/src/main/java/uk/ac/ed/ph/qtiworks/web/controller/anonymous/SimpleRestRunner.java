@@ -41,13 +41,13 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.services.AssessmentDataService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
-import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.services.FilespaceManager;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageDataImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.utils.MultipartFileWrapper;
 import uk.ac.ed.ph.qtiworks.web.GlobalRouter;
+import uk.ac.ed.ph.qtiworks.web.candidate.CandidateSessionLaunchService;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,6 +55,7 @@ import java.io.IOException;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -81,7 +82,7 @@ public class SimpleRestRunner {
     private AssessmentManagementService assessmentManagementService;
 
     @Resource
-    private CandidateSessionStarter candidateSessionStarter;
+    private CandidateSessionLaunchService candidateSessionLaunchService;
 
     @Resource
     private AssessmentDataService assessmentDataService;
@@ -98,7 +99,7 @@ public class SimpleRestRunner {
     //--------------------------------------------------------------------
 
     @RequestMapping(value="/simplerestrunner", method=RequestMethod.POST)
-    public void simpleRestRunner(final HttpServletRequest request, final HttpServletResponse response)
+    public void simpleRestRunner(final HttpSession httpSession, final HttpServletRequest request, final HttpServletResponse response)
             throws IOException {
         /* Upload POST payload to temp file */
         final String uploadContentType = request.getContentType();
@@ -146,8 +147,8 @@ public class SimpleRestRunner {
 
             /* Try to launch candidate session */
             final Delivery delivery = assessmentManagementService.createDemoDelivery(assessment);
-            final String exitUrl = anonymousRouter.buildWithinContextUrl("/standalonerunner");
-            final CandidateSession candidateSession = candidateSessionStarter.launchCandidateSession(delivery, true, exitUrl, null, null);
+            final String returnUrl = anonymousRouter.buildWithinContextUrl("/standalonerunner");
+            final CandidateSession candidateSession = candidateSessionLaunchService.launchAnonymousCandidateSession(httpSession, delivery, returnUrl);
 
             /* Send redirect to candidate session */
             final String candidateSessionUrl = qtiWorksDeploymentSettings.getBaseUrl() + GlobalRouter.buildSessionStartWithinContextUrl(candidateSession);

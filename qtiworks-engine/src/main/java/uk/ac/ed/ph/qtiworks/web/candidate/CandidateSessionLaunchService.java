@@ -1,0 +1,281 @@
+/* Copyright (c) 2012-2013, University of Edinburgh.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * * Redistributions of source code must retain the above copyright notice, this
+ *   list of conditions and the following disclaimer.
+ *
+ * * Redistributions in binary form must reproduce the above copyright notice, this
+ *   list of conditions and the following disclaimer in the documentation and/or
+ *   other materials provided with the distribution.
+ *
+ * * Neither the name of the University of Edinburgh nor the names of its
+ *   contributors may be used to endorse or promote products derived from this
+ *   software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * This software is derived from (and contains code from) QTItools and MathAssessEngine.
+ * QTItools is (c) 2008, University of Southampton.
+ * MathAssessEngine is (c) 2010, University of Edinburgh.
+ */
+package uk.ac.ed.ph.qtiworks.web.candidate;
+
+import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
+import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
+import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
+import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
+import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
+import uk.ac.ed.ph.qtiworks.domain.entities.LtiLaunchType;
+import uk.ac.ed.ph.qtiworks.domain.entities.LtiResource;
+import uk.ac.ed.ph.qtiworks.domain.entities.LtiUser;
+import uk.ac.ed.ph.qtiworks.domain.entities.User;
+import uk.ac.ed.ph.qtiworks.domain.entities.UserRole;
+import uk.ac.ed.ph.qtiworks.services.AuditLogger;
+import uk.ac.ed.ph.qtiworks.services.CandidateAuditLogger;
+import uk.ac.ed.ph.qtiworks.services.CandidateDataService;
+import uk.ac.ed.ph.qtiworks.services.CandidateSessionCloser;
+import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
+import uk.ac.ed.ph.qtiworks.services.IdentityService;
+import uk.ac.ed.ph.qtiworks.services.RequestTimestampContext;
+import uk.ac.ed.ph.qtiworks.services.candidate.CandidateException;
+import uk.ac.ed.ph.qtiworks.services.candidate.CandidateExceptionReason;
+import uk.ac.ed.ph.qtiworks.services.candidate.CandidateItemDeliveryService;
+import uk.ac.ed.ph.qtiworks.services.candidate.CandidateTestDeliveryService;
+import uk.ac.ed.ph.qtiworks.services.dao.AssessmentDao;
+import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
+import uk.ac.ed.ph.qtiworks.services.dao.DeliveryDao;
+
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+ * Helper service for creating new (or reconnecting to existing) {@link CandidateSession}s
+ * on a {@link Delivery} or {@link Assessment}.
+ *
+ * @see CandidateItemDeliveryService
+ * @see CandidateTestDeliveryService
+ *
+ * @author David McKain
+ */
+@Service
+@Transactional(propagation=Propagation.REQUIRED)
+public class CandidateSessionLaunchService {
+
+    @Resource
+    private AuditLogger auditLogger;
+
+    @Resource
+    private IdentityService identityService;
+
+    @Resource
+    private RequestTimestampContext requestTimestampContext;
+
+    @Resource
+    private CandidateAuditLogger candidateAuditLogger;
+
+    @Resource
+    private CandidateSessionCloser candidateSessionCloser;
+
+    @Resource
+    private CandidateDataService candidateDataService;
+
+    @Resource
+    private AssessmentDao assessmentDao;
+
+    @Resource
+    private DeliveryDao deliveryDao;
+
+    @Resource
+    private CandidateSessionDao candidateSessionDao;
+
+    @Resource
+    private CandidateSessionStarter candidateSessionStarter;
+
+    //-------------------------------------------------
+    // Anonymous session launching
+
+    public CandidateSession launchAnonymousCandidateSession(final HttpSession httpSession, final Delivery delivery, final String returnUrl)
+            throws CandidateException {
+        Assert.notNull(delivery, "delivery");
+
+        /* In this case the "candidate" should be the user who owns the Delivery, so let's check this here */
+        final User candidate = identityService.assertCurrentThreadUser();
+        final Assessment assessment = delivery.getAssessment();
+        if (!assessment.getOwnerUser().equals(candidate)) {
+            logAndThrowLaunchException(candidate, assessment, CandidateExceptionReason.LAUNCH_ASSESSMENT_NO_ACCESS);
+        }
+        return launchCandidateSession(httpSession, candidate, delivery, true, returnUrl, null, null);
+    }
+
+    //-------------------------------------------------
+    // System sample launching
+
+    public CandidateSession launchSystemSampleSession(final HttpSession httpSession, final long aid, final String returnUrl)
+            throws DomainEntityNotFoundException, CandidateException {
+        final User candidate = identityService.assertCurrentThreadUser();
+        final Delivery sampleDelivery = lookupSystemSampleDelivery(aid);
+        return launchCandidateSession(httpSession, candidate, sampleDelivery, true, returnUrl, null, null);
+    }
+
+    private Delivery lookupSystemSampleDelivery(final long aid)
+            throws DomainEntityNotFoundException, CandidateException {
+        final Assessment assessment = lookupSampleAssessment(aid);
+        final List<Delivery> systemDemoDeliveries = deliveryDao.getForAssessmentAndType(assessment, DeliveryType.SYSTEM_DEMO);
+        if (systemDemoDeliveries.size()!=1) {
+            throw new QtiWorksLogicException("Expected system sample Assessment with ID " + aid
+                    + " to have exactly 1 system demo deliverable associated with it");
+        }
+        return systemDemoDeliveries.get(0);
+    }
+
+    private Assessment lookupSampleAssessment(final long aid)
+            throws DomainEntityNotFoundException, CandidateException {
+        final User caller = identityService.assertCurrentThreadUser();
+        final Assessment assessment = assessmentDao.requireFindById(aid);
+        if (!assessment.isPublic() || assessment.getSampleCategory()==null) {
+            logAndThrowLaunchException(caller, assessment, CandidateExceptionReason.LAUNCH_ASSESSMENT_AS_SAMPLE);
+        }
+        return assessment;
+    }
+
+    //----------------------------------------------------
+    // LTI launches
+
+    /**
+     * Starts a new {@link CandidateSession} for the (LTI) candidate {@link User} accessing a
+     * link-level launch on the {@link Delivery} having the given ID (did).
+     * <p>
+     * Access controls are checked on the {@link Delivery}.
+     */
+    public CandidateSession launchLinkLevelLtiCandidateSession(final HttpSession httpSession,
+            final LtiUser candidate, final String returnUrl,
+            final String lisOutcomeServiceUrl, final String lisResultSourcedid)
+            throws CandidateException {
+        /* Make sure this is the correct type of user */
+        Assert.notNull(candidate, "candidate");
+        if (candidate.getLtiLaunchType()!=LtiLaunchType.LINK) {
+            throw new IllegalArgumentException("Candidate LtiUser must be of type " + LtiLaunchType.LINK);
+        }
+
+        /* Extract Delivery to be launched */
+        final Delivery delivery = candidate.getDelivery();
+
+        /* Make sure delivery is open to candidates */
+        if (!delivery.isOpen()) {
+            logAndThrowLaunchException(candidate, delivery, CandidateExceptionReason.LAUNCH_CLOSED_DELIVERY);
+        }
+
+        /* Now launch session */
+        return launchCandidateSession(httpSession, candidate, delivery,
+                false /* Never use author mode here */,
+                returnUrl, lisOutcomeServiceUrl, lisResultSourcedid);
+    }
+
+    public CandidateSession launchDomainLevelLtiCandidateSession(final HttpSession httpSession,
+            final LtiUser candidate, final LtiResource ltiResource,
+            final String returnUrl, final String lisOutcomeServiceUrl, final String lisResultSourcedid)
+            throws CandidateException {
+
+        Assert.notNull(candidate, "candidate");
+        Assert.notNull(ltiResource, "ltiResource");
+        if (candidate.getLtiLaunchType()!=LtiLaunchType.DOMAIN) {
+            throw new IllegalArgumentException("Candidate LtiUser must be of type " + LtiLaunchType.DOMAIN);
+        }
+
+        /* Extract Delivery to be launched from LtiResource */
+        final Delivery delivery = ltiResource.getDelivery();
+
+        /* Make sure delivery is open to candidates */
+        if (!delivery.isOpen()) {
+            logAndThrowLaunchException(candidate, delivery, CandidateExceptionReason.LAUNCH_CLOSED_DELIVERY);
+        }
+
+        /* Will use author mode if candidate is an instructor */
+        final boolean authorMode = candidate.getUserRole()==UserRole.INSTRUCTOR;
+
+        /* Now launch session */
+        return launchCandidateSession(httpSession, candidate, delivery, authorMode,
+                returnUrl, lisOutcomeServiceUrl, lisResultSourcedid);
+    }
+
+    //----------------------------------------------------
+    // Low-level launches.
+    // NB: Caller should have checked that candidate is allowed to launch session before here.
+
+    public CandidateSession launchCandidateSession(final HttpSession httpSession, final User candidate, final Delivery delivery, final boolean authorMode,
+            final String returnUrl, final String lisOutcomeServiceUrl, final String lisResultSourcedid)
+            throws CandidateException {
+        Assert.notNull(httpSession, "httpSession");
+
+        /* Sanitise returnUrl as it may have been passed in externally so can't be trusted */
+        final String safeReturnUrl = sanitiseReturnUrl(returnUrl);
+
+        /* Create/reuse session */
+        final CandidateSession candidateSession = candidateSessionStarter.launchCandidateSession(candidate, delivery,
+                authorMode, lisOutcomeServiceUrl, lisResultSourcedid);
+
+        /* Authenticate this user to access this CandidateSession */
+        final CandidateSessionTicket candidateSessionTicket = new CandidateSessionTicket(candidate.getId(), candidateSession.getId(), safeReturnUrl);
+        CandidateSessionAuthenticationFilter.authenticateUserForSession(httpSession, candidateSessionTicket);
+
+        /* Caller should now issue appropriate redirect to session... */
+        return candidateSession;
+    }
+
+    private void logAndThrowLaunchException(final User candidate, final Delivery delivery,
+            final CandidateExceptionReason reason)
+            throws CandidateException {
+        candidateAuditLogger.logAndThrowCandidateException(candidate, delivery, reason);
+    }
+
+    private void logAndThrowLaunchException(final User candidate, final Assessment assessment,
+            final CandidateExceptionReason reason)
+            throws CandidateException {
+        candidateAuditLogger.logAndThrowCandidateException(candidate, assessment, reason);
+    }
+
+    private String sanitiseReturnUrl(final String returnUrl) {
+        if (returnUrl==null) {
+            return null;
+        }
+        /* Allow valid http:// or https:// URIs only */
+        final URI exitUrlUri;
+        try {
+            exitUrlUri = new URI(returnUrl);
+        }
+        catch (final URISyntaxException e) {
+            auditLogger.recordEvent("Rejecting return URL " + returnUrl + " - not a URI");
+            return null;
+        }
+        final String scheme = exitUrlUri.getScheme();
+        if (!scheme.equals("http") && !scheme.equals("https")) {
+            auditLogger.recordEvent("Rejecting return URL " + returnUrl + " - only accepting http and https schemes");
+        }
+        /* If still here, then OK */
+        return returnUrl;
+    }
+}

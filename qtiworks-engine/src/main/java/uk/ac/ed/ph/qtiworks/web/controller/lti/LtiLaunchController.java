@@ -40,9 +40,9 @@ import uk.ac.ed.ph.qtiworks.domain.entities.LtiLaunchType;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiResource;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.UserRole;
-import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateException;
 import uk.ac.ed.ph.qtiworks.web.GlobalRouter;
+import uk.ac.ed.ph.qtiworks.web.candidate.CandidateSessionLaunchService;
 import uk.ac.ed.ph.qtiworks.web.lti.DecodedLtiLaunch;
 import uk.ac.ed.ph.qtiworks.web.lti.LtiAuthenticationTicket;
 import uk.ac.ed.ph.qtiworks.web.lti.LtiLaunchData;
@@ -54,6 +54,7 @@ import java.io.IOException;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -70,14 +71,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class LtiLaunchController {
 
     @Resource
-    private CandidateSessionStarter candidateSessionStarter;
+    private CandidateSessionLaunchService candidateSessionLaunchService;
 
     @Resource
     private LtiLaunchService ltiLaunchService;
 
     /** Domain-level LTI launch */
     @RequestMapping(value="/domainlaunch", method=RequestMethod.POST)
-    public String ltiDomainLevelLaunch(final HttpServletRequest request, final HttpServletResponse response)
+    public String ltiDomainLevelLaunch(final HttpSession httpSession, final HttpServletRequest request,
+            final HttpServletResponse response)
             throws IOException {
         /* Decode LTI launch request, and bail out on error */
         final DecodedLtiLaunch decodedLtiLaunch = ltiLaunchService.decodeLtiLaunchData(request, LtiLaunchType.DOMAIN);
@@ -104,7 +106,7 @@ public class LtiLaunchController {
              * "authenticating" the user by creating and storing an LtiDomainTicket
              * in the session */
             final LtiAuthenticationTicket ltiDomainTicket = new LtiAuthenticationTicket(ltiUser.getId(), ltiResource.getId(),ltiLaunchData.getLaunchPresentationReturnUrl());
-            LtiResourceAuthenticationFilter.authenticateUserForResource(request.getSession(), ltiDomainTicket);
+            LtiResourceAuthenticationFilter.authenticateUserForResource(httpSession, ltiDomainTicket);
             return "redirect:/lti/resource/" + ltiResource.getId();
         }
         else if (userRole==UserRole.CANDIDATE) {
@@ -114,14 +116,14 @@ public class LtiLaunchController {
             }
 
             /* Extract relevant data */
-            final String exitUrl = ltiLaunchData.getLaunchPresentationReturnUrl();
+            final String returnUrl = ltiLaunchData.getLaunchPresentationReturnUrl();
             final String lisOutcomeServiceUrl = ltiLaunchData.getLisOutcomeServiceUrl();
             final String lisResultSourcedid = ltiLaunchData.getLisResultSourcedid();
 
-            /* Start/reuse candidate session */
+            /* Launch and redirect to session */
             try {
-                final CandidateSession candidateSession = candidateSessionStarter.launchDomainLevelLtiCandidateSession(ltiUser,
-                        ltiResource, exitUrl, lisOutcomeServiceUrl, lisResultSourcedid);
+                final CandidateSession candidateSession = candidateSessionLaunchService.launchDomainLevelLtiCandidateSession(httpSession,
+                        ltiUser, ltiResource, returnUrl, lisOutcomeServiceUrl, lisResultSourcedid);
                 return GlobalRouter.buildSessionStartRedirect(candidateSession);
             }
             catch (final CandidateException e) {
@@ -135,7 +137,8 @@ public class LtiLaunchController {
 
     /** Link-level LTI launch (always treated as candidate) */
     @RequestMapping(value="/linklaunch", method=RequestMethod.POST)
-    public String ltiLinkLevelLaunch(final HttpServletRequest request, final HttpServletResponse response)
+    public String ltiLinkLevelLaunch(final HttpSession httpSession, final HttpServletRequest request,
+            final HttpServletResponse response)
             throws IOException {
         /* Decode LTI launch request, and bail out on error */
         final DecodedLtiLaunch decodedLtiLaunch = ltiLaunchService.decodeLtiLaunchData(request, LtiLaunchType.LINK);
@@ -145,16 +148,16 @@ public class LtiLaunchController {
         }
 
         /* Extract relevant data */
+        final LtiUser ltiUser = decodedLtiLaunch.getLtiUser();
         final LtiLaunchData ltiLaunchData = decodedLtiLaunch.getLtiLaunchData();
-        final String exitUrl = ltiLaunchData.getLaunchPresentationReturnUrl();
+        final String returnUrl = ltiLaunchData.getLaunchPresentationReturnUrl();
         final String lisOutcomeServiceUrl = ltiLaunchData.getLisOutcomeServiceUrl();
         final String lisResultSourcedid = ltiLaunchData.getLisResultSourcedid();
 
-        /* Start/reuse candidate session */
-        final LtiUser ltiUser = decodedLtiLaunch.getLtiUser();
+        /* Launch and redirect to session */
         try {
-            final CandidateSession candidateSession = candidateSessionStarter.launchLinkLevelLtiCandidateSession(ltiUser,
-                    exitUrl, lisOutcomeServiceUrl, lisResultSourcedid);
+            final CandidateSession candidateSession = candidateSessionLaunchService.launchLinkLevelLtiCandidateSession(httpSession,
+                    ltiUser, returnUrl, lisOutcomeServiceUrl, lisResultSourcedid);
             return GlobalRouter.buildSessionStartRedirect(candidateSession);
         }
         catch (final CandidateException e) {
@@ -165,14 +168,14 @@ public class LtiLaunchController {
     /**
      * Older URI for a link-level LTI launch.
      * <p>
-     * This is kept for backwards compatibility with existing LTI links, but should not be used
-     * for new links.
+     * (This is kept for backwards compatibility with existing LTI links, but should not be used
+     * for new links.)
      */
     @RequestMapping(value="/launch/{did}", method=RequestMethod.POST)
-    public String deprecatedLtiLinkLevelLaunch(final HttpServletRequest request, final HttpServletResponse response,
+    public String deprecatedLtiLinkLevelLaunch(final HttpSession httpSession, final HttpServletRequest request, final HttpServletResponse response,
             @SuppressWarnings("unused") @PathVariable final long did)
             throws IOException {
-        return ltiLinkLevelLaunch(request, response);
+        return ltiLinkLevelLaunch(httpSession, request, response);
     }
 
     //------------------------------------------------------

@@ -27,39 +27,58 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * This software is derived from (and contains code from) QTItools and MathAssessEngine.
- * QTItools is (c) 2008, University of Southampton.
+ * This software is derived from (and contains code from) QTITools and MathAssessEngine.
+ * QTITools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.web;
+package uk.ac.ed.ph.qtiworks.web.candidate;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
+import uk.ac.ed.ph.qtiworks.domain.entities.User;
+import uk.ac.ed.ph.qtiworks.web.lti.LtiAuthenticationTicket;
 
-import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import java.io.Serializable;
 
 /**
- * Global webapp router.
+ * FIXME: Document this. It's based on {@link LtiAuthenticationTicket}
  *
  * @author David McKain
  */
-public final class GlobalRouter {
+public final class CandidateSessionTicket implements Serializable {
 
-    public static final String FLASH = "flashMessage";
+    private static final long serialVersionUID = 1412636123357858458L;
 
-    public static void addFlashMessage(final RedirectAttributes redirectAttributes, final String message) {
-        redirectAttributes.addFlashAttribute(GlobalRouter.FLASH, message);
+    /** ID of the candidate {@link User} in question */
+    private final long userId;
+
+    /** ID of the {@link CandidateSession} in question */
+    private final long candidateSessionId;
+
+    /** URL to return to once the session has terminated */
+    private final String returnUrl;
+
+    public CandidateSessionTicket(final long userId, final long candidateSessionId, final String returnUrl) {
+        this.userId = userId;
+        this.candidateSessionId = candidateSessionId;
+        this.returnUrl = returnUrl;
     }
 
-    public static String buildSessionStartWithinContextUrl(final CandidateSession candidateSession) {
-        final boolean isItem = candidateSession.getDelivery().getAssessment().getAssessmentType()==AssessmentObjectType.ASSESSMENT_ITEM;
-        return "/candidate/"
-                + (isItem ? "itemsession" : "testsession")
-                + "/" + candidateSession.getId();
+    public long getUserId() {
+        return userId;
     }
 
-    public static String buildSessionStartRedirect(final CandidateSession candidateSession) {
-        return "redirect:" + buildSessionStartWithinContextUrl(candidateSession);
+    public long getCandidateSessionId() {
+        return candidateSessionId;
+    }
+
+    public String getReturnUrl() {
+        return returnUrl;
+    }
+
+    @Override
+    public String toString() {
+        return ObjectUtilities.beanToString(this);
     }
 }

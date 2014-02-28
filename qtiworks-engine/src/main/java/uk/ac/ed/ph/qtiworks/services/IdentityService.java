@@ -36,6 +36,7 @@ package uk.ac.ed.ph.qtiworks.services;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.web.authn.AnonymousAuthenticationFilter;
 import uk.ac.ed.ph.qtiworks.web.authn.SystemUserAuthenticationFilter;
+import uk.ac.ed.ph.qtiworks.web.candidate.CandidateIdentityContext;
 import uk.ac.ed.ph.qtiworks.web.lti.LtiIdentityContext;
 import uk.ac.ed.ph.qtiworks.web.lti.LtiResourceAuthenticationFilter;
 
@@ -65,6 +66,7 @@ public final class IdentityService {
 
     private final ThreadLocal<User> currentUserThreadLocal = new ThreadLocal<User>();
     private final ThreadLocal<LtiIdentityContext> currentLtiIdentityContextThreadLocal = new ThreadLocal<LtiIdentityContext>();
+    private final ThreadLocal<CandidateIdentityContext> currentCandidateIdentityContextThreadLocal = new ThreadLocal<CandidateIdentityContext>();
 
     /**
      * Returns the {@link User} registered for the current Thread, if it has been set.
@@ -148,6 +150,49 @@ public final class IdentityService {
         }
         else {
             currentLtiIdentityContextThreadLocal.remove();
+        }
+    }
+
+
+    /**
+     * Returns the {@link LtiIdentityContext} for the current Thread, if it has been set.
+     * <p>
+     * This is only set on LTI domain instructor launches, and will require null otherwise.
+     *
+     * @return {@link LtiIdentityContext} for the current Thread, which may be null.
+     *
+     * @see #setCurrentThreadLtiIdentityContext(LtiIdentityContext)
+     * @see #assertCurrentThreadLtiIdentityContext()
+     */
+    public CandidateIdentityContext getCurrentThreadCandidateIdentityContext() {
+        return currentCandidateIdentityContextThreadLocal.get();
+    }
+
+    /**
+     * Returns the {@link CandidateIdentityContext} for the current Thread, expecting it
+     * to return null.
+     *
+     * @return {@link CandidateIdentityContext} for the current Thread, which will not be null.
+     *
+     * @throws IllegalStateException if an {@link CandidateIdentityContext} is not set for the current Thread.
+     *
+     * @see #setCurrentThreadCandidateIdentityContext(CandidateIdentityContext)
+     * @see #assertCurrentThreadCandidateIdentityContext()
+     */
+    public CandidateIdentityContext assertCurrentThreadCandidateIdentityContext() {
+        final CandidateIdentityContext result = getCurrentThreadCandidateIdentityContext();
+        if (result==null) {
+            throw new IllegalStateException("An CandidateIdentityContext is required for the current Thread, but has not been set");
+        }
+        return result;
+    }
+
+    public void setCurrentThreadCandidateIdentityContext(final CandidateIdentityContext ltiIdentityContext) {
+        if (ltiIdentityContext!=null) {
+            currentCandidateIdentityContextThreadLocal.set(ltiIdentityContext);
+        }
+        else {
+            currentCandidateIdentityContextThreadLocal.remove();
         }
     }
 

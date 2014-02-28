@@ -80,6 +80,12 @@ public enum CandidateExceptionReason {
      */
     LAUNCH_ASSESSMENT_AS_SAMPLE,
 
+    /**
+     * Attempted to launch an {@link Assessment} that the current user does
+     * not have access to.
+     */
+    LAUNCH_ASSESSMENT_NO_ACCESS,
+
     //----------------------------------------------------
     // General session errors
 
@@ -98,6 +104,7 @@ public enum CandidateExceptionReason {
     /**
      * Supplied session token does not correspond with {@link CandidateSession} xid
      */
+    @Deprecated
     SESSION_TOKEN_MISMATCH,
 
     /**

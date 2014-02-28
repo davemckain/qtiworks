@@ -151,6 +151,7 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
      * <p>
      * The token is not necessarily unique so should not be used as a lookup key.
      */
+    @Deprecated
     @Basic(optional=false)
     @Column(name="session_token", length=DomainConstants.CANDIDATE_SESSION_TOKEN_LENGTH)
     private String sessionToken;
@@ -166,6 +167,7 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
      * <p>
      * A null URL will direct to a blank page afterwards.
      */
+    @Deprecated
     @Lob
     @Type(type="org.hibernate.type.TextType")
     @Basic(optional=true)
@@ -301,19 +303,23 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
     }
 
 
+    @Deprecated
     public String getSessionToken() {
         return sessionToken;
     }
 
+    @Deprecated
     public void setSessionToken(final String sessionToken) {
         this.sessionToken = sessionToken;
     }
 
 
+    @Deprecated
     public String getExitUrl() {
         return exitUrl;
     }
 
+    @Deprecated
     public void setExitUrl(final String exitUrl) {
         this.exitUrl = exitUrl;
     }

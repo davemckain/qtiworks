@@ -31,13 +31,13 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.web.lti;
+package uk.ac.ed.ph.qtiworks.web.candidate;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.LtiResource;
-import uk.ac.ed.ph.qtiworks.domain.entities.LtiUser;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
+import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.services.IdentityService;
-import uk.ac.ed.ph.qtiworks.services.dao.LtiResourceDao;
-import uk.ac.ed.ph.qtiworks.services.dao.LtiUserDao;
+import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
+import uk.ac.ed.ph.qtiworks.services.dao.UserDao;
 import uk.ac.ed.ph.qtiworks.web.authn.AbstractWebAuthenticationFilter;
 
 import java.io.IOException;
@@ -56,31 +56,27 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
 
 /**
- * Authentication filter for gaining access to a particular {@link LtiResource}.
- * Such resources exist in URLs paths of the form:
+ * FIXME: Document this properly!
  *
- * <code>lti/resource/{lrid}/...</code>
- *
- * Note that this filter only works <em>after</em> the initial LTI launch URL has been
- * accessed to set up the HTTP session correctly.
+ * Authentication filter for gaining access to a particular {@link CandidateSession}.
  *
  * @author David McKain
  */
-public final class LtiResourceAuthenticationFilter extends AbstractWebAuthenticationFilter {
+public final class CandidateSessionAuthenticationFilter extends AbstractWebAuthenticationFilter {
 
-    private static final Logger logger = LoggerFactory.getLogger(LtiResourceAuthenticationFilter.class);
+    private static final Logger logger = LoggerFactory.getLogger(CandidateSessionAuthenticationFilter.class);
 
-    public static final String LTI_TICKET_ATTRIBUTE_BASE_NAME = "qtiworks.web.authn.ltiAuthenticationTickets.lrid.";
+    public static final String CANDIDATE_SESSION_TICKET_ATTRIBUTE_BASE_NAME = "qtiworks.web.authn.candidateSessionTickets.lrid.";
 
-    private LtiResourceDao ltiResourceDao;
-    private LtiUserDao ltiUserDao;
+    private UserDao userDao;
+    private CandidateSessionDao candidateSessionDao;
     private IdentityService identityService;
 
     @Override
     protected void initWithApplicationContext(final FilterConfig filterConfig, final WebApplicationContext webApplicationContext)
             throws Exception {
-        ltiResourceDao = webApplicationContext.getBean(LtiResourceDao.class);
-        ltiUserDao = webApplicationContext.getBean(LtiUserDao.class);
+        candidateSessionDao = webApplicationContext.getBean(CandidateSessionDao.class);
+        userDao = webApplicationContext.getBean(UserDao.class);
         identityService = webApplicationContext.getBean(IdentityService.class);
     }
 
@@ -88,80 +84,80 @@ public final class LtiResourceAuthenticationFilter extends AbstractWebAuthentica
     protected void doFilterAuthentication(final HttpServletRequest request, final HttpServletResponse response, final FilterChain chain,
             final HttpSession session)
             throws IOException, ServletException {
-        /* Determine which LTI resource we're working on from the pathInfo, which should be of the form /resource/{lrid}... */
+        /* Determine which CandidateSession we're authenticating from  pathInfo, which should be of the form /(item|test)session/{xid}... */
         final String pathInfo = request.getPathInfo();
-        final Pattern pathPattern = Pattern.compile("^/resource/(\\d+)");
+        final Pattern pathPattern = Pattern.compile("^/(?:item|test)session/(\\d+)");
         final Matcher pathMatcher = pathPattern.matcher(pathInfo);
         if (!pathMatcher.find()) {
             logger.warn("Failed regex match on resource path {}", pathInfo);
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
-        final String lridString = pathMatcher.group(1);
-        final long lrid;
+        final String xidString = pathMatcher.group(1);
+        final long xid;
         try {
-            lrid = Long.parseLong(lridString);
+            xid = Long.parseLong(xidString);
 
         }
         catch (final NumberFormatException e) {
-            logger.warn("Failed to parse resource ID from path {}", pathInfo);
+            logger.warn("Failed to parse CandidateSession ID from path {}", pathInfo);
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 
-        /* Make sure resource (still) exists */
-        final LtiResource ltiResource = ltiResourceDao.findById(lrid);
-        if (ltiResource==null) {
-            logger.warn("Failed to look up LtiResource with ID {}", lrid);
+        /* Make sure CandidateSession (still) exists */
+        final CandidateSession candidateSession = candidateSessionDao.findById(xid);
+        if (candidateSession==null) {
+            logger.warn("Failed to look up CandidateSession with ID {}", xid);
             response.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;
         }
 
-        /* The user's ticket for accessing this resource should have been stored in the session previously */
-        final LtiAuthenticationTicket ltiAuthenticationTicket = getLtiAuthenticationTicketForResource(session, lrid);
-        if (ltiAuthenticationTicket==null) {
-            logger.warn("Failed to retrieve LtiAuthenticationTicket from HttpSession for LtiResource with lrid {}", lrid);
-            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden. This resource is only available via an LTI domain link from a Tool Provider. Please try the launch from your Tool Provider again.");
+        /* The user's ticket for accessing this CandidateSession should have been stored in the HTTP session previously */
+        final CandidateSessionTicket candidateSessionTicket = getCandidateSessionTicketForSession(session, xid);
+        if (candidateSessionTicket==null) {
+            logger.warn("Failed to retrieve CandidateSessionTicket from HttpSession for CandidateSession {}", xid);
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden. You do not have access to this assessment. Please launch your assessment again.");
             return;
         }
 
         /* Look up fresh entity state. (We've already refreshed LtiResource above.) */
-        final long ltiUserId = ltiAuthenticationTicket.getLtiUserId();
-        final LtiUser ltiUser = ltiUserDao.findById(ltiUserId);
-        if (ltiUser==null) {
-            logger.warn("LtiUser {} in LtiAuthenticationTicket does not exist", lrid);
+        final long userId = candidateSessionTicket.getUserId();
+        final User user = userDao.findById(userId);
+        if (user==null) {
+            logger.warn("User {} in CandidateSessionTicket does not exist", xid);
             response.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;
         }
 
         /* Finally set up identity and continue with filter chain */
-        final LtiIdentityContext ltiIdentityContext = new LtiIdentityContext(ltiResource, ltiAuthenticationTicket.getReturnUrl());
-        identityService.setCurrentThreadUser(ltiUser);
-        identityService.setCurrentThreadLtiIdentityContext(ltiIdentityContext);
+        final CandidateIdentityContext candidateIdentityContext = new CandidateIdentityContext(candidateSession, candidateSessionTicket.getReturnUrl());
+        identityService.setCurrentThreadUser(user);
+        identityService.setCurrentThreadCandidateIdentityContext(candidateIdentityContext);
         try {
             chain.doFilter(request, response);
         }
         finally {
             identityService.setCurrentThreadUser(null);
-            identityService.setCurrentThreadLtiIdentityContext(null);
+            identityService.setCurrentThreadCandidateIdentityContext(null);
         }
     }
 
-    public static void authenticateUserForResource(final HttpSession httpSsession, final LtiAuthenticationTicket ltiDomainTicket) {
-        final Long lrid = ltiDomainTicket.getLtiResouceId();
-        httpSsession.setAttribute(getLtiTicketSessionKey(lrid), ltiDomainTicket);
+    public static void authenticateUserForSession(final HttpSession httpSsession, final CandidateSessionTicket candidateSessionTicket) {
+        final Long xid = candidateSessionTicket.getCandidateSessionId();
+        httpSsession.setAttribute(getcandidateSessionTicketSessionKey(xid), candidateSessionTicket);
     }
 
-    public static void deauthenticateUserFromResource(final HttpSession httpSession, final LtiResource ltiResource) {
-        final Long lrid = ltiResource.getId();
-        httpSession.removeAttribute(getLtiTicketSessionKey(lrid));
+    public static void deauthenticateUserFromSession(final HttpSession httpSession, final CandidateSession candidateSession) {
+        final Long xid = candidateSession.getId();
+        httpSession.removeAttribute(getcandidateSessionTicketSessionKey(xid));
     }
 
-    private static LtiAuthenticationTicket getLtiAuthenticationTicketForResource(final HttpSession session, final long lrid) {
-        return (LtiAuthenticationTicket) session.getAttribute(getLtiTicketSessionKey(lrid));
+    private static CandidateSessionTicket getCandidateSessionTicketForSession(final HttpSession session, final long xid) {
+        return (CandidateSessionTicket) session.getAttribute(getcandidateSessionTicketSessionKey(xid));
     }
 
-    private static String getLtiTicketSessionKey(final long lrid) {
-        return LTI_TICKET_ATTRIBUTE_BASE_NAME + Long.toString(lrid);
+    private static String getcandidateSessionTicketSessionKey(final long xid) {
+        return CANDIDATE_SESSION_TICKET_ATTRIBUTE_BASE_NAME + Long.toString(xid);
     }
 }

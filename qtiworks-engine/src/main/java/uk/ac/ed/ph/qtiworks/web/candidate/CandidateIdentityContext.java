@@ -27,39 +27,53 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * This software is derived from (and contains code from) QTItools and MathAssessEngine.
- * QTItools is (c) 2008, University of Southampton.
+ * This software is derived from (and contains code from) QTITools and MathAssessEngine.
+ * QTITools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.web;
+package uk.ac.ed.ph.qtiworks.web.candidate;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
+import uk.ac.ed.ph.qtiworks.web.lti.LtiIdentityContext;
 
-import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import java.io.Serializable;
 
 /**
- * Global webapp router.
+ * FIXME: Document this. It's the same idea as {@link LtiIdentityContext}
  *
  * @author David McKain
  */
-public final class GlobalRouter {
+public final class CandidateIdentityContext implements Serializable {
 
-    public static final String FLASH = "flashMessage";
+    private static final long serialVersionUID = 1412636123357858458L;
 
-    public static void addFlashMessage(final RedirectAttributes redirectAttributes, final String message) {
-        redirectAttributes.addFlashAttribute(GlobalRouter.FLASH, message);
+    /**
+     * Indicates which {@link CandidateSession} this ticket provides access to
+     */
+    private final CandidateSession candidateSession;
+
+    /** Optional return URL to use when the session terminates */
+    private final String returnUrl;
+
+    public CandidateIdentityContext(final CandidateSession candidateSession, final String returnUrl) {
+        Assert.notNull(candidateSession, "candidateSession");
+        this.candidateSession = candidateSession;
+        this.returnUrl = returnUrl;
     }
 
-    public static String buildSessionStartWithinContextUrl(final CandidateSession candidateSession) {
-        final boolean isItem = candidateSession.getDelivery().getAssessment().getAssessmentType()==AssessmentObjectType.ASSESSMENT_ITEM;
-        return "/candidate/"
-                + (isItem ? "itemsession" : "testsession")
-                + "/" + candidateSession.getId();
+    public CandidateSession getCandidateSession() {
+        return candidateSession;
     }
 
-    public static String buildSessionStartRedirect(final CandidateSession candidateSession) {
-        return "redirect:" + buildSessionStartWithinContextUrl(candidateSession);
+    public String getReturnUrl() {
+        return returnUrl;
+    }
+
+    @Override
+    public String toString() {
+        return ObjectUtilities.beanToString(this);
     }
 }
