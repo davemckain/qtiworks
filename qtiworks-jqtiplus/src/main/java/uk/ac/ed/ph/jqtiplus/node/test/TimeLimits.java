@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.test;
 
+import uk.ac.ed.ph.jqtiplus.attribute.value.BooleanAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.DurationAttribute;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
@@ -62,11 +63,15 @@ public final class TimeLimits extends AbstractNode {
     /** Name of maxTime attribute in xml schema. */
     public static final String ATTR_MAXIMUM_NAME = "maxTime";
 
+    /** Name of allowLateSubmission attribute in xml schema. */
+    public static final String ATTR_ALLOW_LATE_SUBMISSION = "allowLateSubmission";
+
     public TimeLimits(final ControlObject<?> parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new DurationAttribute(this, ATTR_MINIMUM_NAME, false));
         getAttributes().add(new DurationAttribute(this, ATTR_MAXIMUM_NAME, false));
+        getAttributes().add(new BooleanAttribute(this, ATTR_ALLOW_LATE_SUBMISSION, false, false));
     }
 
 
@@ -112,6 +117,16 @@ public final class TimeLimits extends AbstractNode {
 
         return Long.valueOf((long) (getMaximum().doubleValue() * 1000));
     }
+
+
+    public boolean getAllowLateSubmission() {
+        return getAttributes().getBooleanAttribute(ATTR_ALLOW_LATE_SUBMISSION).getComputedNonNullValue();
+    }
+
+    public void setAllowLateSubmission(final Boolean allowLateSubmission) {
+        getAttributes().getBooleanAttribute(ATTR_ALLOW_LATE_SUBMISSION).setValue(allowLateSubmission);
+    }
+
 
     @Override
     protected void validateThis(final ValidationContext context) {
