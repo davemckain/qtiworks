@@ -49,7 +49,7 @@ import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
  *
  * @author Jiri Kajaba
  */
-public final class TimeLimit extends AbstractNode {
+public final class TimeLimits extends AbstractNode {
 
     private static final long serialVersionUID = 2090259996374843635L;
 
@@ -62,7 +62,7 @@ public final class TimeLimit extends AbstractNode {
     /** Name of maxTime attribute in xml schema. */
     public static final String ATTR_MAXIMUM_NAME = "maxTime";
 
-    public TimeLimit(final ControlObject<?> parent) {
+    public TimeLimits(final ControlObject<?> parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new DurationAttribute(this, ATTR_MINIMUM_NAME, false));

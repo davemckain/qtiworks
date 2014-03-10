@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.test;
 
-import uk.ac.ed.ph.jqtiplus.group.test.TimeLimitGroup;
+import uk.ac.ed.ph.jqtiplus.group.test.TimeLimitsGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.IdentifiableNode;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
@@ -56,7 +56,7 @@ public abstract class ControlObject<E> extends AbstractNode implements Identifia
     public ControlObject(final ControlObject<?> parent, final String qtiClassName) {
         super(parent, qtiClassName);
 
-        getNodeGroups().add(new TimeLimitGroup(this));
+        getNodeGroups().add(new TimeLimitsGroup(this));
     }
 
     @Override
@@ -65,12 +65,12 @@ public abstract class ControlObject<E> extends AbstractNode implements Identifia
     }
 
 
-    public TimeLimit getTimeLimit() {
-        return getNodeGroups().getTimeLimitGroup().getTimeLimit();
+    public TimeLimits getTimeLimits() {
+        return getNodeGroups().getTimeLimitsGroup().getTimeLimits();
     }
 
-    public void setTimeLimit(final TimeLimit timeLimit) {
-        getNodeGroups().getTimeLimitGroup().setTimeLimit(timeLimit);
+    public void setTimeLimits(final TimeLimits timeLimits) {
+        getNodeGroups().getTimeLimitsGroup().setTimeLimit(timeLimits);
     }
 
     /**

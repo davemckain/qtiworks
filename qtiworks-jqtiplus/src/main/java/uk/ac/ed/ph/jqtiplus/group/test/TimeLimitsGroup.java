@@ -35,31 +35,31 @@ package uk.ac.ed.ph.jqtiplus.group.test;
 
 import uk.ac.ed.ph.jqtiplus.group.SimpleSingleNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.test.ControlObject;
-import uk.ac.ed.ph.jqtiplus.node.test.TimeLimit;
+import uk.ac.ed.ph.jqtiplus.node.test.TimeLimits;
 
 /**
- * Group of timeLimit children.
+ * Group of {@link TimeLimits} children.
  *
  * @author Jiri Kajaba
  */
-public final class TimeLimitGroup extends SimpleSingleNodeGroup<ControlObject<?>,TimeLimit> {
+public final class TimeLimitsGroup extends SimpleSingleNodeGroup<ControlObject<?>,TimeLimits> {
 
     private static final long serialVersionUID = -4277774618437451112L;
 
-    public TimeLimitGroup(final ControlObject<?> parent) {
-        super(parent, TimeLimit.QTI_CLASS_NAME, false);
+    public TimeLimitsGroup(final ControlObject<?> parent) {
+        super(parent, TimeLimits.QTI_CLASS_NAME, false);
     }
 
-    public TimeLimit getTimeLimit() {
+    public TimeLimits getTimeLimits() {
         return getChild();
     }
 
-    public void setTimeLimit(final TimeLimit timeLimit) {
-        setChild(timeLimit);
+    public void setTimeLimit(final TimeLimits timeLimits) {
+        setChild(timeLimits);
     }
 
     @Override
-    public TimeLimit create() {
-        return new TimeLimit(getParent());
+    public TimeLimits create() {
+        return new TimeLimits(getParent());
     }
 }

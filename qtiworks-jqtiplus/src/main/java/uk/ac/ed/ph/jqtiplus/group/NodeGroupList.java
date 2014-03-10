@@ -116,7 +116,7 @@ import uk.ac.ed.ph.jqtiplus.group.test.SelectionGroup;
 import uk.ac.ed.ph.jqtiplus.group.test.TemplateDefaultGroup;
 import uk.ac.ed.ph.jqtiplus.group.test.TestFeedbackGroup;
 import uk.ac.ed.ph.jqtiplus.group.test.TestPartGroup;
-import uk.ac.ed.ph.jqtiplus.group.test.TimeLimitGroup;
+import uk.ac.ed.ph.jqtiplus.group.test.TimeLimitsGroup;
 import uk.ac.ed.ph.jqtiplus.group.test.VariableMappingGroup;
 import uk.ac.ed.ph.jqtiplus.group.test.WeightGroup;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
@@ -197,7 +197,7 @@ import uk.ac.ed.ph.jqtiplus.node.test.Selection;
 import uk.ac.ed.ph.jqtiplus.node.test.TemplateDefault;
 import uk.ac.ed.ph.jqtiplus.node.test.TestFeedback;
 import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
-import uk.ac.ed.ph.jqtiplus.node.test.TimeLimit;
+import uk.ac.ed.ph.jqtiplus.node.test.TimeLimits;
 import uk.ac.ed.ph.jqtiplus.node.test.VariableMapping;
 import uk.ac.ed.ph.jqtiplus.node.test.Weight;
 import uk.ac.ed.ph.jqtiplus.node.test.outcome.processing.OutcomeElse;
@@ -713,13 +713,13 @@ public final class NodeGroupList implements Serializable, Iterable<NodeGroup<?,?
     }
 
     /**
-     * Gets timeLimit group.
+     * Gets timeLimits group.
      *
-     * @return timeLimit group
+     * @return timeLimits group
      * @throws QtiNodeGroupException if group is not found
      */
-    public TimeLimitGroup getTimeLimitGroup() {
-        return (TimeLimitGroup) get(TimeLimit.QTI_CLASS_NAME);
+    public TimeLimitsGroup getTimeLimitsGroup() {
+        return (TimeLimitsGroup) get(TimeLimits.QTI_CLASS_NAME);
     }
 
     /**
