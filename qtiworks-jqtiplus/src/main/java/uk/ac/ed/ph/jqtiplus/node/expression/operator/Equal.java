@@ -246,10 +246,13 @@ public final class Equal extends AbstractFunctionalExpression {
             }
         }
 
-        final boolean result = getToleranceMode().isEqual(firstNumber, secondNumber,
+        final ToleranceMode toleranceMode = getToleranceMode();
+        if (toleranceMode==null) {
+            context.fireRuntimeWarning(this, "No toleranceMode specified. Returning NULL");
+            return NullValue.INSTANCE;
+        }
+        return BooleanValue.valueOf(toleranceMode.isEqual(firstNumber, secondNumber,
                 firstTolerance, secondTolerance,
-                getIncludeLowerBound(), getIncludeUpperBound());
-
-        return BooleanValue.valueOf(result);
+                getIncludeLowerBound(), getIncludeUpperBound()));
     }
 }
