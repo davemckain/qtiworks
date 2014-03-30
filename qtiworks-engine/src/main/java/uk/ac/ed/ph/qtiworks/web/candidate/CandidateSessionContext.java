@@ -46,7 +46,7 @@ import java.io.Serializable;
  *
  * @author David McKain
  */
-public final class CandidateIdentityContext implements Serializable {
+public final class CandidateSessionContext implements Serializable {
 
     private static final long serialVersionUID = 1412636123357858458L;
 
@@ -58,7 +58,7 @@ public final class CandidateIdentityContext implements Serializable {
     /** Optional return URL to use when the session terminates */
     private final String returnUrl;
 
-    public CandidateIdentityContext(final CandidateSession candidateSession, final String returnUrl) {
+    public CandidateSessionContext(final CandidateSession candidateSession, final String returnUrl) {
         Assert.notNull(candidateSession, "candidateSession");
         this.candidateSession = candidateSession;
         this.returnUrl = returnUrl;

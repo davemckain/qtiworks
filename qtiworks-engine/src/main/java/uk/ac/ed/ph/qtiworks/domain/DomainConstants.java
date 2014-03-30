@@ -49,7 +49,10 @@ public final class DomainConstants {
     public static final int ASSESSMENT_NAME_MAX_LENGTH = 64;
     public static final int ASSESSMENT_TITLE_MAX_LENGTH = 256;
 
+    @Deprecated
     public static final int CANDIDATE_SESSION_TOKEN_LENGTH = 32;
+
+    public static final int XSRF_TOKEN_LENGTH = 32;
 
     public static final int LTI_TOKEN_LENGTH = 256;
     public static final int LTI_SECRET_LENGTH = 32;

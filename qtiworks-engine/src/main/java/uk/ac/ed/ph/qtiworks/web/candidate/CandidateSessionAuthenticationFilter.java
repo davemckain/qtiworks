@@ -56,9 +56,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
 
 /**
- * FIXME: Document this properly!
- *
- * Authentication filter for gaining access to a particular {@link CandidateSession}.
+ * Web layer authentication filter for gaining access to a particular {@link CandidateSession}.
  *
  * @author David McKain
  */
@@ -82,11 +80,11 @@ public final class CandidateSessionAuthenticationFilter extends AbstractWebAuthe
 
     @Override
     protected void doFilterAuthentication(final HttpServletRequest request, final HttpServletResponse response, final FilterChain chain,
-            final HttpSession session)
+            final HttpSession httpSession)
             throws IOException, ServletException {
-        /* Determine which CandidateSession we're authenticating from  pathInfo, which should be of the form /(item|test)session/{xid}... */
+        /* Determine which CandidateSession we're authenticating from  pathInfo, which should be of the form /(item|test)session/{xid}/{xsrfToken}/... */
         final String pathInfo = request.getPathInfo();
-        final Pattern pathPattern = Pattern.compile("^/(?:item|test)session/(\\d+)");
+        final Pattern pathPattern = Pattern.compile("^/(?:item|test)session/(\\d+)/(\\w+)/");
         final Matcher pathMatcher = pathPattern.matcher(pathInfo);
         if (!pathMatcher.find()) {
             logger.warn("Failed regex match on resource path {}", pathInfo);
@@ -104,6 +102,7 @@ public final class CandidateSessionAuthenticationFilter extends AbstractWebAuthe
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
+        final String xsrfToken = pathMatcher.group(2);
 
         /* Make sure CandidateSession (still) exists */
         final CandidateSession candidateSession = candidateSessionDao.findById(xid);
@@ -114,11 +113,17 @@ public final class CandidateSessionAuthenticationFilter extends AbstractWebAuthe
         }
 
         /* The user's ticket for accessing this CandidateSession should have been stored in the HTTP session previously */
-        final CandidateSessionTicket candidateSessionTicket = getCandidateSessionTicketForSession(session, xid);
+        final CandidateSessionTicket candidateSessionTicket = getCandidateSessionTicketForSession(httpSession, xid);
         if (candidateSessionTicket==null) {
             logger.warn("Failed to retrieve CandidateSessionTicket from HttpSession for CandidateSession {}", xid);
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden. You do not have access to this assessment. Please launch your assessment again.");
             return;
+        }
+
+        /* Make sure supplied XSRF token agrees with the one already generated */
+        if (!candidateSessionTicket.getXsrfToken().equals(xsrfToken)) {
+            logger.warn("XSRF Token mismatch on CandidateSession {}", xid);
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden. You do not have permission to access to this session.");
         }
 
         /* Look up fresh entity state. (We've already refreshed LtiResource above.) */
@@ -131,29 +136,29 @@ public final class CandidateSessionAuthenticationFilter extends AbstractWebAuthe
         }
 
         /* Finally set up identity and continue with filter chain */
-        final CandidateIdentityContext candidateIdentityContext = new CandidateIdentityContext(candidateSession, candidateSessionTicket.getReturnUrl());
+        final CandidateSessionContext candidateSessionContext = new CandidateSessionContext(candidateSession, candidateSessionTicket.getReturnUrl());
         identityService.setCurrentThreadUser(user);
-        identityService.setCurrentThreadCandidateIdentityContext(candidateIdentityContext);
+        identityService.setCurrentThreadCandidateSessionContext(candidateSessionContext);
         try {
             chain.doFilter(request, response);
         }
         finally {
             identityService.setCurrentThreadUser(null);
-            identityService.setCurrentThreadCandidateIdentityContext(null);
+            identityService.setCurrentThreadCandidateSessionContext(null);
         }
     }
 
-    public static void authenticateUserForSession(final HttpSession httpSsession, final CandidateSessionTicket candidateSessionTicket) {
+    public static void authenticateUserForHttpSession(final HttpSession httpSsession, final CandidateSessionTicket candidateSessionTicket) {
         final Long xid = candidateSessionTicket.getCandidateSessionId();
         httpSsession.setAttribute(getcandidateSessionTicketSessionKey(xid), candidateSessionTicket);
     }
 
-    public static void deauthenticateUserFromSession(final HttpSession httpSession, final CandidateSession candidateSession) {
+    public static void deauthenticateUserFromHttpSession(final HttpSession httpSession, final CandidateSession candidateSession) {
         final Long xid = candidateSession.getId();
         httpSession.removeAttribute(getcandidateSessionTicketSessionKey(xid));
     }
 
-    private static CandidateSessionTicket getCandidateSessionTicketForSession(final HttpSession session, final long xid) {
+    public static CandidateSessionTicket getCandidateSessionTicketForSession(final HttpSession session, final long xid) {
         return (CandidateSessionTicket) session.getAttribute(getcandidateSessionTicketSessionKey(xid));
     }
 

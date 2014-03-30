@@ -33,8 +33,6 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
-import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
-
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
@@ -144,35 +142,6 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
     @Column(name="creation_time", updatable=false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationTime;
-
-    /**
-     * Randomly-generated token for this session. Used in conjunction with the <code>xid</code>
-     * in URLs referring to sessions to make it more difficult to hijack sessions.
-     * <p>
-     * The token is not necessarily unique so should not be used as a lookup key.
-     */
-    @Deprecated
-    @Basic(optional=false)
-    @Column(name="session_token", length=DomainConstants.CANDIDATE_SESSION_TOKEN_LENGTH)
-    private String sessionToken;
-
-    /**
-     * URL to go to once the session has been terminated.
-     * <p>
-     * If the URL starts with '/' then it is interpreted as an internal link within the webapp.
-     * <p>
-     * A URL starting <code>http://</code> or <code>https://</code> is interpreted as an
-     * absolute link to another system. Care must be taken to ensure this is not used
-     * maliciously.
-     * <p>
-     * A null URL will direct to a blank page afterwards.
-     */
-    @Deprecated
-    @Lob
-    @Type(type="org.hibernate.type.TextType")
-    @Basic(optional=true)
-    @Column(name="exit_url")
-    private String exitUrl;
 
     /** {@link Delivery} owning this session */
     @ManyToOne(optional=false, fetch=FetchType.EAGER)
@@ -303,28 +272,6 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
     }
 
 
-    @Deprecated
-    public String getSessionToken() {
-        return sessionToken;
-    }
-
-    @Deprecated
-    public void setSessionToken(final String sessionToken) {
-        this.sessionToken = sessionToken;
-    }
-
-
-    @Deprecated
-    public String getExitUrl() {
-        return exitUrl;
-    }
-
-    @Deprecated
-    public void setExitUrl(final String exitUrl) {
-        this.exitUrl = exitUrl;
-    }
-
-
     public Delivery getDelivery() {
         return delivery;
     }
@@ -420,8 +367,6 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(xid=" + xid
-                + ",sessionToken=" + sessionToken
-                + ",exitUrl=" + exitUrl
                 + ",authorMode=" + authorMode
                 + ",closed=" + closed
                 + ",exploded=" + exploded

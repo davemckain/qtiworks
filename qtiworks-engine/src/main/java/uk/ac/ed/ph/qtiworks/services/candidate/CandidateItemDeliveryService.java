@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.qtiworks.services.candidate;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
-import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateFileSubmission;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventType;
@@ -45,7 +44,6 @@ import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.ResponseLegality;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.services.AssessmentDataService;
-import uk.ac.ed.ph.qtiworks.services.CandidateAuditLogger;
 import uk.ac.ed.ph.qtiworks.services.CandidateDataService;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionCloser;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
@@ -53,6 +51,7 @@ import uk.ac.ed.ph.qtiworks.services.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateResponseDao;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
+import uk.ac.ed.ph.qtiworks.web.candidate.CandidateSessionContext;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiCandidateStateException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
@@ -97,18 +96,12 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @Service
 @Transactional(propagation=Propagation.REQUIRED)
-public class CandidateItemDeliveryService {
+public class CandidateItemDeliveryService extends CandidateServiceBase {
 
     private static final Logger logger = LoggerFactory.getLogger(CandidateItemDeliveryService.class);
 
     @Resource
     private RequestTimestampContext requestTimestampContext;
-
-    @Resource
-    private AssessmentDataService assessmentDataService;
-
-    @Resource
-    private CandidateAuditLogger candidateAuditLogger;
 
     @Resource
     private CandidateSessionCloser candidateSessionCloser;
@@ -125,55 +118,19 @@ public class CandidateItemDeliveryService {
     @Resource
     private CandidateResponseDao candidateResponseDao;
 
-    //----------------------------------------------------
-    // Session access
-
-    /**
-     * Looks up the {@link CandidateSession} having the given ID (xid)
-     * and checks the given sessionToken against that stored in the session as a means of
-     * "authentication".
-     *
-     * @param xid ID (xid) of the session to look up
-     *
-     * @throws DomainEntityNotFoundException
-     * @throws CandidateException
-     */
-    public CandidateSession lookupCandidateItemSession(final long xid, final String sessionToken)
-            throws DomainEntityNotFoundException, CandidateException {
-        Assert.notNull(sessionToken, "sessionToken");
-        final CandidateSession candidateSession = candidateSessionDao.requireFindById(xid);
-        if (!sessionToken.equals(candidateSession.getSessionToken())) {
-            candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.SESSION_TOKEN_MISMATCH);
-        }
-        if (candidateSession.getDelivery().getAssessment().getAssessmentType()!=AssessmentObjectType.ASSESSMENT_ITEM) {
-            candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.SESSION_IS_NOT_ASSESSMENT_ITEM);
-        }
-        return candidateSession;
-    }
-
-    private void ensureSessionNotTerminated(final CandidateSession candidateSession)
-            throws CandidateException {
-        if (candidateSession.isTerminated()) {
-            /* No access when session has been terminated */
-            candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.SESSION_IS_TERMINATED);
-        }
-    }
-
-    private CandidateEvent ensureSessionEntered(final CandidateSession candidateSession)
-            throws CandidateException {
-        final CandidateEvent mostRecentEvent = candidateDataService.getMostRecentEvent(candidateSession);
-        if (mostRecentEvent==null) {
-            candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.SESSION_NOT_ENTERED);
-        }
-        return mostRecentEvent;
-    }
+    @Resource
+    private AssessmentDataService assessmentDataService;
 
     //----------------------------------------------------
     // Session entry
 
-    public CandidateSession enterOrReenterCandidateSession(final long xid, final String sessionToken)
-            throws CandidateException, DomainEntityNotFoundException {
-        final CandidateSession candidateSession = lookupCandidateItemSession(xid, sessionToken);
+    public CandidateSession enterOrReenterCandidateSession(final CandidateSessionContext candidateSessionContext)
+            throws CandidateException {
+        Assert.notNull(candidateSessionContext, "candidateSessionContext");
+        assertSessionType(candidateSessionContext, AssessmentObjectType.ASSESSMENT_ITEM);
+        final CandidateSession candidateSession = candidateSessionContext.getCandidateSession();
+        assertSessionNotTerminated(candidateSession);
+
         final CandidateEvent mostRecentEvent = candidateDataService.getMostRecentEvent(candidateSession);
         if (mostRecentEvent==null && !candidateSession.isTerminated()) {
             enterCandidateSession(candidateSession);
@@ -223,28 +180,18 @@ public class CandidateItemDeliveryService {
     //----------------------------------------------------
     // Response handling
 
-    public CandidateSession handleResponses(final long xid, final String sessionToken,
-            final Map<Identifier, StringResponseData> stringResponseMap,
-            final Map<Identifier, MultipartFile> fileResponseMap,
-            final String candidateComment)
-            throws CandidateException, DomainEntityNotFoundException {
-        final CandidateSession candidateSession = lookupCandidateItemSession(xid, sessionToken);
-        return handleResponses(candidateSession, stringResponseMap, fileResponseMap, candidateComment);
-    }
-
-    /**
-     * @param candidateComment optional candidate comment, or null if no comment has been sent
-     */
-    public CandidateSession handleResponses(final CandidateSession candidateSession,
+    public CandidateSession handleResponses(final CandidateSessionContext candidateSessionContext,
             final Map<Identifier, StringResponseData> stringResponseMap,
             final Map<Identifier, MultipartFile> fileResponseMap,
             final String candidateComment)
             throws CandidateException {
-        Assert.notNull(candidateSession, "candidateSession");
-        ensureSessionNotTerminated(candidateSession);
+        Assert.notNull(candidateSessionContext, "candidateSessionContext");
+        assertSessionType(candidateSessionContext, AssessmentObjectType.ASSESSMENT_ITEM);
+        final CandidateSession candidateSession = candidateSessionContext.getCandidateSession();
+        assertSessionNotTerminated(candidateSession);
 
         /* Retrieve current JQTI state and set up JQTI controller */
-        final CandidateEvent mostRecentEvent = ensureSessionEntered(candidateSession);
+        final CandidateEvent mostRecentEvent = assertSessionEntered(candidateSession);
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
         final ItemSessionController itemSessionController = candidateDataService.createItemSessionController(mostRecentEvent, notificationRecorder);
         final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
@@ -413,22 +360,18 @@ public class CandidateItemDeliveryService {
     // Session end/close (by candidate)
 
     /**
-     * Ends/closes the {@link CandidateSession} having the given ID (xid), moving it
-     * into ended state.
+     * Ends/closes the {@link CandidateSession} encapsulated in the given {@link CandidateSessionContext},
+     * moving it into ended state.
      */
-    public CandidateSession endCandidateSession(final long xid, final String sessionToken)
-            throws CandidateException, DomainEntityNotFoundException {
-        final CandidateSession candidateSession = lookupCandidateItemSession(xid, sessionToken);
-        return endCandidateSession(candidateSession);
-    }
-
-    public CandidateSession endCandidateSession(final CandidateSession candidateSession)
+    public CandidateSession endCandidateSession(final CandidateSessionContext candidateSessionContext)
             throws CandidateException {
-        Assert.notNull(candidateSession, "candidateSession");
-        ensureSessionNotTerminated(candidateSession);
+        Assert.notNull(candidateSessionContext, "candidateSessionContext");
+        assertSessionType(candidateSessionContext, AssessmentObjectType.ASSESSMENT_ITEM);
+        final CandidateSession candidateSession = candidateSessionContext.getCandidateSession();
+        assertSessionNotTerminated(candidateSession);
 
         /* Retrieve current JQTI state and set up JQTI controller */
-        final CandidateEvent mostRecentEvent = ensureSessionEntered(candidateSession);
+        final CandidateEvent mostRecentEvent = assertSessionEntered(candidateSession);
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
         final ItemSessionController itemSessionController = candidateDataService.createItemSessionController(mostRecentEvent, notificationRecorder);
         final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
@@ -479,19 +422,15 @@ public class CandidateItemDeliveryService {
      *
      * @see ItemSessionController#resetItemSessionHard(Date, boolean)
      */
-    public CandidateSession resetCandidateSessionHard(final long xid, final String sessionToken)
-            throws CandidateException, DomainEntityNotFoundException {
-        final CandidateSession candidateSession = lookupCandidateItemSession(xid, sessionToken);
-        return resetCandidateSessionHard(candidateSession);
-    }
-
-    public CandidateSession resetCandidateSessionHard(final CandidateSession candidateSession)
+    public CandidateSession resetCandidateSessionHard(final CandidateSessionContext candidateSessionContext)
             throws CandidateException {
-        Assert.notNull(candidateSession, "candidateSession");
-        ensureSessionNotTerminated(candidateSession);
+        Assert.notNull(candidateSessionContext, "candidateSessionContext");
+        assertSessionType(candidateSessionContext, AssessmentObjectType.ASSESSMENT_ITEM);
+        final CandidateSession candidateSession = candidateSessionContext.getCandidateSession();
+        assertSessionNotTerminated(candidateSession);
 
         /* Retrieve current JQTI state and set up JQTI controller */
-        final CandidateEvent mostRecentEvent = ensureSessionEntered(candidateSession);
+        final CandidateEvent mostRecentEvent = assertSessionEntered(candidateSession);
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
         final ItemSessionController itemSessionController = candidateDataService.createItemSessionController(mostRecentEvent, notificationRecorder);
         final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
@@ -534,24 +473,21 @@ public class CandidateItemDeliveryService {
     // Session soft reset
 
     /**
-     * Performs a soft reset on the {@link CandidateSession} having the given ID (xid), returning the
+     * Performs a soft reset on the {@link CandidateSession} encapsulated in the given {@link CandidateSessionContext},
+     * returning the
      * updated {@link CandidateSession}.
      *
      * @see ItemSessionController#resetItemSessionSoft(Date, boolean)
      */
-    public CandidateSession resetCandidateSessionSoft(final long xid, final String sessionToken)
-            throws CandidateException, DomainEntityNotFoundException {
-        final CandidateSession candidateSession = lookupCandidateItemSession(xid, sessionToken);
-        return resetCandidateSessionSoft(candidateSession);
-    }
-
-    public CandidateSession resetCandidateSessionSoft(final CandidateSession candidateSession)
+    public CandidateSession resetCandidateSessionSoft(final CandidateSessionContext candidateSessionContext)
             throws CandidateException {
-        Assert.notNull(candidateSession, "candidateSession");
-        ensureSessionNotTerminated(candidateSession);
+        Assert.notNull(candidateSessionContext, "candidateSessionContext");
+        assertSessionType(candidateSessionContext, AssessmentObjectType.ASSESSMENT_ITEM);
+        final CandidateSession candidateSession = candidateSessionContext.getCandidateSession();
+        assertSessionNotTerminated(candidateSession);
 
         /* Retrieve current JQTI state and set up JQTI controller */
-        final CandidateEvent mostRecentEvent = ensureSessionEntered(candidateSession);
+        final CandidateEvent mostRecentEvent = assertSessionEntered(candidateSession);
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
         final ItemSessionController itemSessionController = candidateDataService.createItemSessionController(mostRecentEvent, notificationRecorder);
         final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
@@ -597,19 +533,15 @@ public class CandidateItemDeliveryService {
      * Logs a {@link CandidateItemEventType#SOLUTION} event, closing the item session if it hasn't
      * already been closed (and if this is allowed).
      */
-    public CandidateSession requestSolution(final long xid, final String sessionToken)
-            throws CandidateException, DomainEntityNotFoundException {
-        final CandidateSession candidateSession = lookupCandidateItemSession(xid, sessionToken);
-        return requestSolution(candidateSession);
-    }
-
-    public CandidateSession requestSolution(final CandidateSession candidateSession)
+    public CandidateSession requestSolution(final CandidateSessionContext candidateSessionContext)
             throws CandidateException {
-        Assert.notNull(candidateSession, "candidateSession");
-        ensureSessionNotTerminated(candidateSession);
+        Assert.notNull(candidateSessionContext, "candidateSessionContext");
+        assertSessionType(candidateSessionContext, AssessmentObjectType.ASSESSMENT_ITEM);
+        final CandidateSession candidateSession = candidateSessionContext.getCandidateSession();
+        assertSessionNotTerminated(candidateSession);
 
         /* Retrieve current JQTI state and set up JQTI controller */
-        final CandidateEvent mostRecentEvent = ensureSessionEntered(candidateSession);
+        final CandidateEvent mostRecentEvent = assertSessionEntered(candidateSession);
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
         final ItemSessionController itemSessionController = candidateDataService.createItemSessionController(mostRecentEvent, notificationRecorder);
         final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
@@ -662,24 +594,20 @@ public class CandidateItemDeliveryService {
     // Session termination (by candidate)
 
     /**
-     * Exits/terminates the {@link CandidateSession} having the given ID (xid).
+     * Exits/terminates the {@link CandidateSession} encapsulated within the given {@link CandidateSessionContext}.
      * <p>
      * Currently we're always allowing this action to be made when in
      * interacting or closed states.
      */
-    public CandidateSession exitCandidateSession(final long xid, final String sessionToken)
-            throws CandidateException, DomainEntityNotFoundException {
-        final CandidateSession candidateSession = lookupCandidateItemSession(xid, sessionToken);
-        return exitCandidateSession(candidateSession);
-    }
-
-    public CandidateSession exitCandidateSession(final CandidateSession candidateSession)
+    public CandidateSession exitCandidateSession(final CandidateSessionContext candidateSessionContext)
             throws CandidateException {
-        Assert.notNull(candidateSession, "candidateSession");
-        ensureSessionNotTerminated(candidateSession);
+        Assert.notNull(candidateSessionContext, "candidateSessionContext");
+        assertSessionType(candidateSessionContext, AssessmentObjectType.ASSESSMENT_ITEM);
+        final CandidateSession candidateSession = candidateSessionContext.getCandidateSession();
+        assertSessionNotTerminated(candidateSession);
 
         /* Retrieve current JQTI state and set up JQTI controller */
-        final CandidateEvent mostRecentEvent = ensureSessionEntered(candidateSession);
+        final CandidateEvent mostRecentEvent = assertSessionEntered(candidateSession);
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
         final ItemSessionController itemSessionController = candidateDataService.createItemSessionController(mostRecentEvent, notificationRecorder);
         final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();

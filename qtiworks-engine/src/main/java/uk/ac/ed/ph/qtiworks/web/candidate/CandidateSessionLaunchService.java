@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.qtiworks.web.candidate;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
+import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
@@ -51,6 +52,7 @@ import uk.ac.ed.ph.qtiworks.services.CandidateSessionCloser;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.services.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.RequestTimestampContext;
+import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateException;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateExceptionReason;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateItemDeliveryService;
@@ -238,9 +240,12 @@ public class CandidateSessionLaunchService {
         final CandidateSession candidateSession = candidateSessionStarter.launchCandidateSession(candidate, delivery,
                 authorMode, lisOutcomeServiceUrl, lisResultSourcedid);
 
+        /* Create XSRF token */
+        final String xsrfToken = ServiceUtilities.createRandomAlphanumericToken(DomainConstants.XSRF_TOKEN_LENGTH);
+
         /* Authenticate this user to access this CandidateSession */
-        final CandidateSessionTicket candidateSessionTicket = new CandidateSessionTicket(candidate.getId(), candidateSession.getId(), safeReturnUrl);
-        CandidateSessionAuthenticationFilter.authenticateUserForSession(httpSession, candidateSessionTicket);
+        final CandidateSessionTicket candidateSessionTicket = new CandidateSessionTicket(xsrfToken, candidate.getId(), candidateSession.getId(), safeReturnUrl);
+        CandidateSessionAuthenticationFilter.authenticateUserForHttpSession(httpSession, candidateSessionTicket);
 
         /* Caller should now issue appropriate redirect to session... */
         return candidateSession;

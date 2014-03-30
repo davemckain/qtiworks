@@ -35,20 +35,28 @@ package uk.ac.ed.ph.qtiworks.web.candidate;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
-import uk.ac.ed.ph.qtiworks.web.lti.LtiAuthenticationTicket;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
 import java.io.Serializable;
 
 /**
- * FIXME: Document this. It's based on {@link LtiAuthenticationTicket}
+ * This "ticket" is created and stored in the HTTP session and provides access
+ * for a particular {@link User} to a particular {@link CandidateSession}.
+ * <p>
+ * Developer note: Instances of this class will be stored in the
+ * session, so should be immutable.
+
+ * @see CandidateSessionAuthenticationFilter
  *
  * @author David McKain
  */
 public final class CandidateSessionTicket implements Serializable {
 
     private static final long serialVersionUID = 1412636123357858458L;
+
+    /** XSRF token for this session */
+    private final String xsrfToken;
 
     /** ID of the candidate {@link User} in question */
     private final long userId;
@@ -59,10 +67,15 @@ public final class CandidateSessionTicket implements Serializable {
     /** URL to return to once the session has terminated */
     private final String returnUrl;
 
-    public CandidateSessionTicket(final long userId, final long candidateSessionId, final String returnUrl) {
+    public CandidateSessionTicket(final String xsrfToken, final long userId, final long candidateSessionId, final String returnUrl) {
+        this.xsrfToken = xsrfToken;
         this.userId = userId;
         this.candidateSessionId = candidateSessionId;
         this.returnUrl = returnUrl;
+    }
+
+    public String getXsrfToken() {
+        return xsrfToken;
     }
 
     public long getUserId() {

@@ -33,13 +33,16 @@
  */
 package uk.ac.ed.ph.qtiworks.web.controller.candidate;
 
-import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
+import uk.ac.ed.ph.qtiworks.services.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateException;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateRenderingService;
 import uk.ac.ed.ph.qtiworks.web.ServletOutputStreamer;
 import uk.ac.ed.ph.qtiworks.web.WebUtilities;
+import uk.ac.ed.ph.qtiworks.web.candidate.CandidateSessionAuthenticationFilter;
+import uk.ac.ed.ph.qtiworks.web.candidate.CandidateSessionContext;
+import uk.ac.ed.ph.qtiworks.web.candidate.CandidateSessionTicket;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
@@ -57,6 +60,7 @@ import java.util.Set;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -73,7 +77,27 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 public abstract class CandidateControllerBase {
 
     @Resource
+    protected IdentityService identityService;
+
+    @Resource
     protected CandidateRenderingService candidateRenderingService;
+
+    //----------------------------------------------------
+    // Access to current session
+
+    /**
+     * Retrives the {@link CandidateSessionContext} for this request, which will have been set up
+     * by the {@link CandidateSessionAuthenticationFilter}.
+     */
+    protected CandidateSessionContext getCandidateSessionContext() {
+        return identityService.assertCurrentThreadCandidateSessionContext();
+    }
+
+    protected CandidateSessionTicket getCandidateSessionTicket(final HttpSession httpSession) {
+        final CandidateSessionContext candidateSessionContext = getCandidateSessionContext();
+        final Long xid = candidateSessionContext.getCandidateSession().getId();
+        return CandidateSessionAuthenticationFilter.getCandidateSessionTicketForSession(httpSession, xid);
+    }
 
     //----------------------------------------------------
     // Response helpers
@@ -139,11 +163,11 @@ public abstract class CandidateControllerBase {
     /**
      * Serves the given (white-listed) file in the given {@link AssessmentPackage}
      */
-    public void streamAssessmentPackageFile(@PathVariable final long xid, @PathVariable final String sessionToken,
+    protected void streamAssessmentPackageFile(@PathVariable final long xid, @PathVariable final String xsrfToken,
             @RequestParam("href") final String fileHref,
             final HttpServletRequest request, final HttpServletResponse response)
-            throws IOException, DomainEntityNotFoundException, CandidateException {
-        final String fingerprint = "session/" + xid + "/file/" + fileHref;
+            throws IOException, CandidateException {
+        final String fingerprint = "session/" + xid + "/" + xsrfToken + "/file/" + fileHref;
         final String resourceEtag = WebUtilities.computeEtag(fingerprint);
         final String requestEtag = request.getHeader("If-None-Match");
         if (resourceEtag.equals(requestEtag)) {
@@ -151,7 +175,7 @@ public abstract class CandidateControllerBase {
         }
         else {
             final ServletOutputStreamer outputStreamer = new ServletOutputStreamer(response, resourceEtag);
-            candidateRenderingService.streamAssessmentPackageFile(xid, sessionToken, fileHref, outputStreamer);
+            candidateRenderingService.streamAssessmentPackageFile(getCandidateSessionContext(), fileHref, outputStreamer);
         }
     }
 
@@ -161,10 +185,10 @@ public abstract class CandidateControllerBase {
     /**
      * Serves the source of the given {@link AssessmentPackage}
      */
-    protected void streamAssessmentSource(final long xid, final String sessionToken,
+    protected void streamAssessmentSource(final long xid, final String xsrfToken,
             final HttpServletRequest request, final HttpServletResponse response)
-            throws DomainEntityNotFoundException, IOException, CandidateException {
-        final String fingerprint = "session/" + xid + "/source";
+            throws IOException, CandidateException {
+        final String fingerprint = "session/" + xid + "/" + xsrfToken + "/source";
         final String resourceEtag = WebUtilities.computeEtag(fingerprint);
         final String requestEtag = request.getHeader("If-None-Match");
         if (resourceEtag.equals(requestEtag)) {
@@ -172,7 +196,7 @@ public abstract class CandidateControllerBase {
         }
         else {
             final ServletOutputStreamer outputStreamer = new ServletOutputStreamer(response, resourceEtag);
-            candidateRenderingService.streamAssessmentSource(xid, sessionToken, outputStreamer);
+            candidateRenderingService.streamAssessmentSource(getCandidateSessionContext(), outputStreamer);
         }
     }
 
@@ -180,47 +204,48 @@ public abstract class CandidateControllerBase {
      * Streams a {@link ItemSessionState} or {@link TestSessionState} representing
      * the current state of the given {@link CandidateSession}
      */
-    protected void streamSessionState(final long xid, final String sessionToken, final HttpServletResponse response)
-            throws DomainEntityNotFoundException, IOException, CandidateException {
+    protected void streamSessionState(final HttpServletResponse response)
+            throws IOException, CandidateException {
         final ServletOutputStreamer outputStreamer = new ServletOutputStreamer(response, null /* No caching */);
-        candidateRenderingService.streamAssessmentState(xid, sessionToken, outputStreamer);
+        candidateRenderingService.streamAssessmentState(getCandidateSessionContext(), outputStreamer);
     }
 
     /**
      * Streams an {@link AssessmentResult} representing the current state of the given
      * {@link CandidateSession}
      */
-    protected void streamAssessmentResult(final long xid, final String sessionToken, final HttpServletResponse response)
-            throws DomainEntityNotFoundException, IOException, CandidateException {
+    protected void streamAssessmentResult(final HttpServletResponse response)
+            throws IOException, CandidateException {
         response.setContentType("application/xml");
         final ServletOutputStreamer outputStreamer = new ServletOutputStreamer(response, null /* No caching */);
-        candidateRenderingService.streamAssessmentResult(xid, sessionToken, outputStreamer);
+        candidateRenderingService.streamAssessmentResult(getCandidateSessionContext(), outputStreamer);
     }
 
-
-    protected String showPackageValidationResult(final long xid, final String sessionToken, final Model model)
-            throws DomainEntityNotFoundException, CandidateException {
-        model.addAttribute("validationResult", candidateRenderingService.generateValidationResult(xid, sessionToken));
+    protected String showPackageValidationResult(final Model model)
+            throws CandidateException {
+        final CandidateSessionContext candidateSessionContext = getCandidateSessionContext();
+        final CandidateSession candidateSession = candidateSessionContext.getCandidateSession();
+        model.addAttribute("validationResult", candidateRenderingService.generateValidationResult(candidateSession));
         return "validationResult";
     }
 
     //----------------------------------------------------
     // Redirections
 
-    protected abstract String redirectToRenderSession(final long xid, final String sessionToken);
+    protected abstract String redirectToRenderSession(final long xid, final String xsrfToken);
 
-    protected final String redirectToRenderSession(final CandidateSession candidateSession) {
-        return redirectToRenderSession(candidateSession.getId(), candidateSession.getSessionToken());
+    protected final String redirectToRenderSession(final CandidateSession candidateSession, final String xsrfToken) {
+        return redirectToRenderSession(candidateSession.getId(), xsrfToken);
     }
 
-    protected final String redirectToExitUrl(final CandidateSession candidateSession) {
-        final String exitUrl = candidateSession.getExitUrl();
-        if (exitUrl==null) {
+    protected final String redirectToExitUrl(final CandidateSessionContext candidateSessionContext, final String xsrfToken) {
+        final String returnUrl = candidateSessionContext.getReturnUrl();
+        if (returnUrl==null) {
             /* No (or unsafe) exit URL provided, so redirect to normal rendering, which will
              * show a generic "this assessment is now complete" page.
              */
-            return redirectToRenderSession(candidateSession);
+            return redirectToRenderSession(candidateSessionContext.getCandidateSession(), xsrfToken);
         }
-        return "redirect:" + exitUrl;
+        return "redirect:" + returnUrl;
     }
 }

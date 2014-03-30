@@ -44,6 +44,7 @@ import uk.ac.ed.ph.qtiworks.services.candidate.CandidateTestDeliveryService;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.services.dao.LtiResourceDao;
 import uk.ac.ed.ph.qtiworks.services.domain.OutputStreamer;
+import uk.ac.ed.ph.qtiworks.web.candidate.CandidateSessionContext;
 
 import uk.ac.ed.ph.jqtiplus.notification.NotificationLevel;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationRecorder;
@@ -112,6 +113,7 @@ public class AdhocService {
         final List<CandidateSession> candidateSessions = candidateSessionDao.getForDelivery(bemaDelivery);
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
         for (final CandidateSession candidateSession : candidateSessions) {
+        	final CandidateSessionContext candidateSessionContext = new CandidateSessionContext(candidateSession, "/unused");
             if (!candidateSession.isClosed() && !candidateSession.isTerminated()) {
                 final CandidateEvent mostRecentEvent = candidateDataService.getMostRecentEvent(candidateSession);
                 if (mostRecentEvent!=null) {
@@ -120,12 +122,12 @@ public class AdhocService {
                     final TestPartSessionState testPartSessionState = testSessionState.getTestPartSessionStates().values().iterator().next();
                     if (!testPartSessionState.isEnded()) {
                         System.out.println("Ending and exiting test for session " + candidateSession.getId());
-                        candidateTestDeliveryService.endCurrentTestPart(candidateSession);
-                        candidateTestDeliveryService.advanceTestPart(candidateSession);
+                        candidateTestDeliveryService.endCurrentTestPart(candidateSessionContext);
+                        candidateTestDeliveryService.advanceTestPart(candidateSessionContext);
                     }
                     else if (!testSessionState.isExited()) {
                         System.out.println("Exiting test for session " + candidateSession.getId());
-                        candidateTestDeliveryService.advanceTestPart(candidateSession);
+                        candidateTestDeliveryService.advanceTestPart(candidateSessionContext);
                     }
                 }
             }
