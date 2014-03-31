@@ -84,7 +84,6 @@ public final class QtiWorksEngineManager {
         actionMap.put("exportLtiDomains", new ExportLtiDomainsAction());
         actionMap.put("runMaintenanceJobs", new RunMaintenanceJobs());
         actionMap.put("sendQueuedLtiOutcomes", new SendQueuedLtiOutcomesAction());
-        actionMap.put("update", new M4ToBeta1UpdateAction());
         actionMap.put("adhoc", new AdhocAction());
     }
 

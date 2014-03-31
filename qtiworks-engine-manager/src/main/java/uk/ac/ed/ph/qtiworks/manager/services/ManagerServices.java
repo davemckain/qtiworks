@@ -35,25 +35,18 @@ package uk.ac.ed.ph.qtiworks.manager.services;
 
 import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksDeploymentSettings;
 import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
-import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiDomain;
-import uk.ac.ed.ph.qtiworks.domain.entities.LtiUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.SystemUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.domain.entities.UserRole;
 import uk.ac.ed.ph.qtiworks.services.AssessmentDataService;
 import uk.ac.ed.ph.qtiworks.services.DataDeletionService;
-import uk.ac.ed.ph.qtiworks.services.FilespaceManager;
 import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
-import uk.ac.ed.ph.qtiworks.services.dao.AssessmentPackageDao;
 import uk.ac.ed.ph.qtiworks.services.dao.LtiDomainDao;
-import uk.ac.ed.ph.qtiworks.services.dao.LtiUserDao;
 import uk.ac.ed.ph.qtiworks.services.dao.SystemUserDao;
 import uk.ac.ed.ph.qtiworks.services.dao.UserDao;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
-
-import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -80,32 +73,23 @@ public class ManagerServices {
     private QtiWorksDeploymentSettings qtiWorksDeploymentSettings;
 
     @Resource
-    private FilespaceManager filespaceManager;
-
-    @Resource
     private DataDeletionService dataDeletionService;
 
     @Resource
     private AssessmentDataService assessmentDataService;
 
     @Resource
-    private SystemUserDao instructorUserDao;
+    private SystemUserDao systemUserDao;
 
     @Resource
     private UserDao userDao;
-
-    @Resource
-    private LtiUserDao ltiUserDao;
-
-    @Resource
-    private AssessmentPackageDao assessmentPackageDao;
 
     @Resource
     private LtiDomainDao ltiDomainDao;
 
     public SystemUser ensureInternalSystemUser(final UserRole userRole,
             final String loginName, final String firstName, final String lastName) {
-        SystemUser result = instructorUserDao.findByLoginName(loginName);
+        SystemUser result = systemUserDao.findByLoginName(loginName);
         if (result==null) {
             result = createSystemUser(userRole, loginName, firstName, lastName,
                     qtiWorksDeploymentSettings.getAdminEmailAddress(),
@@ -122,7 +106,7 @@ public class ManagerServices {
      * @return newly created {@link SystemUser}, or null if a user already existed.
      */
     public SystemUser maybeCreateSystemUser(final UserRole userRole, final String loginName, final String firstName,
-            final String lastName, final String emailAddress, final boolean sysAdmin, final String password) {
+            final String lastName, final String emailAddress, final String password, final boolean sysAdmin) {
         final SystemUser result = createSystemUserIfRequired(userRole, loginName, firstName, lastName,
                 emailAddress, password, sysAdmin, false);
         if (result!=null) {
@@ -134,7 +118,7 @@ public class ManagerServices {
     private SystemUser createSystemUserIfRequired(final UserRole userRole, final String loginName, final String firstName,
             final String lastName, final String emailAddress, final String password,
             final boolean sysAdmin, final boolean loginDisabled) {
-        final SystemUser result = instructorUserDao.findByLoginName(loginName);
+        final SystemUser result = systemUserDao.findByLoginName(loginName);
         if (result!=null) {
             /* User already exists */
             return null;
@@ -155,7 +139,7 @@ public class ManagerServices {
         result.setPasswordDigest(ServiceUtilities.computePasswordDigest(passwordSalt, password));
         result.setSysAdmin(sysAdmin);
         result.setLoginDisabled(loginDisabled);
-        instructorUserDao.persist(result);
+        systemUserDao.persist(result);
         return result;
     }
 
@@ -186,7 +170,7 @@ public class ManagerServices {
 
     private User findUserByLoginNameOrUid(final String loginNameOrUid) {
         /* Try to look up by loginName first */
-        User user = instructorUserDao.findByLoginName(loginNameOrUid);
+        User user = systemUserDao.findByLoginName(loginNameOrUid);
         if (user==null) {
             /* Try by ID */
             try {
@@ -243,35 +227,5 @@ public class ManagerServices {
             logger.info("Added new LTI domain for consumer key {} and shared secret {}", consumerKey, sharedSecret);
         }
         return true;
-    }
-
-    //-------------------------------------------------
-    // Helpers for M4->Beta1 update
-
-    public int deleteUnusedAssessmentPackages() {
-        final List<AssessmentPackage> unusedPackages = assessmentPackageDao.getAllUnused();
-        for (final AssessmentPackage assessmentPackage : assessmentPackageDao.getAllUnused()) {
-            dataDeletionService.deleteAssessmentPackage(assessmentPackage);
-        }
-        return unusedPackages.size();
-    }
-
-    public void validateAllAssessmentPackages() {
-        for (final AssessmentPackage assessmentPackage : assessmentPackageDao.getAll()) {
-            assessmentDataService.validateAssessmentPackage(assessmentPackage);
-        }
-    }
-
-    public void deleteAllCandidateSessionFilesystemData() {
-        filespaceManager.deleteAllCandidateSessionData();
-        filespaceManager.deleteAllCandidateUploads();
-    }
-
-    public int deleteLtiCandidateUsers() {
-        final List<LtiUser> ltiCandidateUsers = ltiUserDao.getForUserRole(UserRole.CANDIDATE);
-        for (final LtiUser ltiCandidateUser : ltiCandidateUsers) {
-            dataDeletionService.deleteUser(ltiCandidateUser);
-        }
-        return ltiCandidateUsers.size();
     }
 }
