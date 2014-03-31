@@ -66,20 +66,22 @@ public final class QtiWorksEngineManager {
 
     public static final String DEFAULT_DEPLOYMENT_PROPERTIES_NAME = "qtiworks-deployment.properties";
 
+    public static final String NEWLINE = System.getProperty("line.separator");
+
     private static final Map<String, ManagerAction> actionMap;
     static {
         actionMap = new LinkedHashMap<String, ManagerAction>();
         actionMap.put("bootstrap", new BootstrapAction());
         actionMap.put("rebuildSchema", new RebuildSchemaAction());
-        actionMap.put("importUsers", new ImportUsersAction());
         actionMap.put("reimportSamples", new ReimportSamplesAction());
         actionMap.put("updateSamples", new UpdateSamplesAction());
+        actionMap.put("importUsers", new ImportUsersAction());
+        actionMap.put("deleteUsers", new DeleteUsersAction());
+        actionMap.put("resetUsers", new ResetUsersAction());
         actionMap.put("generateSecret", new GenerateSecretAction());
         actionMap.put("registerLtiDomain", new RegisterLtiDomainAction());
         actionMap.put("importLtiDomains", new ImportLtiDomainsAction());
         actionMap.put("exportLtiDomains", new ExportLtiDomainsAction());
-        actionMap.put("deleteUsers", new DeleteUsersAction());
-        actionMap.put("resetUsers", new ResetUsersAction());
         actionMap.put("runMaintenanceJobs", new RunMaintenanceJobs());
         actionMap.put("sendQueuedLtiOutcomes", new SendQueuedLtiOutcomesAction());
         actionMap.put("update", new M4ToBeta1UpdateAction());
@@ -204,31 +206,30 @@ public final class QtiWorksEngineManager {
     }
 
     public static void printUsage() {
-        final String separator = System.getProperty("line.separator");
-        System.out.println("QTIWorks Engine Manager" + separator + separator
+        System.out.println("QTIWorks Engine Manager" + NEWLINE + NEWLINE
                 + "Specify final required action as final a command final line argument,"
-                + separator
+                + NEWLINE
                 + "plus any further parameters required by chosen action."
-                + separator + separator
+                + NEWLINE + NEWLINE
                 + "Manager will load your QTIWorks deployment properties from a file "
-                + separator
+                + NEWLINE
                 + DEFAULT_DEPLOYMENT_PROPERTIES_NAME
-                + separator
+                + NEWLINE
                 + "in the current directory, use -config <path> to specify an"
                 + "alternate location."
-                + separator + separator
+                + NEWLINE + NEWLINE
                 + "Avilable actions are:"
-                + separator);
+                + NEWLINE);
         for (final Entry<String, ManagerAction> actionEntry : actionMap.entrySet()) {
             final String actionKey = actionEntry.getKey();
             final ManagerAction action = actionEntry.getValue();
             System.out.println(actionKey
                     + " "
                     + action.getActionParameterSummary()
-                    + separator
+                    + NEWLINE
                     + "    "
-                    + actionEntry.getValue().getActionSummary()
-                    + separator);
+                    + actionEntry.getValue().getActionSummary().replace(NEWLINE, NEWLINE + "      ")
+                    + NEWLINE);
         }
     }
 
