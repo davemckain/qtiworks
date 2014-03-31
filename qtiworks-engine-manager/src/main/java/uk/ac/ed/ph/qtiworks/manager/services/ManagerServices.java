@@ -130,17 +130,54 @@ public class ManagerServices {
             final String lastName, final String emailAddress, final String password,
             final boolean sysAdmin, final boolean loginDisabled) {
         final String passwordSalt = ServiceUtilities.createSalt();
+        final String passwordDigest = ServiceUtilities.computePasswordDigest(passwordSalt, password);
         final SystemUser result = new SystemUser(userRole);
         result.setLoginName(loginName);
         result.setFirstName(firstName);
         result.setLastName(lastName);
         result.setEmailAddress(emailAddress);
         result.setPasswordSalt(passwordSalt);
-        result.setPasswordDigest(ServiceUtilities.computePasswordDigest(passwordSalt, password));
+        result.setPasswordDigest(passwordDigest);
         result.setSysAdmin(sysAdmin);
         result.setLoginDisabled(loginDisabled);
         systemUserDao.persist(result);
         return result;
+    }
+
+    public boolean setSystemUserPassword(final String loginName, final String password) {
+        final SystemUser user = systemUserDao.findByLoginName(loginName);
+        if (user==null) {
+            logger.warn("Could not find system user having loginName {}", loginName);
+            return false;
+        }
+        final String passwordSalt = ServiceUtilities.createSalt();
+        final String passwordDigest = ServiceUtilities.computePasswordDigest(passwordSalt, password);
+        user.setPasswordSalt(passwordSalt);
+        user.setPasswordDigest(passwordDigest);
+        systemUserDao.update(user);
+        return true;
+    }
+
+    public boolean updateSystemUser(final String loginName, final String firstName,
+            final String lastName, final String emailAddress, final String password,
+            final boolean sysAdmin, final boolean loginDisabled) {
+        final SystemUser user = systemUserDao.findByLoginName(loginName);
+        if (user==null) {
+            logger.warn("Could not find system user having loginName {}", loginName);
+            return false;
+        }
+        final String passwordSalt = ServiceUtilities.createSalt();
+        final String passwordDigest = ServiceUtilities.computePasswordDigest(passwordSalt, password);
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setEmailAddress(emailAddress);
+        user.setPasswordSalt(passwordSalt);
+        user.setPasswordDigest(passwordDigest);
+        user.setSysAdmin(sysAdmin);
+        user.setLoginDisabled(loginDisabled);
+        systemUserDao.update(user);
+        logger.info("Updated system user {}", user);
+        return true;
     }
 
     //-------------------------------------------------

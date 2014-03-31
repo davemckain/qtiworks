@@ -76,6 +76,7 @@ public final class QtiWorksEngineManager {
         actionMap.put("reimportSamples", new ReimportSamplesAction());
         actionMap.put("updateSamples", new UpdateSamplesAction());
         actionMap.put("importUsers", new ImportUsersAction());
+        actionMap.put("editUserPassword", new EditUserPasswordAction());
         actionMap.put("deleteUsers", new DeleteUsersAction());
         actionMap.put("resetUsers", new ResetUsersAction());
         actionMap.put("generateSecret", new GenerateSecretAction());
