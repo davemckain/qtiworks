@@ -4,8 +4,9 @@
 -- tweaked slightly to work with other databases.
 BEGIN WORK;
 
--- Drop the idea of "public" assessments
+-- Drop the idea of "public" assessments and delivery settings
 ALTER TABLE assessments DROP public;
+ALTER TABLE delivery_settings DROP public;
 
 
 COMMIT WORK;

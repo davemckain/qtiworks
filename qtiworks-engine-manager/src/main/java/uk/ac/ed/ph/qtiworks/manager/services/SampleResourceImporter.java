@@ -217,7 +217,6 @@ public class SampleResourceImporter {
             if (!deliverySettingsByTitleMap.containsKey(options.getTitle())) {
                 /* New options */
                 options.setOwnerUser(sampleOwner);
-                options.setPublic(true);
                 deliverySettingsDao.persist(options);
                 logger.debug("Created ItemDeliverySettings {}", options);
                 deliverySettingsByTitleMap.put(options.getTitle(), options);

@@ -77,12 +77,6 @@ import org.hibernate.annotations.Type;
 @Table(name="delivery_settings")
 @SequenceGenerator(name="deliverySettingsSequence", sequenceName="delivery_settings_sequence", initialValue=1, allocationSize=1)
 @NamedQueries({
-    @NamedQuery(name="DeliverySettings.getAllPublicSettingsForType",
-            query="SELECT ds"
-                + "  FROM DeliverySettings ds"
-                + "  WHERE ds.isPublic IS TRUE"
-                + "  AND ds.assessmentType = :assessmentType"
-                + "  ORDER BY creationTime, id"),
     @NamedQuery(name="DeliverySettings.getForOwnerUser",
             query="SELECT ds"
                 + "  FROM DeliverySettings ds"
@@ -161,11 +155,6 @@ public class DeliverySettings implements BaseEntity, TimestampedOnCreation {
     @Basic(optional=false)
     @Column(name="title")
     private String title;
-
-    /** Available to all users */
-    @Basic(optional=false)
-    @Column(name="public")
-    private boolean isPublic;
 
     //------------------------------------------------------------
     // Settings common to both items and tests
@@ -261,15 +250,6 @@ public class DeliverySettings implements BaseEntity, TimestampedOnCreation {
         this.title = title;
     }
 
-
-    public boolean isPublic() {
-        return isPublic;
-    }
-
-    public void setPublic(final boolean isPublic) {
-        this.isPublic = isPublic;
-    }
-
     //------------------------------------------------------------
 
     public Integer getTemplateProcessingLimit() {
@@ -290,7 +270,6 @@ public class DeliverySettings implements BaseEntity, TimestampedOnCreation {
                 + ",version=" + version
                 + ",assessmentType=" + assessmentType
                 + ",title=" + title
-                + ",isPublic=" + isPublic
                 + ",templateProcessingLimit=" + templateProcessingLimit
                 + ")";
     }
