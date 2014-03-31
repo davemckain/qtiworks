@@ -41,7 +41,6 @@ import uk.ac.ed.ph.qtiworks.rendering.ItemRenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateException;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateItemDeliveryService;
-import uk.ac.ed.ph.qtiworks.services.candidate.CandidateRenderingService;
 import uk.ac.ed.ph.qtiworks.web.ServletOutputStreamer;
 import uk.ac.ed.ph.qtiworks.web.candidate.CandidateSessionContext;
 
@@ -73,9 +72,6 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
  */
 @Controller
 public class CandidateItemController extends CandidateControllerBase {
-
-    @Resource
-    private CandidateRenderingService candidateRenderingService;
 
     @Resource
     private CandidateItemDeliveryService candidateItemDeliveryService;

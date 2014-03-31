@@ -43,6 +43,7 @@ import uk.ac.ed.ph.qtiworks.services.dao.SampleCategoryDao;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentAndPackage;
 import uk.ac.ed.ph.qtiworks.web.GlobalRouter;
 import uk.ac.ed.ph.qtiworks.web.candidate.CandidateSessionLaunchService;
+import uk.ac.ed.ph.qtiworks.web.candidate.CandidateSessionTicket;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -99,7 +100,7 @@ public class SystemSamplesController {
             final HttpSession httpSession)
             throws DomainEntityNotFoundException, CandidateException {
         final String returnUrl = anonymousRouter.buildWithinContextUrl("/samples") + "#" + sampleCategoryAnchor;
-        final CandidateSession candidateSession = candidateSessionLaunchService.launchSystemSampleSession(httpSession, aid, returnUrl);
-        return GlobalRouter.buildSessionStartRedirect(candidateSession);
+        final CandidateSessionTicket candidateSessionTicket = candidateSessionLaunchService.launchSystemSampleSession(httpSession, aid, returnUrl);
+        return GlobalRouter.buildSessionStartRedirect(candidateSessionTicket);
     }
 }

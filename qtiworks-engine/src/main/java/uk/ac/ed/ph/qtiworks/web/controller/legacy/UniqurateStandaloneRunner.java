@@ -36,7 +36,6 @@ package uk.ac.ed.ph.qtiworks.web.controller.legacy;
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.services.AssessmentDataService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
@@ -47,6 +46,7 @@ import uk.ac.ed.ph.qtiworks.services.domain.EnumerableClientFailure;
 import uk.ac.ed.ph.qtiworks.services.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.web.GlobalRouter;
 import uk.ac.ed.ph.qtiworks.web.candidate.CandidateSessionLaunchService;
+import uk.ac.ed.ph.qtiworks.web.candidate.CandidateSessionTicket;
 import uk.ac.ed.ph.qtiworks.web.domain.StandaloneRunCommand;
 
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
@@ -102,10 +102,10 @@ public class UniqurateStandaloneRunner {
             }
             final Delivery delivery = assessmentManagementService.createDemoDelivery(assessment);
             final String returnUrl = "/web/anonymous/standalonerunner";
-            final CandidateSession candidateSession = candidateSessionLaunchService.launchAnonymousCandidateSession(httpSession, delivery, returnUrl);
+            final CandidateSessionTicket candidateSessionTicket = candidateSessionLaunchService.launchAnonymousCandidateSession(httpSession, delivery, returnUrl);
 
             /* Redirect to candidate dispatcher */
-            return GlobalRouter.buildSessionStartRedirect(candidateSession);
+            return GlobalRouter.buildSessionStartRedirect(candidateSessionTicket);
         }
         catch (final AssessmentPackageDataImportException e) {
             final EnumerableClientFailure<ImportFailureReason> failure = e.getFailure();

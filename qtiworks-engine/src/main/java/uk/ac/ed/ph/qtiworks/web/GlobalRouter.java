@@ -34,13 +34,14 @@
 package uk.ac.ed.ph.qtiworks.web;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
+import uk.ac.ed.ph.qtiworks.web.candidate.CandidateSessionTicket;
 
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
- * Global webapp router.
+ * Global webapp router and helper.
  *
  * @author David McKain
  */
@@ -48,18 +49,73 @@ public final class GlobalRouter {
 
     public static final String FLASH = "flashMessage";
 
+    /**
+     * Records the given message using Spring's Flash Message functionality. The message will be displayed in
+     * in the (JSP) view.
+     *
+     * @param redirectAttributes
+     * @param message
+     */
     public static void addFlashMessage(final RedirectAttributes redirectAttributes, final String message) {
         redirectAttributes.addFlashAttribute(GlobalRouter.FLASH, message);
     }
 
-    public static String buildSessionStartWithinContextUrl(final CandidateSession candidateSession) {
-        final boolean isItem = candidateSession.getDelivery().getAssessment().getAssessmentType()==AssessmentObjectType.ASSESSMENT_ITEM;
-        return "/candidate/"
-                + (isItem ? "itemsession" : "testsession")
-                + "/" + candidateSession.getId();
+    //----------------------------------------------------
+
+    /**
+     * Generates an internal redirect to a {@link CandidateSession}, using Spring's <code>redirect:</code> format.
+     * This is suitable for returning in a Spring MVC controller.
+     *
+     * @param candidateSessionTicket ticket for the session to connect to
+     * @return Spring redirect URL
+     */
+    public static String buildSessionStartRedirect(final CandidateSessionTicket candidateSessionTicket) {
+        return "redirect:" + buildSessionStartWithinContextUrl(candidateSessionTicket);
     }
 
-    public static String buildSessionStartRedirect(final CandidateSession candidateSession) {
-        return "redirect:" + buildSessionStartWithinContextUrl(candidateSession);
+    /**
+     * Generates an internal redirect to a {@link CandidateSession}, using Spring's <code>redirect:</code> format.
+     * This is suitable for returning in a Spring MVC controller.
+     *
+     * @param candidateSession candidate session to connect to
+     * @param xsrfToken XSRF token previously granted for accesing the session
+     * @return Spring redirect URL
+     */
+    public static String buildSessionStartRedirect(final CandidateSession candidateSession, final String xsrfToken) {
+        return "redirect:" + buildSessionStartWithinContextUrl(candidateSession, xsrfToken);
+    }
+
+    //----------------------------------------------------
+
+    /**
+     * Creates a within context URL for launching the {@link CandidateSession} corresponding to the
+     * given {@link CandidateSessionTicket}.
+     *
+     * @param candidateSessionTicket ticket for the session to connect to
+     * @return within-context session launch URL
+     */
+    public static String buildSessionStartWithinContextUrl(final CandidateSessionTicket candidateSessionTicket) {
+        return buildSessionStartWithinContextUrl(candidateSessionTicket.getCandidateSessionId(),
+                candidateSessionTicket.getXsrfToken(),
+                candidateSessionTicket.getAssessmentObjectType());
+    }
+
+    /**
+     * Creates a within context URL for launching the {@link CandidateSession}.
+     *
+     * @param candidateSession candidate session to connect to
+     * @param xsrfToken XSRF token previously granted for accesing the session
+     * @return within-context session launch URL
+     */
+    public static String buildSessionStartWithinContextUrl(final CandidateSession candidateSession, final String xsrfToken) {
+        return buildSessionStartWithinContextUrl(candidateSession.getId(), xsrfToken, candidateSession.getDelivery().getAssessment().getAssessmentType());
+    }
+
+    private static String buildSessionStartWithinContextUrl(final long xid, final String xsrfToken, final AssessmentObjectType assessmentObjectType) {
+        return "/candidate/"
+                + (assessmentObjectType==AssessmentObjectType.ASSESSMENT_ITEM ? "itemsession" : "testsession")
+                + "/" + xid
+                + "/" + xsrfToken;
     }
 }
+

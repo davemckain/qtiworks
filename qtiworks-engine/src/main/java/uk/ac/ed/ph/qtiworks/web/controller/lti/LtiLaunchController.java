@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.qtiworks.web.controller.lti;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiDomain;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiLaunchType;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiResource;
@@ -43,6 +42,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.UserRole;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateException;
 import uk.ac.ed.ph.qtiworks.web.GlobalRouter;
 import uk.ac.ed.ph.qtiworks.web.candidate.CandidateSessionLaunchService;
+import uk.ac.ed.ph.qtiworks.web.candidate.CandidateSessionTicket;
 import uk.ac.ed.ph.qtiworks.web.lti.DecodedLtiLaunch;
 import uk.ac.ed.ph.qtiworks.web.lti.LtiAuthenticationTicket;
 import uk.ac.ed.ph.qtiworks.web.lti.LtiLaunchData;
@@ -122,9 +122,9 @@ public class LtiLaunchController {
 
             /* Launch and redirect to session */
             try {
-                final CandidateSession candidateSession = candidateSessionLaunchService.launchDomainLevelLtiCandidateSession(httpSession,
+                final CandidateSessionTicket candidateSessionTicket = candidateSessionLaunchService.launchDomainLevelLtiCandidateSession(httpSession,
                         ltiUser, ltiResource, returnUrl, lisOutcomeServiceUrl, lisResultSourcedid);
-                return GlobalRouter.buildSessionStartRedirect(candidateSession);
+                return GlobalRouter.buildSessionStartRedirect(candidateSessionTicket);
             }
             catch (final CandidateException e) {
                 return "candidateLaunchError";
@@ -156,9 +156,9 @@ public class LtiLaunchController {
 
         /* Launch and redirect to session */
         try {
-            final CandidateSession candidateSession = candidateSessionLaunchService.launchLinkLevelLtiCandidateSession(httpSession,
+            final CandidateSessionTicket candidateSessionTicket = candidateSessionLaunchService.launchLinkLevelLtiCandidateSession(httpSession,
                     ltiUser, returnUrl, lisOutcomeServiceUrl, lisResultSourcedid);
-            return GlobalRouter.buildSessionStartRedirect(candidateSession);
+            return GlobalRouter.buildSessionStartRedirect(candidateSessionTicket);
         }
         catch (final CandidateException e) {
             return "candidateLaunchError";

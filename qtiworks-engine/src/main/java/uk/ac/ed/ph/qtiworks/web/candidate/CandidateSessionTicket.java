@@ -37,8 +37,11 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 
 import java.io.Serializable;
+
+import javax.servlet.http.HttpSession;
 
 /**
  * This "ticket" is created and stored in the HTTP session and provides access
@@ -55,7 +58,7 @@ public final class CandidateSessionTicket implements Serializable {
 
     private static final long serialVersionUID = 1412636123357858458L;
 
-    /** XSRF token for this session */
+    /** XSRF token for accessing this {@link CandidateSession} within the current {@link HttpSession} */
     private final String xsrfToken;
 
     /** ID of the candidate {@link User} in question */
@@ -64,13 +67,18 @@ public final class CandidateSessionTicket implements Serializable {
     /** ID of the {@link CandidateSession} in question */
     private final long candidateSessionId;
 
+    /** Indicates whether this is an item or test session */
+    private final AssessmentObjectType assessmentObjectType;
+
     /** URL to return to once the session has terminated */
     private final String returnUrl;
 
-    public CandidateSessionTicket(final String xsrfToken, final long userId, final long candidateSessionId, final String returnUrl) {
+    public CandidateSessionTicket(final String xsrfToken, final long userId, final long candidateSessionId,
+            final AssessmentObjectType assessmentObjectType, final String returnUrl) {
         this.xsrfToken = xsrfToken;
         this.userId = userId;
         this.candidateSessionId = candidateSessionId;
+        this.assessmentObjectType = assessmentObjectType;
         this.returnUrl = returnUrl;
     }
 
@@ -84,6 +92,10 @@ public final class CandidateSessionTicket implements Serializable {
 
     public long getCandidateSessionId() {
         return candidateSessionId;
+    }
+
+    public AssessmentObjectType getAssessmentObjectType() {
+        return assessmentObjectType;
     }
 
     public String getReturnUrl() {

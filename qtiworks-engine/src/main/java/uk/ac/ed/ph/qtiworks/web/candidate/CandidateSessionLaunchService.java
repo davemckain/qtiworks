@@ -120,8 +120,9 @@ public class CandidateSessionLaunchService {
     //-------------------------------------------------
     // Anonymous session launching
 
-    public CandidateSession launchAnonymousCandidateSession(final HttpSession httpSession, final Delivery delivery, final String returnUrl)
+    public CandidateSessionTicket launchAnonymousCandidateSession(final HttpSession httpSession, final Delivery delivery, final String returnUrl)
             throws CandidateException {
+        Assert.notNull(httpSession, "httpSession");
         Assert.notNull(delivery, "delivery");
 
         /* In this case the "candidate" should be the user who owns the Delivery, so let's check this here */
@@ -136,8 +137,10 @@ public class CandidateSessionLaunchService {
     //-------------------------------------------------
     // System sample launching
 
-    public CandidateSession launchSystemSampleSession(final HttpSession httpSession, final long aid, final String returnUrl)
+    public CandidateSessionTicket launchSystemSampleSession(final HttpSession httpSession, final long aid, final String returnUrl)
             throws DomainEntityNotFoundException, CandidateException {
+        Assert.notNull(httpSession, "httpSession");
+
         final User candidate = identityService.assertCurrentThreadUser();
         final Delivery sampleDelivery = lookupSystemSampleDelivery(aid);
         return launchCandidateSession(httpSession, candidate, sampleDelivery, true, returnUrl, null, null);
@@ -165,6 +168,16 @@ public class CandidateSessionLaunchService {
     }
 
     //----------------------------------------------------
+    // Instructor mode
+
+    public CandidateSessionTicket launchInstructorTrialSession(final HttpSession httpSession, final User candidate, final Delivery delivery, final boolean authorMode,
+            final String returnUrl)
+            throws CandidateException {
+        Assert.notNull(httpSession, "httpSession");
+        return launchCandidateSession(httpSession, candidate, delivery, authorMode, returnUrl, null, null);
+    }
+
+    //----------------------------------------------------
     // LTI launches
 
     /**
@@ -173,12 +186,14 @@ public class CandidateSessionLaunchService {
      * <p>
      * Access controls are checked on the {@link Delivery}.
      */
-    public CandidateSession launchLinkLevelLtiCandidateSession(final HttpSession httpSession,
+    public CandidateSessionTicket launchLinkLevelLtiCandidateSession(final HttpSession httpSession,
             final LtiUser candidate, final String returnUrl,
             final String lisOutcomeServiceUrl, final String lisResultSourcedid)
             throws CandidateException {
-        /* Make sure this is the correct type of user */
+        Assert.notNull(httpSession, "httpSession");
         Assert.notNull(candidate, "candidate");
+
+        /* Make sure this is the correct type of user */
         if (candidate.getLtiLaunchType()!=LtiLaunchType.LINK) {
             throw new IllegalArgumentException("Candidate LtiUser must be of type " + LtiLaunchType.LINK);
         }
@@ -194,14 +209,15 @@ public class CandidateSessionLaunchService {
         /* Now launch session */
         return launchCandidateSession(httpSession, candidate, delivery,
                 false /* Never use author mode here */,
-                returnUrl, lisOutcomeServiceUrl, lisResultSourcedid);
+                sanitiseReturnUrl(returnUrl) /* Return URL might not be trustworthy */,
+                lisOutcomeServiceUrl, lisResultSourcedid);
     }
 
-    public CandidateSession launchDomainLevelLtiCandidateSession(final HttpSession httpSession,
+    public CandidateSessionTicket launchDomainLevelLtiCandidateSession(final HttpSession httpSession,
             final LtiUser candidate, final LtiResource ltiResource,
             final String returnUrl, final String lisOutcomeServiceUrl, final String lisResultSourcedid)
             throws CandidateException {
-
+        Assert.notNull(httpSession, "httpSession");
         Assert.notNull(candidate, "candidate");
         Assert.notNull(ltiResource, "ltiResource");
         if (candidate.getLtiLaunchType()!=LtiLaunchType.DOMAIN) {
@@ -221,21 +237,19 @@ public class CandidateSessionLaunchService {
 
         /* Now launch session */
         return launchCandidateSession(httpSession, candidate, delivery, authorMode,
-                returnUrl, lisOutcomeServiceUrl, lisResultSourcedid);
+                sanitiseReturnUrl(returnUrl) /* Return URL might not be trustworthy */,
+                lisOutcomeServiceUrl, lisResultSourcedid);
     }
+
 
     //----------------------------------------------------
     // Low-level launches.
-    // NB: Caller should have checked that candidate is allowed to launch session before here.
+    // NB: Caller should have checked that candidate is allowed to launch session before here,
+    // and the returnUrl should have been sanitised (if appropriate) beforehand too.
 
-    public CandidateSession launchCandidateSession(final HttpSession httpSession, final User candidate, final Delivery delivery, final boolean authorMode,
+    private CandidateSessionTicket launchCandidateSession(final HttpSession httpSession, final User candidate, final Delivery delivery, final boolean authorMode,
             final String returnUrl, final String lisOutcomeServiceUrl, final String lisResultSourcedid)
             throws CandidateException {
-        Assert.notNull(httpSession, "httpSession");
-
-        /* Sanitise returnUrl as it may have been passed in externally so can't be trusted */
-        final String safeReturnUrl = sanitiseReturnUrl(returnUrl);
-
         /* Create/reuse session */
         final CandidateSession candidateSession = candidateSessionStarter.launchCandidateSession(candidate, delivery,
                 authorMode, lisOutcomeServiceUrl, lisResultSourcedid);
@@ -244,11 +258,15 @@ public class CandidateSessionLaunchService {
         final String xsrfToken = ServiceUtilities.createRandomAlphanumericToken(DomainConstants.XSRF_TOKEN_LENGTH);
 
         /* Authenticate this user to access this CandidateSession */
-        final CandidateSessionTicket candidateSessionTicket = new CandidateSessionTicket(xsrfToken, candidate.getId(), candidateSession.getId(), safeReturnUrl);
+        final CandidateSessionTicket candidateSessionTicket = new CandidateSessionTicket(xsrfToken,
+                candidate.getId(),
+                candidateSession.getId(),
+                delivery.getAssessment().getAssessmentType(),
+                returnUrl);
         CandidateSessionAuthenticationFilter.authenticateUserForHttpSession(httpSession, candidateSessionTicket);
 
         /* Caller should now issue appropriate redirect to session... */
-        return candidateSession;
+        return candidateSessionTicket;
     }
 
     private void logAndThrowLaunchException(final User candidate, final Delivery delivery,

@@ -182,7 +182,7 @@ public final class IdentityService {
     public CandidateSessionContext assertCurrentThreadCandidateSessionContext() {
         final CandidateSessionContext result = getCurrentThreadCandidateSessionContext();
         if (result==null) {
-            throw new IllegalStateException("An CandidateSessionContext is required for the current Thread, but has not been set");
+            throw new IllegalStateException("A CandidateSessionContext is required for the current Thread, but has not been set");
         }
         return result;
     }

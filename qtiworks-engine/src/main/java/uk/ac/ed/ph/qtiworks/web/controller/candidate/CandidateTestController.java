@@ -40,7 +40,6 @@ import uk.ac.ed.ph.qtiworks.rendering.AuthorViewRenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
 import uk.ac.ed.ph.qtiworks.rendering.TestRenderingOptions;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateException;
-import uk.ac.ed.ph.qtiworks.services.candidate.CandidateRenderingService;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateTestDeliveryService;
 import uk.ac.ed.ph.qtiworks.web.ServletOutputStreamer;
 import uk.ac.ed.ph.qtiworks.web.candidate.CandidateSessionContext;
@@ -74,9 +73,6 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
  */
 @Controller
 public class CandidateTestController extends CandidateControllerBase {
-
-    @Resource
-    private CandidateRenderingService candidateRenderingService;
 
     @Resource
     private CandidateTestDeliveryService candidateTestDeliveryService;

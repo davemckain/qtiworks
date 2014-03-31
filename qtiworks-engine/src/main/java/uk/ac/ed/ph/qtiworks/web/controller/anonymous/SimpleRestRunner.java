@@ -37,7 +37,6 @@ import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksDeploymentSettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.services.AssessmentDataService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
@@ -48,6 +47,7 @@ import uk.ac.ed.ph.qtiworks.services.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.utils.MultipartFileWrapper;
 import uk.ac.ed.ph.qtiworks.web.GlobalRouter;
 import uk.ac.ed.ph.qtiworks.web.candidate.CandidateSessionLaunchService;
+import uk.ac.ed.ph.qtiworks.web.candidate.CandidateSessionTicket;
 
 import java.io.File;
 import java.io.IOException;
@@ -148,7 +148,7 @@ public class SimpleRestRunner {
             /* Try to launch candidate session */
             final Delivery delivery = assessmentManagementService.createDemoDelivery(assessment);
             final String returnUrl = anonymousRouter.buildWithinContextUrl("/standalonerunner");
-            final CandidateSession candidateSession = candidateSessionLaunchService.launchAnonymousCandidateSession(httpSession, delivery, returnUrl);
+            final CandidateSessionTicket candidateSession = candidateSessionLaunchService.launchAnonymousCandidateSession(httpSession, delivery, returnUrl);
 
             /* Send redirect to candidate session */
             final String candidateSessionUrl = qtiWorksDeploymentSettings.getBaseUrl() + GlobalRouter.buildSessionStartWithinContextUrl(candidateSession);

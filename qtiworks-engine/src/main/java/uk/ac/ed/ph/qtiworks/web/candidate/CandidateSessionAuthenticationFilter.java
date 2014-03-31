@@ -84,7 +84,7 @@ public final class CandidateSessionAuthenticationFilter extends AbstractWebAuthe
             throws IOException, ServletException {
         /* Determine which CandidateSession we're authenticating from  pathInfo, which should be of the form /(item|test)session/{xid}/{xsrfToken}/... */
         final String pathInfo = request.getPathInfo();
-        final Pattern pathPattern = Pattern.compile("^/(?:item|test)session/(\\d+)/(\\w+)/");
+        final Pattern pathPattern = Pattern.compile("^/(?:item|test)session/(\\d+)/([A-Za-z0-9]+)(/|$)");
         final Matcher pathMatcher = pathPattern.matcher(pathInfo);
         if (!pathMatcher.find()) {
             logger.warn("Failed regex match on resource path {}", pathInfo);
@@ -116,17 +116,17 @@ public final class CandidateSessionAuthenticationFilter extends AbstractWebAuthe
         final CandidateSessionTicket candidateSessionTicket = getCandidateSessionTicketForSession(httpSession, xid);
         if (candidateSessionTicket==null) {
             logger.warn("Failed to retrieve CandidateSessionTicket from HttpSession for CandidateSession {}", xid);
-            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden. You do not have access to this assessment. Please launch your assessment again.");
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden. You do not have access to this assessment session. Please launch this assessment again.");
             return;
         }
 
         /* Make sure supplied XSRF token agrees with the one already generated */
         if (!candidateSessionTicket.getXsrfToken().equals(xsrfToken)) {
             logger.warn("XSRF Token mismatch on CandidateSession {}", xid);
-            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden. You do not have permission to access to this session.");
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden. You do not have permission to access to this assessment session. Please launch this assessment again.");
         }
 
-        /* Look up fresh entity state. (We've already refreshed LtiResource above.) */
+        /* Look up user running this session */
         final long userId = candidateSessionTicket.getUserId();
         final User user = userDao.findById(userId);
         if (user==null) {
