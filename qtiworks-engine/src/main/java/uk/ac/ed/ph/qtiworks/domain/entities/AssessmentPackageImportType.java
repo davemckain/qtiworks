@@ -36,6 +36,8 @@ package uk.ac.ed.ph.qtiworks.domain.entities;
 /**
  * Encapsulates how an {@link AssessmentPackage} was imported.
  *
+ * @see AssessmentPackage
+ *
  * @author David McKain
  */
 public enum AssessmentPackageImportType {

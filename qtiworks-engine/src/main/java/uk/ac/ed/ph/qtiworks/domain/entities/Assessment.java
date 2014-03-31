@@ -72,6 +72,10 @@ import org.hibernate.annotations.Type;
  * as I had originally planned to include basic revisioning of resources. However, I've decided to simplify this for
  * now with a 1->1 relationship, but have left the 1->N mapping between the entities in case someone else wants to
  * add this revisioning functionality.
+ * <p>
+ * Developer note: The ID of an {@link Assessment} is generally referred to as an
+ * <code>aid</code> in the code. This is also used as the name of the primary key column
+ * in the database mappings.
  *
  * @see AssessmentPackage
  *
@@ -138,7 +142,7 @@ public class Assessment implements BaseEntity, TimestampedOnCreation {
 
     /** Item or Test? */
     @Basic(optional=false)
-    @Column(name="type", updatable=false, length=15)
+    @Column(name="assessment_type", updatable=false, length=15)
     @Enumerated(EnumType.STRING)
     private AssessmentObjectType assessmentType;
 

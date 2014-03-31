@@ -65,6 +65,10 @@ import org.hibernate.annotations.Type;
  * on a resource within her Tool Consumer.
  * <p>
  * This wraps itself around a {@link Delivery}.
+ * <p>
+ * Developer note: The ID of an {@link LtiResource} is generally referred to as an
+ * <code>lrid</code> in the code. This is also used as the name of the primary key column
+ * in the database mappings.
  *
  * @author David McKain
  */

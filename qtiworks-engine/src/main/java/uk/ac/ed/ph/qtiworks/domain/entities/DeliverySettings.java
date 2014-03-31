@@ -69,6 +69,10 @@ import org.hibernate.annotations.Type;
 /**
  * Specifies settings controlling the delivery of an {@link AssessmentItem} or {@link AssessmentTest}
  * to a group of candidates.
+ * <p>
+ * Developer note: The ID of a {@link DeliverySettings} is generally referred to as an
+ * <code>dsid</code> in the code. This is also used as the name of the primary key column
+ * in the database mappings.
  *
  * @author David McKain
  */
@@ -133,7 +137,7 @@ public class DeliverySettings implements BaseEntity, TimestampedOnCreation {
 
     /** Item or Test? */
     @Basic(optional=false)
-    @Column(name="type", updatable=false, length=15)
+    @Column(name="assessment_type", updatable=false, length=15)
     @Enumerated(EnumType.STRING)
     private AssessmentObjectType assessmentType;
 

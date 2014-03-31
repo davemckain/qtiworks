@@ -52,10 +52,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Type;
 
 /**
- * Represents an LTI user.
- * <p>
- * This treats <code>lis_given_name</code> as <code>firstName</code>
- * and <code>lis_family_name</code> as <code>lastName</code>.
+ * Extends the {@link User} entity with additional information for users created via an LTI launch.
  *
  * @author David McKain
  */

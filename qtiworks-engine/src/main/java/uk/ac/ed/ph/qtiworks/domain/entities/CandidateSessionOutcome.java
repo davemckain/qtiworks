@@ -56,6 +56,10 @@ import org.hibernate.annotations.Type;
 /**
  * Encapsulates the stringified value of a particular (non-file)
  * outcome variable, computed after each action during an assessment delivery.
+ * <p>
+ * Developer note: The ID of a {@link CandidateSessionOutcome} is generally referred to as an
+ * <code>xoid</code> in the code. This is also used as the name of the primary key column
+ * in the database mappings.
  *
  * @author David McKain
  */

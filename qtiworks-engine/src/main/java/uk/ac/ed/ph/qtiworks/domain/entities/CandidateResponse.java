@@ -59,8 +59,12 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Type;
 
 /**
- * Encapsulates the response made by a particular candidate to a particular {@link Interaction}
- * within a particular {@link AssessmentItem}.
+ * Encapsulates the response made to a particular {@link Interaction}
+ * within a particular {@link AssessmentItem} as part of a {@link CandidateSession}.
+ * <p>
+ * Developer note: The ID of a {@link CandidateResponse} is generally referred to as an
+ * <code>xrid</code> in the code. This is also used as the name of the primary key column
+ * in the database mappings.
  *
  * @author David McKain
  */
@@ -105,7 +109,7 @@ public class CandidateResponse implements BaseEntity {
     @Type(type="org.hibernate.type.TextType")
     @ElementCollection(fetch=FetchType.EAGER)
     @CollectionTable(name="candidate_string_response_items", joinColumns=@JoinColumn(name="xrid"))
-    @Column(name="string")
+    @Column(name="string_data")
     private List<String> stringResponseData;
 
     /** File submission data (only used for {@link ResponseDataType#FILE} */

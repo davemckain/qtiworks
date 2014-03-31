@@ -57,6 +57,10 @@ import javax.persistence.TemporalType;
 
 /**
  * Encapsulates the data (e.g. credentials) for an LTI domain.
+ * <p>
+ * Developer note: The ID of a {@link LtiDomain} is generally referred to as an
+ * <code>ldid</code> in the code. This is also used as the name of the primary key column
+ * in the database mappings.
  *
  * @author David McKain
  */
