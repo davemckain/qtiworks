@@ -66,12 +66,6 @@ public class DeliverySettingsDao extends GenericDao<DeliverySettings> {
         super(DeliverySettings.class);
     }
 
-    public List<DeliverySettings> getAllPublicSettingsForType(final AssessmentObjectType assessmentType) {
-        final TypedQuery<DeliverySettings> query = em.createNamedQuery("DeliverySettings.getAllPublicSettingsForType", DeliverySettings.class);
-        query.setParameter("assessmentType", assessmentType);
-        return query.getResultList();
-    }
-
     public List<DeliverySettings> getForOwnerUser(final User user) {
         final TypedQuery<DeliverySettings> query = em.createNamedQuery("DeliverySettings.getForOwnerUser", DeliverySettings.class);
         query.setParameter("user", user);

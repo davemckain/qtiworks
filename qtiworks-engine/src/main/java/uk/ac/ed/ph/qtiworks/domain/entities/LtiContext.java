@@ -67,6 +67,10 @@ import org.hibernate.annotations.Type;
  * context based on the <code>resource_link_id</code> to enable the ownership model to work correctly.
  * This means that data created within a particular resource link in this context is visible only
  * to that resource, but it's better than nothing.
+ * <p>
+ * Developer note: The ID of a {@link LtiContext} is generally referred to as an
+ * <code>lcid</code> in the code. This is also used as the name of the primary key column
+ * in the database mappings.
  *
  * @author David McKain
  */

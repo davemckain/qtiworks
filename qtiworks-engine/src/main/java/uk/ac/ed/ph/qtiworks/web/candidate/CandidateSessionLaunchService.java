@@ -161,7 +161,7 @@ public class CandidateSessionLaunchService {
             throws DomainEntityNotFoundException, CandidateException {
         final User caller = identityService.assertCurrentThreadUser();
         final Assessment assessment = assessmentDao.requireFindById(aid);
-        if (!assessment.isPublic() || assessment.getSampleCategory()==null) {
+        if (assessment.getSampleCategory()==null) {
             logAndThrowLaunchException(caller, assessment, CandidateExceptionReason.LAUNCH_ASSESSMENT_AS_SAMPLE);
         }
         return assessment;

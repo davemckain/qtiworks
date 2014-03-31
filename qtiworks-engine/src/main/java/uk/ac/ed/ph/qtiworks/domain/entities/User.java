@@ -64,6 +64,10 @@ import javax.persistence.TemporalType;
  * <p>
  * (This class is should be considered abstract, though has been made concrete to allow
  * the underlying JPA reflection magic to work correctly.)
+ * <p>
+ * Developer note: The ID of a {@link User} is often referred to as an
+ * <code>uid</code> in the code. That name is however not used as the name of the ID column
+ * in the database, since <code>uid</code> is a reserved word in some databases (e.g. Oracle).
  *
  * @author David McKain
  */
@@ -77,7 +81,7 @@ public class User implements BaseEntity, TimestampedOnCreation {
 
     @Id
     @GeneratedValue(generator="userSequence")
-    @Column(name="uid")
+    @Column(name="id")
     private Long uid;
 
     @Basic(optional=false)

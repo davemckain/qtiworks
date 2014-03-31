@@ -72,6 +72,10 @@ import org.hibernate.annotations.Type;
  * as I had originally planned to include basic revisioning of resources. However, I've decided to simplify this for
  * now with a 1->1 relationship, but have left the 1->N mapping between the entities in case someone else wants to
  * add this revisioning functionality.
+ * <p>
+ * Developer note: The ID of an {@link Assessment} is generally referred to as an
+ * <code>aid</code> in the code. This is also used as the name of the primary key column
+ * in the database mappings.
  *
  * @see AssessmentPackage
  *
@@ -138,19 +142,9 @@ public class Assessment implements BaseEntity, TimestampedOnCreation {
 
     /** Item or Test? */
     @Basic(optional=false)
-    @Column(name="type", updatable=false, length=15)
+    @Column(name="assessment_type", updatable=false, length=15)
     @Enumerated(EnumType.STRING)
     private AssessmentObjectType assessmentType;
-
-    /**
-     * CURRENTLY UNUSED! Ignore this for now.
-     *
-     * (This was envisaged as a simple means of sharing assessments, but hasn't been
-     * implemented.)
-     */
-    @Basic(optional=false)
-    @Column(name="public")
-    private boolean isPublic;
 
     /**
      * For sample items, this specifies the category it belongs to. This should be set to null
@@ -279,15 +273,6 @@ public class Assessment implements BaseEntity, TimestampedOnCreation {
     }
 
 
-    public boolean isPublic() {
-        return isPublic;
-    }
-
-    public void setPublic(final boolean isPublic) {
-        this.isPublic = isPublic;
-    }
-
-
     public SampleCategory getSampleCategory() {
         return sampleCategory;
     }
@@ -356,7 +341,6 @@ public class Assessment implements BaseEntity, TimestampedOnCreation {
                 + "(aid=" + aid
                 + ",version=" + version
                 + ",assessmentType=" + assessmentType
-                + ",isPublic=" + isPublic
                 + ",packageImportVersion=" + packageImportVersion
                 + ",ltiResultOutcomeIdentifier=" + ltiResultOutcomeIdentifier
                 + ",ltiResultMinimum=" + ltiResultMinimum

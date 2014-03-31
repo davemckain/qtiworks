@@ -65,6 +65,10 @@ import org.hibernate.annotations.Type;
 
 /**
  * Represents each "event" recorded during a {@link CandidateSession}
+ * <p>
+ * Developer note: The ID of a {@link CandidateEvent} is generally referred to as an
+ * <code>xeid</code> in the code. This is also used as the name of the primary key column
+ * in the database mappings.
  *
  * @author David McKain
  */

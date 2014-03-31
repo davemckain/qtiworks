@@ -61,6 +61,10 @@ import javax.persistence.TemporalType;
  * <p>
  * We are making these entities to get simple durability in the event of transient issues such as
  * system downtime, network problems, or issues sending outcomes back to the LTI TC.
+ * <p>
+ * Developer note: The ID of a {@link QueuedLtiOutcome} is generally referred to as an
+ * <code>qoid</code> in the code. This is also used as the name of the primary key column
+ * in the database mappings.
  *
  * @author David McKain
  */

@@ -56,6 +56,10 @@ import org.hibernate.annotations.Type;
 /**
  * A runtime notification message generated while executing a particular {@link CandidateEvent}.
  * This is used for debugging and general auditing.
+ * <p>
+ * Developer note: The ID of a {@link CandidateEventNotification} is generally referred to as an
+ * <code>xnid</code> in the code. This is also used as the name of the primary key column
+ * in the database mappings.
  *
  * @author David McKain
  */

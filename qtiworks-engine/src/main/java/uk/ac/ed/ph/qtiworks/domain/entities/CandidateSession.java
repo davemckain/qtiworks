@@ -64,7 +64,11 @@ import org.hibernate.annotations.Type;
 
 /**
  * Represents the "session" for a particular candidate {@link User} against a
- * particular {@link Delivery} of an {@link AssessmentItem} or {@link AssessmentTest}
+ * particular {@link Delivery} of an {@link AssessmentItem} or {@link AssessmentTest}.
+ * <p>
+ * Developer note: The ID of a {@link CandidateSession} is generally referred to as an
+ * <code>xid</code> in the code. This is also used as the name of the primary key column
+ * in the database mappings.
  *
  * @author David McKain
  */
@@ -148,9 +152,9 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
     @JoinColumn(name="did")
     private Delivery delivery;
 
-    /** Candidate running this session */
+    /** Candidate {@link User} running this session */
     @ManyToOne(optional=false, fetch=FetchType.EAGER)
-    @JoinColumn(name="uid")
+    @JoinColumn(name="candidate_uid")
     private User candidate;
 
     /** Is this session running in author mode? (I.e. providing debugging information) */

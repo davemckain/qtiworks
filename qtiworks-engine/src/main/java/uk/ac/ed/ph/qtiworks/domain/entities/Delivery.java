@@ -70,7 +70,9 @@ import org.hibernate.annotations.Type;
  * Corresponds to a particular "delivery" of an {@link AssessmentItem} or
  * {@link AssessmentTest} to a group of candidates.
  * <p>
- * This is going to be very simple in the first instance, but will get more complicated in future.
+ * Developer note: The ID of a {@link Delivery} is generally referred to as an
+ * <code>did</code> in the code. This is also used as the name of the primary key column
+ * in the database mappings.
  *
  * @author David McKain
  */
@@ -144,7 +146,7 @@ public class Delivery implements BaseEntity, TimestampedOnCreation {
     private DeliverySettings deliverySettings;
 
     @Basic(optional=false)
-    @Column(name="type", updatable=false, length=15)
+    @Column(name="delivery_type", updatable=false, length=15)
     @Enumerated(EnumType.STRING)
     private DeliveryType deliveryType;
 
@@ -156,9 +158,9 @@ public class Delivery implements BaseEntity, TimestampedOnCreation {
     @Column(name="title")
     private String title;
 
-    /** Available to candidates? */
+    /** Is this {@link Delivery} currently open (available) to candidates? */
     @Basic(optional=false)
-    @Column(name="open")
+    @Column(name="opened")
     private boolean open;
 
     /**

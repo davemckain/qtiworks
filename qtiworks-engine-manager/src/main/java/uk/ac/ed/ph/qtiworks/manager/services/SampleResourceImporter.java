@@ -217,7 +217,6 @@ public class SampleResourceImporter {
             if (!deliverySettingsByTitleMap.containsKey(options.getTitle())) {
                 /* New options */
                 options.setOwnerUser(sampleOwner);
-                options.setPublic(true);
                 deliverySettingsDao.persist(options);
                 logger.debug("Created ItemDeliverySettings {}", options);
                 deliverySettingsByTitleMap.put(options.getTitle(), options);
@@ -456,7 +455,6 @@ public class SampleResourceImporter {
         final Assessment assessment = new Assessment();
         assessment.setAssessmentType(assessmentPackage.getAssessmentType());
         assessment.setOwnerUser(owner);
-        assessment.setPublic(true);
         assessment.setSelectedAssessmentPackage(assessmentPackage);
         assessment.setPackageImportVersion(Long.valueOf(1L));
         assessment.setSampleCategory(sampleCategory);

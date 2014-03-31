@@ -53,7 +53,11 @@ import javax.persistence.TemporalType;
 import org.hibernate.annotations.Type;
 
 /**
- * Represents a file uploaded by a candidate
+ * Represents a file uploaded by a candidate during a {@link CandidateSession}.
+ * <p>
+ * Developer note: The ID of a {@link CandidateFileSubmission} is generally referred to as an
+ * <code>fid</code> in the code. This is also used as the name of the primary key column
+ * in the database mappings.
  *
  * @author David McKain
  */
