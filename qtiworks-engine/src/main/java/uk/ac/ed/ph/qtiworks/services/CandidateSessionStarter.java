@@ -129,7 +129,7 @@ public class CandidateSessionStarter {
             throws DomainEntityNotFoundException, CandidateException {
         final Assessment assessment = assessmentDao.requireFindById(aid);
         final User caller = identityService.assertCurrentThreadUser();
-        if (!assessment.isPublic() || assessment.getSampleCategory()==null) {
+        if (assessment.getSampleCategory()==null) {
             logAndThrowLaunchException(caller, assessment, CandidateExceptionReason.LAUNCH_ASSESSMENT_AS_SAMPLE);
         }
         return assessment;

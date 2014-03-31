@@ -456,7 +456,6 @@ public class SampleResourceImporter {
         final Assessment assessment = new Assessment();
         assessment.setAssessmentType(assessmentPackage.getAssessmentType());
         assessment.setOwnerUser(owner);
-        assessment.setPublic(true);
         assessment.setSelectedAssessmentPackage(assessmentPackage);
         assessment.setPackageImportVersion(Long.valueOf(1L));
         assessment.setSampleCategory(sampleCategory);

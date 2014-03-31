@@ -143,16 +143,6 @@ public class Assessment implements BaseEntity, TimestampedOnCreation {
     private AssessmentObjectType assessmentType;
 
     /**
-     * CURRENTLY UNUSED! Ignore this for now.
-     *
-     * (This was envisaged as a simple means of sharing assessments, but hasn't been
-     * implemented.)
-     */
-    @Basic(optional=false)
-    @Column(name="public")
-    private boolean isPublic;
-
-    /**
      * For sample items, this specifies the category it belongs to. This should be set to null
      * for non-sample items.
      * <p>
@@ -279,15 +269,6 @@ public class Assessment implements BaseEntity, TimestampedOnCreation {
     }
 
 
-    public boolean isPublic() {
-        return isPublic;
-    }
-
-    public void setPublic(final boolean isPublic) {
-        this.isPublic = isPublic;
-    }
-
-
     public SampleCategory getSampleCategory() {
         return sampleCategory;
     }
@@ -356,7 +337,6 @@ public class Assessment implements BaseEntity, TimestampedOnCreation {
                 + "(aid=" + aid
                 + ",version=" + version
                 + ",assessmentType=" + assessmentType
-                + ",isPublic=" + isPublic
                 + ",packageImportVersion=" + packageImportVersion
                 + ",ltiResultOutcomeIdentifier=" + ltiResultOutcomeIdentifier
                 + ",ltiResultMinimum=" + ltiResultMinimum
