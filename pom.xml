@@ -27,30 +27,30 @@ All Rights Reserved
     <asciimath-parser.version>1.0</asciimath-parser.version>
     <snuggletex.version>1.3-SNAPSHOT</snuggletex.version>
     <jacomax.version>0.2.3</jacomax.version>
-    <commons-pool.version>1.5.7</commons-pool.version>
-    <slf4j.version>1.7.5</slf4j.version>
-    <logback.version>1.0.13</logback.version>
+    <slf4j.version>1.7.6</slf4j.version>
+    <logback.version>1.1.1</logback.version>
     <saxon9.version>9.1.0.8</saxon9.version>
-    <xerces.version>2.10.0</xerces.version>
+    <xerces.version>2.11.0</xerces.version>
     <servlet-api.version>2.5</servlet-api.version>
     <jsp-api.version>2.1</jsp-api.version>
     <jstl.version>1.2</jstl.version>
-    <spring.version>3.2.6.RELEASE</spring.version>
-    <hibernate.version>4.2.8.Final</hibernate.version>
+    <spring.version>3.2.8.RELEASE</spring.version>
+    <hibernate.version>4.2.11.Final</hibernate.version>
     <hibernate-validator.version>4.3.1.Final</hibernate-validator.version>
     <mysql-connector.version>5.1.23</mysql-connector.version>
     <postgresql-jdbc.version>9.1-901.jdbc4</postgresql-jdbc.version>
     <javacsv.version>2.0</javacsv.version>
-    <jackson.version>2.1.2</jackson.version>
-    <commons-codec.version>1.6</commons-codec.version>
-    <commons-io.version>2.3</commons-io.version>
+    <jackson.version>2.1.5</jackson.version>
+    <commons-codec.version>1.9</commons-codec.version>
+    <commons-io.version>2.4</commons-io.version>
     <commons-dbcp.version>1.4</commons-dbcp.version>
-    <commons-fileupload.version>1.2.2</commons-fileupload.version>
+    <commons-fileupload.version>1.3.1</commons-fileupload.version>
+    <commons-pool.version>1.5.7</commons-pool.version>
     <oauth.version>20100601</oauth.version>
-    <httpclient.version>4.2.5</httpclient.version>
-    <guava.version>15.0</guava.version>
+    <httpclient.version>4.3.3</httpclient.version>
+    <guava.version>16.0.1</guava.version>
     <junit.version>4.11</junit.version>
-    <xmlunit.version>1.3</xmlunit.version>
+    <xmlunit.version>1.5</xmlunit.version>
   </properties>
   <repositories>
     <repository>
