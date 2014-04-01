@@ -52,8 +52,8 @@ public final class EditUserPasswordAction extends ManagerAction {
     private static final Logger logger = LoggerFactory.getLogger(EditUserPasswordAction.class);
 
     @Override
-    public String getActionSummary() {
-        return "Changes the password for the system user having the given loginName";
+    public String[] getActionSummary() {
+        return new String[] { "Changes the password for the system user having the given loginName." };
     }
 
     @Override

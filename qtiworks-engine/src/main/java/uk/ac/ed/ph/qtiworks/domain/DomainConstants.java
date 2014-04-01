@@ -34,7 +34,9 @@
 package uk.ac.ed.ph.qtiworks.domain;
 
 /**
- * Various constants for the domain layer
+ * Various constants for the domain layer.
+ * <p>
+ * Many of these are used to define constraints for persisted entities.
  *
  * @author David McKain
  */
@@ -51,11 +53,27 @@ public final class DomainConstants {
 
     public static final int CANDIDATE_SESSION_TOKEN_LENGTH = 32;
 
-    public static final int LTI_TOKEN_LENGTH = 256;
-    public static final int LTI_SECRET_LENGTH = 32;
-    public static final int LTI_USER_LOGICAL_KEY_LENGTH = 300;
+    /** Maximum length for an LTI "token" (i.e. identifier, primary key) */
+    public static final int LTI_TOKEN_MAX_LENGTH = 256;
 
+    /** Maximum length for an LTI shared secret */
+    public static final int LTI_SHARED_SECRET_MAX_LENGTH = 32;
+
+    /**
+     * Maximum length for an LTI user logical key.
+     * (This has been chosen large enough according to the conventions used to generate these keys.)
+     */
+    public static final int LTI_USER_LOGICAL_KEY_MAX_LENGTH = 300;
+
+    /**
+     * Maximum length for an OAuth nonce.
+     */
     public static final int OAUTH_NONCE_MAX_LENGTH = 256;
+
+    /**
+     * Maximum permitted age (in milliseconds)
+     * for an OAuth timestamp before the OAuth message is rejected
+     */
     public static final long OAUTH_TIMESTAMP_MAX_AGE = 90 * 60 * 1000L;
 
     /**
@@ -63,15 +81,4 @@ public final class DomainConstants {
      * the QTI <code>completionStatus</code> variable.
      */
     public static final int QTI_COMPLETION_STATUS_MAX_LENGTH = 13;
-
-    //----------------------------------------------
-
-    public static final String QTI_DEFAULT_OWNER_LOGIN_NAME = "qtiworks";
-    public static final String QTI_DEFAULT_OWNER_FIRST_NAME = "QTI";
-    public static final String QTI_DEFAULT_OWNER_LAST_NAME = "Works";
-
-    public static final String QTI_SAMPLE_OWNER_LOGIN_NAME = "qtisamples";
-    public static final String QTI_SAMPLE_OWNER_FIRST_NAME = "QTI";
-    public static final String QTI_SAMPLE_OWNER_LAST_NAME = "Samples";
-
 }

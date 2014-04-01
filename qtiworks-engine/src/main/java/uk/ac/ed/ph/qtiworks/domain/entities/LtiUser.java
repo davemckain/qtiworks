@@ -100,12 +100,12 @@ public class LtiUser extends User implements BaseEntity, Comparable<LtiUser> {
      * (See {@link LtiLaunchService} for details)
      */
     @Basic(optional=false)
-    @Column(name="logical_key", updatable=false, unique=true, length=DomainConstants.LTI_USER_LOGICAL_KEY_LENGTH)
+    @Column(name="logical_key", updatable=false, unique=true, length=DomainConstants.LTI_USER_LOGICAL_KEY_MAX_LENGTH)
     private String logicalKey;
 
     /** LTI <code>user_id</code> launch parameter. (Spec says this is recommended) */
     @Basic(optional=true)
-    @Column(name="lti_user_id", updatable=false, unique=false, length=DomainConstants.LTI_TOKEN_LENGTH)
+    @Column(name="lti_user_id", updatable=false, unique=false, length=DomainConstants.LTI_TOKEN_MAX_LENGTH)
     private String ltiUserId;
 
     @Lob

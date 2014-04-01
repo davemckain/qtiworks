@@ -53,8 +53,8 @@ public final class SendQueuedLtiOutcomesAction extends ManagerAction {
     private static final Logger logger = LoggerFactory.getLogger(SendQueuedLtiOutcomesAction.class);
 
     @Override
-    public String getActionSummary() {
-        return "Sends all currently queued LTI outcomes back to the relevant Tool Consumers";
+    public String[] getActionSummary() {
+        return new String[] { "Sends all currently queued LTI outcomes back to the relevant Tool Consumers." };
     }
 
     @Override

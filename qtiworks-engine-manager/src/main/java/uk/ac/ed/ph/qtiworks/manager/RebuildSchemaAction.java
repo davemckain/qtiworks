@@ -51,8 +51,11 @@ public final class RebuildSchemaAction extends ManagerAction {
     private static final Logger logger = LoggerFactory.getLogger(RebuildSchemaAction.class);
 
     @Override
-    public String getActionSummary() {
-        return "Rebuilds the QTIWorks database schema and file store without loading any samples";
+    public String[] getActionSummary() {
+        return new String[] {
+        		"Rebuilds the QTIWorks database schema and file store without loading any samples.",
+        		"WARNING! All existing data will be deleted!"
+        };
     }
 
     @Override

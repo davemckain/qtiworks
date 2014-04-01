@@ -52,8 +52,8 @@ public final class ReimportSamplesAction extends ManagerAction {
     private static final Logger logger = LoggerFactory.getLogger(ReimportSamplesAction.class);
 
     @Override
-    public String getActionSummary() {
-        return "Deletes then re-imports all QTIWorks sample assessments";
+    public String[] getActionSummary() {
+        return new String[] { "Deletes then re-imports all QTIWorks sample assessments." };
     }
 
     @Override

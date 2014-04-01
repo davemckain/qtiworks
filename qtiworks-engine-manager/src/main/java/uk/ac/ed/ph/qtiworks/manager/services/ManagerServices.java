@@ -65,9 +65,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly=false, propagation=Propagation.REQUIRED)
 public class ManagerServices {
 
-    public static final int LTI_SHARED_SECRET_MIN_LENGTH = 8;
-
     private static final Logger logger = LoggerFactory.getLogger(ManagerServices.class);
+
+    public static final int LTI_SHARED_SECRET_MIN_LENGTH = 8;
+	public static final String QTI_SAMPLE_OWNER_LOGIN_NAME = "qtisamples";
+	public static final String QTI_SAMPLE_OWNER_FIRST_NAME = "QTI";
+	public static final String QTI_SAMPLE_OWNER_LAST_NAME = "Samples";
 
     @Resource
     private QtiWorksDeploymentSettings qtiWorksDeploymentSettings;
@@ -86,6 +89,8 @@ public class ManagerServices {
 
     @Resource
     private LtiDomainDao ltiDomainDao;
+
+	//----------------------------------------------
 
     public SystemUser ensureInternalSystemUser(final UserRole userRole,
             final String loginName, final String firstName, final String lastName) {
@@ -228,16 +233,16 @@ public class ManagerServices {
         Assert.notNull(sharedSecret, "consumerSecret");
 
         /* Validate key & secret */
-        if (consumerKey.length() > DomainConstants.LTI_TOKEN_LENGTH) {
-            logger.error("Consumer key {} must not be longer than {} characters", DomainConstants.LTI_TOKEN_LENGTH, consumerKey);
+        if (consumerKey.length() > DomainConstants.LTI_TOKEN_MAX_LENGTH) {
+            logger.error("Consumer key {} must not be longer than {} characters", DomainConstants.LTI_TOKEN_MAX_LENGTH, consumerKey);
             return false;
         }
         if (!consumerKey.matches("[\\w-\\./]+")) {
             logger.error("Consumer key {} must contain only alphanumeric characters, '-', '/' and '.'", consumerKey);
             return false;
         }
-        if (sharedSecret.length() < LTI_SHARED_SECRET_MIN_LENGTH || sharedSecret.length() > DomainConstants.LTI_SECRET_LENGTH) {
-            logger.error("Shared secret {} must be between {} and {} characters", new Object[] { sharedSecret, LTI_SHARED_SECRET_MIN_LENGTH, DomainConstants.LTI_TOKEN_LENGTH });
+        if (sharedSecret.length() < LTI_SHARED_SECRET_MIN_LENGTH || sharedSecret.length() > DomainConstants.LTI_SHARED_SECRET_MAX_LENGTH) {
+            logger.error("Shared secret {} must be between {} and {} characters", new Object[] { sharedSecret, LTI_SHARED_SECRET_MIN_LENGTH, DomainConstants.LTI_TOKEN_MAX_LENGTH });
             return false;
         }
         if (!sharedSecret.matches("[\\w-\\.]+")) {

@@ -63,10 +63,12 @@ public final class ImportUsersAction extends ManagerAction {
     private File userImportCsv;
 
     @Override
-    public String getActionSummary() {
-    	return "Imports standalone instructor users into the system using data from a CSV file" + QtiWorksEngineManager.NEWLINE
-    			+ "CSV format: loginName,firstName,lastName,emailAddress,password[,sysAdmin?(t|f)]" + QtiWorksEngineManager.NEWLINE
-    			+ "sysAdmin field is optional and should be 't' for true, otherwise treated as false (default).";
+    public String[] getActionSummary() {
+    	return new String[] {
+    			"Imports standalone instructor users into the system using data from a CSV file.",
+    			"CSV format: loginName,firstName,lastName,emailAddress,password[,sysAdmin?(t|f)]",
+    			"sysAdmin field is optional and should be 't' for true, otherwise treated as false (default)."
+    	};
     }
 
     @Override

@@ -114,12 +114,12 @@ public class LtiContext implements BaseEntity, TimestampedOnCreation {
      * This parameter is recommended but not mandatory in LTI.
      */
     @Basic(optional=true)
-    @Column(name="context_id", updatable=false, length=DomainConstants.LTI_TOKEN_LENGTH)
+    @Column(name="context_id", updatable=false, length=DomainConstants.LTI_TOKEN_MAX_LENGTH)
     private String contextId;
 
     /** Corresponds to the (recommended) LTI <code>context_label</code> parameter */
     @Basic(optional=true)
-    @Column(name="context_label", updatable=false, length=DomainConstants.LTI_TOKEN_LENGTH)
+    @Column(name="context_label", updatable=false, length=DomainConstants.LTI_TOKEN_MAX_LENGTH)
     private String contextLabel;
 
     /** Corresponds to the (recommended) LTI <code>context_title</code> parameter */
@@ -135,7 +135,7 @@ public class LtiContext implements BaseEntity, TimestampedOnCreation {
      * particularly useful for users, but keeps the ownership model working.
      */
     @Basic(optional=true)
-    @Column(name="fallback_resource_link_id", updatable=false, length=DomainConstants.LTI_TOKEN_LENGTH)
+    @Column(name="fallback_resource_link_id", updatable=false, length=DomainConstants.LTI_TOKEN_MAX_LENGTH)
     private String fallbackResourceLinkId;
 
     //------------------------------------------------------------

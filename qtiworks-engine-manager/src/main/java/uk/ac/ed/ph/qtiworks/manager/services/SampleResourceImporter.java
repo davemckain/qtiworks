@@ -195,8 +195,10 @@ public class SampleResourceImporter {
     }
 
     private SystemUser ensureSampleOwner() {
-        return managerServices.ensureInternalSystemUser(UserRole.INSTRUCTOR, DomainConstants.QTI_SAMPLE_OWNER_LOGIN_NAME,
-                DomainConstants.QTI_SAMPLE_OWNER_FIRST_NAME, DomainConstants.QTI_SAMPLE_OWNER_LAST_NAME);
+        return managerServices.ensureInternalSystemUser(UserRole.INSTRUCTOR,
+        		ManagerServices.QTI_SAMPLE_OWNER_LOGIN_NAME,
+                ManagerServices.QTI_SAMPLE_OWNER_FIRST_NAME,
+                ManagerServices.QTI_SAMPLE_OWNER_LAST_NAME);
     }
 
     private List<SampleCategory> getExistingSampleCategories() {

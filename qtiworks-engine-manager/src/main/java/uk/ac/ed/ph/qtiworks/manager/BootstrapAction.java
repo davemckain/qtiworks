@@ -53,8 +53,11 @@ public final class BootstrapAction extends ManagerAction {
     private static final Logger logger = LoggerFactory.getLogger(BootstrapAction.class);
 
     @Override
-    public String getActionSummary() {
-        return "Bootstraps the QTIWorks database and imports sample assessments";
+    public String[] getActionSummary() {
+        return new String[] {
+        		"Bootstraps the QTIWorks database and imports sample assessments.",
+        		"WARNING! Any existing data will be deleted!"
+        };
     }
 
     @Override
@@ -78,5 +81,7 @@ public final class BootstrapAction extends ManagerAction {
         logger.info("Importing QTI samples");
         final SampleResourceImporter sampleResourceImporter = applicationContext.getBean(SampleResourceImporter.class);
         sampleResourceImporter.updateQtiSamples();
+
+        logger.info("QTIWorks database bootstrap has completed successfully");
     }
 }

@@ -93,7 +93,7 @@ public class LtiNonce implements BaseEntity {
     private Date messageTimestamp;
 
     @Basic(optional=false)
-    @Column(name="consumer_key", updatable=false, length=DomainConstants.LTI_TOKEN_LENGTH)
+    @Column(name="consumer_key", updatable=false, length=DomainConstants.LTI_TOKEN_MAX_LENGTH)
     private String consumerKey;
 
     @Basic(optional=false)

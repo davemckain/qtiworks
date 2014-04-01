@@ -40,6 +40,8 @@ import uk.ac.ed.ph.qtiworks.config.QtiWorksApplicationContextHelper;
 import uk.ac.ed.ph.qtiworks.config.ServicesConfiguration;
 import uk.ac.ed.ph.qtiworks.manager.config.ManagerConfiguration;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -85,7 +87,7 @@ public final class QtiWorksEngineManager {
         actionMap.put("exportLtiDomains", new ExportLtiDomainsAction());
         actionMap.put("runMaintenanceJobs", new RunMaintenanceJobs());
         actionMap.put("sendQueuedLtiOutcomes", new SendQueuedLtiOutcomesAction());
-        actionMap.put("adhoc", new AdhocAction());
+//        actionMap.put("adhoc", new AdhocAction());
     }
 
     private Resource deploymentPropertiesResource;
@@ -256,7 +258,7 @@ public final class QtiWorksEngineManager {
                 + action.getActionParameterSummary()
                 + NEWLINE
                 + "    "
-                + action.getActionSummary().replace(NEWLINE, NEWLINE + "      ")
+                + StringUtilities.join(action.getActionSummary(), NEWLINE + "      ")
                 + NEWLINE);
     }
 

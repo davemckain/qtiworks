@@ -178,7 +178,7 @@ public class Delivery implements BaseEntity, TimestampedOnCreation {
      * look the keys up.
      */
     @Basic(optional=true)
-    @Column(name="lti_consumer_key_token", length=DomainConstants.LTI_TOKEN_LENGTH, updatable=false, unique=false)
+    @Column(name="lti_consumer_key_token", length=DomainConstants.LTI_TOKEN_MAX_LENGTH, updatable=false, unique=false)
     private String ltiConsumerKeyToken;
 
     /**
@@ -187,7 +187,7 @@ public class Delivery implements BaseEntity, TimestampedOnCreation {
      * LTI consumer secret (if used)
      */
     @Basic(optional=true)
-    @Column(name="lti_consumer_secret", length=DomainConstants.LTI_SECRET_LENGTH, updatable=false, unique=false)
+    @Column(name="lti_consumer_secret", length=DomainConstants.LTI_SHARED_SECRET_MAX_LENGTH, updatable=false, unique=false)
     private String ltiConsumerSecret;
 
     //------------------------------------------------------------
