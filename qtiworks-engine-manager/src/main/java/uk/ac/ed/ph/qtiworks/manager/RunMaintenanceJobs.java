@@ -51,8 +51,8 @@ public final class RunMaintenanceJobs extends ManagerAction {
     private static final Logger logger = LoggerFactory.getLogger(RunMaintenanceJobs.class);
 
     @Override
-    public String getActionSummary() {
-        return "Invokes ScheduledService.maintenanceJobs()";
+    public String[] getActionSummary() {
+        return new String[] { "Invokes ScheduledService.maintenanceJobs()." };
     }
 
     @Override

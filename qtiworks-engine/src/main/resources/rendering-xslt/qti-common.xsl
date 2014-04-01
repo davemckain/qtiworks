@@ -539,5 +539,28 @@ rendering.
     </xsl:if>
   </xsl:template>
 
+  <!-- ************************************************************ -->
+
+  <xsl:template name="includeJquery">
+    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.min.css"/>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"/>
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"/>
+  </xsl:template>
+
+  <xsl:template name="includeAssessmentJsAndCss">
+    <xsl:call-template name="includeJquery"/>
+    <link rel="stylesheet" href="{$webappContextPath}/rendering/css/assessment.css?{$qtiWorksVersion}" type="text/css" media="screen"/>
+    <script src="{$webappContextPath}/rendering/javascript/QtiWorksRendering.js?{$qtiWorksVersion}"/>
+  </xsl:template>
+
+  <xsl:template name="includeQtiWorksJsAndCss">
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,700italic|Ubuntu:500"/>
+    <link rel="stylesheet" href="{$webappContextPath}/lib/960/reset.css"/>
+    <link rel="stylesheet" href="{$webappContextPath}/lib/960/text.css"/>
+    <link rel="stylesheet" href="{$webappContextPath}/lib/fluid960gs/grid.css"/>
+    <link rel="stylesheet" href="{$webappContextPath}/includes/qtiworks.css?{$qtiWorksVersion}"/>
+    <xsl:call-template name="includeJquery"/>
+    <script src="{$webappContextPath}/includes/qtiworks.js?{$qtiWorksVersion}"/>
+  </xsl:template>
 
 </xsl:stylesheet>

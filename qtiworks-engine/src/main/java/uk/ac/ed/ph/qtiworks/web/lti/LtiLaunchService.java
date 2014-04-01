@@ -313,7 +313,7 @@ public class LtiLaunchService {
         /* Create suitable logical key */
         final String userId = ltiLaunchData.getUserId();
         final String logicalKey;
-        if (userId!=null && userId.length() < DomainConstants.LTI_TOKEN_LENGTH) {
+        if (userId!=null && userId.length() < DomainConstants.LTI_TOKEN_MAX_LENGTH) {
             /* The following key will be unique for a particular domain, role and TC */
             logicalKey = "domain/" + ltiDomain.getId() + "/" + userRole + "/" + userId;
         }
@@ -333,7 +333,7 @@ public class LtiLaunchService {
         ltiUser.setFirstName(ServiceUtilities.safelyTrimString(ltiLaunchData.getLisPersonNameGiven(), "Name", DomainConstants.USER_NAME_COMPONENT_MAX_LENGTH));
         ltiUser.setLastName(ServiceUtilities.safelyTrimString(ltiLaunchData.getLisPersonNameFamily(), "Not Provided", DomainConstants.USER_NAME_COMPONENT_MAX_LENGTH));
         ltiUser.setEmailAddress(ServiceUtilities.safelyTrimString(ltiLaunchData.getLisPersonContactEmailPrimary(), DomainConstants.USER_EMAIL_ADDRESS_MAX_LENGTH));
-        ltiUser.setLtiUserId(ServiceUtilities.safelyTrimString(userId, DomainConstants.LTI_TOKEN_LENGTH)); /* (May be null, trimmed if too long, so not necessarily unique) */
+        ltiUser.setLtiUserId(ServiceUtilities.safelyTrimString(userId, DomainConstants.LTI_TOKEN_MAX_LENGTH)); /* (May be null, trimmed if too long, so not necessarily unique) */
         ltiUser.setLisFullName(trimLisPersonFullName(ltiLaunchData.getLisPersonNameFull())); /* (May be null) */
         ltiUserDao.persist(ltiUser);
         return ltiUser;
@@ -343,7 +343,7 @@ public class LtiLaunchService {
         /* Create suitable logical key */
         final String logicalKey;
         final String userId = ltiLaunchData.getUserId();
-        if (userId!=null && userId.length() < DomainConstants.LTI_TOKEN_LENGTH) {
+        if (userId!=null && userId.length() < DomainConstants.LTI_TOKEN_MAX_LENGTH) {
             /* The following key will be unique for a particular Delivery, role and TC */
             logicalKey = "link/" + delivery.getId() + "/" + userId;
         }
@@ -363,7 +363,7 @@ public class LtiLaunchService {
         ltiUser.setFirstName(ServiceUtilities.safelyTrimString(ltiLaunchData.getLisPersonNameGiven(), "Name", DomainConstants.USER_NAME_COMPONENT_MAX_LENGTH));
         ltiUser.setLastName(ServiceUtilities.safelyTrimString(ltiLaunchData.getLisPersonNameFamily(), "Not Provided", DomainConstants.USER_NAME_COMPONENT_MAX_LENGTH));
         ltiUser.setEmailAddress(ServiceUtilities.safelyTrimString(ltiLaunchData.getLisPersonContactEmailPrimary(), DomainConstants.USER_EMAIL_ADDRESS_MAX_LENGTH));
-        ltiUser.setLtiUserId(ServiceUtilities.safelyTrimString(userId, DomainConstants.LTI_TOKEN_LENGTH)); /* (May be null, trimmed if too long, so not necessarily unique) */
+        ltiUser.setLtiUserId(ServiceUtilities.safelyTrimString(userId, DomainConstants.LTI_TOKEN_MAX_LENGTH)); /* (May be null, trimmed if too long, so not necessarily unique) */
         ltiUser.setLisFullName(trimLisPersonFullName(ltiLaunchData.getLisPersonNameFull())); /* (May be null) */
         ltiUserDao.persist(ltiUser);
         return ltiUser;
@@ -447,7 +447,7 @@ public class LtiLaunchService {
                 ltiContext = new LtiContext();
                 ltiContext.setLtiDomain(ltiDomain);
                 ltiContext.setContextId(contextId); /* FIXME: What should we do if this is too long to fit the column? */
-                ltiContext.setContextLabel(ServiceUtilities.trimString(ltiLaunchData.getContextLabel(), DomainConstants.LTI_TOKEN_LENGTH));
+                ltiContext.setContextLabel(ServiceUtilities.trimString(ltiLaunchData.getContextLabel(), DomainConstants.LTI_TOKEN_MAX_LENGTH));
                 ltiContext.setContextTitle(ltiLaunchData.getContextTitle());
                 ltiContextDao.persist(ltiContext);
                 logger.info("Created new LtiContext {}", ltiContext);
@@ -491,8 +491,8 @@ public class LtiLaunchService {
             ltiResource.setResourceLinkId(resourceLinkId); /* FIXME: What if too long for the column? */
             ltiResource.setResourceLinkTitle(ltiLaunchData.getResourceLinkTitle());
             ltiResource.setResourceLinkDescription(ltiLaunchData.getResourceLinkDescription());
-            ltiResource.setToolConsumerInfoProductFamilyCode(ServiceUtilities.safelyTrimString(ltiLaunchData.getToolConsumerInfoProductFamilyCode(), DomainConstants.LTI_TOKEN_LENGTH));
-            ltiResource.setToolConsumerInfoVersion(ServiceUtilities.safelyTrimString(ltiLaunchData.getToolConsumerInfoVersion(), DomainConstants.LTI_TOKEN_LENGTH));
+            ltiResource.setToolConsumerInfoProductFamilyCode(ServiceUtilities.safelyTrimString(ltiLaunchData.getToolConsumerInfoProductFamilyCode(), DomainConstants.LTI_TOKEN_MAX_LENGTH));
+            ltiResource.setToolConsumerInfoVersion(ServiceUtilities.safelyTrimString(ltiLaunchData.getToolConsumerInfoVersion(), DomainConstants.LTI_TOKEN_MAX_LENGTH));
             ltiResource.setToolConsumerInstanceName(ltiLaunchData.getToolConsumerInstanceName());
             ltiResource.setToolConsumerInstanceDescription(ltiLaunchData.getToolConsumerInstanceDescription());
             ltiResource.setDelivery(delivery);

@@ -34,11 +34,9 @@
 package uk.ac.ed.ph.qtiworks.web.authn;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.SystemUser;
-import uk.ac.ed.ph.qtiworks.web.WebUtilities;
 
 import java.io.IOException;
 
-import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -54,11 +52,10 @@ import org.springframework.web.context.WebApplicationContext;
  * <h2>How it works</h2>
  *
  * If authentication is deemed required (by the superclass), then the user is forwarded to
- * a JSP at {@link #loginFormJspPath}. This JSP should contain a form containing the following
+ * the JSP login page. This JSP should contain a form containing the following
  * parameters to fill in:
- *
  * <ul>
- *   <li>{@link SystemUserAuthenticationServlet#USER_ID_PARAM}: user ID</li>
+ *   <li>{@link SystemUserAuthenticationServlet#LOGIN_NAME_PARAM}: user ID</li>
  *   <li>{@link SystemUserAuthenticationServlet#PASSWORD_PARAM}: password</li>
  *   <li>{@link SystemUserAuthenticationServlet#PROTECTED_REQUEST_URI_PARAM}: the URL of "this" Resource</li>
  * </ul>
@@ -82,17 +79,8 @@ public final class SystemUserFormAuthenticator extends AbstractSystemUserAuthent
      */
     public static final String PROTECTED_REQUEST_URI_NAME = "qtiworks.web.authn.protectedRequestUri";
 
-    /** Name of parameter providing the path of the form login page */
-    public static final String FORM_LOGIN_JSP_PATH_PARAMETER_NAME = "formLoginJspPath";
-
-    /** Location of form login JSP page, supplied via context <init-param/> */
-    private final String loginFormJspPath;
-
-    public SystemUserFormAuthenticator(final WebApplicationContext webApplicationContext, final FilterConfig filterConfig)
-            throws ServletException {
+    public SystemUserFormAuthenticator(final WebApplicationContext webApplicationContext) {
         super(webApplicationContext);
-        this.loginFormJspPath = WebUtilities.getRequiredInitParameter(filterConfig, FORM_LOGIN_JSP_PATH_PARAMETER_NAME);
-        logger.info("Form login JSP has been set to {}", loginFormJspPath);
     }
 
     @Override
@@ -112,9 +100,9 @@ public final class SystemUserFormAuthenticator extends AbstractSystemUserAuthent
         if (queryString!=null) {
             requestUri += "?" + queryString;
         }
-        logger.debug("Forwarding to login page at " + loginFormJspPath);
+        logger.debug("Forwarding to login page at {}", SystemUserAuthenticationServlet.FORM_LOGIN_JSP_PATH);
         request.setAttribute(PROTECTED_REQUEST_URI_NAME, requestUri);
-        request.getRequestDispatcher(loginFormJspPath).forward(request, response);
+        request.getRequestDispatcher(SystemUserAuthenticationServlet.FORM_LOGIN_JSP_PATH).forward(request, response);
         return null;
     }
 }

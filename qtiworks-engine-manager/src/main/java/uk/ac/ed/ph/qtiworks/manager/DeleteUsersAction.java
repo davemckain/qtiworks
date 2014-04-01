@@ -52,8 +52,8 @@ public final class DeleteUsersAction extends ManagerAction {
     private static final Logger logger = LoggerFactory.getLogger(DeleteUsersAction.class);
 
     @Override
-    public String getActionSummary() {
-        return "Deletes the user(s) having the given login name(s) or ID(s)";
+    public String[] getActionSummary() {
+        return new String[] { "Deletes the user(s) having the given login name(s) or ID(s)." };
     }
 
     @Override

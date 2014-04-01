@@ -44,6 +44,8 @@ import org.springframework.context.ApplicationContext;
 /**
  * Hooks into {@link AdhocService}, which can sometimes be useful during
  * development.
+ * <p>
+ * Enable this when required.
  *
  * @author David McKain
  */
@@ -52,8 +54,10 @@ public final class AdhocAction extends ManagerAction {
     private static final Logger logger = LoggerFactory.getLogger(AdhocAction.class);
 
     @Override
-    public String getActionSummary() {
-        return "(Internal developer action)";
+    public String[] getActionSummary() {
+        return new String[] {
+        		"(Internal developer action)"
+		};
     }
 
     @Override

@@ -14,7 +14,7 @@ All Rights Reserved
     <h2>Instructor Login</h2>
 
     <c:if test="${!empty errors}">
-      <ul class="errors">
+      <ul class="formErrors">
         <c:forEach var="e" items="${errors}">
           <li>${e}</li>
         </c:forEach>
@@ -26,11 +26,11 @@ All Rights Reserved
         <label for="userId">Login ID:</label>
       </div>
       <div class="grid_2">
-        <input size="8" id="userId" name="userId" type="text" />
+        <input size="16" id="loginName" name="loginName" type="text" tabindex="1" value="${loginName}"/>
       </div>
       <div class="grid_9">
         <div class="hints">
-          If you don't already have an account you can <a href="${utils:internalLink(pageContext, '/signup')}">sign up</a>
+          If you don't already have an account you can <a href="${utils:internalLink(pageContext, '/signup')}" tabindex="5">sign up</a>
           for one.
         </div>
       </div>
@@ -41,16 +41,16 @@ All Rights Reserved
         <label for="password">Password:</label>
       </div>
       <div class="grid_10">
-        <input size="8" id="password" name="password" type="password" />
+        <input size="16" id="password" name="password" type="password" tabindex="2" value="${password}" />
       </div>
     </div>
     <div class="clear"></div>
     <div class="stdFormRow">
       <div class="grid_1">
-        <input type="submit" value="Login" />
+        <input type="submit" value="Login" tabindex="3" />
       </div>
       <div class="grid_1">
-        <input type="reset"  value="Clear" />
+        <input type="reset"  value="Clear" tabindex="4" />
       </div>
     </div>
     <div class="clear"></div>

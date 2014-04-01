@@ -40,6 +40,8 @@ import uk.ac.ed.ph.qtiworks.config.QtiWorksApplicationContextHelper;
 import uk.ac.ed.ph.qtiworks.config.ServicesConfiguration;
 import uk.ac.ed.ph.qtiworks.manager.config.ManagerConfiguration;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -66,24 +68,26 @@ public final class QtiWorksEngineManager {
 
     public static final String DEFAULT_DEPLOYMENT_PROPERTIES_NAME = "qtiworks-deployment.properties";
 
+    public static final String NEWLINE = System.getProperty("line.separator");
+
     private static final Map<String, ManagerAction> actionMap;
     static {
         actionMap = new LinkedHashMap<String, ManagerAction>();
         actionMap.put("bootstrap", new BootstrapAction());
         actionMap.put("rebuildSchema", new RebuildSchemaAction());
-        actionMap.put("importUsers", new ImportUsersAction());
         actionMap.put("reimportSamples", new ReimportSamplesAction());
         actionMap.put("updateSamples", new UpdateSamplesAction());
+        actionMap.put("importUsers", new ImportUsersAction());
+        actionMap.put("editUserPassword", new EditUserPasswordAction());
+        actionMap.put("deleteUsers", new DeleteUsersAction());
+        actionMap.put("resetUsers", new ResetUsersAction());
         actionMap.put("generateSecret", new GenerateSecretAction());
         actionMap.put("registerLtiDomain", new RegisterLtiDomainAction());
         actionMap.put("importLtiDomains", new ImportLtiDomainsAction());
         actionMap.put("exportLtiDomains", new ExportLtiDomainsAction());
-        actionMap.put("deleteUsers", new DeleteUsersAction());
-        actionMap.put("resetUsers", new ResetUsersAction());
         actionMap.put("runMaintenanceJobs", new RunMaintenanceJobs());
         actionMap.put("sendQueuedLtiOutcomes", new SendQueuedLtiOutcomesAction());
-        actionMap.put("update", new M4ToBeta1UpdateAction());
-        actionMap.put("adhoc", new AdhocAction());
+//        actionMap.put("adhoc", new AdhocAction());
     }
 
     private Resource deploymentPropertiesResource;
@@ -203,49 +207,62 @@ public final class QtiWorksEngineManager {
         return null;
     }
 
-    public static void printUsage() {
-        final String separator = System.getProperty("line.separator");
-        System.out.println("QTIWorks Engine Manager" + separator + separator
-                + "Specify final required action as final a command final line argument,"
-                + separator
-                + "plus any further parameters required by chosen action."
-                + separator + separator
-                + "Manager will load your QTIWorks deployment properties from a file "
-                + separator
-                + DEFAULT_DEPLOYMENT_PROPERTIES_NAME
-                + separator
-                + "in the current directory, use -config <path> to specify an"
-                + "alternate location."
-                + separator + separator
-                + "Avilable actions are:"
-                + separator);
-        for (final Entry<String, ManagerAction> actionEntry : actionMap.entrySet()) {
-            final String actionKey = actionEntry.getKey();
-            final ManagerAction action = actionEntry.getValue();
-            System.out.println(actionKey
-                    + " "
-                    + action.getActionParameterSummary()
-                    + separator
-                    + "    "
-                    + actionEntry.getValue().getActionSummary()
-                    + separator);
-        }
-    }
-
-    public static void main(final String[] args) {
+    public void run(final String[] args) {
         if (args.length==0) {
             /* No args provided, so print usage summary and exit */
             printUsage();
             System.exit(1);
         }
-        final QtiWorksEngineManager qtiWorksEngineManager = new QtiWorksEngineManager();
-        final String errorMessage = qtiWorksEngineManager.parseArguments(args);
+        /* Parse arguments & action paramters */
+        final String errorMessage = parseArguments(args);
         if (errorMessage!=null) {
             System.err.println(errorMessage);
-            printUsage();
+            if (action==null) {
+            	/* No action was selected, so print general usage */
+            	printUsage();
+            }
+            else {
+            	/* Action was selected but parameters must not have been valid, so print usage for action */
+            	System.out.println(NEWLINE + "Usage for this Action:");
+            	printActionUsage(actionName, action);
+            }
             System.exit(1);
         }
-        qtiWorksEngineManager.performAction();
+        performAction();
     }
 
+    private static void printUsage() {
+        System.out.println("QTIWorks Engine Manager" + NEWLINE + NEWLINE
+                + "Specify required action as a command line argument,"
+                + NEWLINE
+                + "plus any further parameters required by chosen action."
+                + NEWLINE + NEWLINE
+                + "Manager will load your QTIWorks deployment properties from a file:"
+                + NEWLINE
+                + DEFAULT_DEPLOYMENT_PROPERTIES_NAME
+                + NEWLINE
+                + "in the current directory. Use -config <path> to specify an alternate location."
+                + NEWLINE + NEWLINE
+                + "Avilable actions are:"
+                + NEWLINE);
+        for (final Entry<String, ManagerAction> actionEntry : actionMap.entrySet()) {
+            final String actionKey = actionEntry.getKey();
+            final ManagerAction action = actionEntry.getValue();
+            printActionUsage(actionKey, action);
+        }
+    }
+
+    private static void printActionUsage(final String actionKey, final ManagerAction action) {
+        System.out.println(actionKey
+                + " "
+                + action.getActionParameterSummary()
+                + NEWLINE
+                + "    "
+                + StringUtilities.join(action.getActionSummary(), NEWLINE + "      ")
+                + NEWLINE);
+    }
+
+    public static void main(final String[] args) {
+    	new QtiWorksEngineManager().run(args);
+    }
 }

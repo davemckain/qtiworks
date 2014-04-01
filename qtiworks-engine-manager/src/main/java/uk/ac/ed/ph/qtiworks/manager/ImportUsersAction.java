@@ -63,8 +63,12 @@ public final class ImportUsersAction extends ManagerAction {
     private File userImportCsv;
 
     @Override
-    public String getActionSummary() {
-        return "Imports (instructor) users into the system using data from a CSV file";
+    public String[] getActionSummary() {
+    	return new String[] {
+    			"Imports standalone instructor users into the system using data from a CSV file.",
+    			"CSV format: loginName,firstName,lastName,emailAddress,password[,sysAdmin?(t|f)]",
+    			"sysAdmin field is optional and should be 't' for true, otherwise treated as false (default)."
+    	};
     }
 
     @Override
@@ -119,19 +123,20 @@ public final class ImportUsersAction extends ManagerAction {
     }
 
     private boolean handleUserLine(final ManagerServices managerServices, final String[] fields) {
-        if (fields.length!=6) {
-            logger.warn("Expected 6 fields per line: ignoring " + Arrays.toString(fields));
+        if (fields.length<5) {
+            logger.warn("Expected 5 or 6 fields per line: ignoring " + Arrays.toString(fields));
             return false;
         }
+        final UserRole userRole = UserRole.INSTRUCTOR;
         final String loginName = fields[0];
         final String firstName = fields[1];
         final String lastName = fields[2];
         final String emailAddress = fields[3];
-        final boolean sysAdmin = "t".equals(fields[4]);
-        final String password = fields[5];
+        final String password = fields[4];
+        final boolean sysAdmin = (fields.length==6 && "t".equals(fields[5]));
 
-        final SystemUser created = managerServices.maybeCreateSystemUser(UserRole.INSTRUCTOR,
-                loginName, firstName, lastName, emailAddress, sysAdmin, password);
+        final SystemUser created = managerServices.maybeCreateSystemUser(userRole,
+                loginName, firstName, lastName, emailAddress, password, sysAdmin);
         return created!=null;
     }
 

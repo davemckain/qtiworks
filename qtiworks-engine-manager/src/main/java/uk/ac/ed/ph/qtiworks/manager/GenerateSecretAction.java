@@ -52,13 +52,13 @@ public final class GenerateSecretAction extends ManagerAction {
     private static final Logger logger = LoggerFactory.getLogger(GenerateSecretAction.class);
 
     @Override
-    public String getActionSummary() {
-        return "Generates a random string for use as a shared secret";
+    public String[] getActionSummary() {
+        return new String [] { "Generates a random string for use as a shared secret." };
     }
 
     @Override
     public void run(final ApplicationContext applicationContext, final List<String> parameters) {
-        final String result = ServiceUtilities.createRandomAlphanumericToken(DomainConstants.LTI_SECRET_LENGTH);
+        final String result = ServiceUtilities.createRandomAlphanumericToken(DomainConstants.LTI_SHARED_SECRET_MAX_LENGTH);
         logger.info("Generated secret: {}", result);
     }
 }

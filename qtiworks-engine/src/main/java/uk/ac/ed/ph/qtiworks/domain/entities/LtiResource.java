@@ -111,7 +111,7 @@ public class LtiResource implements BaseEntity, TimestampedOnCreation {
     private LtiContext ltiContext;
 
     @Basic(optional=false)
-    @Column(name="resource_link_id", length=DomainConstants.LTI_TOKEN_LENGTH, updatable=false)
+    @Column(name="resource_link_id", length=DomainConstants.LTI_TOKEN_MAX_LENGTH, updatable=false)
     private String resourceLinkId;
 
     @Lob
@@ -127,11 +127,11 @@ public class LtiResource implements BaseEntity, TimestampedOnCreation {
     private String resourceLinkDescription;
 
     @Basic(optional=true)
-    @Column(name="tool_consumer_info_product_family_code", length=DomainConstants.LTI_TOKEN_LENGTH, updatable=false)
+    @Column(name="tool_consumer_info_product_family_code", length=DomainConstants.LTI_TOKEN_MAX_LENGTH, updatable=false)
     private String toolConsumerInfoProductFamilyCode;
 
     @Basic(optional=true)
-    @Column(name="tool_consumer_info_version", length=DomainConstants.LTI_TOKEN_LENGTH, updatable=false)
+    @Column(name="tool_consumer_info_version", length=DomainConstants.LTI_TOKEN_MAX_LENGTH, updatable=false)
     private String toolConsumerInfoVersion;
 
     @Lob

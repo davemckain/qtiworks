@@ -49,9 +49,9 @@ primaryRouting (action -> URL)
     <link rel="stylesheet" href="${utils:internalLink(pageContext, '/lib/960/text.css')}">
     <link rel="stylesheet" href="${utils:internalLink(pageContext, '/lib/fluid960gs/grid.css')}">
     <link rel="stylesheet" href="${utils:internalLink(pageContext, '/includes/qtiworks.css')}?${qtiWorksVersion}">
-    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.css">
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.min.css">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
     <%-- TODO: Move the next script into a single library --%>
     <script src="${utils:internalLink(pageContext, '/includes/qtiworks.js')}?${qtiWorksVersion}"></script>
   </head>

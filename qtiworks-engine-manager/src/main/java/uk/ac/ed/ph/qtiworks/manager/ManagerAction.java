@@ -55,9 +55,9 @@ public abstract class ManagerAction {
     }
 
     /**
-     * Return a one line summary of usage for this action
+     * Return a summary of usage for this action, as an array of lines.
      */
-    public abstract String getActionSummary();
+    public abstract String[] getActionSummary();
 
     /**
      * Returns name of the Spring <code>@Profile</code> to use.

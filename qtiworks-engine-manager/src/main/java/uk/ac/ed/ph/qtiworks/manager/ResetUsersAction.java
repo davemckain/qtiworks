@@ -52,8 +52,8 @@ public final class ResetUsersAction extends ManagerAction {
     private static final Logger logger = LoggerFactory.getLogger(ResetUsersAction.class);
 
     @Override
-    public String getActionSummary() {
-        return "Wipes data for the user(s) having the given login name(s) or ID(s)";
+    public String[] getActionSummary() {
+        return new String[] { "Wipes data for the user(s) having the given login name(s) or ID(s)." };
     }
 
     @Override

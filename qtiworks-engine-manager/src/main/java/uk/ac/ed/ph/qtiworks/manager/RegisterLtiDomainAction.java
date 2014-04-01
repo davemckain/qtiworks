@@ -55,20 +55,24 @@ public final class RegisterLtiDomainAction extends ManagerAction {
     private static final Logger logger = LoggerFactory.getLogger(RegisterLtiDomainAction.class);
 
     @Override
-    public String getActionSummary() {
-        return "Registers a new LTI domain";
+    public String[] getActionSummary() {
+        return new String[] {
+        		"Registers a new LTI domain.",
+        		"We sugggest using the TC domain name as the consumerKey.",
+        		"A shared secret will be generated if not explicitly provided."
+        };
     }
 
     @Override
     public String getActionParameterSummary() {
-        return "<tcDomainName> (<sharedSecret>)";
+        return "<consumeryKey> (<sharedSecret>)";
     }
 
     @Override
     public String validateParameters(final List<String> parameters) {
         final int parameterCount = parameters.size();
         if (parameterCount==0 || parameterCount>2) {
-            return "Parameters: <tool consumer domain name> (<shared secret>)";
+            return "Parameters: <consumerKey> (<shared secret>)";
         }
         return null;
     }
@@ -77,20 +81,20 @@ public final class RegisterLtiDomainAction extends ManagerAction {
     public void run(final ApplicationContext applicationContext, final List<String> parameters) {
         final ManagerServices managerServices = applicationContext.getBean(ManagerServices.class);
 
-        final String tcDomainName = parameters.get(0);
+        final String consumerKey = parameters.get(0);
         final String sharedSecret;
         if (parameters.size()==2) {
             sharedSecret = parameters.get(1);
         }
         else {
-            sharedSecret = ServiceUtilities.createRandomAlphanumericToken(DomainConstants.LTI_SECRET_LENGTH);
+            sharedSecret = ServiceUtilities.createRandomAlphanumericToken(DomainConstants.LTI_SHARED_SECRET_MAX_LENGTH);
         }
-        if (sharedSecret.length()<LTI_SHARED_SECRET_MIN_LENGTH || sharedSecret.length()>DomainConstants.LTI_SECRET_LENGTH) {
-            logger.error("Shared secret must be between {} and {} characters", LTI_SHARED_SECRET_MIN_LENGTH, DomainConstants.LTI_SECRET_LENGTH);
+        if (sharedSecret.length()<LTI_SHARED_SECRET_MIN_LENGTH || sharedSecret.length()>DomainConstants.LTI_SHARED_SECRET_MAX_LENGTH) {
+            logger.error("Shared secret must be between {} and {} characters", LTI_SHARED_SECRET_MIN_LENGTH, DomainConstants.LTI_SHARED_SECRET_MAX_LENGTH);
             return;
         }
-        if (managerServices.createOrUpdateLtiDomain(tcDomainName, sharedSecret)) {
-            logger.info("Registerd new LTI domain. Consumer key is {}. Shared secret is {}", tcDomainName, sharedSecret);
+        if (managerServices.createOrUpdateLtiDomain(consumerKey, sharedSecret)) {
+            logger.info("Registered new LTI domain. Consumer key is {}. Shared secret is {}", consumerKey, sharedSecret);
         }
     }
 }
