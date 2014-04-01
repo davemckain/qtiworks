@@ -67,10 +67,6 @@ QTIWorks Delivery Engine web deployment descriptor
     <filter-name>SystemUserAuthenticationFilter</filter-name>
     <filter-class>uk.ac.ed.ph.qtiworks.web.authn.SystemUserAuthenticationFilter</filter-class>
     <init-param>
-      <param-name>formLoginJspPath</param-name>
-      <param-value>/WEB-INF/jsp/login/systemUserLogin.jsp</param-value>
-    </init-param>
-    <init-param>
       <param-name>allowedRoles</param-name>
       <param-value>INSTRUCTOR</param-value>
     </init-param>
@@ -85,10 +81,6 @@ QTIWorks Delivery Engine web deployment descriptor
     <servlet-name>SystemUserAuthenticationServlet</servlet-name>
     <servlet-class>uk.ac.ed.ph.qtiworks.web.authn.SystemUserAuthenticationServlet</servlet-class>
     <load-on-startup>0</load-on-startup>
-    <init-param>
-      <param-name>formLoginErrorJspPath</param-name>
-      <param-value>/WEB-INF/jsp/login/systemUserLoginError.jsp</param-value>
-    </init-param>
   </servlet>
   <servlet-mapping>
     <servlet-name>SystemUserAuthenticationServlet</servlet-name>

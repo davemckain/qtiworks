@@ -95,7 +95,7 @@ public final class SystemUserAuthenticationFilter extends AbstractWebAuthenticat
         final String fakeLoginName = qtiWorksDeploymentSettings.getFakeLoginName();
         if (StringUtilities.isNullOrBlank(fakeLoginName)) {
             /* Use standard form authentication */
-            abstractSystemUserAuthenticator = new SystemUserFormAuthenticator(webApplicationContext, filterConfig);
+            abstractSystemUserAuthenticator = new SystemUserFormAuthenticator(webApplicationContext);
         }
         else {
             /* Use fake authentication */

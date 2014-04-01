@@ -38,13 +38,14 @@ import uk.ac.ed.ph.qtiworks.services.AuditLogger;
 import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.dao.SystemUserDao;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -68,37 +69,13 @@ public final class SystemUserAuthenticationServlet extends HttpServlet {
 
     private static final Logger logger = LoggerFactory.getLogger(SystemUserAuthenticationServlet.class);
 
-    /**
-     * Name of parameter providing the location of the Form Login JSP (when
-     * used)
-     */
-    public static final String FORM_LOGIN_ERROR_JSP_PATH_PARAMETER_NAME = "formLoginErrorJspPath";
-
-    public static final String USER_ID_PARAM = "userId";
+    public static final String LOGIN_NAME_PARAM = "loginName";
     public static final String PASSWORD_PARAM = "password";
     public static final String PROTECTED_REQUEST_URI_PARAM = "protectedRequestUri";
-
-    /**
-     * Location of form login error JSP page, passed via context <init-param/>.
-     * If authentication fails, the user will be forwarded to this page.
-     * The <tt>errors</tt> attribute contains details about what went wrong.
-     */
-    private String loginErrorJspPath;
+    public static final String FORM_LOGIN_JSP_PATH = "/WEB-INF/jsp/login/systemUserLogin.jsp";
 
     private transient SystemUserDao systemUserDao;
     private transient AuditLogger auditLogger;
-
-    @Override
-    public void init(final ServletConfig config) throws ServletException {
-        super.init(config);
-
-        /* Check required <init-param>s */
-        loginErrorJspPath = config.getInitParameter(FORM_LOGIN_ERROR_JSP_PATH_PARAMETER_NAME);
-        if (loginErrorJspPath==null) {
-            logger.error("Required <init-param/> {} has not been passed to {}", FORM_LOGIN_ERROR_JSP_PATH_PARAMETER_NAME, getClass().getName());
-            throw new ServletException("Required <init-param/> was not set for servlet");
-        }
-    }
 
     /** Ensures that the non-serializable properties of this servlet are created. */
     private void requireBeans() throws ServletException {
@@ -115,7 +92,6 @@ public final class SystemUserAuthenticationServlet extends HttpServlet {
         }
     }
 
-
     @Override
     protected void doPost(final HttpServletRequest request, final HttpServletResponse response)
             throws ServletException, IOException {
@@ -130,8 +106,8 @@ public final class SystemUserAuthenticationServlet extends HttpServlet {
         }
 
         /* Get supplied login credentials */
-        final String loginName = request.getParameter(USER_ID_PARAM);
-        final String password = request.getParameter(PASSWORD_PARAM);
+        final String loginName = StringUtilities.emptyIfNull(request.getParameter(LOGIN_NAME_PARAM)).trim();
+        final String password = StringUtilities.emptyIfNull(request.getParameter(PASSWORD_PARAM)).trim();
         final List<String> errors = new ArrayList<String>();
         final SystemUser authenticatedUser = tryAuthentication(loginName, password, errors);
         if (authenticatedUser!=null) {
@@ -146,23 +122,28 @@ public final class SystemUserAuthenticationServlet extends HttpServlet {
         else {
             /* Forward to login error page, keeping the referral details in session */
             auditLogger.recordEvent("System/form authentication failed for " + loginName);
-            logger.debug("Authentication failed - redirecting to {}", loginErrorJspPath);
+            logger.debug("Authentication failed - redirecting back to {}", FORM_LOGIN_JSP_PATH);
             request.setAttribute("errors", errors);
-            request.getRequestDispatcher(loginErrorJspPath).forward(request, response);
+            request.setAttribute("loginName", loginName);
+            request.setAttribute("password", password);
+            request.getRequestDispatcher(FORM_LOGIN_JSP_PATH).forward(request, response);
         }
     }
 
     protected SystemUser tryAuthentication(final String loginName, final String password, final List<String> errors) {
         /* Make sure details have been specified */
-        final String badDetails = "Incorrect user ID or password";
-        if (loginName==null) {
-            errors.add("No user ID specified");
+        if (loginName.isEmpty()) {
+            errors.add("Please enter your login name.");
         }
-        if (password==null) {
-            errors.add("No password specified");
+        if (password.isEmpty()) {
+            errors.add("Please enter your password.");
         }
-        /* Then look up user */
+        if (!errors.isEmpty()) {
+            return null;
+        }
+        /* Look up user */
         final SystemUser user = systemUserDao.findByLoginName(loginName);
+        final String badDetails = "Sorry, your login details were not correct. Please try again.";
         if (user==null) {
             errors.add(badDetails);
             return null;
@@ -175,7 +156,7 @@ public final class SystemUserAuthenticationServlet extends HttpServlet {
         }
         /* Make sure account is not disabled */
         if (user.isLoginDisabled()) {
-            errors.add("Sorry, your account is currently disabled");
+            errors.add("Sorry, your account is currently disabled.");
             return null;
         }
         return user;
