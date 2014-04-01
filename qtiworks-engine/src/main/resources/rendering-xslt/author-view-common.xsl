@@ -26,9 +26,9 @@ Common templates for item & test author views
     <link rel="stylesheet" href="{$webappContextPath}/lib/960/text.css"/>
     <link rel="stylesheet" href="{$webappContextPath}/lib/fluid960gs/grid.css"/>
     <link rel="stylesheet" href="{$webappContextPath}/includes/qtiworks.css?{$qtiWorksVersion}"/>
-    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.css"/>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"/>
-    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"/>
+    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css"/>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"/>
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"/>
     <script src="{$webappContextPath}/includes/qtiworks.js?{$qtiWorksVersion}"/>
   </xsl:template>
 
