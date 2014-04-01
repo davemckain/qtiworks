@@ -20,20 +20,6 @@ Common templates for item & test author views
 
   <!-- ************************************************************ -->
 
-  <xsl:template name="htmlHeadStuff">
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,700italic|Ubuntu:500"/>
-    <link rel="stylesheet" href="{$webappContextPath}/lib/960/reset.css"/>
-    <link rel="stylesheet" href="{$webappContextPath}/lib/960/text.css"/>
-    <link rel="stylesheet" href="{$webappContextPath}/lib/fluid960gs/grid.css"/>
-    <link rel="stylesheet" href="{$webappContextPath}/includes/qtiworks.css?{$qtiWorksVersion}"/>
-    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css"/>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"/>
-    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"/>
-    <script src="{$webappContextPath}/includes/qtiworks.js?{$qtiWorksVersion}"/>
-  </xsl:template>
-
-  <!-- ************************************************************ -->
-
   <xsl:template name="errorStatusPanel" as="element(ul)?">
     <xsl:if test="exists($notifications) or ($validated and not($valid))">
       <xsl:variable name="errors" select="$notifications[@level='ERROR']" as="element(qw:notification)*"/>

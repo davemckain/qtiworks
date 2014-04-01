@@ -29,7 +29,7 @@ Input document: doesn't matter
     <html>
       <head>
         <title>Author Debug View</title>
-        <xsl:call-template name="htmlHeadStuff"/>
+        <xsl:call-template name="includeQtiWorksJsAndCss"/>
       </head>
       <body class="page authorInfo">
         <div class="container_12">
