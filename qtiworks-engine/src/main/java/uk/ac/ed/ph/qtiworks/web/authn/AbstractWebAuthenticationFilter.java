@@ -33,15 +33,12 @@
  */
 package uk.ac.ed.ph.qtiworks.web.authn;
 
-import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
-import uk.ac.ed.ph.qtiworks.web.AbstractFilterUsingApplicationContext;
+import uk.ac.ed.ph.qtiworks.web.AbstractWebFilterUsingApplicationContext;
 
 import java.io.IOException;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -51,20 +48,11 @@ import javax.servlet.http.HttpSession;
  *
  * @author David McKain
  */
-public abstract class AbstractWebAuthenticationFilter extends AbstractFilterUsingApplicationContext {
+public abstract class AbstractWebAuthenticationFilter extends AbstractWebFilterUsingApplicationContext {
 
     @Override
-    public final void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain)
+    public final void doWebFilter(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse, final FilterChain chain)
             throws IOException, ServletException {
-        /* This filter can only HTTP stuff */
-        if (!(request instanceof HttpServletRequest)) {
-            throw new QtiWorksLogicException("Expected request to be a HttpServletRequest");
-        }
-        if (!(response instanceof HttpServletResponse)) {
-            throw new QtiWorksLogicException("Expected response to be a HttpServletResponse");
-        }
-        final HttpServletRequest httpRequest = (HttpServletRequest) request;
-        final HttpServletResponse httpResponse = (HttpServletResponse) response;
         final HttpSession session = httpRequest.getSession();
         doFilterAuthentication(httpRequest, httpResponse, chain, session);
     }

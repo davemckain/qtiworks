@@ -41,8 +41,8 @@ import java.util.Date;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.context.WebApplicationContext;
 
@@ -54,7 +54,7 @@ import org.springframework.web.context.WebApplicationContext;
  *
  * @author David McKain
  */
-public final class RequestTimestampFilter extends AbstractFilterUsingApplicationContext {
+public final class RequestTimestampFilter extends AbstractWebFilterUsingApplicationContext {
 
     private RequestTimestampContext requestTimestampContext;
 
@@ -65,7 +65,7 @@ public final class RequestTimestampFilter extends AbstractFilterUsingApplication
     }
 
     @Override
-    public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain filterChain)
+    public void doWebFilter(final HttpServletRequest request, final HttpServletResponse response, final FilterChain filterChain)
             throws IOException, ServletException {
         try {
             final Date timestamp = new Date();

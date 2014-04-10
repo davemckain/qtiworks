@@ -17,24 +17,28 @@ All Rights Reserved
   </div>
   <div class="clear"></div>
 
+  <c:set var="publicDemosEnabled" value="${qtiWorksDeploymentSettings['publicDemosEnabled']}"/>
+  <c:set var="gridSize" value="${publicDemosEnabled ? 3 : 6}"/>
   <div class="boxes">
-    <div class="grid_3">
-      <div class="box">
-        <a href="${utils:internalLink(pageContext, '/about/')}" class="boxButton about" title="About QTIWorks">
-          <h3>About QTIWorks</h3>
-          <div>Find out more about QTIWorks</div>
-        </a>
+    <c:if test="${publicDemosEnabled}">
+      <div class="grid_${gridSize}">
+        <div class="box">
+          <a href="${utils:internalLink(pageContext, '/about/')}" class="boxButton about" title="About QTIWorks">
+            <h3>About QTIWorks</h3>
+            <div>Find out more about QTIWorks</div>
+          </a>
+        </div>
       </div>
-    </div>
-    <div class="grid_3">
-      <div class="box">
-        <a href="${utils:internalLink(pageContext, '/public/')}" class="boxButton demos" title="Demos">
-          <h3>Demos</h3>
-          <div>Try some demos of QTIWorks' functionality</div>
-        </a>
+      <div class="grid_${gridSize}">
+        <div class="box">
+          <a href="${utils:internalLink(pageContext, '/public/')}" class="boxButton demos" title="Demos">
+            <h3>Demos</h3>
+            <div>Try some demos of QTIWorks' functionality</div>
+          </a>
+        </div>
       </div>
-    </div>
-    <div class="grid_3">
+    </c:if>
+    <div class="grid_${gridSize}">
       <div class="box">
         <a href="${utils:internalLink(pageContext, '/signup/')}" class="boxButton signup" title="Request Access">
           <h3>Request Access</h3>
@@ -42,7 +46,7 @@ All Rights Reserved
         </a>
       </div>
     </div>
-    <div class="grid_3">
+    <div class="grid_${gridSize}">
       <div class="box">
         <a href="${utils:internalLink(pageContext, '/instructor/')}" class="boxButton login" title="Log In">
           <h3>Log In</h3>

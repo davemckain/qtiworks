@@ -33,9 +33,18 @@
  */
 package uk.ac.ed.ph.qtiworks.web;
 
+import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
+
+import java.io.IOException;
+
 import javax.servlet.Filter;
+import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,14 +52,14 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 /**
- * Convenience base class for filters that need access to the Spring
+ * Convenience base class for web filters that need access to the Spring
  * {@link WebApplicationContext} when initialising themselves.
  *
  * @author David McKain
  */
-public abstract class AbstractFilterUsingApplicationContext implements Filter {
+public abstract class AbstractWebFilterUsingApplicationContext implements Filter {
 
-    private static final Logger logger = LoggerFactory.getLogger(AbstractFilterUsingApplicationContext.class);
+    private static final Logger logger = LoggerFactory.getLogger(AbstractWebFilterUsingApplicationContext.class);
 
     /** Spring {@link WebApplicationContext} */
     private WebApplicationContext applicationContext;
@@ -84,4 +93,34 @@ public abstract class AbstractFilterUsingApplicationContext implements Filter {
     public void destroy() {
         /* No-op */
     }
+
+    /**
+     * Conveniently checks and casts the generic {@link ServletRequest} and {@link ServletResponse} objects
+     * into {@link HttpServletRequest} and {@link HttpServletResponse}, before passing to subclass.
+     */
+    @Override
+    public final void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain)
+            throws IOException, ServletException {
+        /* This filter can only HTTP stuff */
+        if (!(request instanceof HttpServletRequest)) {
+            throw new QtiWorksLogicException("Expected request to be a HttpServletRequest");
+        }
+        if (!(response instanceof HttpServletResponse)) {
+            throw new QtiWorksLogicException("Expected response to be a HttpServletResponse");
+        }
+        final HttpServletRequest httpRequest = (HttpServletRequest) request;
+        final HttpServletResponse httpResponse = (HttpServletResponse) response;
+        doWebFilter(httpRequest, httpResponse, chain);
+    }
+
+    /**
+     * Subclasses should implement this to do their filtering.
+     *
+     * @param httpRequest
+     * @param httpResponse
+     * @param chain
+     */
+    protected abstract void doWebFilter(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse,
+            final FilterChain chain)
+            throws IOException, ServletException;
 }
