@@ -74,8 +74,7 @@ public final class QtiWorksEngineManager {
     static {
         actionMap = new LinkedHashMap<String, ManagerAction>();
         actionMap.put("bootstrap", new BootstrapAction());
-        actionMap.put("rebuildSchema", new RebuildSchemaAction());
-        actionMap.put("reimportSamples", new ReimportSamplesAction());
+        actionMap.put("importSamples", new ImportSamplesAction());
         actionMap.put("updateSamples", new UpdateSamplesAction());
         actionMap.put("importUsers", new ImportUsersAction());
         actionMap.put("editUserPassword", new EditUserPasswordAction());

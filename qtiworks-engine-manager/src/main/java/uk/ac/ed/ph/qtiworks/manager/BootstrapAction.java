@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.qtiworks.manager;
 
 import uk.ac.ed.ph.qtiworks.config.QtiWorksProfiles;
-import uk.ac.ed.ph.qtiworks.manager.services.SampleResourceImporter;
 import uk.ac.ed.ph.qtiworks.services.FilespaceManager;
 
 import java.util.List;
@@ -44,7 +43,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Bootstraps the database schema and imports the sample items
+ * Bootstraps the database schema
  *
  * @author David McKain
  */
@@ -55,7 +54,7 @@ public final class BootstrapAction extends ManagerAction {
     @Override
     public String[] getActionSummary() {
         return new String[] {
-        		"Bootstraps the QTIWorks database and imports sample assessments.",
+        		"Bootstraps the QTIWorks database and file store.",
         		"WARNING! Any existing data will be deleted!"
         };
     }
@@ -73,14 +72,11 @@ public final class BootstrapAction extends ManagerAction {
 
     @Override
     public void run(final ApplicationContext applicationContext, final List<String> parameters) {
-        /* Delete filesystem data too */
+    	/* (Bootstrap profile does stuff first) */
+
         logger.info("Deleting any existing user data from filesystem");
         final FilespaceManager filespaceManager = applicationContext.getBean(FilespaceManager.class);
         filespaceManager.deleteAllUserData();
-
-        logger.info("Importing QTI samples");
-        final SampleResourceImporter sampleResourceImporter = applicationContext.getBean(SampleResourceImporter.class);
-        sampleResourceImporter.updateQtiSamples();
 
         logger.info("QTIWorks database bootstrap has completed successfully");
     }

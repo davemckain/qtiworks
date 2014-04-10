@@ -42,23 +42,23 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Reimports the set of sample assessments. Existing samples (and data
+ * (Re)imports the set of sample assessments. Existing samples (and data
  * gathered about them) will be deleted first.
  *
  * @author David McKain
  */
-public final class ReimportSamplesAction extends ManagerAction {
+public final class ImportSamplesAction extends ManagerAction {
 
-    private static final Logger logger = LoggerFactory.getLogger(ReimportSamplesAction.class);
+    private static final Logger logger = LoggerFactory.getLogger(ImportSamplesAction.class);
 
     @Override
     public String[] getActionSummary() {
-        return new String[] { "Deletes then re-imports all QTIWorks sample assessments." };
+        return new String[] { "Imports all QTIWorks sample assessments, deleting any existing samples first" };
     }
 
     @Override
     public void run(final ApplicationContext applicationContext, final List<String> parameters) {
-        logger.info("Reimporting QTI samples");
+        logger.info("(Re)importing QTI samples");
         final SampleResourceImporter sampleResourceImporter = applicationContext.getBean(SampleResourceImporter.class);
         sampleResourceImporter.reimportQtiSamples();
 

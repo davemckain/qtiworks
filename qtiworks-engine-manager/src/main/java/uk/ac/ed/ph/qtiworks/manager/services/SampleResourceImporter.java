@@ -130,6 +130,8 @@ public class SampleResourceImporter {
     /**
      * Wipes then re-imports the QTI samples. Any data collected from existing samples will
      * be deleted in the process.
+     * <p>
+     * This creates a user to own these samples if this hasn't been done so already.
      */
     public void reimportQtiSamples() {
         /* Get sample owner, creating if required */
@@ -144,6 +146,7 @@ public class SampleResourceImporter {
 
     /**
      * Imports any (valid) QTI samples that are not already registered in the DB.
+     * <p>
      * This creates a user to own these samples if this hasn't been done so already.
      */
     public void updateQtiSamples() {
