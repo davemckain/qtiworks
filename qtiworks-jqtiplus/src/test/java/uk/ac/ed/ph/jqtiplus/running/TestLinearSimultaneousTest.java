@@ -66,8 +66,8 @@ public final class TestLinearSimultaneousTest extends SimpleProcessingTestBase {
         /* RP & OP should not have happened */
         assertItemResponseProcessingNotRun();
         assertOutcomeProcessingNotRun();
-        assertItemScore(item1SessionState, 0.0);
-        assertItemScore(item2SessionState, 0.0);
+        assertChoiceItemScore(item1SessionState, 0.0);
+        assertChoiceItemScore(item2SessionState, 0.0);
         assertTestScore(0.0);
     }
 
@@ -83,11 +83,11 @@ public final class TestLinearSimultaneousTest extends SimpleProcessingTestBase {
         testSessionController.endCurrentTestPart(operationTimestamp);
 
         /* Check what happened afterwards */
-        assertItemResponseProcessingRun(item1SessionState);
-        assertItemResponseProcessingNotRun(item2SessionState);
+        assertChoiceItemResponseProcessingRun(item1SessionState);
+        assertChoiceItemResponseProcessingNotRun(item2SessionState);
         assertOutcomeProcessingRun();
-        assertItemScore(item1SessionState, 1.0);
-        assertItemScore(item2SessionState, 0.0);
+        assertChoiceItemScore(item1SessionState, 1.0);
+        assertChoiceItemScore(item2SessionState, 0.0);
         assertTestScore(1.0);
     }
 
@@ -119,11 +119,11 @@ public final class TestLinearSimultaneousTest extends SimpleProcessingTestBase {
         assertTestPartEnded(endTestPartTimestamp);
 
         /* RP & OP should now have happened */
-        assertItemResponseProcessingRun(item1SessionState);
-        assertItemResponseProcessingRun(item2SessionState);
+        assertChoiceItemResponseProcessingRun(item1SessionState);
+        assertChoiceItemResponseProcessingRun(item2SessionState);
         assertOutcomeProcessingRun();
-        assertItemScore(item1SessionState, 0.0);
-        assertItemScore(item2SessionState, 1.0);
+        assertChoiceItemScore(item1SessionState, 0.0);
+        assertChoiceItemScore(item2SessionState, 1.0);
         assertTestScore(1.0);
     }
 
@@ -152,11 +152,11 @@ public final class TestLinearSimultaneousTest extends SimpleProcessingTestBase {
         assertTestPartEnded(endTestPartTimestamp);
 
         /* RP & OP should now have happened */
-        assertItemResponseProcessingRun(item1SessionState);
-        assertItemResponseProcessingRun(item2SessionState);
+        assertChoiceItemResponseProcessingRun(item1SessionState);
+        assertChoiceItemResponseProcessingRun(item2SessionState);
         assertOutcomeProcessingRun();
-        assertItemScore(item1SessionState, 0.0);
-        assertItemScore(item2SessionState, 0.0);
+        assertChoiceItemScore(item1SessionState, 0.0);
+        assertChoiceItemScore(item2SessionState, 0.0);
         assertTestScore(0.0);
     }
 }

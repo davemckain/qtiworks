@@ -43,6 +43,10 @@ import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeKey;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
 import uk.ac.ed.ph.jqtiplus.state.marshalling.TestSessionStateXmlMarshaller;
 import uk.ac.ed.ph.jqtiplus.testutils.UnitTestHelper;
+import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.types.ResponseData;
+import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
+import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -64,6 +68,11 @@ import org.w3c.dom.Document;
  * @author David McKain
  */
 public abstract class TestTestBase {
+
+    public static final Identifier CHOICE_ITEM_TP_DONE = Identifier.assumedLegal("TP_DONE");
+    public static final Identifier CHOICE_ITEM_RP_DONE = Identifier.assumedLegal("RP_DONE");
+    public static final Identifier CHOICE_ITEM_RESPONSE = Identifier.assumedLegal("RESPONSE");
+    public static final Identifier CHOICE_ITEM_SCORE = Identifier.assumedLegal("SCORE");
 
     protected Date testEntryTimestamp;
     protected TestSessionController testSessionController;
@@ -392,5 +401,33 @@ public abstract class TestTestBase {
 
     protected void assertItemNotSelectable(final String identifier) {
         Assert.assertFalse(testSessionController.maySelectItemNonlinear(getTestNodeKey(identifier)));
+    }
+
+    //-------------------------------------------------------
+
+    protected void assertChoiceItemTemplateProcessingNotRun(final ItemSessionState itemSessionState) {
+        Assert.assertEquals(BooleanValue.FALSE, itemSessionState.getTemplateValue(CHOICE_ITEM_TP_DONE));
+    }
+
+    protected void assertChoiceItemTemplateProcessingRun(final ItemSessionState itemSessionState) {
+        Assert.assertEquals(BooleanValue.TRUE, itemSessionState.getTemplateValue(CHOICE_ITEM_TP_DONE));
+    }
+
+    protected void assertChoiceItemResponseProcessingNotRun(final ItemSessionState itemSessionState) {
+        Assert.assertEquals(BooleanValue.FALSE, itemSessionState.getOutcomeValue(CHOICE_ITEM_RP_DONE));
+    }
+
+    protected void assertChoiceItemResponseProcessingRun(final ItemSessionState itemSessionState) {
+        Assert.assertEquals(BooleanValue.TRUE, itemSessionState.getOutcomeValue(CHOICE_ITEM_RP_DONE));
+    }
+
+    protected void assertChoiceItemScore(final ItemSessionState itemSessionState, final Double expected) {
+        RunAssertions.assertValueEqualsDouble(expected, itemSessionState.getOutcomeValue(CHOICE_ITEM_SCORE));
+    }
+
+    protected void handleChoiceResponse(final Date timestamp, final String choiceIdentifier) {
+        final Map<Identifier, ResponseData> responseMap = new HashMap<Identifier, ResponseData>();
+        responseMap.put(CHOICE_ITEM_RESPONSE, new StringResponseData(choiceIdentifier));
+        testSessionController.handleResponsesToCurrentItem(timestamp, responseMap);
     }
 }

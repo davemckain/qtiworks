@@ -62,11 +62,11 @@ public final class TestNonlinearIndividualTest extends SimpleProcessingTestBase 
         handleChoiceResponse("ChoiceA");
 
         /* RP should have happened on item 1 but not 2. OP should have happened */
-        assertItemResponseProcessingRun(item1SessionState);
-        assertItemResponseProcessingNotRun(item2SessionState);
+        assertChoiceItemResponseProcessingRun(item1SessionState);
+        assertChoiceItemResponseProcessingNotRun(item2SessionState);
         assertOutcomeProcessingRun();
-        assertItemScore(item1SessionState, 1.0);
-        assertItemScore(item2SessionState, 0.0);
+        assertChoiceItemScore(item1SessionState, 1.0);
+        assertChoiceItemScore(item2SessionState, 0.0);
         assertTestScore(1.0);
     }
 
@@ -80,11 +80,11 @@ public final class TestNonlinearIndividualTest extends SimpleProcessingTestBase 
         handleChoiceResponse("Invalid");
 
         /* RP would not have happened in this case */
-        assertItemResponseProcessingNotRun(item1SessionState);
-        assertItemResponseProcessingNotRun(item2SessionState);
+        assertChoiceItemResponseProcessingNotRun(item1SessionState);
+        assertChoiceItemResponseProcessingNotRun(item2SessionState);
         assertOutcomeProcessingRun();
-        assertItemScore(item1SessionState, 0.0);
-        assertItemScore(item2SessionState, 0.0);
+        assertChoiceItemScore(item1SessionState, 0.0);
+        assertChoiceItemScore(item2SessionState, 0.0);
         assertTestScore(0.0);
     }
 
@@ -98,11 +98,11 @@ public final class TestNonlinearIndividualTest extends SimpleProcessingTestBase 
         handleChoiceResponse("ChoiceB");
 
         /* RP should have happened on item 1 but not 2. OP should have happened */
-        assertItemResponseProcessingRun(item1SessionState);
-        assertItemResponseProcessingNotRun(item2SessionState);
+        assertChoiceItemResponseProcessingRun(item1SessionState);
+        assertChoiceItemResponseProcessingNotRun(item2SessionState);
         assertOutcomeProcessingRun();
-        assertItemScore(item1SessionState, 0.0);
-        assertItemScore(item2SessionState, 0.0);
+        assertChoiceItemScore(item1SessionState, 0.0);
+        assertChoiceItemScore(item2SessionState, 0.0);
         assertTestScore(0.0);
     }
 
@@ -130,11 +130,11 @@ public final class TestNonlinearIndividualTest extends SimpleProcessingTestBase 
         handleChoiceResponse("ChoiceA");
 
         /* RP should have happened on both items; OP should have run */
-        assertItemResponseProcessingRun(item1SessionState);
-        assertItemResponseProcessingRun(item2SessionState);
+        assertChoiceItemResponseProcessingRun(item1SessionState);
+        assertChoiceItemResponseProcessingRun(item2SessionState);
         assertOutcomeProcessingRun();
-        assertItemScore(item1SessionState, 1.0);
-        assertItemScore(item2SessionState, 1.0);
+        assertChoiceItemScore(item1SessionState, 1.0);
+        assertChoiceItemScore(item2SessionState, 1.0);
         assertTestScore(2.0);
     }
 
@@ -148,11 +148,11 @@ public final class TestNonlinearIndividualTest extends SimpleProcessingTestBase 
         handleChoiceResponse("ChoiceB");
 
         /* RP should have happened on both items; OP should have run */
-        assertItemResponseProcessingRun(item1SessionState);
-        assertItemResponseProcessingRun(item2SessionState);
+        assertChoiceItemResponseProcessingRun(item1SessionState);
+        assertChoiceItemResponseProcessingRun(item2SessionState);
         assertOutcomeProcessingRun();
-        assertItemScore(item1SessionState, 1.0);
-        assertItemScore(item2SessionState, 0.0);
+        assertChoiceItemScore(item1SessionState, 1.0);
+        assertChoiceItemScore(item2SessionState, 0.0);
         assertTestScore(1.0);
     }
 
