@@ -167,7 +167,7 @@ public final class TestSessionController extends TestProcessingController {
      * Postconditions: (Valid) outcome variables will be set to their default values,
      * states for each testPart and assessmentSection will be reset,
      * {@link ItemSessionController#initialize(Date)} will be called for each item,
-     * <code>duration</code> will be set to 0. Duration tim will not yet start.
+     * <code>duration</code> will be set to 0. Duration timers will not yet start.
      *
      * @param timestamp initialisation timestamp, which must not be null
      *
@@ -635,7 +635,7 @@ public final class TestSessionController extends TestProcessingController {
      * Postcondition: If the {@link TestPart} has {@link SubmissionMode#SIMULTANEOUS} then
      * any uncommitted responses will be committed, then Response Processing and Outcome Processing will be run.
      * All item and assessment section states within the testPart will be ended if that hasn't
-     * happened already; current test state will be marked as ended; current item will be cleared.
+     * happened already; current test part state will be marked as ended; current item will be cleared.
      *
      * @param timestamp timestamp for this operation, which must not be null
      *
