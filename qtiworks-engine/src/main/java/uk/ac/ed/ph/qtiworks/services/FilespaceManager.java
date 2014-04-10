@@ -58,7 +58,9 @@ import org.springframework.stereotype.Service;
 
 /**
  * Service to manage the creation and deletion of filespaces/sandboxes
- * for storing things like uploaded {@link AssessmentPackage}s and submitted files
+ * for storing things like uploaded {@link AssessmentPackage}s and submitted files.
+ * <p>
+ * This is NO authorisation at this level.
  *
  * @author David McKain
  */

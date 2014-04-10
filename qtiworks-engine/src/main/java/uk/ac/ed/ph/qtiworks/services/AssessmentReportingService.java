@@ -80,7 +80,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.csvreader.CsvWriter;
 
 /**
- * Service for reporting on assessment deliveries and candidate sessions
+ * Middle tier service for reporting on assessment deliveries and candidate sessions.
+ * <p>
+ * This is NO authorisation at this level.
  *
  * @author David McKain
  */
@@ -115,6 +117,7 @@ public class AssessmentReportingService {
         return candidateSession;
     }
 
+    //-------------------------------------------------
 
     /**
      * Generates a {@link CandidateSessionSummaryReport} containing summary statistics

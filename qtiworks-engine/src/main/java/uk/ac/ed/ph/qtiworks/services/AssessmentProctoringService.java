@@ -49,7 +49,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Top layer service providing some basic "proctoring" functionality for instructors
- * over the candidates for their deliveries
+ * over the candidates for their deliveries.
+ * <p>
+ * All operations here check authorisation.
  *
  * @author David McKain
  */
@@ -72,12 +74,26 @@ public class AssessmentProctoringService {
     @Resource
     private CandidateSessionDao candidateSessionDao;
 
+    //-------------------------------------------------
+
     public CandidateSession lookupCandidateSession(final long xid)
             throws DomainEntityNotFoundException, PrivilegeException {
         final CandidateSession candidateSession = candidateSessionDao.requireFindById(xid);
-        ensureCallerMayProctor(candidateSession);
+        assertCallerMayProctor(candidateSession);
         return candidateSession;
     }
+
+    private User assertCallerMayProctor(final CandidateSession candidateSession)
+            throws PrivilegeException {
+        final User caller = identityService.assertCurrentThreadUser();
+        final User assessmentOwner = candidateSession.getDelivery().getAssessment().getOwnerUser();
+        if (!assessmentOwner.equals(caller)) {
+            throw new PrivilegeException(caller, Privilege.PROCTOR_SESSION, candidateSession);
+        }
+        return caller;
+    }
+
+    //-------------------------------------------------
 
     public void terminateCandidateSession(final long xid)
             throws PrivilegeException, DomainEntityNotFoundException {
@@ -130,7 +146,6 @@ public class AssessmentProctoringService {
         return terminatedCount;
     }
 
-
     public int deleteCandidateSessionsForDelivery(final long did)
             throws PrivilegeException, DomainEntityNotFoundException {
         final Delivery delivery = assessmentManagementService.lookupDelivery(did);
@@ -139,13 +154,4 @@ public class AssessmentProctoringService {
         return deletedCount;
     }
 
-    private User ensureCallerMayProctor(final CandidateSession candidateSession)
-            throws PrivilegeException {
-        final User caller = identityService.assertCurrentThreadUser();
-        final User assessmentOwner = candidateSession.getDelivery().getAssessment().getOwnerUser();
-        if (!assessmentOwner.equals(caller)) {
-            throw new PrivilegeException(caller, Privilege.PROCTOR_SESSION, candidateSession);
-        }
-        return caller;
-    }
 }

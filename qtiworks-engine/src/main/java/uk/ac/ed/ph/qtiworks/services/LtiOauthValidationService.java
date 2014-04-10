@@ -73,6 +73,8 @@ import org.springframework.transaction.annotation.Transactional;
  * This reuses part of {@link SimpleOAuthValidator}, but uses the domain model to store and
  * check nonces. (Some bits of code from {@link SimpleOAuthValidator} have been pasted into here
  * and modified, as it's not easy to partially delegate to that class.)
+ * <p>
+ * This is NO authorisation at this level.
  *
  * @see SimpleOAuthValidator
  *

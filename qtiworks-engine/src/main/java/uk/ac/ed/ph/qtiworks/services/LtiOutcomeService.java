@@ -67,6 +67,8 @@ import org.springframework.transaction.annotation.Transactional;
  * <p>
  * The actual work of this service is performed asynchronously via {@link ScheduledService},
  * with some basic durability provided by persisting the data to be sent within the entity model.
+ * <p>
+ * This is NO authorisation at this level.
  *
  * @see ScheduledService
  *

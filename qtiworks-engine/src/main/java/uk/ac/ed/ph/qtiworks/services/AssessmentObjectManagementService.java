@@ -57,6 +57,8 @@ import org.springframework.stereotype.Service;
 /**
  * Middle layer service responsible for instantiating and caching {@link ItemProcessingMap}
  * and {@link TestProcessingMap} Objects.
+ * <p>
+ * This is NO authorisation at this level.
  *
  * FIXME: For the time being, we'll use an {@link LruHashMap}, though this is probably not the best choice.
  *

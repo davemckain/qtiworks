@@ -89,6 +89,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Top layer services for *managing* {@link Assessment}s and related entities.
+ * <p>
+ * All operations here check authorisation.
  *
  * @author David McKain
  */
@@ -97,7 +99,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class AssessmentManagementService {
 
     private static final Logger logger = LoggerFactory.getLogger(AssessmentManagementService.class);
-
 
     @Resource
     private AuditLogger auditLogger;
@@ -196,7 +197,7 @@ public class AssessmentManagementService {
     public Assessment importAssessment(final MultipartFile multipartFile, final boolean validate)
             throws PrivilegeException, AssessmentPackageDataImportException {
         Assert.notNull(multipartFile, "multipartFile");
-        final User caller = ensureCallerMayCreateAssessment();
+        final User caller = assertCallerMayCreateAssessment();
 
         /* First, upload the data into a sandbox */
         final AssessmentPackage assessmentPackage = importPackageFiles(multipartFile, validate);
@@ -241,7 +242,7 @@ public class AssessmentManagementService {
      * We are currently allowing INSTRUCTOR and ANONYMOUS (demo)
      * users to create assignments.
      */
-    private User ensureCallerMayCreateAssessment() throws PrivilegeException {
+    private User assertCallerMayCreateAssessment() throws PrivilegeException {
         final User caller = identityService.assertCurrentThreadUser();
         final UserRole userRole = caller.getUserRole();
         if (!(userRole==UserRole.ANONYMOUS || userRole==UserRole.INSTRUCTOR)) {

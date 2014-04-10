@@ -81,7 +81,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.w3c.dom.Document;
 
 /**
- * Provides read-only access (and related services) to {@link AssessmentPackage} files
+ * Provides read-only access (and related services) to {@link AssessmentPackage} files.
+ * <p>
+ * This is NO authorisation at this level.
  *
  * @author David McKain
  */

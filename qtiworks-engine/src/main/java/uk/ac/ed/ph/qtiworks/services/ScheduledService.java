@@ -50,7 +50,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 /**
- * Houses all scheduled tasks performed within the QTIWorks engine
+ * Houses all scheduled tasks performed within the QTIWorks engine.
+ * <p>
+ * This is NO authorisation at this level.
  *
  * @author David McKain
  */

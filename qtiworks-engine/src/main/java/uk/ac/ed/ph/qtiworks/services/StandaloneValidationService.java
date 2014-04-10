@@ -48,6 +48,8 @@ import org.springframework.web.multipart.MultipartFile;
 /**
  * Standalone lightweight validation service that bypasses the domain layer
  * completely.
+ * <p>
+ * This is NO authorisation at this level.
  *
  * @author David McKain
  */

@@ -75,7 +75,7 @@ import org.springframework.transaction.annotation.Transactional;
  * we will log errors rather than fail if FS-stored data unexpectedly can't be deleted,
  * as this makes transaction management much much simpler.)
  * <p>
- * This is not authenticated.
+ * This is NO authorisation at this level.
  * <p>
  * TODO: In the future we might want to make a low-level version of {@link AssessmentManagementService}
  * that does the raw storage work and merge it with this service.

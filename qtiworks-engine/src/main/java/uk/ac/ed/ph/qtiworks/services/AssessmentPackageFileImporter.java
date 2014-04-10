@@ -73,6 +73,8 @@ import org.springframework.web.multipart.MultipartFile;
  * <p>
  * (This should have been absorbed into {@link AssessmentPackageFileService}, but its current lack
  * of dependencies makes it easy to unit test!)
+ * <p>
+ * This is NO authorisation at this level.
  *
  * @author David McKain
  */

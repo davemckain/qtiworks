@@ -54,7 +54,6 @@ import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStatusReport;
 import uk.ac.ed.ph.qtiworks.services.domain.DeliveryStatusReport;
 import uk.ac.ed.ph.qtiworks.services.domain.DeliveryTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.ItemDeliverySettingsTemplate;
-import uk.ac.ed.ph.qtiworks.services.domain.Privilege;
 import uk.ac.ed.ph.qtiworks.services.domain.TestDeliverySettingsTemplate;
 import uk.ac.ed.ph.qtiworks.web.lti.LtiIdentityContext;
 
@@ -83,7 +82,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Bottom layer service providing basic data operations on {@link Assessment} and related
  * entities.
  * <p>
- * This is NO checking of {@link Privilege}s at this level.
+ * This is NO authorisation at this level.
  *
  * @author David McKain
  */
@@ -120,7 +119,7 @@ public class AssessmentDataService {
     }
 
     public List<AssessmentAndPackage> getCallerLtiContextAssessments() {
-        return assessmentDao.getForOwnerLtiContext(ensureLtiContext());
+        return assessmentDao.getForOwnerLtiContext(assertLtiContext());
     }
 
     public AssessmentStatusReport getAssessmentStatusReport(final Assessment assessment) {
@@ -263,18 +262,18 @@ public class AssessmentDataService {
     }
 
     public List<DeliverySettings> getCallerLtiContextDeliverySettings() {
-        return deliverySettingsDao.getForOwnerLtiContext(ensureLtiContext());
+        return deliverySettingsDao.getForOwnerLtiContext(assertLtiContext());
     }
 
     public List<DeliverySettings> getCallerLtiContextDeliverySettingsForType(final AssessmentObjectType assessmentType) {
-        return deliverySettingsDao.getForOwnerLtiContextAndType(ensureLtiContext(), assessmentType);
+        return deliverySettingsDao.getForOwnerLtiContextAndType(assertLtiContext(), assessmentType);
     }
 
     public long countCallerLtiContextDeliverySettings(final AssessmentObjectType assessmentType) {
-        return deliverySettingsDao.countForOwnerLtiContextAndType(ensureLtiContext(), assessmentType);
+        return deliverySettingsDao.countForOwnerLtiContextAndType(assertLtiContext(), assessmentType);
     }
 
-    private LtiContext ensureLtiContext() {
+    private LtiContext assertLtiContext() {
         final LtiIdentityContext ltiIdentityContext = identityService.assertCurrentThreadLtiIdentityContext();
         return ltiIdentityContext.getLtiContext();
     }
