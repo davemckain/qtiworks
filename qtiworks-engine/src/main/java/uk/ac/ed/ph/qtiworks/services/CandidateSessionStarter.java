@@ -172,10 +172,4 @@ public class CandidateSessionStarter {
             throws CandidateException {
         candidateAuditLogger.logAndThrowCandidateException(candidate, delivery, reason);
     }
-
-    private void logAndThrowLaunchException(final User candidate, final Assessment assessment,
-            final CandidateExceptionReason reason)
-            throws CandidateException {
-        candidateAuditLogger.logAndThrowCandidateException(candidate, assessment, reason);
-    }
 }
