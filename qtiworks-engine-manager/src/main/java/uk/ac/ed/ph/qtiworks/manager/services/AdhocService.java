@@ -33,22 +33,8 @@
  */
 package uk.ac.ed.ph.qtiworks.manager.services;
 
-import uk.ac.ed.ph.qtiworks.services.AssessmentReportingService;
-import uk.ac.ed.ph.qtiworks.services.CandidateDataService;
-import uk.ac.ed.ph.qtiworks.services.RequestTimestampContext;
-import uk.ac.ed.ph.qtiworks.services.candidate.CandidateTestDeliveryService;
-import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
-import uk.ac.ed.ph.qtiworks.services.dao.LtiResourceDao;
-import uk.ac.ed.ph.qtiworks.services.domain.OutputStreamer;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Date;
 import java.util.List;
 
-import javax.annotation.Resource;
-
-import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,40 +48,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(propagation=Propagation.REQUIRES_NEW)
 public class AdhocService {
 
-    @Resource
-    private AssessmentReportingService assessmentReportingService;
-
-    @Resource
-    private LtiResourceDao ltiResourceDao;
-
-    @Resource
-    private CandidateSessionDao candidateSessionDao;
-
-    @Resource
-    private CandidateDataService candidateDataService;
-
-    @Resource
-    private CandidateTestDeliveryService candidateTestDeliveryService;
-
-    @Resource
-    private RequestTimestampContext requestTimestampContext;
-
     public void doWork(final List<String> parameters) throws Exception {
     	/* Put something here when required */
-    }
-
-    public static class Utf8Streamer implements OutputStreamer {
-
-        private String result = null;
-
-        @Override
-        public void stream(final String contentType, final long contentLength, final Date lastModifiedTime, final InputStream resultStream) throws IOException {
-            this.result = IOUtils.toString(resultStream, "UTF-8");
-        }
-
-        public String getResult() {
-            return result;
-        }
-
     }
 }
