@@ -33,10 +33,6 @@
  */
 package uk.ac.ed.ph.qtiworks.manager.services;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
-import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
-import uk.ac.ed.ph.qtiworks.domain.entities.LtiResource;
 import uk.ac.ed.ph.qtiworks.services.AssessmentReportingService;
 import uk.ac.ed.ph.qtiworks.services.CandidateDataService;
 import uk.ac.ed.ph.qtiworks.services.RequestTimestampContext;
@@ -44,13 +40,6 @@ import uk.ac.ed.ph.qtiworks.services.candidate.CandidateTestDeliveryService;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.services.dao.LtiResourceDao;
 import uk.ac.ed.ph.qtiworks.services.domain.OutputStreamer;
-import uk.ac.ed.ph.qtiworks.web.candidate.CandidateSessionContext;
-
-import uk.ac.ed.ph.jqtiplus.notification.NotificationLevel;
-import uk.ac.ed.ph.jqtiplus.notification.NotificationRecorder;
-import uk.ac.ed.ph.jqtiplus.running.TestSessionController;
-import uk.ac.ed.ph.jqtiplus.state.TestPartSessionState;
-import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -92,46 +81,7 @@ public class AdhocService {
     private RequestTimestampContext requestTimestampContext;
 
     public void doWork(final List<String> parameters) throws Exception {
-        closeBemaTestSessions(parameters);
-    }
-
-    /**
-     * TEMPORARY! This is being used to close off unfinished test sessions for the BEMA pilot
-     * being done at UoE. This idea might want to become part of core functionality in future...
-     */
-    public void closeBemaTestSessions(final List<String> parameters) throws Exception {
-        if (parameters.size()!=1) {
-            System.err.println("Required parameter: lrid");
-            return;
-        }
-        final Long ltiResourceId = Long.parseLong(parameters.get(0));
-        final LtiResource ltiResource = ltiResourceDao.requireFindById(ltiResourceId);
-        final Delivery bemaDelivery = ltiResource.getDelivery();
-
-        final Date timestamp = new Date();
-        requestTimestampContext.setCurrentRequestTimestamp(timestamp);
-        final List<CandidateSession> candidateSessions = candidateSessionDao.getForDelivery(bemaDelivery);
-        final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
-        for (final CandidateSession candidateSession : candidateSessions) {
-        	final CandidateSessionContext candidateSessionContext = new CandidateSessionContext(candidateSession, "/unused");
-            if (!candidateSession.isClosed() && !candidateSession.isTerminated()) {
-                final CandidateEvent mostRecentEvent = candidateDataService.getMostRecentEvent(candidateSession);
-                if (mostRecentEvent!=null) {
-                    final TestSessionController testSessionController = candidateDataService.createTestSessionController(mostRecentEvent, notificationRecorder);
-                    final TestSessionState testSessionState = testSessionController.getTestSessionState();
-                    final TestPartSessionState testPartSessionState = testSessionState.getTestPartSessionStates().values().iterator().next();
-                    if (!testPartSessionState.isEnded()) {
-                        System.out.println("Ending and exiting test for session " + candidateSession.getId());
-                        candidateTestDeliveryService.endCurrentTestPart(candidateSessionContext);
-                        candidateTestDeliveryService.advanceTestPart(candidateSessionContext);
-                    }
-                    else if (!testSessionState.isExited()) {
-                        System.out.println("Exiting test for session " + candidateSession.getId());
-                        candidateTestDeliveryService.advanceTestPart(candidateSessionContext);
-                    }
-                }
-            }
-        }
+    	/* Put something here when required */
     }
 
     public static class Utf8Streamer implements OutputStreamer {
