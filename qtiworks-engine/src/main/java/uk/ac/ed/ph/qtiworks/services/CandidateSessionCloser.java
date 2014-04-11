@@ -51,8 +51,6 @@ import uk.ac.ed.ph.jqtiplus.node.result.ItemVariable;
 import uk.ac.ed.ph.jqtiplus.node.result.OutcomeVariable;
 import uk.ac.ed.ph.jqtiplus.node.result.TestResult;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
-import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
-import uk.ac.ed.ph.jqtiplus.running.TestSessionController;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.value.NumberValue;
 import uk.ac.ed.ph.jqtiplus.value.Signature;
@@ -89,17 +87,7 @@ public class CandidateSessionCloser {
 
     //-------------------------------------------------
 
-    public void closeCandidateItemSession(final CandidateSession candidateSession, final ItemSessionController itemSessionController) {
-        final AssessmentResult assessmentResult = candidateDataService.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
-        closeCandidateSession(candidateSession, assessmentResult);
-    }
-
-    public void closeCandidateTestSession(final CandidateSession candidateSession, final TestSessionController testSessionController) {
-        final AssessmentResult assessmentResult = candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
-        closeCandidateSession(candidateSession, assessmentResult);
-    }
-
-    private void closeCandidateSession(final CandidateSession candidateSession, final AssessmentResult assessmentResult) {
+    public void closeCandidateSession(final CandidateSession candidateSession, final AssessmentResult assessmentResult) {
         candidateSession.setClosed(true);
 
         /* Also nullify LIS result info for session. These will be updated later, if pre-conditions match for sending the result back */

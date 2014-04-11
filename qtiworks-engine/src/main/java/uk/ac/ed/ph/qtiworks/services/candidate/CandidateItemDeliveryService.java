@@ -57,6 +57,7 @@ import uk.ac.ed.ph.jqtiplus.exception.QtiCandidateStateException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
+import uk.ac.ed.ph.jqtiplus.node.result.AssessmentResult;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationLevel;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationRecorder;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
@@ -163,17 +164,18 @@ public class CandidateItemDeliveryService extends CandidateServiceBase {
             return handleExplosion(null, candidateSession);
         }
 
-        /* Handle immediate end of session */
-        if (itemSessionState.isEnded()) {
-            candidateSessionCloser.closeCandidateItemSession(candidateSession, itemSessionController);
-        }
-
         /* Record and log entry event */
         final CandidateEvent candidateEvent = candidateDataService.recordCandidateItemEvent(candidateSession, CandidateItemEventType.ENTER, itemSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateEvent);
 
         /* Record current result state */
-        candidateDataService.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
+        final AssessmentResult assessmentResult = candidateDataService.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
+
+        /* Handle immediate end of session */
+        if (itemSessionState.isEnded()) {
+            candidateSessionCloser.closeCandidateSession(candidateSession, assessmentResult);
+        }
+
         return candidateSession;
     }
 
@@ -340,15 +342,15 @@ public class CandidateItemDeliveryService extends CandidateServiceBase {
 
     private CandidateSession updateSessionClosedStatus(final CandidateSession candidateSession,
             final ItemSessionController itemSessionController) {
-        /* Record current result state, or close session */
+        /* Record current result state and maybe close session */
         final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
+        final AssessmentResult assessmentResult = candidateDataService.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
         if (itemSessionState.isEnded()) {
-            candidateSessionCloser.closeCandidateItemSession(candidateSession, itemSessionController);
+            candidateSessionCloser.closeCandidateSession(candidateSession, assessmentResult);
         }
         else {
-            candidateDataService.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
             if (candidateSession.isClosed()) {
-                /* (Change to session closed flag) */
+                /* (Session is being reopened) */
                 candidateSession.setClosed(false);
                 candidateSessionDao.update(candidateSession);
             }
@@ -407,8 +409,11 @@ public class CandidateItemDeliveryService extends CandidateServiceBase {
                 CandidateItemEventType.END, itemSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateEvent);
 
-        /* Close session and record result */
-        candidateSessionCloser.closeCandidateItemSession(candidateSession, itemSessionController);
+        /* Record current result state */
+        final AssessmentResult assessmentResult = candidateDataService.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
+
+        /* Close session */
+        candidateSessionCloser.closeCandidateSession(candidateSession, assessmentResult);
 
         return candidateSession;
     }
@@ -561,9 +566,9 @@ public class CandidateItemDeliveryService extends CandidateServiceBase {
 
         /* End session if still open */
         final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
-        boolean isEndingSession = false;
+        boolean isClosingSession = false;
         if (!itemSessionState.isEnded()) {
-            isEndingSession = true;
+            isClosingSession = true;
             try {
                 itemSessionController.endItem(timestamp);
             }
@@ -580,12 +585,10 @@ public class CandidateItemDeliveryService extends CandidateServiceBase {
         final CandidateEvent candidateEvent = candidateDataService.recordCandidateItemEvent(candidateSession, CandidateItemEventType.SOLUTION, itemSessionState);
         candidateAuditLogger.logCandidateEvent(candidateEvent);
 
-        /* Record current result state, or close session */
-        if (isEndingSession) {
-            candidateSessionCloser.closeCandidateItemSession(candidateSession, itemSessionController);
-        }
-        else {
-            candidateDataService.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
+        /* Record current result state, and maybe close session */
+        final AssessmentResult assessmentResult = candidateDataService.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
+        if (isClosingSession) {
+            candidateSessionCloser.closeCandidateSession(candidateSession, assessmentResult);
         }
         return candidateSession;
     }
@@ -621,7 +624,8 @@ public class CandidateItemDeliveryService extends CandidateServiceBase {
             catch (final RuntimeException e) {
                 return handleExplosion(e, candidateSession);
             }
-            candidateSessionCloser.closeCandidateItemSession(candidateSession, itemSessionController);
+            final AssessmentResult assessmentResult = candidateDataService.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
+            candidateSessionCloser.closeCandidateSession(candidateSession, assessmentResult);
         }
 
         /* Record and log event */

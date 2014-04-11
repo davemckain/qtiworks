@@ -56,6 +56,7 @@ import uk.ac.ed.ph.qtiworks.web.candidate.CandidateSessionContext;
 import uk.ac.ed.ph.jqtiplus.exception.QtiCandidateStateException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
+import uk.ac.ed.ph.jqtiplus.node.result.AssessmentResult;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.node.test.SubmissionMode;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationLevel;
@@ -176,18 +177,19 @@ public class CandidateTestDeliveryService extends CandidateServiceBase {
             return handleExplosion(e, candidateSession);
         }
 
-        /* Handle immediate end of session */
-        if (testSessionState.isEnded()) {
-            candidateSessionCloser.closeCandidateTestSession(candidateSession, testSessionController);
-        }
-
         /* Record and log event */
         final CandidateEvent candidateEvent = candidateDataService.recordCandidateTestEvent(candidateSession,
                 CandidateTestEventType.ENTER_TEST, testSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateEvent);
 
         /* Record current result state */
-        candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
+        final AssessmentResult assessmentResult = candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
+
+        /* Handle immediate end of session */
+        if (testSessionState.isEnded()) {
+            candidateSessionCloser.closeCandidateSession(candidateSession, assessmentResult);
+        }
+
         return candidateSession;
     }
 
@@ -641,13 +643,14 @@ public class CandidateTestDeliveryService extends CandidateServiceBase {
         }
 
         CandidateTestEventType eventType;
+        boolean closeSession = false;
         if (nextTestPart!=null) {
             /* Moved into next test part */
             eventType = CandidateTestEventType.ADVANCE_TEST_PART;
         }
         else {
             /* No more test parts. First of all, close the session and report any results */
-            candidateSessionCloser.closeCandidateTestSession(candidateSession, testSessionController);
+            closeSession = true;
 
             /* For single part tests, we terminate the test completely now as the test feedback was shown with the testPart feedback.
              * For multi-part tests, we shall keep the test open so that the test feedback can be viewed.
@@ -669,7 +672,12 @@ public class CandidateTestDeliveryService extends CandidateServiceBase {
         candidateAuditLogger.logCandidateEvent(candidateTestEvent);
 
         /* Record current result state (possibly final) */
-        candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
+        final AssessmentResult assessmentResult = candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
+
+        /* Maybe close session */
+        if (closeSession) {
+            candidateSessionCloser.closeCandidateSession(candidateSession, assessmentResult);
+        }
 
         return candidateSession;
     }
