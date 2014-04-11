@@ -9,6 +9,9 @@ BEGIN WORK;
 ALTER TABLE candidate_sessions DROP session_token;
 ALTER TABLE candidate_sessions DROP exit_url;
 
+-- Rename 'closed' as 'is_finished' in candidate_sessions
+ALTER TABLE candidate_sessions RENAME closed TO finished;
+
 -- Drop the idea of "public" assessments and delivery settings
 ALTER TABLE assessments DROP public;
 ALTER TABLE delivery_settings DROP public;

@@ -64,14 +64,14 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Handles the closure and final reporting of {@link CandidateSession}s,
+ * Handles the finishing and final reporting of {@link CandidateSession}s,
  * possibly invoking the return of LTI outcomes.
  *
  * @author David McKain
  */
 @Service
 @Transactional(propagation=Propagation.REQUIRED)
-public class CandidateSessionCloser {
+public class CandidateSessionFinisher {
 
     @Resource
     private AuditLogger auditLogger;
@@ -87,8 +87,8 @@ public class CandidateSessionCloser {
 
     //-------------------------------------------------
 
-    public void closeCandidateSession(final CandidateSession candidateSession, final AssessmentResult assessmentResult) {
-        candidateSession.setClosed(true);
+    public void finishCandidateSession(final CandidateSession candidateSession, final AssessmentResult assessmentResult) {
+        candidateSession.setFinished(true);
 
         /* Also nullify LIS result info for session. These will be updated later, if pre-conditions match for sending the result back */
         candidateSession.setLisOutcomeReportingStatus(null);

@@ -163,13 +163,25 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
     private boolean authorMode;
 
     /**
-     * Flag to indicate whether session has been closed.
-     * Once closed, a result will have been recorded and the item/test state
-     * can no longer be changed. Candidates may still review the session though.
+     * Flag to indicate when the session has been <strong>finished</strong>
+     * This is a QTIWorks specific concept with the following meaning:
+     * <ul>
+     *   <li>
+     *     A test is marked as finished once the candidate gets to the end of the last
+     *     enterable testPart. At this time, the outcome variables are finalised and will
+     *     be sent back to the LTI TC (if appropriate). A test only finishes once.
+     *   </li>
+     *   <li>
+     *     A standalone item is marked as finished once the item session ends. At this time,
+     *     the outcome variables are sent back to the LTI TC (if appropriate). These variables
+     *     are normally final, but it is currently possible for items to reopen. The session can
+     *     finish again in this case.
+     *   </li>
+     * </ul>
      */
     @Basic(optional=false)
-    @Column(name="closed")
-    private boolean closed;
+    @Column(name="finished")
+    private boolean finished;
 
     /**
      * Flag to indicate whether session has been terminated.
@@ -303,12 +315,12 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
     }
 
 
-    public boolean isClosed() {
-        return closed;
+    public boolean isFinished() {
+        return finished;
     }
 
-    public void setClosed(final boolean closed) {
-        this.closed = closed;
+    public void setFinished(final boolean finished) {
+        this.finished = finished;
     }
 
 
@@ -372,7 +384,7 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(xid=" + xid
                 + ",authorMode=" + authorMode
-                + ",closed=" + closed
+                + ",closed=" + finished
                 + ",exploded=" + exploded
                 + ",terminated=" + terminated
                 + ",lisOutcomeServiceUrl=" + lisOutcomeServiceUrl

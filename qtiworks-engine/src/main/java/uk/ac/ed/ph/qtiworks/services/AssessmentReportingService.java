@@ -175,7 +175,7 @@ public class AssessmentReportingService {
                 candidate.getFirstName(),
                 candidate.getLastName(),
                 candidate.getEmailAddress(),
-                candidateSession.isClosed(),
+                candidateSession.isFinished(),
                 candidateSession.isTerminated(),
                 candidateSession.isExploded(),
                 candidateSession.getLisOutcomeReportingStatus(),
@@ -319,7 +319,7 @@ public class AssessmentReportingService {
                     candidate.getFirstName(),
                     candidate.getLastName(),
                     candidate.getEmailAddress(),
-                    candidateSession.isClosed(),
+                    candidateSession.isFinished(),
                     candidateSession.isTerminated(),
                     candidateSession.isExploded(),
                     candidateSession.getLisOutcomeReportingStatus(),
@@ -443,7 +443,7 @@ public class AssessmentReportingService {
         final ZipOutputStream zipOutputStream = new ZipOutputStream(outputStream);
         boolean hasIncludedSomething = false;
         for (final CandidateSession candidateSession : candidateSessions) {
-            if (!candidateSession.isExploded() && (candidateSession.isClosed() || candidateSession.isTerminated())) {
+            if (!candidateSession.isExploded() && (candidateSession.isFinished() || candidateSession.isTerminated())) {
                 addAssessmentReport(zipOutputStream, candidateSession);
                 hasIncludedSomething = true;
             }

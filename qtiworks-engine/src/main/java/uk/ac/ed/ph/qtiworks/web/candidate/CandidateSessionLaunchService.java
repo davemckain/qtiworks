@@ -48,7 +48,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.UserRole;
 import uk.ac.ed.ph.qtiworks.services.AuditLogger;
 import uk.ac.ed.ph.qtiworks.services.CandidateAuditLogger;
 import uk.ac.ed.ph.qtiworks.services.CandidateDataService;
-import uk.ac.ed.ph.qtiworks.services.CandidateSessionCloser;
+import uk.ac.ed.ph.qtiworks.services.CandidateSessionFinisher;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.services.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.RequestTimestampContext;
@@ -100,7 +100,7 @@ public class CandidateSessionLaunchService {
     private CandidateAuditLogger candidateAuditLogger;
 
     @Resource
-    private CandidateSessionCloser candidateSessionCloser;
+    private CandidateSessionFinisher candidateSessionCloser;
 
     @Resource
     private CandidateDataService candidateDataService;

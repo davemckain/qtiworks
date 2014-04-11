@@ -81,7 +81,7 @@ public class CandidateSessionStarter {
     private CandidateAuditLogger candidateAuditLogger;
 
     @Resource
-    private CandidateSessionCloser candidateSessionCloser;
+    private CandidateSessionFinisher candidateSessionCloser;
 
     @Resource
     private CandidateDataService candidateDataService;
@@ -158,7 +158,7 @@ public class CandidateSessionStarter {
         candidateSession.setCandidate(candidate);
         candidateSession.setDelivery(delivery);
         candidateSession.setAuthorMode(authorMode);
-        candidateSession.setClosed(false);
+        candidateSession.setFinished(false);
         candidateSession.setTerminated(false);
         candidateSession.setExploded(false);
         candidateSessionDao.persist(candidateSession);

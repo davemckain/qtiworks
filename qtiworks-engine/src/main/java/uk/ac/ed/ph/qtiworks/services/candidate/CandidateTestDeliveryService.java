@@ -45,7 +45,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.ResponseLegality;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.services.CandidateAuditLogger;
 import uk.ac.ed.ph.qtiworks.services.CandidateDataService;
-import uk.ac.ed.ph.qtiworks.services.CandidateSessionCloser;
+import uk.ac.ed.ph.qtiworks.services.CandidateSessionFinisher;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.services.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.RequestTimestampContext;
@@ -111,7 +111,7 @@ public class CandidateTestDeliveryService extends CandidateServiceBase {
     private CandidateAuditLogger candidateAuditLogger;
 
     @Resource
-    private CandidateSessionCloser candidateSessionCloser;
+    private CandidateSessionFinisher candidateSessionCloser;
 
     @Resource
     private CandidateDataService candidateDataService;
@@ -185,9 +185,9 @@ public class CandidateTestDeliveryService extends CandidateServiceBase {
         /* Record current result state */
         final AssessmentResult assessmentResult = candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
 
-        /* Handle immediate end of session */
+        /* Handle immediate end of test session */
         if (testSessionState.isEnded()) {
-            candidateSessionCloser.closeCandidateSession(candidateSession, assessmentResult);
+            candidateSessionCloser.finishCandidateSession(candidateSession, assessmentResult);
         }
 
         return candidateSession;
@@ -489,8 +489,13 @@ public class CandidateTestDeliveryService extends CandidateServiceBase {
         final Date requestTimestamp = requestTimestampContext.getCurrentRequestTimestamp();
         testSessionController.endCurrentTestPart(requestTimestamp);
 
-        /* Record partial result */
-        candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
+        /* Record current result */
+        final AssessmentResult assessmentResult = candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
+
+        /* If there are now no more available testParts, finish the session now */
+        if (testSessionController.findNextEnterableTestPart()==null) {
+            candidateSessionCloser.finishCandidateSession(candidateSession, assessmentResult);
+        }
 
         /* Record and log event */
         final CandidateEvent candidateTestEvent = candidateDataService.recordCandidateTestEvent(candidateSession,
@@ -643,16 +648,14 @@ public class CandidateTestDeliveryService extends CandidateServiceBase {
         }
 
         CandidateTestEventType eventType;
-        boolean closeSession = false;
         if (nextTestPart!=null) {
             /* Moved into next test part */
             eventType = CandidateTestEventType.ADVANCE_TEST_PART;
         }
         else {
-            /* No more test parts. First of all, close the session and report any results */
-            closeSession = true;
-
-            /* For single part tests, we terminate the test completely now as the test feedback was shown with the testPart feedback.
+            /* No more test parts.
+             *
+             * For single part tests, we terminate the test completely now as the test feedback was shown with the testPart feedback.
              * For multi-part tests, we shall keep the test open so that the test feedback can be viewed.
              */
             if (testSessionState.getTestPlan().getTestPartNodes().size()==1) {
@@ -666,18 +669,14 @@ public class CandidateTestDeliveryService extends CandidateServiceBase {
             }
         }
 
+        /* Record current result state */
+        candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
+
         /* Record and log event */
         final CandidateEvent candidateTestEvent = candidateDataService.recordCandidateTestEvent(candidateSession,
                 eventType, testSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateTestEvent);
 
-        /* Record current result state (possibly final) */
-        final AssessmentResult assessmentResult = candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
-
-        /* Maybe close session */
-        if (closeSession) {
-            candidateSessionCloser.closeCandidateSession(candidateSession, assessmentResult);
-        }
 
         return candidateSession;
     }

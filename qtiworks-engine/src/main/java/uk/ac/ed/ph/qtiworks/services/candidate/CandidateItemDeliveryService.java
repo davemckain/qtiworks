@@ -45,7 +45,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.ResponseLegality;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.services.AssessmentDataService;
 import uk.ac.ed.ph.qtiworks.services.CandidateDataService;
-import uk.ac.ed.ph.qtiworks.services.CandidateSessionCloser;
+import uk.ac.ed.ph.qtiworks.services.CandidateSessionFinisher;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.services.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.RequestTimestampContext;
@@ -105,7 +105,7 @@ public class CandidateItemDeliveryService extends CandidateServiceBase {
     private RequestTimestampContext requestTimestampContext;
 
     @Resource
-    private CandidateSessionCloser candidateSessionCloser;
+    private CandidateSessionFinisher candidateSessionCloser;
 
     @Resource
     private CandidateDataService candidateDataService;
@@ -173,7 +173,7 @@ public class CandidateItemDeliveryService extends CandidateServiceBase {
 
         /* Handle immediate end of session */
         if (itemSessionState.isEnded()) {
-            candidateSessionCloser.closeCandidateSession(candidateSession, assessmentResult);
+            candidateSessionCloser.finishCandidateSession(candidateSession, assessmentResult);
         }
 
         return candidateSession;
@@ -336,22 +336,22 @@ public class CandidateItemDeliveryService extends CandidateServiceBase {
             candidateResponseDao.persist(candidateResponse);
         }
 
-        /* Record current result state, or close session */
-        return updateSessionClosedStatus(candidateSession, itemSessionController);
+        /* Record current result state, or finish session */
+        return updateSessionFinishedStatus(candidateSession, itemSessionController);
     }
 
-    private CandidateSession updateSessionClosedStatus(final CandidateSession candidateSession,
+    private CandidateSession updateSessionFinishedStatus(final CandidateSession candidateSession,
             final ItemSessionController itemSessionController) {
         /* Record current result state and maybe close session */
         final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
         final AssessmentResult assessmentResult = candidateDataService.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
         if (itemSessionState.isEnded()) {
-            candidateSessionCloser.closeCandidateSession(candidateSession, assessmentResult);
+            candidateSessionCloser.finishCandidateSession(candidateSession, assessmentResult);
         }
         else {
-            if (candidateSession.isClosed()) {
+            if (candidateSession.isFinished()) {
                 /* (Session is being reopened) */
-                candidateSession.setClosed(false);
+                candidateSession.setFinished(false);
                 candidateSessionDao.update(candidateSession);
             }
         }
@@ -413,7 +413,7 @@ public class CandidateItemDeliveryService extends CandidateServiceBase {
         final AssessmentResult assessmentResult = candidateDataService.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
 
         /* Close session */
-        candidateSessionCloser.closeCandidateSession(candidateSession, assessmentResult);
+        candidateSessionCloser.finishCandidateSession(candidateSession, assessmentResult);
 
         return candidateSession;
     }
@@ -471,7 +471,7 @@ public class CandidateItemDeliveryService extends CandidateServiceBase {
         candidateAuditLogger.logCandidateEvent(candidateEvent);
 
         /* Record current result state, or close session */
-        return updateSessionClosedStatus(candidateSession, itemSessionController);
+        return updateSessionFinishedStatus(candidateSession, itemSessionController);
     }
 
     //----------------------------------------------------
@@ -528,7 +528,7 @@ public class CandidateItemDeliveryService extends CandidateServiceBase {
         candidateAuditLogger.logCandidateEvent(candidateEvent);
 
         /* Record current result state, or close session */
-        return updateSessionClosedStatus(candidateSession, itemSessionController);
+        return updateSessionFinishedStatus(candidateSession, itemSessionController);
     }
 
     //----------------------------------------------------
@@ -588,7 +588,7 @@ public class CandidateItemDeliveryService extends CandidateServiceBase {
         /* Record current result state, and maybe close session */
         final AssessmentResult assessmentResult = candidateDataService.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
         if (isClosingSession) {
-            candidateSessionCloser.closeCandidateSession(candidateSession, assessmentResult);
+            candidateSessionCloser.finishCandidateSession(candidateSession, assessmentResult);
         }
         return candidateSession;
     }
@@ -625,7 +625,7 @@ public class CandidateItemDeliveryService extends CandidateServiceBase {
                 return handleExplosion(e, candidateSession);
             }
             final AssessmentResult assessmentResult = candidateDataService.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
-            candidateSessionCloser.closeCandidateSession(candidateSession, assessmentResult);
+            candidateSessionCloser.finishCandidateSession(candidateSession, assessmentResult);
         }
 
         /* Record and log event */
