@@ -43,12 +43,9 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateTestEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.ResponseLegality;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
-import uk.ac.ed.ph.qtiworks.services.CandidateAuditLogger;
-import uk.ac.ed.ph.qtiworks.services.CandidateDataService;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionFinisher;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.services.IdentityService;
-import uk.ac.ed.ph.qtiworks.services.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateResponseDao;
 import uk.ac.ed.ph.qtiworks.web.candidate.CandidateSessionContext;
 
@@ -100,16 +97,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class CandidateTestDeliveryService extends CandidateServiceBase {
 
     @Resource
-    private RequestTimestampContext requestTimestampContext;
-
-    @Resource
-    private CandidateAuditLogger candidateAuditLogger;
-
-    @Resource
-    private CandidateSessionFinisher candidateSessionCloser;
-
-    @Resource
-    private CandidateDataService candidateDataService;
+    private CandidateSessionFinisher candidateSessionFinisher;
 
     @Resource
     private CandidateUploadService candidateUploadService;
@@ -179,7 +167,7 @@ public class CandidateTestDeliveryService extends CandidateServiceBase {
 
         /* Handle immediate end of test session */
         if (testSessionState.isEnded()) {
-            candidateSessionCloser.finishCandidateSession(candidateSession, assessmentResult);
+            candidateSessionFinisher.finishCandidateSession(candidateSession, assessmentResult);
         }
 
         return candidateSession;
@@ -358,13 +346,13 @@ public class CandidateTestDeliveryService extends CandidateServiceBase {
             return handleExplosion(e, candidateSession);
         }
 
+        /* Record current result state */
+        candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
+
         /* Record and log event */
         final CandidateEvent candidateEvent = candidateDataService.recordCandidateTestEvent(candidateSession,
                 CandidateTestEventType.SELECT_MENU, testSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateEvent);
-
-        /* Record current result state */
-        candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
 
         return candidateSession;
     }
@@ -395,13 +383,13 @@ public class CandidateTestDeliveryService extends CandidateServiceBase {
             return handleExplosion(e, candidateSession);
         }
 
+        /* Record current result state */
+        candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
+
         /* Record and log event */
         final CandidateEvent candidateTestEvent = candidateDataService.recordCandidateTestEvent(candidateSession,
                 CandidateTestEventType.SELECT_ITEM, null, itemKey, testSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateTestEvent);
-
-        /* Record current result state */
-        candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
 
         return candidateSession;
     }
@@ -438,13 +426,13 @@ public class CandidateTestDeliveryService extends CandidateServiceBase {
         final Date requestTimestamp = requestTimestampContext.getCurrentRequestTimestamp();
         testSessionController.advanceItemLinear(requestTimestamp);
 
+        /* Record current result state */
+        candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
+
         /* Record and log event */
         final CandidateEvent candidateTestEvent = candidateDataService.recordCandidateTestEvent(candidateSession,
                 CandidateTestEventType.FINISH_ITEM, null, testSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateTestEvent);
-
-        /* Record current result state */
-        candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
 
         return candidateSession;
     }
@@ -486,7 +474,7 @@ public class CandidateTestDeliveryService extends CandidateServiceBase {
 
         /* If there are now no more available testParts, finish the session now */
         if (testSessionController.findNextEnterableTestPart()==null) {
-            candidateSessionCloser.finishCandidateSession(candidateSession, assessmentResult);
+            candidateSessionFinisher.finishCandidateSession(candidateSession, assessmentResult);
         }
 
         /* Record and log event */
@@ -556,13 +544,13 @@ public class CandidateTestDeliveryService extends CandidateServiceBase {
             return handleExplosion(e, candidateSession);
         }
 
+        /* Record current result state */
+        candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
+
         /* Record and log event */
         final CandidateEvent candidateTestEvent = candidateDataService.recordCandidateTestEvent(candidateSession,
                 CandidateTestEventType.REVIEW_ITEM, null, itemKey, testSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateTestEvent);
-
-        /* Record current result state */
-        candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
 
         return candidateSession;
     }
@@ -599,13 +587,13 @@ public class CandidateTestDeliveryService extends CandidateServiceBase {
             return handleExplosion(e, candidateSession);
         }
 
+        /* Record current result state */
+        candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
+
         /* Record and log event */
         final CandidateEvent candidateTestEvent = candidateDataService.recordCandidateTestEvent(candidateSession,
                 CandidateTestEventType.SOLUTION_ITEM, null, itemKey, testSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateTestEvent);
-
-        /* Record current result state */
-        candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
 
         return candidateSession;
     }
@@ -627,9 +615,9 @@ public class CandidateTestDeliveryService extends CandidateServiceBase {
 
         /* Perform action */
         final TestPlanNode nextTestPart;
-        final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
+        final Date currentTimestamp = requestTimestampContext.getCurrentRequestTimestamp();
         try {
-            nextTestPart = testSessionController.enterNextAvailableTestPart(timestamp);
+            nextTestPart = testSessionController.enterNextAvailableTestPart(currentTimestamp);
         }
         catch (final QtiCandidateStateException e) {
             candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.CANNOT_ADVANCE_TEST_PART);
@@ -652,8 +640,8 @@ public class CandidateTestDeliveryService extends CandidateServiceBase {
              */
             if (testSessionState.getTestPlan().getTestPartNodes().size()==1) {
                 eventType = CandidateTestEventType.EXIT_TEST;
-                testSessionController.exitTest(timestamp);
-                candidateSession.setTerminated(true);
+                testSessionController.exitTest(currentTimestamp);
+                candidateSession.setTerminationTime(currentTimestamp);
                 candidateSessionDao.update(candidateSession);
             }
             else {
@@ -668,7 +656,6 @@ public class CandidateTestDeliveryService extends CandidateServiceBase {
         final CandidateEvent candidateTestEvent = candidateDataService.recordCandidateTestEvent(candidateSession,
                 eventType, testSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateTestEvent);
-
 
         return candidateSession;
     }
@@ -689,9 +676,9 @@ public class CandidateTestDeliveryService extends CandidateServiceBase {
         final TestSessionState testSessionState = testSessionController.getTestSessionState();
 
         /* Perform action */
+        final Date currentTimestamp = requestTimestampContext.getCurrentRequestTimestamp();
         try {
-            final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
-            testSessionController.exitTest(timestamp);
+            testSessionController.exitTest(currentTimestamp);
         }
         catch (final QtiCandidateStateException e) {
             candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.CANNOT_EXIT_TEST);
@@ -702,16 +689,16 @@ public class CandidateTestDeliveryService extends CandidateServiceBase {
         }
 
         /* Update CandidateSession as appropriate */
-        candidateSession.setTerminated(true);
+        candidateSession.setTerminationTime(currentTimestamp);
         candidateSessionDao.update(candidateSession);
+
+        /* Record current result state (final) */
+        candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
 
         /* Record and log event */
         final CandidateEvent candidateTestEvent = candidateDataService.recordCandidateTestEvent(candidateSession,
                 CandidateTestEventType.EXIT_TEST, testSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateTestEvent);
-
-        /* Record current result state (final) */
-        candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
 
         return candidateSession;
     }

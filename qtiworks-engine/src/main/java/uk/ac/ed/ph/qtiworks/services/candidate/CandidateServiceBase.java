@@ -37,10 +37,13 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.services.CandidateAuditLogger;
 import uk.ac.ed.ph.qtiworks.services.CandidateDataService;
+import uk.ac.ed.ph.qtiworks.services.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.web.candidate.CandidateSessionContext;
 
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
+
+import java.util.Date;
 
 import javax.annotation.Resource;
 
@@ -70,6 +73,9 @@ public abstract class CandidateServiceBase {
 
     @Resource
     protected CandidateSessionDao candidateSessionDao;
+
+    @Resource
+    protected RequestTimestampContext requestTimestampContext;
 
     //----------------------------------------------------
     // Access controls
@@ -111,8 +117,9 @@ public abstract class CandidateServiceBase {
         if (e!=null) {
             logger.error("Intercepted RuntimeException so marking CandidateSession session as exploded", e);
         }
+        final Date currentTimestamp = requestTimestampContext.getCurrentRequestTimestamp();
         candidateSession.setExploded(true);
-        candidateSession.setTerminated(true);
+        candidateSession.setTerminationTime(currentTimestamp);
         candidateAuditLogger.logExplosion(candidateSession);
         candidateSessionDao.update(candidateSession);
         return candidateSession;

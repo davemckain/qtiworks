@@ -68,6 +68,7 @@ import org.springframework.transaction.annotation.Transactional;
  * The actual work of this service is performed asynchronously via {@link ScheduledService},
  * with some basic durability provided by persisting the data to be sent within the entity model.
  *
+ * @See CandidateSessionFinisher
  * @see ScheduledService
  *
  * @author David McKain

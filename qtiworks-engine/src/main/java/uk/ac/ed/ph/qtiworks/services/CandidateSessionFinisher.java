@@ -64,8 +64,10 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Handles the finishing and final reporting of {@link CandidateSession}s,
+ * This helper service handles the finishing and final reporting of {@link CandidateSession}s,
  * possibly invoking the return of LTI outcomes.
+ *
+ * @see LtiOutcomeService
  *
  * @author David McKain
  */
@@ -85,15 +87,21 @@ public class CandidateSessionFinisher {
     @Resource
     private CandidateSessionDao candidateSessionDao;
 
+    @Resource
+    private RequestTimestampContext requestTimestampContext;
+
     //-------------------------------------------------
 
     public void finishCandidateSession(final CandidateSession candidateSession, final AssessmentResult assessmentResult) {
-        candidateSession.setFinished(true);
+        /* Mark session as finished */
+        candidateSession.setFinishTime(requestTimestampContext.getCurrentRequestTimestamp());
 
         /* Also nullify LIS result info for session. These will be updated later, if pre-conditions match for sending the result back */
         candidateSession.setLisOutcomeReportingStatus(null);
         candidateSession.setLisScore(null);
         candidateSessionDao.update(candidateSession);
+
+        /* Finally schedule LTI result return (if appropriate and sane) */
         maybeScheduleLtiOutcomes(candidateSession, assessmentResult);
     }
 

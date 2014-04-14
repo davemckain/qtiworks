@@ -44,11 +44,9 @@ import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.ResponseLegality;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.services.AssessmentDataService;
-import uk.ac.ed.ph.qtiworks.services.CandidateDataService;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionFinisher;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.services.IdentityService;
-import uk.ac.ed.ph.qtiworks.services.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateResponseDao;
 import uk.ac.ed.ph.qtiworks.web.candidate.CandidateSessionContext;
 
@@ -97,13 +95,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class CandidateItemDeliveryService extends CandidateServiceBase {
 
     @Resource
-    private RequestTimestampContext requestTimestampContext;
-
-    @Resource
-    private CandidateSessionFinisher candidateSessionCloser;
-
-    @Resource
-    private CandidateDataService candidateDataService;
+    private CandidateSessionFinisher candidateSessionFinisher;
 
     @Resource
     private CandidateUploadService candidateUploadService;
@@ -165,7 +157,7 @@ public class CandidateItemDeliveryService extends CandidateServiceBase {
 
         /* Handle immediate end of session */
         if (itemSessionState.isEnded()) {
-            candidateSessionCloser.finishCandidateSession(candidateSession, assessmentResult);
+            candidateSessionFinisher.finishCandidateSession(candidateSession, assessmentResult);
         }
 
         return candidateSession;
@@ -338,12 +330,12 @@ public class CandidateItemDeliveryService extends CandidateServiceBase {
         final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
         final AssessmentResult assessmentResult = candidateDataService.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
         if (itemSessionState.isEnded()) {
-            candidateSessionCloser.finishCandidateSession(candidateSession, assessmentResult);
+            candidateSessionFinisher.finishCandidateSession(candidateSession, assessmentResult);
         }
         else {
             if (candidateSession.isFinished()) {
                 /* (Session is being reopened) */
-                candidateSession.setFinished(false);
+                candidateSession.setFinishTime(null);
                 candidateSessionDao.update(candidateSession);
             }
         }
@@ -396,16 +388,16 @@ public class CandidateItemDeliveryService extends CandidateServiceBase {
             return handleExplosion(e, candidateSession);
         }
 
+        /* Record current result state */
+        final AssessmentResult assessmentResult = candidateDataService.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
+
         /* Record and log event */
         final CandidateEvent candidateEvent = candidateDataService.recordCandidateItemEvent(candidateSession,
                 CandidateItemEventType.END, itemSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateEvent);
 
-        /* Record current result state */
-        final AssessmentResult assessmentResult = candidateDataService.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
-
         /* Close session */
-        candidateSessionCloser.finishCandidateSession(candidateSession, assessmentResult);
+        candidateSessionFinisher.finishCandidateSession(candidateSession, assessmentResult);
 
         return candidateSession;
     }
@@ -573,15 +565,16 @@ public class CandidateItemDeliveryService extends CandidateServiceBase {
             }
         }
 
+        /* Record current result state, and maybe close session */
+        final AssessmentResult assessmentResult = candidateDataService.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
+        if (isClosingSession) {
+            candidateSessionFinisher.finishCandidateSession(candidateSession, assessmentResult);
+        }
+
         /* Record and log event */
         final CandidateEvent candidateEvent = candidateDataService.recordCandidateItemEvent(candidateSession, CandidateItemEventType.SOLUTION, itemSessionState);
         candidateAuditLogger.logCandidateEvent(candidateEvent);
 
-        /* Record current result state, and maybe close session */
-        final AssessmentResult assessmentResult = candidateDataService.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
-        if (isClosingSession) {
-            candidateSessionCloser.finishCandidateSession(candidateSession, assessmentResult);
-        }
         return candidateSession;
     }
 
@@ -608,26 +601,26 @@ public class CandidateItemDeliveryService extends CandidateServiceBase {
         final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
 
         /* Are we terminating a session that hasn't already been ended? If so end the session and record final result. */
+        final Date currentTimestamp = requestTimestampContext.getCurrentRequestTimestamp();
         if (!itemSessionState.isEnded()) {
-            final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
             try {
-                itemSessionController.endItem(timestamp);
+                itemSessionController.endItem(currentTimestamp);
             }
             catch (final RuntimeException e) {
                 return handleExplosion(e, candidateSession);
             }
             final AssessmentResult assessmentResult = candidateDataService.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
-            candidateSessionCloser.finishCandidateSession(candidateSession, assessmentResult);
+            candidateSessionFinisher.finishCandidateSession(candidateSession, assessmentResult);
         }
+
+        /* Update session entity */
+        candidateSession.setTerminationTime(currentTimestamp);
+        candidateSessionDao.update(candidateSession);
 
         /* Record and log event */
         final CandidateEvent candidateEvent = candidateDataService.recordCandidateItemEvent(candidateSession,
                 CandidateItemEventType.EXIT, itemSessionState);
         candidateAuditLogger.logCandidateEvent(candidateEvent);
-
-        /* Update session entity */
-        candidateSession.setTerminated(true);
-        candidateSessionDao.update(candidateSession);
 
         return candidateSession;
     }

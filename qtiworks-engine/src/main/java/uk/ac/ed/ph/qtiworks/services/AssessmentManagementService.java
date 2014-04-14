@@ -73,6 +73,7 @@ import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -137,6 +138,9 @@ public class AssessmentManagementService {
 
     @Resource
     private CandidateSessionOutcomeDao candidateSessionOutcomeDao;
+
+    @Resource
+    private RequestTimestampContext requestTimestampContext;
 
     //-------------------------------------------------
     // Assessment access
@@ -890,9 +894,10 @@ public class AssessmentManagementService {
     // Internal helpers
 
     private int terminateCandidateSessions(final Assessment assessment, final boolean deleteOutcomes) {
+        final Date currentTimestamp = requestTimestampContext.getCurrentRequestTimestamp();
         final List<CandidateSession> nonTerminatedCandidateSessions = candidateSessionDao.getNonTerminatedForAssessment(assessment);
         for (final CandidateSession candidateSession : nonTerminatedCandidateSessions) {
-            candidateSession.setTerminated(true);
+            candidateSession.setTerminationTime(currentTimestamp);
             candidateSessionDao.update(candidateSession);
             if (deleteOutcomes) {
                 candidateSessionOutcomeDao.deleteForCandidateSession(candidateSession);

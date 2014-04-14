@@ -158,8 +158,8 @@ public class CandidateSessionStarter {
         candidateSession.setCandidate(candidate);
         candidateSession.setDelivery(delivery);
         candidateSession.setAuthorMode(authorMode);
-        candidateSession.setFinished(false);
-        candidateSession.setTerminated(false);
+        candidateSession.setFinishTime(null);
+        candidateSession.setTerminationTime(null);
         candidateSession.setExploded(false);
         candidateSessionDao.persist(candidateSession);
         auditLogger.recordEvent("Created and initialised new CandidateSession #" + candidateSession.getId()
