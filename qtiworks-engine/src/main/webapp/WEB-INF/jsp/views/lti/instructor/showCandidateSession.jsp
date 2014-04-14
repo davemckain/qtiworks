@@ -71,7 +71,7 @@ candidateEventSummaryDataList
     <div class="clear"></div>
   </c:if>
 
-  <h3>Actions</h3>
+  <h3>Analysis</h3>
   <ul class="menu">
     <c:if test="${!candidateSessionSummaryData.sessionTerminated}">
       <li>
@@ -82,6 +82,18 @@ candidateEventSummaryDataList
       <a href="${utils:escapeLink(candidateSessionRouting['events'])}">Show Candidate Activity Log for this session</a>
     </li>
     <li>
+      <form action="${utils:escapeLink(candidateSessionRouting['result'])}" method="get" class="postLink showXmlInDialog" title="assessmentResult XML">
+        <input type="submit" value="View assessmentResult XML"/>
+      </form>
+    </li>
+    <li>
+      <a href="${utils:escapeLink(candidateSessionRouting['result'])}">Download assessmentResult XML</a>
+    </li>
+  </ul>
+
+  <h3>Proctoring</h3>
+  <ul class="menu">
+    <li>
       <c:choose>
         <c:when test="${!candidateSessionSummaryData.sessionTerminated}">
           <page:postLink path="${utils:escapeLink(candidateSessionRouting['terminate'])}" title="Terminate this Candidate Session"
@@ -91,14 +103,6 @@ candidateEventSummaryDataList
           Terminate Candidate Session [already terminated]
         </c:otherwise>
       </c:choose>
-    </li>
-    <li>
-      <form action="${utils:escapeLink(candidateSessionRouting['result'])}" method="get" class="postLink showXmlInDialog" title="assessmentResult XML">
-        <input type="submit" value="View assessmentResult XML"/>
-      </form>
-    </li>
-    <li>
-      <a href="${utils:escapeLink(candidateSessionRouting['result'])}">Download assessmentResult XML</a>
     </li>
     <li>
       <page:postLink path="${utils:escapeLink(candidateSessionRouting['delete'])}" title="Delete this Candidate Session"

@@ -110,16 +110,21 @@ candidateSessionListRouting (xid -> action -> URL)
     </c:otherwise>
   </c:choose>
 
-  <h3>Actions</h3>
+  <h3>Analysis</h3>
   <ul class="menu">
     <li><a href="${utils:escapeLink(primaryRouting['candidateSummaryReportCsv'])}">Download full candidate outcome summary (CSV)</a></li>
     <li><a href="${utils:escapeLink(primaryRouting['candidateResultsZip'])}">Download all candiate &lt;assessmentResult&gt; XML files (ZIP)</a></li>
+    <li><a href="${utils:escapeLink(primaryRouting['listCandidateSessions'])}">Refresh this information</a></li>
+  </ul>
+
+  <h3>Proctoring</h3>
+  <ul class="menu">
     <li><page:postLink path="${primaryRouting['terminateAllSessions']}" confirm="Are you sure?" title="Terminate all running Candidate Sessions"/></li>
     <li><page:postLink path="${primaryRouting['deleteAllSessions']}" confirm="Are you sure? All candidate data gathered here will be permanently deleted!" title="Delete all Candidate Session data"/></li>
   </ul>
-  <p class="floatRight">
-    <a href="${utils:escapeLink(primaryRouting['resourceDashboard'])}">Return to Dashboard</a>
-  </p>
 
+  <ul class="footActions">
+    <li><a href="${utils:escapeLink(primaryRouting['resourceDashboard'])}">Return to Dashboard</a></li>
+  </ul>
 
 </page:ltipage>
