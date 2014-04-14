@@ -424,14 +424,20 @@ public class CandidateTestDeliveryService extends CandidateServiceBase {
 
         /* Update state */
         final Date requestTimestamp = requestTimestampContext.getCurrentRequestTimestamp();
-        testSessionController.advanceItemLinear(requestTimestamp);
+        final TestPlanNode nextItemNode = testSessionController.advanceItemLinear(requestTimestamp);
 
         /* Record current result state */
-        candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
+        final AssessmentResult assessmentResult = candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
+
+        /* If we ended the testPart and there are now no more available testParts, then finish the session now */
+        if (nextItemNode==null && testSessionController.findNextEnterableTestPart()==null) {
+            candidateSessionFinisher.finishCandidateSession(candidateSession, assessmentResult);
+        }
 
         /* Record and log event */
+        final CandidateTestEventType eventType = nextItemNode!=null ? CandidateTestEventType.FINISH_ITEM : CandidateTestEventType.FINISH_FINAL_ITEM;
         final CandidateEvent candidateTestEvent = candidateDataService.recordCandidateTestEvent(candidateSession,
-                CandidateTestEventType.FINISH_ITEM, null, testSessionState, notificationRecorder);
+                eventType, null, testSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateTestEvent);
 
         return candidateSession;
