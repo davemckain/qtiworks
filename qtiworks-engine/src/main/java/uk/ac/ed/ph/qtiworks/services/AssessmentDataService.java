@@ -91,10 +91,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class AssessmentDataService {
 
     @Resource
-    private AssessmentPackageFileService assessmentPackageFileService;
+    private IdentityService identityService;
 
     @Resource
-    private IdentityService identityService;
+    private AssessmentPackageFileService assessmentPackageFileService;
 
     @Resource
     private DeliveryDao deliveryDao;

@@ -47,18 +47,12 @@ import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.domain.entities.UserRole;
 import uk.ac.ed.ph.qtiworks.services.AuditLogger;
 import uk.ac.ed.ph.qtiworks.services.CandidateAuditLogger;
-import uk.ac.ed.ph.qtiworks.services.CandidateDataService;
-import uk.ac.ed.ph.qtiworks.services.CandidateSessionFinisher;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.services.IdentityService;
-import uk.ac.ed.ph.qtiworks.services.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateException;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateExceptionReason;
-import uk.ac.ed.ph.qtiworks.services.candidate.CandidateItemDeliveryService;
-import uk.ac.ed.ph.qtiworks.services.candidate.CandidateTestDeliveryService;
 import uk.ac.ed.ph.qtiworks.services.dao.AssessmentDao;
-import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliveryDao;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
@@ -75,11 +69,10 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Helper service for creating new (or reconnecting to existing) {@link CandidateSession}s
- * on a {@link Delivery} or {@link Assessment}.
+ * Helper service for launching and authenticating users to {@link CandidateSession}s in various
+ * ways.
  *
- * @see CandidateItemDeliveryService
- * @see CandidateTestDeliveryService
+ * @see CandidateSessionStarter
  *
  * @author David McKain
  */
@@ -94,25 +87,13 @@ public class CandidateSessionLaunchService {
     private IdentityService identityService;
 
     @Resource
-    private RequestTimestampContext requestTimestampContext;
-
-    @Resource
     private CandidateAuditLogger candidateAuditLogger;
-
-    @Resource
-    private CandidateSessionFinisher candidateSessionCloser;
-
-    @Resource
-    private CandidateDataService candidateDataService;
 
     @Resource
     private AssessmentDao assessmentDao;
 
     @Resource
     private DeliveryDao deliveryDao;
-
-    @Resource
-    private CandidateSessionDao candidateSessionDao;
 
     @Resource
     private CandidateSessionStarter candidateSessionStarter;

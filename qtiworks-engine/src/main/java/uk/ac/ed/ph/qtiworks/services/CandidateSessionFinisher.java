@@ -79,9 +79,6 @@ public class CandidateSessionFinisher {
     private AuditLogger auditLogger;
 
     @Resource
-    private CandidateDataService candidateDataService;
-
-    @Resource
     private LtiOutcomeService ltiOutcomeService;
 
     @Resource

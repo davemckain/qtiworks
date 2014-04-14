@@ -60,10 +60,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class AssessmentProctoringService {
 
     @Resource
-    private AuditLogger auditLogger;
+    private IdentityService identityService;
 
     @Resource
-    private IdentityService identityService;
+    private AuditLogger auditLogger;
 
     @Resource
     private AssessmentManagementService assessmentManagementService;

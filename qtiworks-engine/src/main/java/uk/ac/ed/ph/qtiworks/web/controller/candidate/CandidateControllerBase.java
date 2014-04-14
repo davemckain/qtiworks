@@ -86,7 +86,7 @@ public abstract class CandidateControllerBase {
     // Access to current session
 
     /**
-     * Retrives the {@link CandidateSessionContext} for this request, which will have been set up
+     * Retrieves the {@link CandidateSessionContext} for this request, which will have been set up
      * by the {@link CandidateSessionAuthenticationFilter}.
      */
     protected CandidateSessionContext getCandidateSessionContext() {

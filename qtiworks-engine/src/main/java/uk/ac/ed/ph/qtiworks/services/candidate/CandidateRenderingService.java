@@ -59,7 +59,6 @@ import uk.ac.ed.ph.qtiworks.rendering.TestRenderingRequest;
 import uk.ac.ed.ph.qtiworks.services.AssessmentDataService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentPackageFileService;
 import uk.ac.ed.ph.qtiworks.services.FilespaceManager;
-import uk.ac.ed.ph.qtiworks.services.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.services.domain.OutputStreamer;
@@ -103,9 +102,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(propagation=Propagation.REQUIRED)
 public class CandidateRenderingService extends CandidateServiceBase {
-
-    @Resource
-    private RequestTimestampContext requestTimestampContext;
 
     @Resource
     private AssessmentPackageFileService assessmentPackageFileService;

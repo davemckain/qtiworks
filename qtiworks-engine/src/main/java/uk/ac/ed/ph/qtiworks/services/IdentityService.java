@@ -36,6 +36,7 @@ package uk.ac.ed.ph.qtiworks.services;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.web.authn.AnonymousAuthenticationFilter;
 import uk.ac.ed.ph.qtiworks.web.authn.SystemUserAuthenticationFilter;
+import uk.ac.ed.ph.qtiworks.web.candidate.CandidateSessionAuthenticationFilter;
 import uk.ac.ed.ph.qtiworks.web.candidate.CandidateSessionContext;
 import uk.ac.ed.ph.qtiworks.web.lti.LtiIdentityContext;
 import uk.ac.ed.ph.qtiworks.web.lti.LtiResourceAuthenticationFilter;
@@ -43,11 +44,15 @@ import uk.ac.ed.ph.qtiworks.web.lti.LtiResourceAuthenticationFilter;
 import org.springframework.stereotype.Service;
 
 /**
- * {@link ThreadLocal} storing details about the current {@link User} and {@link LtiIdentityContext}
- * (when accessing QTIWorks via a domain-level launch on a particular resource)
- * <p>
+ * {@link ThreadLocal} storing details about the current {@link User} and "contexts" for which
+ * the user currently has been granted access to:
+ * <ul>
+ *   <li>{@link LtiIdentityContext} (when accessing QTIWorks via a domain-level launch on a particular resource)</li>
+ *   <li>{@link CandidateSessionContext} (when accessing the QTIWorks candidate services)</li>
+ * </ul>
  * Identity setting is done in the web layer via {@link AnonymousAuthenticationFilter},
- * {@link SystemUserAuthenticationFilter} and {@link LtiResourceAuthenticationFilter}.
+ * {@link SystemUserAuthenticationFilter}, {@link LtiResourceAuthenticationFilter}
+ * and {@link CandidateSessionAuthenticationFilter}.
  * <p>
  * If you use this service outside the web layer, you must ensure you call
  * {@link #setCurrentThreadUser(User)} before using any other service bean that needs
@@ -55,9 +60,11 @@ import org.springframework.stereotype.Service;
  *
  * @see User
  * @see LtiIdentityContext
+ * @see CandidateSessionContext
  * @see AnonymousAuthenticationFilter
  * @see SystemUserAuthenticationFilter
  * @see LtiResourceAuthenticationFilter
+ * @see CandidateSessionAuthenticationFilter
  *
  * @author David McKain
  */

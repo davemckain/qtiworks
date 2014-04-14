@@ -37,7 +37,7 @@ package uk.ac.ed.ph.qtiworks.domain.entities;
  * Encapsulates the 2 different types of LTI launches supported - domain-level launches
  * and link-level launches.
  * <p>
- * See the LTI speficiation for further details
+ * See the LTI specification for further details
  *
  * @author David McKain
  */

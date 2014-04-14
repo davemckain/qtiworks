@@ -102,10 +102,10 @@ public class AssessmentManagementService {
     private static final Logger logger = LoggerFactory.getLogger(AssessmentManagementService.class);
 
     @Resource
-    private AuditLogger auditLogger;
+    private IdentityService identityService;
 
     @Resource
-    private IdentityService identityService;
+    private AuditLogger auditLogger;
 
     @Resource
     private FilespaceManager filespaceManager;

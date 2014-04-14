@@ -34,6 +34,8 @@
 package uk.ac.ed.ph.qtiworks.services.domain;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
+import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
+import uk.ac.ed.ph.qtiworks.domain.entities.TestDeliverySettings;
 
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 
@@ -41,7 +43,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
- * FIXME: Document this type
+ * Exception thrown when attempting to use an {@link ItemDeliverySettings} on a test, or
+ * a {@link TestDeliverySettings} on a standalone item.
  *
  * @author David McKain
  */

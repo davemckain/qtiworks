@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.qtiworks.web.candidate;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
-import uk.ac.ed.ph.qtiworks.web.lti.LtiIdentityContext;
+import uk.ac.ed.ph.qtiworks.services.IdentityService;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
@@ -42,7 +42,12 @@ import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import java.io.Serializable;
 
 /**
- * FIXME: Document this. It's the same idea as {@link LtiIdentityContext}
+ * This provides information about the "current" {@link CandidateSession} being accessed by
+ * a particular candidate. It is created by the {@link CandidateSessionAuthenticationFilter}
+ * and stored and accessed in the candidate services layer via the {@link IdentityService}.
+ *
+ * @see IdentityService#getCurrentThreadCandidateSessionContext()
+ * @see CandidateSessionAuthenticationFilter
  *
  * @author David McKain
  */

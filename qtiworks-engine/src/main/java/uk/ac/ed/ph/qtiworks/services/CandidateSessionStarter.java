@@ -41,9 +41,7 @@ import uk.ac.ed.ph.qtiworks.services.candidate.CandidateException;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateExceptionReason;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateItemDeliveryService;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateTestDeliveryService;
-import uk.ac.ed.ph.qtiworks.services.dao.AssessmentDao;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
-import uk.ac.ed.ph.qtiworks.services.dao.DeliveryDao;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 
@@ -69,28 +67,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class CandidateSessionStarter {
 
     @Resource
-    private AuditLogger auditLogger;
-
-    @Resource
     private IdentityService identityService;
 
     @Resource
-    private RequestTimestampContext requestTimestampContext;
+    private AuditLogger auditLogger;
 
     @Resource
     private CandidateAuditLogger candidateAuditLogger;
-
-    @Resource
-    private CandidateSessionFinisher candidateSessionCloser;
-
-    @Resource
-    private CandidateDataService candidateDataService;
-
-    @Resource
-    private AssessmentDao assessmentDao;
-
-    @Resource
-    private DeliveryDao deliveryDao;
 
     @Resource
     private CandidateSessionDao candidateSessionDao;
