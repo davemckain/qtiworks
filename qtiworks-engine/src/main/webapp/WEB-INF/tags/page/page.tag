@@ -36,6 +36,7 @@ All Rights Reserved
     <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
     <%-- TODO: Move the next script into a single library --%>
     <script src="${utils:internalLink(pageContext, '/includes/qtiworks.js')}?${qtiWorksVersion}"></script>
+    <!--[if lt IE 9]><script src="${utils:internalLink(pageContext, '/lib/html5shiv.min.js')}"></script><![endif]-->
   </head>
   <body class="<c:out value='${cssClass}' default='page'/>">
     <div class="container_12">
