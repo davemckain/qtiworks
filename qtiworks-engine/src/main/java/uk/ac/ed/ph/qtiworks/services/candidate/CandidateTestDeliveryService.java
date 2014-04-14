@@ -50,7 +50,6 @@ import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.services.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateResponseDao;
-import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.web.candidate.CandidateSessionContext;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiCandidateStateException;
@@ -80,8 +79,6 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -102,8 +99,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Transactional(propagation=Propagation.REQUIRED)
 public class CandidateTestDeliveryService extends CandidateServiceBase {
 
-    private static final Logger logger = LoggerFactory.getLogger(CandidateTestDeliveryService.class);
-
     @Resource
     private RequestTimestampContext requestTimestampContext;
 
@@ -118,9 +113,6 @@ public class CandidateTestDeliveryService extends CandidateServiceBase {
 
     @Resource
     private CandidateUploadService candidateUploadService;
-
-    @Resource
-    private CandidateSessionDao candidateSessionDao;
 
     @Resource
     private CandidateResponseDao candidateResponseDao;
@@ -721,17 +713,6 @@ public class CandidateTestDeliveryService extends CandidateServiceBase {
         /* Record current result state (final) */
         candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
 
-        return candidateSession;
-    }
-
-    //----------------------------------------------------
-
-    private CandidateSession handleExplosion(final RuntimeException e, final CandidateSession candidateSession) {
-        logger.error("Intercepted RuntimeException so marking candidate test session as exploded", e);
-        candidateSession.setExploded(true);
-        candidateSession.setTerminated(true);
-        candidateAuditLogger.logExplosion(candidateSession);
-        candidateSessionDao.update(candidateSession);
         return candidateSession;
     }
 }

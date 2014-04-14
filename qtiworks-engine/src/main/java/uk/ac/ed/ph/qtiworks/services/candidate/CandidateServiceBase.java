@@ -37,12 +37,15 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.services.CandidateAuditLogger;
 import uk.ac.ed.ph.qtiworks.services.CandidateDataService;
+import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.web.candidate.CandidateSessionContext;
 
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,11 +60,16 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(propagation=Propagation.REQUIRED)
 public abstract class CandidateServiceBase {
 
+    private static final Logger logger = LoggerFactory.getLogger(CandidateServiceBase.class);
+
     @Resource
     protected CandidateAuditLogger candidateAuditLogger;
 
     @Resource
     protected CandidateDataService candidateDataService;
+
+    @Resource
+    protected CandidateSessionDao candidateSessionDao;
 
     //----------------------------------------------------
     // Access controls
@@ -95,5 +103,18 @@ public abstract class CandidateServiceBase {
         if (!candidateSession.isAuthorMode()) {
             candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.AUTHOR_INFO_FORBIDDEN);
         }
+    }
+
+    //----------------------------------------------------
+
+    protected CandidateSession handleExplosion(final RuntimeException e, final CandidateSession candidateSession) {
+        if (e!=null) {
+            logger.error("Intercepted RuntimeException so marking CandidateSession session as exploded", e);
+        }
+        candidateSession.setExploded(true);
+        candidateSession.setTerminated(true);
+        candidateAuditLogger.logExplosion(candidateSession);
+        candidateSessionDao.update(candidateSession);
+        return candidateSession;
     }
 }
