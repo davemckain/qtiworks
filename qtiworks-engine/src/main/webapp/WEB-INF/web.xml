@@ -199,7 +199,11 @@ QTIWorks Delivery Engine web deployment descriptor
   </filter>
   <filter-mapping>
     <filter-name>CandidateSessionAuthenticationFilter</filter-name>
-    <url-pattern>/candidate/*</url-pattern>
+    <url-pattern>/candidate/itemsession/*</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>CandidateSessionAuthenticationFilter</filter-name>
+    <url-pattern>/candidate/testsession/*</url-pattern>
   </filter-mapping>
 
   <!-- Dispatcher for candidate web functionality -->
