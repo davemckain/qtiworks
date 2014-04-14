@@ -11,7 +11,16 @@ All Rights Reserved
     <input type="hidden" id="protectedRequestUri" name="protectedRequestUri"
         value="${fn:escapeXml(requestScope['qtiworks.web.authn.protectedRequestUri'])}" />
 
-    <h2>Instructor Login</h2>
+    <h2>Individual Account Login</h2>
+
+    <p>
+      <div class="hints">
+        If you have been granted an individual account for QTIWorks, then please use the form below to log in.
+      </div>
+      <div class="hints">
+        Find out more about <a href="${utils:internalLink(pageContext, '/signup')}" tabindex="5">accessing QTIWorks</a>.
+      </div>
+    </p>
 
     <c:if test="${!empty errors}">
       <ul class="formErrors">
@@ -27,12 +36,6 @@ All Rights Reserved
       </div>
       <div class="grid_2">
         <input size="16" id="loginName" name="loginName" type="text" tabindex="1" value="${loginName}"/>
-      </div>
-      <div class="grid_9">
-        <div class="hints">
-          If you don't already have an account you can <a href="${utils:internalLink(pageContext, '/signup')}" tabindex="5">sign up</a>
-          for one.
-        </div>
       </div>
     </div>
     <div class="clear"></div>
