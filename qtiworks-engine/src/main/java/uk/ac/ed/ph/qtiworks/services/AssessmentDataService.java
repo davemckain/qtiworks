@@ -87,7 +87,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author David McKain
  */
 @Service
-@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
+@Transactional(propagation=Propagation.REQUIRED)
 public class AssessmentDataService {
 
     @Resource

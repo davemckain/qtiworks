@@ -206,7 +206,7 @@ public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
     /** Hrefs of all QTI XML file resources declared within this package */
     @Lob
     @Type(type="org.hibernate.type.TextType")
-    @ElementCollection(fetch=FetchType.LAZY)
+    @ElementCollection(fetch=FetchType.EAGER)
     @CollectionTable(name="assessment_package_qti_files", joinColumns=@JoinColumn(name="apid"))
     @Column(name="href")
     private Set<String> qtiFileHrefs;
@@ -214,7 +214,7 @@ public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
     /** Hrefs of all safe (non-QTI) file resources declared within this package */
     @Lob
     @Type(type="org.hibernate.type.TextType")
-    @ElementCollection(fetch=FetchType.LAZY)
+    @ElementCollection(fetch=FetchType.EAGER)
     @CollectionTable(name="assessment_package_safe_files", joinColumns=@JoinColumn(name="apid"))
     @Column(name="href")
     private Set<String> safeFileHrefs;

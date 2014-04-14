@@ -37,14 +37,13 @@ import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.TestDeliverySettings;
+import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.services.AssessmentDataService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
-import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.services.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentAndPackage;
@@ -58,6 +57,8 @@ import uk.ac.ed.ph.qtiworks.services.domain.ItemDeliverySettingsTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.services.domain.TestDeliverySettingsTemplate;
 import uk.ac.ed.ph.qtiworks.web.GlobalRouter;
+import uk.ac.ed.ph.qtiworks.web.candidate.CandidateSessionLaunchService;
+import uk.ac.ed.ph.qtiworks.web.candidate.CandidateSessionTicket;
 import uk.ac.ed.ph.qtiworks.web.domain.UploadAssessmentPackageCommand;
 import uk.ac.ed.ph.qtiworks.web.lti.LtiIdentityContext;
 import uk.ac.ed.ph.qtiworks.web.lti.LtiResourceAuthenticationFilter;
@@ -109,7 +110,7 @@ public class LtiInstructorAssessmentManagementController {
     private AssessmentManagementService assessmentManagementService;
 
     @Resource
-    private CandidateSessionStarter candidateSessionStarter;
+    private CandidateSessionLaunchService candidateSessionLaunchService;
 
     //------------------------------------------------------
 
@@ -162,7 +163,7 @@ public class LtiInstructorAssessmentManagementController {
     }
 
     @RequestMapping(value="/try", method=RequestMethod.POST)
-    public String tryThisAssessment(final HttpServletResponse response)
+    public String tryThisAssessment(final HttpSession httpSession, final HttpServletResponse response)
             throws PrivilegeException, IOException,
             CandidateException, IncompatiableDeliverySettingsException {
         final Delivery thisDelivery = identityService.getCurrentThreadLtiIdentityContext().getLtiResource().getDelivery();
@@ -174,8 +175,8 @@ public class LtiInstructorAssessmentManagementController {
         }
         final DeliverySettings theseDeliverySettings = thisDelivery.getDeliverySettings(); /* NB: May be null */
         final Delivery demoDelivery = assessmentManagementService.createDemoDelivery(thisAssessment, theseDeliverySettings);
-        final String exitUrl = ltiInstructorRouter.buildWithinContextUrl(""); /* (Back to dashboard) */
-        return runDelivery(demoDelivery, true, exitUrl);
+        final String returnUrl = ltiInstructorRouter.buildWithinContextUrl(""); /* (Back to dashboard) */
+        return runDelivery(httpSession, demoDelivery, true, returnUrl);
     }
 
     @RequestMapping(value="/toggle-availability", method=RequestMethod.POST)
@@ -378,29 +379,31 @@ public class LtiInstructorAssessmentManagementController {
     }
 
     @RequestMapping(value="/assessment/{aid}/try", method=RequestMethod.POST)
-    public String tryAssessment(final @PathVariable long aid)
+    public String tryAssessment(final HttpSession httpSession, final @PathVariable long aid)
             throws PrivilegeException, DomainEntityNotFoundException, CandidateException {
         final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
         final Delivery demoDelivery = assessmentManagementService.createDemoDelivery(assessment);
-        final String exitUrl = ltiInstructorRouter.buildWithinContextUrl("/assessment/" + aid);
-        return runDelivery(demoDelivery, true, exitUrl);
+        final String returnUrl = ltiInstructorRouter.buildWithinContextUrl("/assessment/" + aid);
+        return runDelivery(httpSession, demoDelivery, true, returnUrl);
     }
 
     @RequestMapping(value="/assessment/{aid}/try/{dsid}", method=RequestMethod.POST)
-    public String tryAssessment(final @PathVariable long aid, final @PathVariable long dsid)
+    public String tryAssessment(final HttpSession httpSession, final @PathVariable long aid, final @PathVariable long dsid)
             throws PrivilegeException, DomainEntityNotFoundException,
             CandidateException, IncompatiableDeliverySettingsException {
         final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
         final DeliverySettings deliverySettings = assessmentManagementService.lookupAndMatchDeliverySettings(dsid, assessment);
         final Delivery demoDelivery = assessmentManagementService.createDemoDelivery(assessment, deliverySettings);
-        final String exitUrl = ltiInstructorRouter.buildWithinContextUrl("/assessment/" + aid);
-        return runDelivery(demoDelivery, true, exitUrl);
+        final String returnUrl = ltiInstructorRouter.buildWithinContextUrl("/assessment/" + aid);
+        return runDelivery(httpSession, demoDelivery, true, returnUrl);
     }
 
-    private String runDelivery(final Delivery delivery, final boolean authorMode, final String exitUrl)
+    private String runDelivery(final HttpSession httpSession, final Delivery delivery, final boolean authorMode, final String returnUrl)
             throws CandidateException {
-        final CandidateSession candidateSession = candidateSessionStarter.launchCandidateSession(delivery, authorMode, exitUrl, null, null);
-        return GlobalRouter.buildSessionStartRedirect(candidateSession);
+        /* FIXME: Need to move the target method up to WS level */
+        final User caller = identityService.getCurrentThreadUser();
+        final CandidateSessionTicket candidateSessionTicket = candidateSessionLaunchService.launchInstructorTrialSession(httpSession, caller, delivery, authorMode, returnUrl);
+        return GlobalRouter.buildSessionStartRedirect(candidateSessionTicket);
     }
 
     //------------------------------------------------------

@@ -27,28 +27,53 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * This software is derived from (and contains code from) QTItools and MathAssessEngine.
- * QTItools is (c) 2008, University of Southampton.
+ * This software is derived from (and contains code from) QTITools and MathAssessEngine.
+ * QTITools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.manager.services;
+package uk.ac.ed.ph.qtiworks.web.candidate;
 
-import java.util.List;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
+import uk.ac.ed.ph.qtiworks.web.lti.LtiIdentityContext;
 
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
+
+import java.io.Serializable;
 
 /**
- * Dev utility class for running arbitrary JPA code
+ * FIXME: Document this. It's the same idea as {@link LtiIdentityContext}
  *
  * @author David McKain
  */
-@Service
-@Transactional(propagation=Propagation.REQUIRES_NEW)
-public class AdhocService {
+public final class CandidateSessionContext implements Serializable {
 
-    public void doWork(final List<String> parameters) throws Exception {
-    	/* Put something here when required */
+    private static final long serialVersionUID = 1412636123357858458L;
+
+    /**
+     * Indicates which {@link CandidateSession} this ticket provides access to
+     */
+    private final CandidateSession candidateSession;
+
+    /** Optional return URL to use when the session terminates */
+    private final String returnUrl;
+
+    public CandidateSessionContext(final CandidateSession candidateSession, final String returnUrl) {
+        Assert.notNull(candidateSession, "candidateSession");
+        this.candidateSession = candidateSession;
+        this.returnUrl = returnUrl;
+    }
+
+    public CandidateSession getCandidateSession() {
+        return candidateSession;
+    }
+
+    public String getReturnUrl() {
+        return returnUrl;
+    }
+
+    @Override
+    public String toString() {
+        return ObjectUtilities.beanToString(this);
     }
 }

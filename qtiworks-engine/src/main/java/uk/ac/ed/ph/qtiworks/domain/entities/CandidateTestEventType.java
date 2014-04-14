@@ -45,6 +45,7 @@ import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
 public enum CandidateTestEventType {
 
     /* NB: Observe maximum length for mapped column set in CandidateEvent */
+  //1234567890123456789012345678901234567890
 
     /**
      * Test has been entered.
@@ -81,8 +82,17 @@ public enum CandidateTestEventType {
     /** Selection of a particular item for interaction (in {@link NavigationMode#NONLINEAR}) */
     SELECT_ITEM,
 
-    /** Finish interaction of item (in {@link NavigationMode#LINEAR}) */
+    /**
+     * Finish interaction of item (in {@link NavigationMode#LINEAR}), moving to the next
+     * enterable item in the testPart.
+     */
     FINISH_ITEM,
+
+    /**
+     * Finish interaction of item (in {@link NavigationMode#LINEAR}), with no further
+     * enterable items in the testPart, thus causing the current testPart to end.
+     */
+    FINISH_FINAL_ITEM,
 
     /** Item Event within the currently-selected item */
     ITEM_EVENT,

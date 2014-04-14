@@ -66,11 +66,11 @@ public final class TestNonlinearSimultaneousTest extends SimpleProcessingTestBas
         testSessionController.endCurrentTestPart(operationTimestamp);
 
         /* RP & OP should now have happened */
-        assertItemResponseProcessingRun(item1SessionState);
-        assertItemResponseProcessingNotRun(item2SessionState);
+        assertChoiceItemResponseProcessingRun(item1SessionState);
+        assertChoiceItemResponseProcessingNotRun(item2SessionState);
         assertOutcomeProcessingRun();
-        assertItemScore(item1SessionState, 1.0);
-        assertItemScore(item2SessionState, 0.0);
+        assertChoiceItemScore(item1SessionState, 1.0);
+        assertChoiceItemScore(item2SessionState, 0.0);
         assertTestScore(1.0);
     }
 
@@ -91,11 +91,11 @@ public final class TestNonlinearSimultaneousTest extends SimpleProcessingTestBas
         testSessionController.endCurrentTestPart(operationTimestamp);
 
         /* RP & OP should now have happened */
-        assertItemResponseProcessingRun(item1SessionState);
-        assertItemResponseProcessingNotRun(item2SessionState);
+        assertChoiceItemResponseProcessingRun(item1SessionState);
+        assertChoiceItemResponseProcessingNotRun(item2SessionState);
         assertOutcomeProcessingRun();
-        assertItemScore(item1SessionState, 0.0);
-        assertItemScore(item2SessionState, 0.0);
+        assertChoiceItemScore(item1SessionState, 0.0);
+        assertChoiceItemScore(item2SessionState, 0.0);
         assertTestScore(0.0);
     }
 
@@ -116,11 +116,11 @@ public final class TestNonlinearSimultaneousTest extends SimpleProcessingTestBas
         testSessionController.endCurrentTestPart(operationTimestamp);
 
         /* RP should have happened on item 1 but not 2. OP should have happened */
-        assertItemResponseProcessingRun(item1SessionState);
-        assertItemResponseProcessingNotRun(item2SessionState);
+        assertChoiceItemResponseProcessingRun(item1SessionState);
+        assertChoiceItemResponseProcessingNotRun(item2SessionState);
         assertOutcomeProcessingRun();
-        assertItemScore(item1SessionState, 0.0);
-        assertItemScore(item2SessionState, 0.0);
+        assertChoiceItemScore(item1SessionState, 0.0);
+        assertChoiceItemScore(item2SessionState, 0.0);
         assertTestScore(0.0);
     }
 
@@ -138,11 +138,11 @@ public final class TestNonlinearSimultaneousTest extends SimpleProcessingTestBas
         testSessionController.endCurrentTestPart(operationTimestamp);
 
         /* RP should have happened on item 1 but not 2. OP should have happened */
-        assertItemResponseProcessingRun(item1SessionState);
-        assertItemResponseProcessingNotRun(item2SessionState);
+        assertChoiceItemResponseProcessingRun(item1SessionState);
+        assertChoiceItemResponseProcessingNotRun(item2SessionState);
         assertOutcomeProcessingRun();
-        assertItemScore(item1SessionState, 1.0);
-        assertItemScore(item2SessionState, 0.0);
+        assertChoiceItemScore(item1SessionState, 1.0);
+        assertChoiceItemScore(item2SessionState, 0.0);
         assertTestScore(1.0);
     }
 
@@ -165,8 +165,8 @@ public final class TestNonlinearSimultaneousTest extends SimpleProcessingTestBas
         /* RP should have happened on item 1 but not 2. OP should have happened */
         assertItemResponseProcessingRun();
         assertOutcomeProcessingRun();
-        assertItemScore(item1SessionState, 1.0);
-        assertItemScore(item2SessionState, 1.0);
+        assertChoiceItemScore(item1SessionState, 1.0);
+        assertChoiceItemScore(item2SessionState, 1.0);
         assertTestScore(2.0);
     }
 
@@ -178,8 +178,8 @@ public final class TestNonlinearSimultaneousTest extends SimpleProcessingTestBas
         testSessionController.endCurrentTestPart(operationTimestamp);
 
         /* RP should have happened on item 1, OP will be run */
-        assertItemResponseProcessingRun(item1SessionState);
-        assertItemResponseProcessingNotRun(item2SessionState);
+        assertChoiceItemResponseProcessingRun(item1SessionState);
+        assertChoiceItemResponseProcessingNotRun(item2SessionState);
         assertOutcomeProcessingRun();
     }
 

@@ -202,6 +202,20 @@ QTIWorks Delivery Engine web deployment descriptor
 
   <!-- ========== CANDIDATE SERVICES ========== -->
 
+  <!-- Authentication filter for access to candidate sessions -->
+  <filter>
+    <filter-name>CandidateSessionAuthenticationFilter</filter-name>
+    <filter-class>uk.ac.ed.ph.qtiworks.web.candidate.CandidateSessionAuthenticationFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>CandidateSessionAuthenticationFilter</filter-name>
+    <url-pattern>/candidate/itemsession/*</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>CandidateSessionAuthenticationFilter</filter-name>
+    <url-pattern>/candidate/testsession/*</url-pattern>
+  </filter-mapping>
+
   <!-- Dispatcher for candidate web functionality -->
   <servlet>
     <servlet-name>CandidateDispatcher</servlet-name>

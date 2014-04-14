@@ -51,8 +51,6 @@ import uk.ac.ed.ph.jqtiplus.node.result.ItemVariable;
 import uk.ac.ed.ph.jqtiplus.node.result.OutcomeVariable;
 import uk.ac.ed.ph.jqtiplus.node.result.TestResult;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
-import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
-import uk.ac.ed.ph.jqtiplus.running.TestSessionController;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.value.NumberValue;
 import uk.ac.ed.ph.jqtiplus.value.Signature;
@@ -66,14 +64,16 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Handles the closure and final reporting of {@link CandidateSession}s,
+ * This helper service handles the finishing and final reporting of {@link CandidateSession}s,
  * possibly invoking the return of LTI outcomes.
+ *
+ * @see LtiOutcomeService
  *
  * @author David McKain
  */
 @Service
 @Transactional(propagation=Propagation.REQUIRED)
-public class CandidateSessionCloser {
+public class CandidateSessionFinisher {
 
     @Resource
     private AuditLogger auditLogger;
@@ -87,25 +87,21 @@ public class CandidateSessionCloser {
     @Resource
     private CandidateSessionDao candidateSessionDao;
 
+    @Resource
+    private RequestTimestampContext requestTimestampContext;
+
     //-------------------------------------------------
 
-    public void closeCandidateItemSession(final CandidateSession candidateSession, final ItemSessionController itemSessionController) {
-        final AssessmentResult assessmentResult = candidateDataService.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
-        closeCandidateSession(candidateSession, assessmentResult);
-    }
-
-    public void closeCandidateTestSession(final CandidateSession candidateSession, final TestSessionController testSessionController) {
-        final AssessmentResult assessmentResult = candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
-        closeCandidateSession(candidateSession, assessmentResult);
-    }
-
-    private void closeCandidateSession(final CandidateSession candidateSession, final AssessmentResult assessmentResult) {
-        candidateSession.setClosed(true);
+    public void finishCandidateSession(final CandidateSession candidateSession, final AssessmentResult assessmentResult) {
+        /* Mark session as finished */
+        candidateSession.setFinishTime(requestTimestampContext.getCurrentRequestTimestamp());
 
         /* Also nullify LIS result info for session. These will be updated later, if pre-conditions match for sending the result back */
         candidateSession.setLisOutcomeReportingStatus(null);
         candidateSession.setLisScore(null);
         candidateSessionDao.update(candidateSession);
+
+        /* Finally schedule LTI result return (if appropriate and sane) */
         maybeScheduleLtiOutcomes(candidateSession, assessmentResult);
     }
 

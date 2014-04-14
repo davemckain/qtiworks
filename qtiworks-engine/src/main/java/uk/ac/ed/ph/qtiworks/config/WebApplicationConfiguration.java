@@ -60,7 +60,7 @@ import org.springframework.web.servlet.DispatcherServlet;
  * @author David McKain
  */
 @Configuration
-@ComponentScan(basePackages={"uk.ac.ed.ph.qtiworks.web.services"})
+@ComponentScan(basePackages={"uk.ac.ed.ph.qtiworks.web.candidate"})
 public class WebApplicationConfiguration {
 
     private static final Logger logger = LoggerFactory.getLogger(WebApplicationConfiguration.class);

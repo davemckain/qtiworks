@@ -120,7 +120,7 @@ public final class LtiResourceAuthenticationFilter extends AbstractWebAuthentica
         /* The user's ticket for accessing this resource should have been stored in the session previously */
         final LtiAuthenticationTicket ltiAuthenticationTicket = getLtiAuthenticationTicketForResource(session, lrid);
         if (ltiAuthenticationTicket==null) {
-            logger.warn("Failed to retrieve LtiUser from HttpSession corresponding to LTIResource with lrid {}", lrid);
+            logger.warn("Failed to retrieve LtiAuthenticationTicket from HttpSession for LtiResource with lrid {}", lrid);
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden. This resource is only available via an LTI domain link from a Tool Provider. Please try the launch from your Tool Provider again.");
             return;
         }

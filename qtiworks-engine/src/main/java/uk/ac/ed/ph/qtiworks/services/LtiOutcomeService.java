@@ -70,6 +70,7 @@ import org.springframework.transaction.annotation.Transactional;
  * <p>
  * This is NO authorisation at this level.
  *
+ * @See CandidateSessionFinisher
  * @see ScheduledService
  *
  * @author David McKain

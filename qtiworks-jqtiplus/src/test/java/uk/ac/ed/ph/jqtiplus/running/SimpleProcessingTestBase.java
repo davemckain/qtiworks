@@ -37,31 +37,23 @@ import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNode;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.types.ResponseData;
-import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
 
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Base for simple processing tests of N/I, N/S, L/I and L/S
+ * Base for some simple processing tests of N/I, N/S, L/I and L/S
  *
  * @author David McKain
  */
 public abstract class SimpleProcessingTestBase extends SinglePartTestBase {
 
-    public static final Identifier ITEM_TP_DONE = Identifier.assumedLegal("TP_DONE");
-    public static final Identifier ITEM_RP_DONE = Identifier.assumedLegal("RP_DONE");
-    public static final Identifier ITEM_RESPONSE = Identifier.assumedLegal("RESPONSE");
-    public static final Identifier ITEM_SCORE = Identifier.assumedLegal("SCORE");
     public static final Identifier TEST_OP_DONE = Identifier.assumedLegal("OP_DONE");
     public static final Identifier TEST_SCORE = Identifier.assumedLegal("TEST_SCORE");
 
@@ -136,43 +128,23 @@ public abstract class SimpleProcessingTestBase extends SinglePartTestBase {
 
 
     protected void assertItemTemplateProcessingRun() {
-        assertItemTemplateProcessingRun(item1SessionState);
-        assertItemTemplateProcessingRun(item2SessionState);
+        assertChoiceItemTemplateProcessingRun(item1SessionState);
+        assertChoiceItemTemplateProcessingRun(item2SessionState);
     }
 
     protected void assertItemTemplateProcessingNotRun() {
-        assertItemTemplateProcessingNotRun(item1SessionState);
-        assertItemTemplateProcessingNotRun(item2SessionState);
-    }
-
-    protected void assertItemTemplateProcessingNotRun(final ItemSessionState itemSessionState) {
-        Assert.assertEquals(BooleanValue.FALSE, itemSessionState.getTemplateValue(ITEM_TP_DONE));
-    }
-
-    protected void assertItemTemplateProcessingRun(final ItemSessionState itemSessionState) {
-        Assert.assertEquals(BooleanValue.TRUE, itemSessionState.getTemplateValue(ITEM_TP_DONE));
+        assertChoiceItemTemplateProcessingNotRun(item1SessionState);
+        assertChoiceItemTemplateProcessingNotRun(item2SessionState);
     }
 
     protected void assertItemResponseProcessingRun() {
-        assertItemResponseProcessingRun(item1SessionState);
-        assertItemResponseProcessingRun(item2SessionState);
+        assertChoiceItemResponseProcessingRun(item1SessionState);
+        assertChoiceItemResponseProcessingRun(item2SessionState);
     }
 
     protected void assertItemResponseProcessingNotRun() {
-        assertItemResponseProcessingNotRun(item1SessionState);
-        assertItemResponseProcessingNotRun(item2SessionState);
-    }
-
-    protected void assertItemResponseProcessingNotRun(final ItemSessionState itemSessionState) {
-        Assert.assertEquals(BooleanValue.FALSE, itemSessionState.getOutcomeValue(ITEM_RP_DONE));
-    }
-
-    protected void assertItemResponseProcessingRun(final ItemSessionState itemSessionState) {
-        Assert.assertEquals(BooleanValue.TRUE, itemSessionState.getOutcomeValue(ITEM_RP_DONE));
-    }
-
-    protected void assertItemScore(final ItemSessionState itemSessionState, final Double expected) {
-        RunAssertions.assertValueEqualsDouble(expected, itemSessionState.getOutcomeValue(ITEM_SCORE));
+        assertChoiceItemResponseProcessingNotRun(item1SessionState);
+        assertChoiceItemResponseProcessingNotRun(item2SessionState);
     }
 
     protected void assertTestScore(final Double expected) {
@@ -181,11 +153,5 @@ public abstract class SimpleProcessingTestBase extends SinglePartTestBase {
 
     protected void handleChoiceResponse(final String choiceIdentifier) {
         handleChoiceResponse(operationTimestamp, choiceIdentifier);
-    }
-
-    protected void handleChoiceResponse(final Date timestamp, final String choiceIdentifier) {
-        final Map<Identifier, ResponseData> responseMap = new HashMap<Identifier, ResponseData>();
-        responseMap.put(ITEM_RESPONSE, new StringResponseData(choiceIdentifier));
-        testSessionController.handleResponsesToCurrentItem(timestamp, responseMap);
     }
 }

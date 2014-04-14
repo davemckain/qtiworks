@@ -33,8 +33,6 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
-import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
-
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
@@ -91,12 +89,12 @@ import org.hibernate.annotations.Type;
             query="SELECT COUNT(x)"
                 + "  FROM CandidateSession x"
                 + "  WHERE x.delivery = :delivery"
-                + "    AND x.terminated IS FALSE"),
+                + "    AND x.terminationTime IS NULL"),
     @NamedQuery(name="CandidateSession.getNonTerminatedForAssessment",
             query="SELECT x"
                 + "  FROM CandidateSession x"
                 + "  WHERE x.delivery.assessment = :assessment"
-                + "    AND x.terminated IS FALSE"
+                + "    AND x.terminationTime IS NULL"
                 + "  ORDER BY x.id"),
     @NamedQuery(name="CandidateSession.countForAssessment",
             query="SELECT COUNT(x)"
@@ -111,13 +109,13 @@ import org.hibernate.annotations.Type;
             query="SELECT COUNT(x)"
                 + "  FROM CandidateSession x"
                 + "  WHERE x.delivery.assessment = :assessment"
-                + "    AND x.terminated IS FALSE"),
+                + "    AND x.terminationTime IS NULL"),
     @NamedQuery(name="CandidateSession.countNonTerminatedCandidateRoleForAssessment",
             query="SELECT COUNT(x)"
                 + "  FROM CandidateSession x"
                 + "  WHERE x.delivery.assessment = :assessment"
                 + "    AND x.candidate.userRole = 'CANDIDATE'"
-                + "    AND x.terminated IS FALSE"),
+                + "    AND x.terminationTime IS NULL"),
     @NamedQuery(name="CandidateSession.getForDelivery",
             query="SELECT x"
                 + "  FROM CandidateSession x"
@@ -128,7 +126,7 @@ import org.hibernate.annotations.Type;
                 + "  FROM CandidateSession x"
                 + "  WHERE x.delivery = :delivery"
                 + "  AND x.candidate = :candidate"
-                + "  AND x.terminated IS FALSE"
+                + "  AND x.terminationTime IS NULL"
                 + "  ORDER BY x.id"),
     @NamedQuery(name="CandidateSession.getAll",
             query="SELECT x"
@@ -149,33 +147,6 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationTime;
 
-    /**
-     * Randomly-generated token for this session. Used in conjunction with the <code>xid</code>
-     * in URLs referring to sessions to make it more difficult to hijack sessions.
-     * <p>
-     * The token is not necessarily unique so should not be used as a lookup key.
-     */
-    @Basic(optional=false)
-    @Column(name="session_token", length=DomainConstants.CANDIDATE_SESSION_TOKEN_LENGTH)
-    private String sessionToken;
-
-    /**
-     * URL to go to once the session has been terminated.
-     * <p>
-     * If the URL starts with '/' then it is interpreted as an internal link within the webapp.
-     * <p>
-     * A URL starting <code>http://</code> or <code>https://</code> is interpreted as an
-     * absolute link to another system. Care must be taken to ensure this is not used
-     * maliciously.
-     * <p>
-     * A null URL will direct to a blank page afterwards.
-     */
-    @Lob
-    @Type(type="org.hibernate.type.TextType")
-    @Basic(optional=true)
-    @Column(name="exit_url")
-    private String exitUrl;
-
     /** {@link Delivery} owning this session */
     @ManyToOne(optional=false, fetch=FetchType.EAGER)
     @JoinColumn(name="did")
@@ -192,21 +163,40 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
     private boolean authorMode;
 
     /**
-     * Flag to indicate whether session has been closed.
-     * Once closed, a result will have been recorded and the item/test state
-     * can no longer be changed. Candidates may still review the session though.
+     * Timestamp indicating when the session has been <strong>finished</strong>.
+     * This is a QTIWorks specific concept with the following meaning:
+     * <ul>
+     *   <li>
+     *     A test is marked as finished once the candidate gets to the end of the last
+     *     enterable testPart. At this time, the outcome variables are finalised and will
+     *     be sent back to the LTI TC (if appropriate). A test only finishes once.
+     *   </li>
+     *   <li>
+     *     A standalone item is marked as finished once the item session ends. At this time,
+     *     the outcome variables are sent back to the LTI TC (if appropriate). These variables
+     *     are normally final, but it is currently possible for items to reopen. The session can
+     *     finish again in this case.
+     *   </li>
+     * </ul>
      */
-    @Basic(optional=false)
-    @Column(name="closed")
-    private boolean closed;
+    @Basic(optional=true)
+    @Column(name="finish_time", updatable=true)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date finishTime;
 
     /**
-     * Flag to indicate whether session has been terminated.
+     * Timestamp indicating when the session has been terminated. Session termination can
+     * occur in two ways:
+     * <ul>
+     *   <li>When the candidate naturally exits the session</li>
+     *   <li>When the instructor explicitly terminates the session</li>
+     * </ul>
      * Once terminated, a session is no longer available to the candidate.
      */
-    @Basic(optional=false)
-    @Column(name="is_terminated") /* NB: MySQL reserves the keyword 'terminated'! */
-    private boolean terminated;
+    @Basic(optional=true)
+    @Column(name="termination_time", updatable=true)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date terminationTime;
 
     /**
      * Flag to indicate if this session blew up while running, either because
@@ -243,9 +233,9 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
 
     /**
      * If this session was started by an LTI launch supporting the return of outcomes, then
-     * this will be the final normalized score, calculated when the session has closed.
+     * this will be the final normalized score, calculated when the session has finished.
      * <p>
-     * This will be null if returning of outcomes is not supported for this session, if the
+     * This will be null if the returning of outcomes is not supported for this session, if the
      * session is still open, or if the normalized score couldn't be computed or is out of range.
      */
     @Basic(optional=true)
@@ -305,24 +295,6 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
     }
 
 
-    public String getSessionToken() {
-        return sessionToken;
-    }
-
-    public void setSessionToken(final String sessionToken) {
-        this.sessionToken = sessionToken;
-    }
-
-
-    public String getExitUrl() {
-        return exitUrl;
-    }
-
-    public void setExitUrl(final String exitUrl) {
-        this.exitUrl = exitUrl;
-    }
-
-
     public Delivery getDelivery() {
         return delivery;
     }
@@ -350,21 +322,29 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
     }
 
 
-    public boolean isClosed() {
-        return closed;
+    public Date getFinishTime() {
+        return ObjectUtilities.safeClone(finishTime);
     }
 
-    public void setClosed(final boolean closed) {
-        this.closed = closed;
+    public boolean isFinished() {
+        return finishTime!=null;
     }
 
+    public void setFinishTime(final Date finishTime) {
+        this.finishTime = ObjectUtilities.safeClone(finishTime);
+    }
+
+
+    public Date getTerminationTime() {
+        return ObjectUtilities.safeClone(terminationTime);
+    }
 
     public boolean isTerminated() {
-        return terminated;
+        return terminationTime!=null;
     }
 
-    public void setTerminated(final boolean terminated) {
-        this.terminated = terminated;
+    public void setTerminationTime(final Date terminationTime) {
+        this.terminationTime = ObjectUtilities.safeClone(terminationTime);
     }
 
 
@@ -418,12 +398,11 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(xid=" + xid
-                + ",sessionToken=" + sessionToken
-                + ",exitUrl=" + exitUrl
                 + ",authorMode=" + authorMode
-                + ",closed=" + closed
+                + ",creationTime=" + creationTime
+                + ",finishTime=" + finishTime
+                + ",terminationTime=" + terminationTime
                 + ",exploded=" + exploded
-                + ",terminated=" + terminated
                 + ",lisOutcomeServiceUrl=" + lisOutcomeServiceUrl
                 + ",lisResultSourcedid=" + lisResultSourcedid
                 + ",lisScore=" + lisScore

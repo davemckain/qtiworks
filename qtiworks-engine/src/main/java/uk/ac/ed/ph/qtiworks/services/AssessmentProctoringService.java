@@ -74,7 +74,8 @@ public class AssessmentProctoringService {
     @Resource
     private CandidateSessionDao candidateSessionDao;
 
-    //-------------------------------------------------
+    @Resource
+    private RequestTimestampContext requestTimestampContext;
 
     public CandidateSession lookupCandidateSession(final long xid)
             throws DomainEntityNotFoundException, PrivilegeException {
@@ -112,7 +113,7 @@ public class AssessmentProctoringService {
          * action, so we don't have to record a final final result here.
          */
         if (!candidateSession.isTerminated()) {
-            candidateSession.setTerminated(true);
+            candidateSession.setTerminationTime(requestTimestampContext.getCurrentRequestTimestamp());
             candidateSessionDao.update(candidateSession);
         }
     }

@@ -87,6 +87,7 @@ public final class CandidateEventSummaryData implements Serializable {
                 case ADVANCE_TEST_PART: return "Advanced to next testPart";
                 case SELECT_MENU: return "Returned to Test Question Menu";
                 case FINISH_ITEM: return "Finished current item (in linear navigation mode)";
+                case FINISH_FINAL_ITEM: return "Finished current item (in linear navigation mode), ending the testPart as no further items are available to enter";
                 case REVIEW_TEST_PART: return "Reviewed current testPart";
                 case END_TEST_PART: return "Ended current testPart";
                 case EXIT_TEST: return "Exited test";

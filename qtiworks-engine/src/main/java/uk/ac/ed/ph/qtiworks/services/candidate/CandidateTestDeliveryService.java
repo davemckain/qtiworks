@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.qtiworks.services.candidate;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
-import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateFileSubmission;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventType;
@@ -44,18 +43,16 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateTestEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.ResponseLegality;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
-import uk.ac.ed.ph.qtiworks.services.CandidateAuditLogger;
-import uk.ac.ed.ph.qtiworks.services.CandidateDataService;
-import uk.ac.ed.ph.qtiworks.services.CandidateSessionCloser;
+import uk.ac.ed.ph.qtiworks.services.CandidateSessionFinisher;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.services.IdentityService;
-import uk.ac.ed.ph.qtiworks.services.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateResponseDao;
-import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
+import uk.ac.ed.ph.qtiworks.web.candidate.CandidateSessionContext;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiCandidateStateException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
+import uk.ac.ed.ph.jqtiplus.node.result.AssessmentResult;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.node.test.SubmissionMode;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationLevel;
@@ -79,8 +76,6 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -99,82 +94,26 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @Service
 @Transactional(propagation=Propagation.REQUIRED)
-public class CandidateTestDeliveryService {
-
-    private static final Logger logger = LoggerFactory.getLogger(CandidateTestDeliveryService.class);
+public class CandidateTestDeliveryService extends CandidateServiceBase {
 
     @Resource
-    private RequestTimestampContext requestTimestampContext;
-
-    @Resource
-    private CandidateAuditLogger candidateAuditLogger;
-
-    @Resource
-    private CandidateSessionCloser candidateSessionCloser;
-
-    @Resource
-    private CandidateDataService candidateDataService;
+    private CandidateSessionFinisher candidateSessionFinisher;
 
     @Resource
     private CandidateUploadService candidateUploadService;
 
     @Resource
-    private CandidateSessionDao candidateSessionDao;
-
-    @Resource
     private CandidateResponseDao candidateResponseDao;
-
-    //----------------------------------------------------
-    // Session access
-
-    /**
-     * Looks up the {@link CandidateSession} having the given ID (xid)
-     * and checks the given sessionToken against that stored in the session as a means of
-     * "authentication".
-     *
-     * @param xid ID (xid) of the session to look up
-     *
-     * @throws DomainEntityNotFoundException
-     * @throws CandidateException
-     */
-    public CandidateSession lookupCandidateTestSession(final long xid, final String sessionToken)
-            throws DomainEntityNotFoundException, CandidateException {
-        Assert.notNull(sessionToken, "sessionToken");
-        final CandidateSession candidateSession = candidateSessionDao.requireFindById(xid);
-        if (!sessionToken.equals(candidateSession.getSessionToken())) {
-            candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.SESSION_TOKEN_MISMATCH);
-            return null;
-        }
-        if (candidateSession.getDelivery().getAssessment().getAssessmentType()!=AssessmentObjectType.ASSESSMENT_TEST) {
-            candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.SESSION_IS_NOT_ASSESSMENT_TEST);
-            return null;
-        }
-        return candidateSession;
-    }
-
-    private void ensureSessionNotTerminated(final CandidateSession candidateSession)
-            throws CandidateException {
-        if (candidateSession.isTerminated()) {
-            /* No access when session has been terminated */
-            candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.SESSION_IS_TERMINATED);
-        }
-    }
-
-    private CandidateEvent ensureSessionEntered(final CandidateSession candidateSession)
-            throws CandidateException {
-        final CandidateEvent mostRecentEvent = candidateDataService.getMostRecentEvent(candidateSession);
-        if (mostRecentEvent==null) {
-            candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.SESSION_NOT_ENTERED);
-        }
-        return mostRecentEvent;
-    }
 
     //----------------------------------------------------
     // Session entry
 
-    public CandidateSession enterOrReenterCandidateSession(final long xid, final String sessionToken)
-            throws CandidateException, DomainEntityNotFoundException {
-        final CandidateSession candidateSession = lookupCandidateTestSession(xid, sessionToken);
+    public CandidateSession enterOrReenterCandidateSession(final CandidateSessionContext candidateSessionContext)
+            throws CandidateException {
+        Assert.notNull(candidateSessionContext, "candidateSessionContext");
+        assertSessionType(candidateSessionContext, AssessmentObjectType.ASSESSMENT_TEST);
+        final CandidateSession candidateSession = candidateSessionContext.getCandidateSession();
+
         final CandidateEvent mostRecentEvent = candidateDataService.getMostRecentEvent(candidateSession);
         if (mostRecentEvent==null && !candidateSession.isTerminated()) {
             enterCandidateSession(candidateSession);
@@ -218,44 +157,38 @@ public class CandidateTestDeliveryService {
             return handleExplosion(e, candidateSession);
         }
 
-        /* Handle immediate end of session */
-        if (testSessionState.isEnded()) {
-            candidateSessionCloser.closeCandidateTestSession(candidateSession, testSessionController);
-        }
-
         /* Record and log event */
         final CandidateEvent candidateEvent = candidateDataService.recordCandidateTestEvent(candidateSession,
                 CandidateTestEventType.ENTER_TEST, testSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateEvent);
 
         /* Record current result state */
-        candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
+        final AssessmentResult assessmentResult = candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
+
+        /* Handle immediate end of test session */
+        if (testSessionState.isEnded()) {
+            candidateSessionFinisher.finishCandidateSession(candidateSession, assessmentResult);
+        }
+
         return candidateSession;
     }
 
     //----------------------------------------------------
     // Response handling
 
-    public CandidateSession handleResponses(final long xid, final String sessionToken,
-            final Map<Identifier, StringResponseData> stringResponseMap,
-            final Map<Identifier, MultipartFile> fileResponseMap,
-            final String candidateComment)
-            throws CandidateException, DomainEntityNotFoundException {
-        final CandidateSession candidateSession = lookupCandidateTestSession(xid, sessionToken);
-        return handleResponses(candidateSession, stringResponseMap, fileResponseMap, candidateComment);
-    }
-
-    public CandidateSession handleResponses(final CandidateSession candidateSession,
+    public CandidateSession handleResponses(final CandidateSessionContext candidateSessionContext,
             final Map<Identifier, StringResponseData> stringResponseMap,
             final Map<Identifier, MultipartFile> fileResponseMap,
             final String candidateComment)
             throws CandidateException {
-        Assert.notNull(candidateSession, "candidateSession");
-        ensureSessionNotTerminated(candidateSession);
+        Assert.notNull(candidateSessionContext, "candidateSessionContext");
+        assertSessionType(candidateSessionContext, AssessmentObjectType.ASSESSMENT_TEST);
+        final CandidateSession candidateSession = candidateSessionContext.getCandidateSession();
+        assertSessionNotTerminated(candidateSession);
 
         /* Get current JQTI state and create JQTI controller */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
-        final CandidateEvent mostRecentEvent = ensureSessionEntered(candidateSession);
+        final CandidateEvent mostRecentEvent = assertSessionEntered(candidateSession);
         final TestSessionController testSessionController = candidateDataService.createTestSessionController(mostRecentEvent, notificationRecorder);
         final TestSessionState testSessionState = testSessionController.getTestSessionState();
 
@@ -387,20 +320,16 @@ public class CandidateTestDeliveryService {
     //----------------------------------------------------
     // Navigation
 
-    public CandidateSession selectNavigationMenu(final long xid, final String sessionToken)
-            throws CandidateException, DomainEntityNotFoundException {
-        final CandidateSession candidateSession = lookupCandidateTestSession(xid, sessionToken);
-        return selectNavigationMenu(candidateSession);
-    }
-
-    public CandidateSession selectNavigationMenu(final CandidateSession candidateSession)
+    public CandidateSession selectNavigationMenu(final CandidateSessionContext candidateSessionContext)
             throws CandidateException {
-        Assert.notNull(candidateSession, "candidateSession");
-        ensureSessionNotTerminated(candidateSession);
+        Assert.notNull(candidateSessionContext, "candidateSessionContext");
+        assertSessionType(candidateSessionContext, AssessmentObjectType.ASSESSMENT_TEST);
+        final CandidateSession candidateSession = candidateSessionContext.getCandidateSession();
+        assertSessionNotTerminated(candidateSession);
 
         /* Get current JQTI state and create JQTI controller */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
-        final CandidateEvent mostRecentEvent = ensureSessionEntered(candidateSession);
+        final CandidateEvent mostRecentEvent = assertSessionEntered(candidateSession);
         final TestSessionController testSessionController = candidateDataService.createTestSessionController(mostRecentEvent, notificationRecorder);
         final TestSessionState testSessionState = testSessionController.getTestSessionState();
 
@@ -417,32 +346,27 @@ public class CandidateTestDeliveryService {
             return handleExplosion(e, candidateSession);
         }
 
+        /* Record current result state */
+        candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
+
         /* Record and log event */
         final CandidateEvent candidateEvent = candidateDataService.recordCandidateTestEvent(candidateSession,
                 CandidateTestEventType.SELECT_MENU, testSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateEvent);
 
-        /* Record current result state */
-        candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
-
         return candidateSession;
     }
 
-    public CandidateSession selectNonlinearItem(final long xid, final String sessionToken, final TestPlanNodeKey itemKey)
-            throws CandidateException, DomainEntityNotFoundException {
-        final CandidateSession candidateSession = lookupCandidateTestSession(xid, sessionToken);
-        return selectNonlinearItem(candidateSession, itemKey);
-    }
-
-    public CandidateSession selectNonlinearItem(final CandidateSession candidateSession, final TestPlanNodeKey itemKey)
+    public CandidateSession selectNonlinearItem(final CandidateSessionContext candidateSessionContext, final TestPlanNodeKey itemKey)
             throws CandidateException {
-        Assert.notNull(candidateSession, "candidateSession");
-        Assert.notNull(itemKey, "key");
-        ensureSessionNotTerminated(candidateSession);
+        Assert.notNull(candidateSessionContext, "candidateSessionContext");
+        assertSessionType(candidateSessionContext, AssessmentObjectType.ASSESSMENT_TEST);
+        final CandidateSession candidateSession = candidateSessionContext.getCandidateSession();
+        assertSessionNotTerminated(candidateSession);
 
         /* Get current JQTI state and create JQTI controller */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
-        final CandidateEvent mostRecentEvent = ensureSessionEntered(candidateSession);
+        final CandidateEvent mostRecentEvent = assertSessionEntered(candidateSession);
         final TestSessionController testSessionController = candidateDataService.createTestSessionController(mostRecentEvent, notificationRecorder);
         final TestSessionState testSessionState = testSessionController.getTestSessionState();
 
@@ -459,35 +383,31 @@ public class CandidateTestDeliveryService {
             return handleExplosion(e, candidateSession);
         }
 
+        /* Record current result state */
+        candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
+
         /* Record and log event */
         final CandidateEvent candidateTestEvent = candidateDataService.recordCandidateTestEvent(candidateSession,
                 CandidateTestEventType.SELECT_ITEM, null, itemKey, testSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateTestEvent);
 
-        /* Record current result state */
-        candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
-
         return candidateSession;
     }
 
-    public CandidateSession finishLinearItem(final long xid, final String sessionToken)
-            throws CandidateException, DomainEntityNotFoundException {
-        final CandidateSession candidateSession = lookupCandidateTestSession(xid, sessionToken);
-        return finishLinearItem(candidateSession);
-    }
-
-    public CandidateSession finishLinearItem(final CandidateSession candidateSession)
+    public CandidateSession finishLinearItem(final CandidateSessionContext candidateSessionContext)
             throws CandidateException {
-        Assert.notNull(candidateSession, "candidateSession");
+        Assert.notNull(candidateSessionContext, "candidateSessionContext");
+        assertSessionType(candidateSessionContext, AssessmentObjectType.ASSESSMENT_TEST);
+        final CandidateSession candidateSession = candidateSessionContext.getCandidateSession();
 
         /* Get current JQTI state and create JQTI controller */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
-        final CandidateEvent mostRecentEvent = ensureSessionEntered(candidateSession);
+        final CandidateEvent mostRecentEvent = assertSessionEntered(candidateSession);
         final TestSessionController testSessionController = candidateDataService.createTestSessionController(mostRecentEvent, notificationRecorder);
         final TestSessionState testSessionState = testSessionController.getTestSessionState();
 
         /* Make sure caller may do this */
-        ensureSessionNotTerminated(candidateSession);
+        assertSessionNotTerminated(candidateSession);
         try {
             if (!testSessionController.mayAdvanceItemLinear()) {
                 candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.CANNOT_FINISH_LINEAR_TEST_ITEM);
@@ -504,37 +424,39 @@ public class CandidateTestDeliveryService {
 
         /* Update state */
         final Date requestTimestamp = requestTimestampContext.getCurrentRequestTimestamp();
-        testSessionController.advanceItemLinear(requestTimestamp);
-
-        /* Record and log event */
-        final CandidateEvent candidateTestEvent = candidateDataService.recordCandidateTestEvent(candidateSession,
-                CandidateTestEventType.FINISH_ITEM, null, testSessionState, notificationRecorder);
-        candidateAuditLogger.logCandidateEvent(candidateTestEvent);
+        final TestPlanNode nextItemNode = testSessionController.advanceItemLinear(requestTimestamp);
 
         /* Record current result state */
-        candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
+        final AssessmentResult assessmentResult = candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
+
+        /* If we ended the testPart and there are now no more available testParts, then finish the session now */
+        if (nextItemNode==null && testSessionController.findNextEnterableTestPart()==null) {
+            candidateSessionFinisher.finishCandidateSession(candidateSession, assessmentResult);
+        }
+
+        /* Record and log event */
+        final CandidateTestEventType eventType = nextItemNode!=null ? CandidateTestEventType.FINISH_ITEM : CandidateTestEventType.FINISH_FINAL_ITEM;
+        final CandidateEvent candidateTestEvent = candidateDataService.recordCandidateTestEvent(candidateSession,
+                eventType, null, testSessionState, notificationRecorder);
+        candidateAuditLogger.logCandidateEvent(candidateTestEvent);
 
         return candidateSession;
     }
 
-    public CandidateSession endCurrentTestPart(final long xid, final String sessionToken)
-            throws CandidateException, DomainEntityNotFoundException {
-        final CandidateSession candidateSession = lookupCandidateTestSession(xid, sessionToken);
-        return endCurrentTestPart(candidateSession);
-    }
-
-    public CandidateSession endCurrentTestPart(final CandidateSession candidateSession)
+    public CandidateSession endCurrentTestPart(final CandidateSessionContext candidateSessionContext)
             throws CandidateException {
-        Assert.notNull(candidateSession, "candidateSession");
+        Assert.notNull(candidateSessionContext, "candidateSessionContext");
+        assertSessionType(candidateSessionContext, AssessmentObjectType.ASSESSMENT_TEST);
+        final CandidateSession candidateSession = candidateSessionContext.getCandidateSession();
 
         /* Get current JQTI state and create JQTI controller */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
-        final CandidateEvent mostRecentEvent = ensureSessionEntered(candidateSession);
+        final CandidateEvent mostRecentEvent = assertSessionEntered(candidateSession);
         final TestSessionController testSessionController = candidateDataService.createTestSessionController(mostRecentEvent, notificationRecorder);
         final TestSessionState testSessionState = testSessionController.getTestSessionState();
 
         /* Make sure caller may do this */
-        ensureSessionNotTerminated(candidateSession);
+        assertSessionNotTerminated(candidateSession);
         try {
             if (!testSessionController.mayEndCurrentTestPart()) {
                 candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.CANNOT_END_TEST_PART);
@@ -553,8 +475,13 @@ public class CandidateTestDeliveryService {
         final Date requestTimestamp = requestTimestampContext.getCurrentRequestTimestamp();
         testSessionController.endCurrentTestPart(requestTimestamp);
 
-        /* Record partial result */
-        candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
+        /* Record current result */
+        final AssessmentResult assessmentResult = candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
+
+        /* If there are now no more available testParts, finish the session now */
+        if (testSessionController.findNextEnterableTestPart()==null) {
+            candidateSessionFinisher.finishCandidateSession(candidateSession, assessmentResult);
+        }
 
         /* Record and log event */
         final CandidateEvent candidateTestEvent = candidateDataService.recordCandidateTestEvent(candidateSession,
@@ -567,24 +494,20 @@ public class CandidateTestDeliveryService {
     //----------------------------------------------------
     // Review
 
-    public CandidateSession reviewTestPart(final long xid, final String sessionToken)
-            throws CandidateException, DomainEntityNotFoundException {
-        final CandidateSession candidateSession = lookupCandidateTestSession(xid, sessionToken);
-        return reviewTestPart(candidateSession);
-    }
-
-    public CandidateSession reviewTestPart(final CandidateSession candidateSession)
+    public CandidateSession reviewTestPart(final CandidateSessionContext candidateSessionContext)
             throws CandidateException {
-        Assert.notNull(candidateSession, "candidateSession");
+        Assert.notNull(candidateSessionContext, "candidateSessionContext");
+        assertSessionType(candidateSessionContext, AssessmentObjectType.ASSESSMENT_TEST);
+        final CandidateSession candidateSession = candidateSessionContext.getCandidateSession();
 
         /* Get current JQTI state and create JQTI controller */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
-        final CandidateEvent mostRecentEvent = ensureSessionEntered(candidateSession);
+        final CandidateEvent mostRecentEvent = assertSessionEntered(candidateSession);
         final TestSessionController testSessionController = candidateDataService.createTestSessionController(mostRecentEvent, notificationRecorder);
         final TestSessionState testSessionState = testSessionController.getTestSessionState();
 
         /* Make sure caller may do this */
-        ensureSessionNotTerminated(candidateSession);
+        assertSessionNotTerminated(candidateSession);
         if (testSessionState.getCurrentTestPartKey()==null || !testSessionState.getCurrentTestPartSessionState().isEnded()) {
             candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.CANNOT_REVIEW_TEST_PART);
             return null;
@@ -598,25 +521,21 @@ public class CandidateTestDeliveryService {
         return candidateSession;
     }
 
-    public CandidateSession reviewItem(final long xid, final String sessionToken, final TestPlanNodeKey itemKey)
-            throws CandidateException, DomainEntityNotFoundException {
-        final CandidateSession candidateSession = lookupCandidateTestSession(xid, sessionToken);
-        return reviewItem(candidateSession, itemKey);
-    }
-
-    public CandidateSession reviewItem(final CandidateSession candidateSession, final TestPlanNodeKey itemKey)
+    public CandidateSession reviewItem(final CandidateSessionContext candidateSessionContext, final TestPlanNodeKey itemKey)
             throws CandidateException {
-        Assert.notNull(candidateSession, "candidateSession");
+        Assert.notNull(candidateSessionContext, "candidateSessionContext");
         Assert.notNull(itemKey, "itemKey");
+        assertSessionType(candidateSessionContext, AssessmentObjectType.ASSESSMENT_TEST);
+        final CandidateSession candidateSession = candidateSessionContext.getCandidateSession();
 
         /* Get current JQTI state and create JQTI controller */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
-        final CandidateEvent mostRecentEvent = ensureSessionEntered(candidateSession);
+        final CandidateEvent mostRecentEvent = assertSessionEntered(candidateSession);
         final TestSessionController testSessionController = candidateDataService.createTestSessionController(mostRecentEvent, notificationRecorder);
         final TestSessionState testSessionState = testSessionController.getTestSessionState();
 
         /* Make sure caller may do this */
-        ensureSessionNotTerminated(candidateSession);
+        assertSessionNotTerminated(candidateSession);
         try {
             if (!testSessionController.mayReviewItem(itemKey)) {
                 candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.CANNOT_REVIEW_TEST_ITEM);
@@ -631,13 +550,13 @@ public class CandidateTestDeliveryService {
             return handleExplosion(e, candidateSession);
         }
 
+        /* Record current result state */
+        candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
+
         /* Record and log event */
         final CandidateEvent candidateTestEvent = candidateDataService.recordCandidateTestEvent(candidateSession,
                 CandidateTestEventType.REVIEW_ITEM, null, itemKey, testSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateTestEvent);
-
-        /* Record current result state */
-        candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
 
         return candidateSession;
     }
@@ -645,25 +564,21 @@ public class CandidateTestDeliveryService {
     //----------------------------------------------------
     // Solution request
 
-    public CandidateSession requestSolution(final long xid, final String sessionToken, final TestPlanNodeKey itemKey)
-            throws CandidateException, DomainEntityNotFoundException {
-        final CandidateSession candidateSession = lookupCandidateTestSession(xid, sessionToken);
-        return requestSolution(candidateSession, itemKey);
-    }
-
-    public CandidateSession requestSolution(final CandidateSession candidateSession, final TestPlanNodeKey itemKey)
+    public CandidateSession requestSolution(final CandidateSessionContext candidateSessionContext, final TestPlanNodeKey itemKey)
             throws CandidateException {
-        Assert.notNull(candidateSession, "candidateSession");
+        Assert.notNull(candidateSessionContext, "candidateSessionContext");
+        assertSessionType(candidateSessionContext, AssessmentObjectType.ASSESSMENT_TEST);
+        final CandidateSession candidateSession = candidateSessionContext.getCandidateSession();
         Assert.notNull(itemKey, "itemKey");
 
         /* Get current JQTI state and create JQTI controller */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
-        final CandidateEvent mostRecentEvent = ensureSessionEntered(candidateSession);
+        final CandidateEvent mostRecentEvent = assertSessionEntered(candidateSession);
         final TestSessionController testSessionController = candidateDataService.createTestSessionController(mostRecentEvent, notificationRecorder);
         final TestSessionState testSessionState = testSessionController.getTestSessionState();
 
         /* Make sure caller may do this */
-        ensureSessionNotTerminated(candidateSession);
+        assertSessionNotTerminated(candidateSession);
         try {
             if (!testSessionController.mayAccessItemSolution(itemKey)) {
                 candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.CANNOT_SOLUTION_TEST_ITEM);
@@ -678,13 +593,13 @@ public class CandidateTestDeliveryService {
             return handleExplosion(e, candidateSession);
         }
 
+        /* Record current result state */
+        candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
+
         /* Record and log event */
         final CandidateEvent candidateTestEvent = candidateDataService.recordCandidateTestEvent(candidateSession,
                 CandidateTestEventType.SOLUTION_ITEM, null, itemKey, testSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateTestEvent);
-
-        /* Record current result state */
-        candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
 
         return candidateSession;
     }
@@ -692,28 +607,23 @@ public class CandidateTestDeliveryService {
     //----------------------------------------------------
     // Advance TestPart
 
-    public CandidateSession advanceTestPart(final long xid, final String sessionToken)
-            throws CandidateException, DomainEntityNotFoundException {
-        final CandidateSession candidateSession = lookupCandidateTestSession(xid, sessionToken);
-        return advanceTestPart(candidateSession);
-    }
-
-    public CandidateSession advanceTestPart(final CandidateSession candidateSession)
+    public CandidateSession advanceTestPart(final CandidateSessionContext candidateSessionContext)
             throws CandidateException {
-        Assert.notNull(candidateSession, "candidateSession");
-        ensureSessionNotTerminated(candidateSession);
+        Assert.notNull(candidateSessionContext, "candidateSessionContext");
+        assertSessionType(candidateSessionContext, AssessmentObjectType.ASSESSMENT_TEST);
+        final CandidateSession candidateSession = candidateSessionContext.getCandidateSession();
 
         /* Get current JQTI state and create JQTI controller */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
-        final CandidateEvent mostRecentEvent = ensureSessionEntered(candidateSession);
+        final CandidateEvent mostRecentEvent = assertSessionEntered(candidateSession);
         final TestSessionController testSessionController = candidateDataService.createTestSessionController(mostRecentEvent, notificationRecorder);
         final TestSessionState testSessionState = testSessionController.getTestSessionState();
 
         /* Perform action */
         final TestPlanNode nextTestPart;
-        final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
+        final Date currentTimestamp = requestTimestampContext.getCurrentRequestTimestamp();
         try {
-            nextTestPart = testSessionController.enterNextAvailableTestPart(timestamp);
+            nextTestPart = testSessionController.enterNextAvailableTestPart(currentTimestamp);
         }
         catch (final QtiCandidateStateException e) {
             candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.CANNOT_ADVANCE_TEST_PART);
@@ -729,16 +639,15 @@ public class CandidateTestDeliveryService {
             eventType = CandidateTestEventType.ADVANCE_TEST_PART;
         }
         else {
-            /* No more test parts. First of all, close the session and report any results */
-            candidateSessionCloser.closeCandidateTestSession(candidateSession, testSessionController);
-
-            /* For single part tests, we terminate the test completely now as the test feedback was shown with the testPart feedback.
+            /* No more test parts.
+             *
+             * For single part tests, we terminate the test completely now as the test feedback was shown with the testPart feedback.
              * For multi-part tests, we shall keep the test open so that the test feedback can be viewed.
              */
             if (testSessionState.getTestPlan().getTestPartNodes().size()==1) {
                 eventType = CandidateTestEventType.EXIT_TEST;
-                testSessionController.exitTest(timestamp);
-                candidateSession.setTerminated(true);
+                testSessionController.exitTest(currentTimestamp);
+                candidateSession.setTerminationTime(currentTimestamp);
                 candidateSessionDao.update(candidateSession);
             }
             else {
@@ -746,13 +655,13 @@ public class CandidateTestDeliveryService {
             }
         }
 
+        /* Record current result state */
+        candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
+
         /* Record and log event */
         final CandidateEvent candidateTestEvent = candidateDataService.recordCandidateTestEvent(candidateSession,
                 eventType, testSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateTestEvent);
-
-        /* Record current result state (possibly final) */
-        candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
 
         return candidateSession;
     }
@@ -760,27 +669,22 @@ public class CandidateTestDeliveryService {
     //----------------------------------------------------
     // Exit (multi-part) test
 
-    public CandidateSession exitTest(final long xid, final String sessionToken)
-            throws CandidateException, DomainEntityNotFoundException {
-        final CandidateSession candidateSession = lookupCandidateTestSession(xid, sessionToken);
-        return exitTest(candidateSession);
-    }
-
-    public CandidateSession exitTest(final CandidateSession candidateSession)
+    public CandidateSession exitTest(final CandidateSessionContext candidateSessionContext)
             throws CandidateException {
-        Assert.notNull(candidateSession, "candidateSession");
-        ensureSessionNotTerminated(candidateSession);
+        Assert.notNull(candidateSessionContext, "candidateSessionContext");
+        assertSessionType(candidateSessionContext, AssessmentObjectType.ASSESSMENT_TEST);
+        final CandidateSession candidateSession = candidateSessionContext.getCandidateSession();
 
         /* Get current JQTI state and create JQTI controller */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
-        final CandidateEvent mostRecentEvent = ensureSessionEntered(candidateSession);
+        final CandidateEvent mostRecentEvent = assertSessionEntered(candidateSession);
         final TestSessionController testSessionController = candidateDataService.createTestSessionController(mostRecentEvent, notificationRecorder);
         final TestSessionState testSessionState = testSessionController.getTestSessionState();
 
         /* Perform action */
+        final Date currentTimestamp = requestTimestampContext.getCurrentRequestTimestamp();
         try {
-            final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
-            testSessionController.exitTest(timestamp);
+            testSessionController.exitTest(currentTimestamp);
         }
         catch (final QtiCandidateStateException e) {
             candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.CANNOT_EXIT_TEST);
@@ -791,28 +695,17 @@ public class CandidateTestDeliveryService {
         }
 
         /* Update CandidateSession as appropriate */
-        candidateSession.setTerminated(true);
+        candidateSession.setTerminationTime(currentTimestamp);
         candidateSessionDao.update(candidateSession);
+
+        /* Record current result state (final) */
+        candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
 
         /* Record and log event */
         final CandidateEvent candidateTestEvent = candidateDataService.recordCandidateTestEvent(candidateSession,
                 CandidateTestEventType.EXIT_TEST, testSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateTestEvent);
 
-        /* Record current result state (final) */
-        candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
-
-        return candidateSession;
-    }
-
-    //----------------------------------------------------
-
-    private CandidateSession handleExplosion(final RuntimeException e, final CandidateSession candidateSession) {
-        logger.error("Intercepted RuntimeException so marking candidate test session as exploded", e);
-        candidateSession.setExploded(true);
-        candidateSession.setTerminated(true);
-        candidateAuditLogger.logExplosion(candidateSession);
-        candidateSessionDao.update(candidateSession);
         return candidateSession;
     }
 }

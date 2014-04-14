@@ -40,7 +40,6 @@ import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
 import uk.ac.ed.ph.qtiworks.services.CandidateAuditLogger;
 
-import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
 
@@ -80,6 +79,12 @@ public enum CandidateExceptionReason {
      */
     LAUNCH_ASSESSMENT_AS_SAMPLE,
 
+    /**
+     * Attempted to launch an {@link Assessment} that the current user does
+     * not have access to.
+     */
+    LAUNCH_ASSESSMENT_NO_ACCESS,
+
     //----------------------------------------------------
     // General session errors
 
@@ -96,21 +101,10 @@ public enum CandidateExceptionReason {
     SESSION_IS_TERMINATED,
 
     /**
-     * Supplied session token does not correspond with {@link CandidateSession} xid
+     * Caller made API call for a {@link CandidateSession} started on an item when in fact the session is for a test,
+     * or vice versa
      */
-    SESSION_TOKEN_MISMATCH,
-
-    /**
-     * Caller made API call for a {@link CandidateSession} started on an {@link AssessmentItem}, but session
-     * is running on an {@link AssessmentTest}
-     */
-    SESSION_IS_NOT_ASSESSMENT_ITEM,
-
-    /**
-     * Caller made API call for a {@link CandidateSession} started on an {@link AssessmentTest}, but session
-     * is running on an {@link AssessmentItem}
-     */
-    SESSION_IS_NOT_ASSESSMENT_TEST,
+    SESSION_WRONG_TYPE,
 
     /**
      * Caller attempted to rendering authoring information on a {@link CandidateSession} on which

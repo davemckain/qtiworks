@@ -1,0 +1,23 @@
+<!--
+Tests incomplete exits
+-->
+<assessmentTest
+  xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd"
+  identifier="test"
+  title="Test of incomplete exit">
+
+  <testPart identifier="p1" navigationMode="linear" submissionMode="simultaneous">
+    <assessmentSection identifier="s11" title="Section" visible="true">
+      <assessmentItemRef identifier="i111" href="choice.xml"/>
+      <assessmentItemRef identifier="i112" href="choice.xml"/>
+    </assessmentSection>
+  </testPart>
+  <testPart identifier="p2" navigationMode="linear" submissionMode="individual">
+    <assessmentSection identifier="s21" title="Section" visible="true">
+      <assessmentItemRef identifier="i211" href="choice.xml"/>
+    </assessmentSection>
+  </testPart>
+
+</assessmentTest>

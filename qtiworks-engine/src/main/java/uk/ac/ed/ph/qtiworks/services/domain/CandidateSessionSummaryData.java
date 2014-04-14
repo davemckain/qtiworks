@@ -60,7 +60,7 @@ public final class CandidateSessionSummaryData implements Serializable {
     private final String firstName; /* Not null */
     private final String lastName; /* Not null */
     private final String emailAddress; /* May be null */
-    private final boolean sessionClosed;
+    private final boolean sessionFinished;
     private final boolean sessionTerminated;
     private final boolean sessionExploded;
 
@@ -92,7 +92,7 @@ public final class CandidateSessionSummaryData implements Serializable {
         this.firstName = firstName;
         this.lastName = lastName;
         this.emailAddress = emailAddress;
-        this.sessionClosed = sessionClosed;
+        this.sessionFinished = sessionClosed;
         this.sessionTerminated = sessionTerminated;
         this.sessionExploded = sessionExploded;
         this.lisOutcomeReportingStatus = lisOutcomeReportingStatus;
@@ -122,8 +122,8 @@ public final class CandidateSessionSummaryData implements Serializable {
         return emailAddress;
     }
 
-    public boolean isSessionClosed() {
-        return sessionClosed;
+    public boolean isSessionFinished() {
+        return sessionFinished;
     }
 
     public boolean isSessionTerminated() {
@@ -155,7 +155,7 @@ public final class CandidateSessionSummaryData implements Serializable {
     }
 
     public String getSessionStatusMessage() {
-        if (sessionClosed) {
+        if (sessionFinished) {
             return "Finished";
         }
         if (sessionExploded) {

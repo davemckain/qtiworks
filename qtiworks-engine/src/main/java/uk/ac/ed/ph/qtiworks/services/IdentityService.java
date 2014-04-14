@@ -36,6 +36,7 @@ package uk.ac.ed.ph.qtiworks.services;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.web.authn.AnonymousAuthenticationFilter;
 import uk.ac.ed.ph.qtiworks.web.authn.SystemUserAuthenticationFilter;
+import uk.ac.ed.ph.qtiworks.web.candidate.CandidateSessionContext;
 import uk.ac.ed.ph.qtiworks.web.lti.LtiIdentityContext;
 import uk.ac.ed.ph.qtiworks.web.lti.LtiResourceAuthenticationFilter;
 
@@ -65,6 +66,7 @@ public final class IdentityService {
 
     private final ThreadLocal<User> currentUserThreadLocal = new ThreadLocal<User>();
     private final ThreadLocal<LtiIdentityContext> currentLtiIdentityContextThreadLocal = new ThreadLocal<LtiIdentityContext>();
+    private final ThreadLocal<CandidateSessionContext> currentCandidateSessionContextThreadLocal = new ThreadLocal<CandidateSessionContext>();
 
     /**
      * Returns the {@link User} registered for the current Thread, if it has been set.
@@ -148,6 +150,49 @@ public final class IdentityService {
         }
         else {
             currentLtiIdentityContextThreadLocal.remove();
+        }
+    }
+
+
+    /**
+     * Returns the {@link LtiIdentityContext} for the current Thread, if it has been set.
+     * <p>
+     * This is only set on LTI domain instructor launches, and will require null otherwise.
+     *
+     * @return {@link LtiIdentityContext} for the current Thread, which may be null.
+     *
+     * @see #setCurrentThreadLtiIdentityContext(LtiIdentityContext)
+     * @see #assertCurrentThreadLtiIdentityContext()
+     */
+    public CandidateSessionContext getCurrentThreadCandidateSessionContext() {
+        return currentCandidateSessionContextThreadLocal.get();
+    }
+
+    /**
+     * Returns the {@link CandidateSessionContext} for the current Thread, expecting it
+     * to return null.
+     *
+     * @return {@link CandidateSessionContext} for the current Thread, which will not be null.
+     *
+     * @throws IllegalStateException if an {@link CandidateSessionContext} is not set for the current Thread.
+     *
+     * @see #setCurrentThreadCandidateSessionContext(CandidateSessionContext)
+     * @see #assertCurrentThreadCandidateSessionContext()
+     */
+    public CandidateSessionContext assertCurrentThreadCandidateSessionContext() {
+        final CandidateSessionContext result = getCurrentThreadCandidateSessionContext();
+        if (result==null) {
+            throw new IllegalStateException("A CandidateSessionContext is required for the current Thread, but has not been set");
+        }
+        return result;
+    }
+
+    public void setCurrentThreadCandidateSessionContext(final CandidateSessionContext candidateSessionContext) {
+        if (candidateSessionContext!=null) {
+            currentCandidateSessionContextThreadLocal.set(candidateSessionContext);
+        }
+        else {
+            currentCandidateSessionContextThreadLocal.remove();
         }
     }
 

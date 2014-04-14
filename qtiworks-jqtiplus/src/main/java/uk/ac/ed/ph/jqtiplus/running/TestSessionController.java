@@ -167,7 +167,7 @@ public final class TestSessionController extends TestProcessingController {
      * Postconditions: (Valid) outcome variables will be set to their default values,
      * states for each testPart and assessmentSection will be reset,
      * {@link ItemSessionController#initialize(Date)} will be called for each item,
-     * <code>duration</code> will be set to 0. Duration tim will not yet start.
+     * <code>duration</code> will be set to 0. Duration timers will not yet start.
      *
      * @param timestamp initialisation timestamp, which must not be null
      *
@@ -438,7 +438,7 @@ public final class TestSessionController extends TestProcessingController {
             assertTestPartEnded(currentTestPartSessionState);
 
             /* Exit current testPart */
-            exitCurrentTestPart(timestamp);
+            exitCurrentTestPart(currentTestPartNode, timestamp);
 
             /* Check any BranchRules declared on this testPart */
             final Identifier branchTargetIdentifier = evaluateBranchRules(currentTestPart);
@@ -521,8 +521,7 @@ public final class TestSessionController extends TestProcessingController {
         return nextAvailableTestPartNode;
     }
 
-    private void exitCurrentTestPart(final Date timestamp) {
-        final TestPlanNode currentTestPartNode = assertCurrentTestPartNode();
+    private void exitCurrentTestPart(final TestPlanNode currentTestPartNode, final Date timestamp) {
         /* Check pre-condition on testPart */
         final TestPartSessionState currentTestPartSessionState = expectTestPartSessionState(currentTestPartNode);
         assertTestPartEnded(currentTestPartSessionState);
@@ -596,7 +595,9 @@ public final class TestSessionController extends TestProcessingController {
     }
 
     /**
-     * Returns whether we can exit the current {@link TestPart}.
+     * Returns whether we the current {@link TestPart} may be exited. This is normally the case, but
+     * {@link EffectiveItemSessionControl#isAllowSkipping()} and {@link EffectiveItemSessionControl#isValidateResponses()}
+     * may prevent that happening.
      * <p>
      * Precondition: there must be a current {@link TestPart}.
      * <p>
@@ -635,7 +636,7 @@ public final class TestSessionController extends TestProcessingController {
      * Postcondition: If the {@link TestPart} has {@link SubmissionMode#SIMULTANEOUS} then
      * any uncommitted responses will be committed, then Response Processing and Outcome Processing will be run.
      * All item and assessment section states within the testPart will be ended if that hasn't
-     * happened already; current test state will be marked as ended; current item will be cleared.
+     * happened already; current test part state will be marked as ended; current item will be cleared.
      *
      * @param timestamp timestamp for this operation, which must not be null
      *
@@ -649,8 +650,16 @@ public final class TestSessionController extends TestProcessingController {
             throw new QtiCandidateStateException("Current test part cannot be ended");
         }
         final TestPlanNode currentTestPartNode = assertCurrentTestPartNode();
-        final TestPartSessionState currentTestPartSessionState = expectTestPartSessionState(currentTestPartNode);
+
+        /* Perform logic for ending testPart */
+        endCurrentTestPart(currentTestPartNode, timestamp);
+
+        logger.debug("Ended testPart {}", currentTestPartNode.getIdentifier());
+    }
+
+    private void endCurrentTestPart(final TestPlanNode currentTestPartNode, final Date timestamp) {
         final TestPart currentTestPart = expectTestPart(currentTestPartNode);
+        final TestPartSessionState currentTestPartSessionState = expectTestPartSessionState(currentTestPartNode);
         final List<TestPlanNode> itemRefNodes = currentTestPartNode.searchDescendants(TestNodeType.ASSESSMENT_ITEM_REF);
 
         /* If in SIMULTANEOUS mode, then commit responses on each item that has been visited and invoke run RP */
@@ -696,6 +705,9 @@ public final class TestSessionController extends TestProcessingController {
         /* Update test duration */
         touchControlObjectTimer(testSessionState, timestamp);
 
+        /* Deselect item */
+        testSessionState.setCurrentItemKey(null);
+
         /* Finally, if in SIMULTANEOUS mode then invoke outcome processing.
          * (We do this last to ensure that the various duration values have been updated
          * so that they are accurate if accessed during OP.)
@@ -703,11 +715,6 @@ public final class TestSessionController extends TestProcessingController {
         if (currentTestPart.getSubmissionMode()==SubmissionMode.SIMULTANEOUS) {
             performOutcomeProcessing();
         }
-
-        /* Deselect item */
-        testSessionState.setCurrentItemKey(null);
-
-        logger.debug("Ended testPart {}", currentTestPartNode.getIdentifier());
     }
 
     /**
@@ -729,6 +736,51 @@ public final class TestSessionController extends TestProcessingController {
         assertTestNotExited();
 
         testSessionState.setExitTime(timestamp);
+        logger.debug("Exited test");
+    }
+
+    //-------------------------------------------------------------------
+
+    /**
+     * Exits an incomplete test before it has been ended, using the current
+     * (not necessarily committed) responses to the items in the current {@link TestPart},
+     * then invoking Outcome Processing, closing the {@link TestPart}, then immediately
+     * ending and exiting the test itself.
+     * <p>
+     * This is possibly more of use to proctors than candidates.
+     * <p>
+     * NOTE: This feature was added just before the release of 1.0.0. More investigation is
+     * probably required to make sure it has sensible semantics.
+     * <p>
+     * Precondition: The test must not have been exited.
+     * <p>
+     * Postcondition: The current {@link TestPart} (if available) will have been ended as in
+     * {@link #endCurrentTestPart(Date)}. The test itself will be ended (if not done already)
+     * and exited.
+     *
+     * @throws QtiCandidateStateException if the test has already been exited.
+     * @throws IllegalArgumentException if timestamp is null
+     */
+    public void exitTestIncomplete(final Date timestamp) {
+        Assert.notNull(timestamp, "timestamp");
+        assertTestNotExited();
+
+        /* End current testPart, ignoring any validation issues. This will perform OP */
+        final TestPlanNode currentTestPartNode = getCurrentTestPartNode();
+        if (currentTestPartNode!=null) {
+           endCurrentTestPart(currentTestPartNode, timestamp);
+           exitCurrentTestPart(currentTestPartNode, timestamp);
+        }
+
+        /* Mark test as ended */
+        if (testSessionState.isOpen()) {
+            testSessionState.setEndTime(timestamp);
+        }
+
+        /* Then exit test */
+        testSessionState.setExitTime(timestamp);
+        endControlObjectTimer(testSessionState, timestamp);
+        logger.debug("Exited incomplete test");
     }
 
     //-------------------------------------------------------------------
@@ -1019,7 +1071,7 @@ public final class TestSessionController extends TestProcessingController {
 
                     /* If we're actually doing EXIT_TEST on a multi-part test, then also exit current testPart, jump remaining testParts and end the test itself */
                     if (BranchRule.EXIT_TEST.equals(branchTargetIdentifier) && testSessionState.getTestPlan().getTestPartNodes().size() > 1) {
-                        exitCurrentTestPart(timestamp);
+                        exitCurrentTestPart(currentTestPartNode, timestamp);
                         markRemainingTestPartNodesAsJumped(currentTestPartNode);
                         testSessionState.setEndTime(timestamp);
                         if (testSessionState.getDurationIntervalStartTime()!=null) {

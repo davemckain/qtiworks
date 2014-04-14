@@ -36,22 +36,23 @@ package uk.ac.ed.ph.qtiworks.web.controller.legacy;
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.services.AssessmentDataService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
-import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageDataImportException;
-import uk.ac.ed.ph.qtiworks.services.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageDataImportException.ImportFailureReason;
 import uk.ac.ed.ph.qtiworks.services.domain.EnumerableClientFailure;
+import uk.ac.ed.ph.qtiworks.services.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.web.GlobalRouter;
+import uk.ac.ed.ph.qtiworks.web.candidate.CandidateSessionLaunchService;
+import uk.ac.ed.ph.qtiworks.web.candidate.CandidateSessionTicket;
 import uk.ac.ed.ph.qtiworks.web.domain.StandaloneRunCommand;
 
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.stereotype.Controller;
@@ -75,7 +76,7 @@ public class UniqurateStandaloneRunner {
     private AssessmentManagementService assessmentManagementService;
 
     @Resource
-    private CandidateSessionStarter candidateSessionStarter;
+    private CandidateSessionLaunchService candidateSessionLaunchService;
 
     @Resource
     private AssessmentDataService assessmentDataService;
@@ -83,7 +84,7 @@ public class UniqurateStandaloneRunner {
     //--------------------------------------------------------------------
 
     @RequestMapping(value="/standalonerunner", method=RequestMethod.POST)
-    public String uniqurateUploadAndRun(final Model model,
+    public String uniqurateUploadAndRun(final HttpSession httpSession, final Model model,
             @Valid @ModelAttribute final StandaloneRunCommand command,
             final BindingResult errors) {
         /* Catch any binding errors */
@@ -100,11 +101,11 @@ public class UniqurateStandaloneRunner {
                 return "standalonerunner/invalidUpload";
             }
             final Delivery delivery = assessmentManagementService.createDemoDelivery(assessment);
-            final String exitUrl = "/web/anonymous/standalonerunner";
-            final CandidateSession candidateSession = candidateSessionStarter.launchCandidateSession(delivery, true, exitUrl, null, null);
+            final String returnUrl = "/web/anonymous/standalonerunner";
+            final CandidateSessionTicket candidateSessionTicket = candidateSessionLaunchService.launchAnonymousCandidateSession(httpSession, delivery, returnUrl);
 
             /* Redirect to candidate dispatcher */
-            return GlobalRouter.buildSessionStartRedirect(candidateSession);
+            return GlobalRouter.buildSessionStartRedirect(candidateSessionTicket);
         }
         catch (final AssessmentPackageDataImportException e) {
             final EnumerableClientFailure<ImportFailureReason> failure = e.getFailure();

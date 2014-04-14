@@ -37,14 +37,14 @@ import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.TestDeliverySettings;
+import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.services.AssessmentDataService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
-import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
+import uk.ac.ed.ph.qtiworks.services.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentAndPackage;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentLtiOutcomesSettingsTemplate;
@@ -58,6 +58,8 @@ import uk.ac.ed.ph.qtiworks.services.domain.ItemDeliverySettingsTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.services.domain.TestDeliverySettingsTemplate;
 import uk.ac.ed.ph.qtiworks.web.GlobalRouter;
+import uk.ac.ed.ph.qtiworks.web.candidate.CandidateSessionLaunchService;
+import uk.ac.ed.ph.qtiworks.web.candidate.CandidateSessionTicket;
 import uk.ac.ed.ph.qtiworks.web.domain.UploadAssessmentPackageCommand;
 
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
@@ -66,6 +68,7 @@ import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.stereotype.Controller;
@@ -100,7 +103,10 @@ public class InstructorAssessmentManagementController {
     private AssessmentManagementService assessmentManagementService;
 
     @Resource
-    private CandidateSessionStarter candidateSessionStarter;
+    private CandidateSessionLaunchService candidateSessionLaunchService;
+
+    @Resource
+    private IdentityService identityService;
 
     //------------------------------------------------------
 
@@ -228,30 +234,31 @@ public class InstructorAssessmentManagementController {
     }
 
     @RequestMapping(value="/assessment/{aid}/try", method=RequestMethod.POST)
-    public String tryAssessment(final @PathVariable long aid)
+    public String tryAssessment(final @PathVariable long aid, final HttpSession httpSession)
             throws PrivilegeException, DomainEntityNotFoundException, CandidateException {
         final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
         final Delivery demoDelivery = assessmentManagementService.createDemoDelivery(assessment);
 
-        return runDelivery(aid, demoDelivery, true);
+        return runDelivery(httpSession, aid, demoDelivery, true);
     }
 
     @RequestMapping(value="/assessment/{aid}/try/{dsid}", method=RequestMethod.POST)
-    public String tryAssessment(final @PathVariable long aid, final @PathVariable long dsid)
+    public String tryAssessment(final @PathVariable long aid, final @PathVariable long dsid, final HttpSession httpSession)
             throws PrivilegeException, DomainEntityNotFoundException,
             CandidateException, IncompatiableDeliverySettingsException {
         final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
         final DeliverySettings deliverySettings = assessmentManagementService.lookupAndMatchDeliverySettings(dsid, assessment);
         final Delivery demoDelivery = assessmentManagementService.createDemoDelivery(assessment, deliverySettings);
 
-        return runDelivery(aid, demoDelivery, true);
+        return runDelivery(httpSession, aid, demoDelivery, true);
     }
 
-    private String runDelivery(final long aid, final Delivery delivery, final boolean authorMode)
+    private String runDelivery(final HttpSession httpSession, final long aid, final Delivery delivery, final boolean authorMode)
             throws CandidateException {
-        final String exitUrl = instructorRouter.buildWithinContextUrl("/assessment/" + aid);
-        final CandidateSession candidateSession = candidateSessionStarter.launchCandidateSession(delivery, authorMode, exitUrl, null, null);
-        return GlobalRouter.buildSessionStartRedirect(candidateSession);
+        final User caller = identityService.getCurrentThreadUser();
+        final String returnUrl = instructorRouter.buildWithinContextUrl("/assessment/" + aid);
+        final CandidateSessionTicket candidateSessionTicket = candidateSessionLaunchService.launchInstructorTrialSession(httpSession, caller, delivery, authorMode, returnUrl);
+        return GlobalRouter.buildSessionStartRedirect(candidateSessionTicket);
     }
 
     @RequestMapping(value="/assessment/{aid}/outcomes-settings", method=RequestMethod.GET)
@@ -307,12 +314,13 @@ public class InstructorAssessmentManagementController {
 
     /** FIXME: Support trying out with authorMode turned off */
     @RequestMapping(value="/delivery/{did}/try", method=RequestMethod.POST)
-    public String tryDelivery(final @PathVariable long did)
+    public String tryDelivery(final @PathVariable long did, final HttpSession httpSession)
             throws PrivilegeException, DomainEntityNotFoundException, CandidateException {
+        final User caller = identityService.getCurrentThreadUser();
         final Delivery delivery = assessmentManagementService.lookupDelivery(did);
-        final String exitUrl = instructorRouter.buildWithinContextUrl("/delivery/" + did);
-        final CandidateSession candidateSession = candidateSessionStarter.launchCandidateSession(delivery, true, exitUrl, null, null);
-        return GlobalRouter.buildSessionStartRedirect(candidateSession);
+        final String returnUrl = instructorRouter.buildWithinContextUrl("/delivery/" + did);
+        final CandidateSessionTicket candidateSessionTicket = candidateSessionLaunchService.launchInstructorTrialSession(httpSession, caller, delivery, true, returnUrl);
+        return GlobalRouter.buildSessionStartRedirect(candidateSessionTicket);
     }
 
     @RequestMapping(value="/assessment/{aid}/deliveries/create", method=RequestMethod.GET)

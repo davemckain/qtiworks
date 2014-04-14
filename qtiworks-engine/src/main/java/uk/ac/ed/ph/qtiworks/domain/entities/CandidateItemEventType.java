@@ -41,6 +41,9 @@ package uk.ac.ed.ph.qtiworks.domain.entities;
  */
 public enum CandidateItemEventType {
 
+    /* NB: Observe maximum length for mapped column set in CandidateEvent */
+  //1234567890123456789012345678901234567890
+
     /**
      * Item session first initialised and template processing happened
      * (NB: Only in standalone item sessions)
