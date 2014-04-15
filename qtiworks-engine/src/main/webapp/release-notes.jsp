@@ -12,14 +12,92 @@ All Rights Reserved
   </nav>
   <h2>QTIWorks Release Notes</h2>
 
+  <h3>Release 1.0-beta6 (15/04/2014)</h3>
+  <p>
+    This is hoped to be the final beta before a RC or final 1.0.0 release.
+  </p>
+  <h4>Migration notes</h4>
+  <p>
+    If you have an existing QTIWorks installation then note that a database
+    schema change will be required. Please run
+    <code>qtiworks-engine/support/schema-migrations/beta5-to-beta6.sql</code>
+    to upgrade your database if you have been running your own QTIWorks
+    1.0-beta5 installation. Please follow instructions in earlier release notes
+    to upgrade incrementally from earlier beta releases.
+  </p>
+  <p>
+    There are some additions to <code>default.qtiworks-deployment.properties</code>.
+    Please merge into your <code>qtiworks-deployment.properties</code> as required.
+  </p>
+  <h4>Issues resolved</h4>
+  <ul>
+    <li>
+      <a href="https://github.com/davemckain/qtiworks/issues/44">#44</a>:
+      Changes have been made to DB column naming to avoid the superset of
+      reserved words used by most command databases. (Thanks for Kevin Curley for
+      noting this problem while trying out QTIWorks on Microsoft SQL Server.)
+    </li>
+    <li>
+      Fix to (incomplete) implementation if <code>timeLimit</code> class in JQTI+. This
+      now has the correct name, and recognises the <code>allowLateSubmission</code> attribute.
+    </li>
+    <li>
+      The animated progress bar shown when sessions take a few moments to launch now animate
+      correctly on Chrome.
+    </li>
+    <li>
+      A missing exit page has been added for the (legacy) Uniqurate controller.
+    </li>
+    <li>
+      Added the HTML5 shim to the instructor interfaces for older versions of Internet Explorer.
+    </li>
+  </ul>
+
+  <h4>New features and changes</h4>
+  <ul>
+    <li>
+      The public demo and (sketchy) REST functions provided by the QTIWorks
+      Engine are now optional and disabled by default. They can be easily
+      enabled via your <code>qtiworks-deployment.properties</code> if you want
+      to use these features.
+    </li>
+    <li>
+      There have been several internal change to how candidate sessions are
+      launched and authenticated. Access to a candidate session is now linked
+      to the underlying HTTP session, making it more difficult for sessions to
+      be hijacked. (Cookies are therefore required now.) The random token added
+      to candidate session URLs is now specific to an individual launch of a
+      session.
+    </li>
+    <li>
+      Test candidate sessions are now marked as finished once the final item in
+      the final testPart has been ended. This means results should be available
+      (and returned to the LTI TC) as soon as they have been finalised.
+    </li>
+    <li>
+      Maven plugins and dependencies have been updated to the latest versions.
+    </li>
+    <li>
+      The concept of 'public' Assessments and Delivery Settings have been
+      dropped, at least for now. This idea was never really fleshed out.
+    </li>
+    <li>
+      The QTIWorks Engine Manager actions have been tidied up and rationalised,
+      with better inline documentation about what they do.
+    </li>
+    <li>
+      There are some minor improvements to the proctoring and reporting
+      interfaces, separating the reporting functions from the more destructing
+      proctoring functions.
+    </li>
+  </ul>
+
   <h3>Release 1.0-beta5 (20/01/2014)</h3>
   <p>
     Further bug fixes and minor feature enhancements, some done to support the pilot use of QTIWorks
     for delivering a diagnostic test at the University of Edinburgh.
   </p>
-  <p>
-    Issues resolved:
-  </p>
+  <h4>Issues resolved</h4>
   <ul>
     <li>
       <a href="https://github.com/davemckain/qtiworks/issues/42">#42</a>: Duration timers are now
@@ -49,9 +127,7 @@ All Rights Reserved
       Improvements to LTI domain authentication.
     </li>
   </ul>
-  <p>
-    New features:
-  </p>
+  <h4>New features</h4>
   <ul>
     <li>
       Minor enhancements to proctoring functionality: candidate activity log, terminate individual session, delete session.
@@ -69,9 +145,12 @@ All Rights Reserved
     Bug-fix release addressing problems reported since beta3, as well as including a few
     minor features and tweaks.
   </p>
+  <h4>Migration notes</h4>
   <p>
-    Issues resolved:
+    A small database schema change is required. Please run <code>qtiworks-engine/support/schema-migrations/beta3-to-beta4.sql</code>
+    to upgrade your database if you have been running your own QTIWorks 1.0-beta3 installation.
   </p>
+  <h4>Issues resolved</h4>
   <ul>
     <li>
       <a href="https://github.com/davemckain/qtiworks/issues/37">#37</a>: Fixed encoding of candidate
@@ -104,9 +183,7 @@ All Rights Reserved
       Some minor fixes to routing/linking in the instructor web interface.
     </li>
   </ul>
-  <p>
-    New features:
-  </p>
+  <h4>New features</h4>
   <ul>
     <li>
       Improvement to the visual workflow when launching a candidate session. A
@@ -135,12 +212,6 @@ All Rights Reserved
       Blackboard Learn's iFrame option for invoking LTI launches.)
     </li>
   </ul>
-  <p>
-    A small database schema change is required. Please run <code>qtiworks-engine/support/schema-migrations/beta3-to-beta4.sql</code>
-    to upgrade your database if you have been running your own QTIWorks 1.0-beta3 installation.
-  </p>
-
-
   <h3>Release 1.0-beta3 (10/10/2013)</h3>
   <p>
     Bug-fix release addressing problems reported since beta2. Issues fixed:
@@ -289,7 +360,7 @@ All Rights Reserved
   <h3>Release 1.0-DEV31 (09/07/2013)</h3>
   <p>
     This development snapshot includes a working implementation of LTI instructor role
-    functionality (via domain-level launches). It also completes amd makes
+    functionality (via domain-level launches). It also completes and makes
     available the LTI result returning functionality sketched out earlier.
   </p>
   <p>
@@ -396,7 +467,7 @@ All Rights Reserved
   </p>
   <p>
     This snapshot requires a fairly large set of fixes to the database schema. See <code>qtiworks-engine/support/schema-migrations/dev26-to-dev27.sql</code>.
-    You must also wipe all candiate session data as the internal XML state files have changed significantly.
+    You must also wipe all candidate session data as the internal XML state files have changed significantly.
   </p>
 
   <h3>Release 1.0-DEV26 (07/03/2013)</h3>
@@ -577,7 +648,7 @@ All Rights Reserved
 
   <h3>Release 1.0-DEV14 (28/09/2012)</h3>
   <p>
-    This is the first development snapshot following the tempoarily split into
+    This is the first development snapshot following the temporarily split into
     production and development instances.  This snapshot does not contain any
     visible new features but includes a lot of changes and code refactoring to
     consolidate the work of the last few iterations and help prepare for the
