@@ -61,6 +61,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * This controller is used by the current version of Uniqurate only.
@@ -101,7 +102,7 @@ public class UniqurateStandaloneRunner {
                 return "standalonerunner/invalidUpload";
             }
             final Delivery delivery = assessmentManagementService.createDemoDelivery(assessment);
-            final String returnUrl = "/web/anonymous/standalonerunner";
+            final String returnUrl = "/web/anonymous/standalonerunner/exit";
             final CandidateSessionTicket candidateSessionTicket = candidateSessionLaunchService.launchAnonymousCandidateSession(httpSession, delivery, returnUrl);
 
             /* Redirect to candidate dispatcher */
@@ -120,5 +121,11 @@ public class UniqurateStandaloneRunner {
             /* This should not happen if underlying logic has been done correctly */
             throw QtiWorksRuntimeException.unexpectedException(e);
         }
+    }
+
+    @RequestMapping(value="/standalonerunner/exit", method=RequestMethod.GET)
+    @ResponseBody()
+    public String showExitPage() {
+        return "You may now close this window.";
     }
 }
