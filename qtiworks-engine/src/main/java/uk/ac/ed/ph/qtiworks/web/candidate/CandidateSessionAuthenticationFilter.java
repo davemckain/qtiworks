@@ -57,6 +57,9 @@ import org.springframework.web.context.WebApplicationContext;
 
 /**
  * Web layer authentication filter for gaining access to a particular {@link CandidateSession}.
+ * <p>
+ * We use a combination of a {@link CandidateSessionTicket} and an XSRF token to authorise access
+ * to a particular {@link CandidateSession}.
  *
  * @author David McKain
  */
@@ -150,19 +153,20 @@ public final class CandidateSessionAuthenticationFilter extends AbstractWebAuthe
 
     public static void authenticateUserForHttpSession(final HttpSession httpSsession, final CandidateSessionTicket candidateSessionTicket) {
         final Long xid = candidateSessionTicket.getCandidateSessionId();
-        httpSsession.setAttribute(getcandidateSessionTicketSessionKey(xid), candidateSessionTicket);
+        httpSsession.setAttribute(getCandidateSessionTicketSessionKey(xid), candidateSessionTicket);
     }
 
+    /** TODO: This is not currently being used. */
     public static void deauthenticateUserFromHttpSession(final HttpSession httpSession, final CandidateSession candidateSession) {
         final Long xid = candidateSession.getId();
-        httpSession.removeAttribute(getcandidateSessionTicketSessionKey(xid));
+        httpSession.removeAttribute(getCandidateSessionTicketSessionKey(xid));
     }
 
-    public static CandidateSessionTicket getCandidateSessionTicketForSession(final HttpSession session, final long xid) {
-        return (CandidateSessionTicket) session.getAttribute(getcandidateSessionTicketSessionKey(xid));
+    private static CandidateSessionTicket getCandidateSessionTicketForSession(final HttpSession session, final long xid) {
+        return (CandidateSessionTicket) session.getAttribute(getCandidateSessionTicketSessionKey(xid));
     }
 
-    private static String getcandidateSessionTicketSessionKey(final long xid) {
+    private static String getCandidateSessionTicketSessionKey(final long xid) {
         return CANDIDATE_SESSION_TICKET_ATTRIBUTE_BASE_NAME + Long.toString(xid);
     }
 }

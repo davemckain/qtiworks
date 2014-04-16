@@ -54,6 +54,7 @@ import uk.ac.ed.ph.qtiworks.services.candidate.CandidateException;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateExceptionReason;
 import uk.ac.ed.ph.qtiworks.services.dao.AssessmentDao;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliveryDao;
+import uk.ac.ed.ph.qtiworks.web.view.ViewUtilities;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 
@@ -113,6 +114,43 @@ public class CandidateSessionLaunchService {
             logAndThrowLaunchException(candidate, assessment, CandidateExceptionReason.LAUNCH_ASSESSMENT_NO_ACCESS);
         }
         return launchCandidateSession(httpSession, candidate, delivery, true, returnUrl, null, null);
+    }
+
+    //-------------------------------------------------
+    // Legacy Uniqurate session launching
+
+    public CandidateSessionTicket launchLegacyUniqurateCandidateSession(final HttpSession httpSession, final long did, final String uniqurateDeliveryToken, final String returnUrl)
+            throws CandidateException, DomainEntityNotFoundException {
+        Assert.notNull(httpSession, "httpSession");
+
+        /* Look up Delivery and compare with token */
+        final Delivery delivery = deliveryDao.requireFindById(did);
+        final Assessment assessment = delivery.getAssessment();
+        final User candidate = identityService.assertCurrentThreadUser();
+        final String deliveryToken = generateUniqurateDeliveryToken(delivery);
+        if (!deliveryToken.equals(uniqurateDeliveryToken)) {
+            logAndThrowLaunchException(candidate, assessment, CandidateExceptionReason.LAUNCH_ASSESSMENT_NO_ACCESS);
+        }
+
+        /* We don't check ownership of the Assessment, as UQ doesn't send the JSESSIONID cookie
+         * from when the Assessment was first created, so a second session gets created by the time
+         * we get here, hence the owner user and candidate are now different. Boo!
+         * However, we will at least make sure that the Assessment is owned by an anonymous user
+         */
+        if (!assessment.getOwnerUser().isAnonymous()) {
+            logAndThrowLaunchException(candidate, assessment, CandidateExceptionReason.LAUNCH_ASSESSMENT_NO_ACCESS);
+        }
+
+        /* OK then, we can finally launch a new CandidateSession */
+        return launchCandidateSession(httpSession, candidate, delivery, true, returnUrl, null, null);
+    }
+
+    public String generateUniqurateDeliveryToken(final Delivery delivery) {
+        final String tokenData = "Uniqurate/"
+                + delivery.getAssessment().getId()
+                + "/" + delivery.getAssessment().getOwnerUser().getId()
+                + "/" + ViewUtilities.getDateAndTimeFormat().format(delivery.getCreationTime());
+        return ServiceUtilities.computeSha1Digest(tokenData);
     }
 
     //-------------------------------------------------
@@ -221,7 +259,6 @@ public class CandidateSessionLaunchService {
                 sanitiseReturnUrl(returnUrl) /* Return URL might not be trustworthy */,
                 lisOutcomeServiceUrl, lisResultSourcedid);
     }
-
 
     //----------------------------------------------------
     // Low-level launches.

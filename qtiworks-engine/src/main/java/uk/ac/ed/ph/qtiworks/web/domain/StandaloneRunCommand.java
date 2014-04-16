@@ -35,13 +35,14 @@ package uk.ac.ed.ph.qtiworks.web.domain;
 
 import uk.ac.ed.ph.qtiworks.services.validation.MultipartFileExists;
 import uk.ac.ed.ph.qtiworks.web.controller.anonymous.AnonymousStandaloneRunner;
+import uk.ac.ed.ph.qtiworks.web.controller.legacy.UniqurateStandaloneRunner;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * Command Object used in {@link AnonymousStandaloneRunner}
+ * Command Object used in {@link AnonymousStandaloneRunner} and {@link UniqurateStandaloneRunner}
  *
  * @author David McKain
  */

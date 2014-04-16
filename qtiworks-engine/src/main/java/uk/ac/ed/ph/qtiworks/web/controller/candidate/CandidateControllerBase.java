@@ -42,7 +42,6 @@ import uk.ac.ed.ph.qtiworks.web.ServletOutputStreamer;
 import uk.ac.ed.ph.qtiworks.web.WebUtilities;
 import uk.ac.ed.ph.qtiworks.web.candidate.CandidateSessionAuthenticationFilter;
 import uk.ac.ed.ph.qtiworks.web.candidate.CandidateSessionContext;
-import uk.ac.ed.ph.qtiworks.web.candidate.CandidateSessionTicket;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
@@ -60,7 +59,6 @@ import java.util.Set;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -91,12 +89,6 @@ public abstract class CandidateControllerBase {
      */
     protected CandidateSessionContext getCandidateSessionContext() {
         return identityService.assertCurrentThreadCandidateSessionContext();
-    }
-
-    protected CandidateSessionTicket getCandidateSessionTicket(final HttpSession httpSession) {
-        final CandidateSessionContext candidateSessionContext = getCandidateSessionContext();
-        final Long xid = candidateSessionContext.getCandidateSession().getId();
-        return CandidateSessionAuthenticationFilter.getCandidateSessionTicketForSession(httpSession, xid);
     }
 
     //----------------------------------------------------
