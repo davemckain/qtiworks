@@ -145,12 +145,14 @@ public final class SystemUserAuthenticationServlet extends HttpServlet {
         final SystemUser user = systemUserDao.findByLoginName(loginName);
         final String badDetails = "Sorry, your login details were not correct. Please try again.";
         if (user==null) {
+            logger.debug("System User {} does not exist", loginName);
             errors.add(badDetails);
             return null;
         }
         /* Then check password */
         final String passwordDigest = ServiceUtilities.computePasswordDigest(user.getPasswordSalt(), password);
         if (!passwordDigest.equals(user.getPasswordDigest())) {
+            logger.debug("Password mismatch for System User {}", loginName);
             errors.add(badDetails);
             return null;
         }
