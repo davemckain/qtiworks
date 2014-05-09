@@ -25,7 +25,7 @@ All Rights Reserved
     <c:if test="${!empty errors}">
       <ul class="formErrors">
         <c:forEach var="e" items="${errors}">
-          <li>${e}</li>
+          <li>${fn:escapeXml(e)}</li>
         </c:forEach>
       </ul>
     </c:if>
@@ -35,7 +35,7 @@ All Rights Reserved
         <label for="userId">Login ID:</label>
       </div>
       <div class="grid_2">
-        <input size="16" id="loginName" name="loginName" type="text" tabindex="1" value="${loginName}"/>
+        <input size="16" id="loginName" name="loginName" type="text" tabindex="1" value="${fn:escapeXml(loginName)}"/>
       </div>
     </div>
     <div class="clear"></div>
@@ -44,7 +44,7 @@ All Rights Reserved
         <label for="password">Password:</label>
       </div>
       <div class="grid_10">
-        <input size="16" id="password" name="password" type="password" tabindex="2" value="${password}" />
+        <input size="16" id="password" name="password" type="password" tabindex="2" value="${fn:escapeXml(password)}" />
       </div>
     </div>
     <div class="clear"></div>
