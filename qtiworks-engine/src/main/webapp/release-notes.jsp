@@ -12,6 +12,26 @@ All Rights Reserved
   </nav>
   <h2>QTIWorks Release Notes</h2>
 
+  <h3>Release 1.0-beta7 (12/05/2014)</h3>
+  <p>
+    Security release. This fixes potential cross-site scripting (XSS) vulnerabilities
+    caused by a failure to escape user input in some instructor-facing JSP
+    pages, including the system user login page.
+  </p>
+  <p>
+    The <a href="https://webapps.ph.ed.ac.uk/qtiworks">public demo of QTIWorks</a> has been
+    upgraded in conjunction with this release.  All people running their own
+    QTIWorks installations are strongly encouraged to upgrade as soon as
+    possible.
+  </p>
+  <h4>Issues resolved</h4>
+  <ul>
+    <li>
+      <a href="https://github.com/davemckain/qtiworks/issues/45">#45</a>: XSS vulnerabilities
+      in some instructor interface pages.
+    </li>
+  </ul>
+
   <h3>Release 1.0-beta6 (15/04/2014)</h3>
   <p>
     This is hoped to be the final beta before a RC or final 1.0.0 release.

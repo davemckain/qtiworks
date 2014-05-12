@@ -15,7 +15,6 @@ candidateEventSummaryDataList
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
 <c:set var="candidateSessionSummaryMetadata" value="${candidateSessionSummaryReport.candidateSessionSummaryMetadata}"/>
 <c:set var="candidateSessionSummaryData" value="${candidateSessionSummaryReport.candidateSessionSummaryData}"/>
-<c:set var="assessmentResultXml" value="${candidateSessionSummaryReport.assessmentResultXml}"/>
 <page:page title="Candidate Session Management">
 
   <header class="actionHeader">
@@ -63,8 +62,8 @@ candidateEventSummaryDataList
   <c:if test="${!empty candidateSessionSummaryMetadata.lisResultOutcomeIdentifier}">
     <div class="grid_4">
       <div class="infoBox">
-        <div class="cat">LTI Result Outcome Variable (${candidateSessionSummaryMetadata.lisResultOutcomeIdentifier})</div>
-        <div class="value">${candidateSessionSummaryData.lisResultOutcomeValue}</div>
+        <div class="cat">LTI Result Outcome Variable (${fn:escapeXml(candidateSessionSummaryMetadata.lisResultOutcomeIdentifier)})</div>
+        <div class="value">${fn:escapeXml(candidateSessionSummaryData.lisResultOutcomeValue)}</div>
       </div>
     </div>
     <div class="grid_4">
@@ -137,16 +136,16 @@ candidateEventSummaryDataList
       <c:if test="${numericOutcomeCount > 0}">
         <c:forEach var="index" begin="0" end="${numericOutcomeCount-1}">
           <tr>
-            <td>${candidateSessionSummaryMetadata.numericOutcomeIdentifiers[index]}</td>
-            <td>${candidateSessionSummaryData.numericOutcomeValues[index]}</td>
+            <td>${fn:escapeXml(candidateSessionSummaryMetadata.numericOutcomeIdentifiers[index])}</td>
+            <td>${fn:escapeXml(candidateSessionSummaryData.numericOutcomeValues[index])}</td>
           </tr>
         </c:forEach>
       </c:if>
       <c:if test="${otherOutcomeCount > 0}">
         <c:forEach var="index" begin="0" end="${otherOutcomeCount-1}">
           <tr>
-            <td>${candidateSessionSummaryMetadata.otherOutcomeIdentifiers[index]}</td>
-            <td>${candidateSessionSummaryData.otherOutcomeValues[index]}</td>
+            <td>${fn:escapeXml(candidateSessionSummaryMetadata.otherOutcomeIdentifiers[index])}</td>
+            <td>${fn:escapeXml(candidateSessionSummaryData.otherOutcomeValues[index])}</td>
           </tr>
         </c:forEach>
       </c:if>

@@ -56,7 +56,7 @@ candidateSessionListRouting (xid -> action -> URL)
             <c:if test="${!empty candidateSessionSummaryMetadata.lisResultOutcomeIdentifier}">
               <c:choose>
                 <c:when test="${rowCount > 0}">
-                  <th>${candidateSessionSummaryMetadata.lisResultOutcomeIdentifier} Value</th>
+                  <th>${fn:escapeXml(candidateSessionSummaryMetadata.lisResultOutcomeIdentifier)} Value</th>
                   <th>Normalized Score</th>
                   <th>Reporting Status</th>
                 </c:when>
@@ -76,7 +76,7 @@ candidateSessionListRouting (xid -> action -> URL)
                     <a href="${utils:escapeLink(candidateSessionListRouting[row.sessionId]['show'])}">${row.sessionId}</a>
                   </td>
                   <td align="center"><c:out value="${utils:formatDateAndTime(row.launchTime)}"/></td>
-                  <td align="center">${row.sessionStatusMessage}</td>
+                  <td align="center"><c:out value="${row.sessionStatusMessage}"/></td>
                   <td><c:out value="${row.firstName}"/></td>
                   <td><c:out value="${row.lastName}"/></td>
                   <td><c:out value="${row.emailAddress}"/></td>
@@ -84,8 +84,8 @@ candidateSessionListRouting (xid -> action -> URL)
                     <c:choose>
                       <c:when test="${!empty row.lisResultOutcomeValue}">
                         <td align="center"><c:out value="${row.lisResultOutcomeValue}"/></td>
-                        <td align="center">${row.lisScore}</td>
-                        <td align="center">${row.lisReportingStatusMessage}</td>
+                        <td align="center"><c:out value="${row.lisScore}"/></td>
+                        <td align="center"><c:out value="${row.lisReportingStatusMessage}"/></td>
                       </c:when>
                       <c:otherwise>
                         <td align="center">(Not Available)</td>

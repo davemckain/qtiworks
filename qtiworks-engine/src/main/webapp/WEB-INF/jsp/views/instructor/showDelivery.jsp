@@ -121,8 +121,8 @@ Shows a Delivery
     </p>
     <ul>
       <li><b>Launch URL</b>: ${fn:escapeXml(deliveryRouting['ltiLaunch'])}</li>
-      <li><b>Key</b>: <code>${delivery.id}X${delivery.ltiConsumerKeyToken}</code></li>
-      <li><b>Secret</b>: <code>${delivery.ltiConsumerSecret}</code></li>
+      <li><b>Key</b>: <code>${delivery.id}X${fn:escapeXml(delivery.ltiConsumerKeyToken)}</code></li>
+      <li><b>Secret</b>: <code>${fn:escapeXml(delivery.ltiConsumerSecret)}</code></li>
     </ul>
   </c:if>
   <div class="floatRight scary actions">

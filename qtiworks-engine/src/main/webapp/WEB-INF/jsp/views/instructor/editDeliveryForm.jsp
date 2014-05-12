@@ -72,7 +72,7 @@ deliveryTemplate
               <li>
                 <input type="radio" id="dsid${ds.id}" name="dsid" value="${ds.id}"${checked ? ' checked="checked"' : ''} />
                 <label for="dsid${ds.id}" class="dsTitle">
-                  ${ds.title}
+                  ${fn:escapeXml(ds.title)}
                 </label>
                 <c:if test="${ds['class'].simpleName=='ItemDeliverySettings' && !empty ds.prompt}">
                   <div class="dsPrompt">${fn:escapeXml(utils:trimSentence(ds.prompt, 200))}</div>

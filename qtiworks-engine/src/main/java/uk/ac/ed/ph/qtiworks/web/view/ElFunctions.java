@@ -100,12 +100,6 @@ public final class ElFunctions {
         return time!=null ? ViewUtilities.getDayDateAndTimeFormat().format(time) : "";
     }
 
-    public static String dumpObject(final Object object) {
-        return escapeXml(ObjectDumper.dumpObject(object, DumpMode.DEEP));
-    }
-
-    //-------------------------------------------------
-
     /* NB: We prefer String over URI here as it's more general, and takes advantage of
      * stringification within the JSTL.
      */
@@ -142,6 +136,12 @@ public final class ElFunctions {
                 .append(")");
         }
         return resultBuilder.toString();
+    }
+
+    //-------------------------------------------------
+
+    public static String dumpObject(final Object object) {
+        return escapeXml(ObjectDumper.dumpObject(object, DumpMode.DEEP));
     }
 
     private static String escapeXml(final String rawString) {
