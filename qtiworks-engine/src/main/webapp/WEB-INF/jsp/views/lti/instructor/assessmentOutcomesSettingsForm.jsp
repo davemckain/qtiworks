@@ -52,7 +52,7 @@ outcomeDeclarationList
             <div class="grid_3">
               <form:select path="resultOutcomeIdentifier" id="resultOutcomeIdentifier">
                 <c:forEach var="outcomeDeclaration" items="${outcomeDeclarationList}">
-                  <form:option value="${outcomeDeclaration.identifier}"/>
+                  <form:option value="${fn:escapeXml(outcomeDeclaration.identifier)}"/>
                 </c:forEach>
               </form:select>
             </div>

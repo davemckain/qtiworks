@@ -105,7 +105,7 @@ LTI resource dashboard (after domain-level launch)
           <div class="value">
             <c:choose>
               <c:when test="${!empty thisAssessment.ltiResultOutcomeIdentifier}">
-                Reporting outcome <code>${thisAssessment.ltiResultOutcomeIdentifier}</code>
+                Reporting outcome <code>${fn:escapeXml(thisAssessment.ltiResultOutcomeIdentifier)}</code>
                 with range [${thisAssessment.ltiResultMinimum}..${thisAssessment.ltiResultMaximum}]
               </c:when>
               <c:otherwise>

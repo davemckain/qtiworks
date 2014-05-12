@@ -111,7 +111,7 @@ Shows information about a particular Assessment
           <div class="value">
             <c:choose>
               <c:when test="${!empty assessment.ltiResultOutcomeIdentifier}">
-                Reporting outcome <code>${assessment.ltiResultOutcomeIdentifier}</code>
+                Reporting outcome <code>${fn:escapeXml(assessment.ltiResultOutcomeIdentifier)}</code>
                 with range [${assessment.ltiResultMinimum}..${assessment.ltiResultMaximum}]
               </c:when>
               <c:otherwise>

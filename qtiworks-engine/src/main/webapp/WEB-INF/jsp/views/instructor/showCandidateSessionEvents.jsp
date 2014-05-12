@@ -15,7 +15,6 @@ candidateEventSummaryDataList
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
 <c:set var="candidateSessionSummaryMetadata" value="${candidateSessionSummaryReport.candidateSessionSummaryMetadata}"/>
 <c:set var="candidateSessionSummaryData" value="${candidateSessionSummaryReport.candidateSessionSummaryData}"/>
-<c:set var="assessmentResultXml" value="${candidateSessionSummaryReport.assessmentResultXml}"/>
 <page:page title="Candidate Session Activity Log">
 
   <header class="actionHeader">
