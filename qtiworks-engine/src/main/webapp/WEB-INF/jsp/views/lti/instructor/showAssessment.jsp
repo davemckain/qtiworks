@@ -25,7 +25,7 @@ Shows information about a particular Assessment
         out (unless it has a lot of errors). You may also configure how LTI outcomes should be returned for
         this Assessment.
       </p>
-    <div>
+    </div>
   </header>
 
   <table class="dashboard">

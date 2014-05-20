@@ -68,37 +68,36 @@ outcomeDeclarationList
 
         <fieldset>
           <legend>Score normalisation</legend>
-            <div class="stdFormRow">
-              <div class="grid_1">
-                <div class="bigStatus">2<span class="required">*</span></div>
-              </div>
-              <div class="grid_3">
-                <label for="prompt">Minimum possible score:</label>
-              </div>
-              <div class="grid_3">
-               <form:input path="resultMinimum" id="resultMinimum"/>
-              </div>
-              <div class="grid_5">
-                <aside>
-                  LTI requires scores to be normalised between 0.0 and 1.0. In order for
-                  us to do this for you, you need to specify the minimum and maximum possible scores.
-                </aside>
-              </div>
+          <div class="stdFormRow">
+            <div class="grid_1">
+              <div class="bigStatus">2<span class="required">*</span></div>
             </div>
-            <div class="clear"></div>
-            <div class="stdFormRow">
-              <div class="grid_1">
-                <div class="bigStatus">3<span class="required">*</span></div>
-              </div>
-              <div class="grid_3">
-                <label for="prompt">Maximum possible score:</label>
-              </div>
-              <div class="grid_3">
-               <form:input path="resultMaximum" id="resultMaximum"/>
-              </div>
+            <div class="grid_3">
+              <label for="prompt">Minimum possible score:</label>
             </div>
-            <div class="clear"></div>
-          </legend>
+            <div class="grid_3">
+              <form:input path="resultMinimum" id="resultMinimum"/>
+            </div>
+            <div class="grid_5">
+              <aside>
+                LTI requires scores to be normalised between 0.0 and 1.0. In order for
+                us to do this for you, you need to specify the minimum and maximum possible scores.
+              </aside>
+            </div>
+          </div>
+          <div class="clear"></div>
+          <div class="stdFormRow">
+            <div class="grid_1">
+              <div class="bigStatus">3<span class="required">*</span></div>
+            </div>
+            <div class="grid_3">
+              <label for="prompt">Maximum possible score:</label>
+            </div>
+            <div class="grid_3">
+             <form:input path="resultMaximum" id="resultMaximum"/>
+            </div>
+          </div>
+          <div class="clear"></div>
         </fieldset>
         <fieldset>
           <div class="stdFormRow">

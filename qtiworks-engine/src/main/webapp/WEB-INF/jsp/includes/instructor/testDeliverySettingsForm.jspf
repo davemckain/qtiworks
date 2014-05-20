@@ -28,7 +28,8 @@ testDeliverySettingsTemplate - form backing template
       <div class="grid_5">
         <aside>
           The title helps you organise your settings. It is not shown to candidates
-       </aside>
+        </aside>
+      </div>  
     </div>
     <div class="clear"></div>
   </fieldset>

@@ -75,7 +75,7 @@ primaryRouting (action -> URL)
             <li>A self-contained QTI 2.1 Assessment Item XML file.</li>
           </ul>
           <p>
-            Please additiionally note that you MUST upload the same 'type' of
+            Please additionally note that you MUST upload the same 'type' of
             assessment. I.e. you must replace an item with an item or a test with
             a test.
           <p>
