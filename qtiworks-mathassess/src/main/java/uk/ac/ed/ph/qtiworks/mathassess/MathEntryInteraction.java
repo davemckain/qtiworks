@@ -40,6 +40,7 @@ import static uk.ac.ed.ph.qtiworks.mathassess.MathAssessConstants.MATHASSESS_NAM
 
 import uk.ac.ed.ph.qtiworks.mathassess.attribute.SyntaxAttribute;
 import uk.ac.ed.ph.qtiworks.mathassess.glue.AsciiMathHelper;
+import uk.ac.ed.ph.qtiworks.mathassess.glue.AsciiMathInputException;
 import uk.ac.ed.ph.qtiworks.mathassess.glue.types.MathsContentInputValueWrapper;
 import uk.ac.ed.ph.qtiworks.mathassess.value.SyntaxType;
 
@@ -178,7 +179,14 @@ public final class MathEntryInteraction extends CustomInteraction<MathAssessExte
             /* Convert the ASCIIMath input to the appropriate Math Context
              * variable */
             final AsciiMathHelper helper = new AsciiMathHelper(mathAssessExtensionPackage.getStylesheetCache());
-            final MathsContentInputValueWrapper resultWrapper = helper.createMathsContentFromASCIIMath(asciiMathInput);
+            final MathsContentInputValueWrapper resultWrapper;
+            try {
+                resultWrapper = helper.createMathsContentFromAsciiMath(asciiMathInput);
+            }
+            catch (final AsciiMathInputException e) {
+                logger.debug("ASCIIMath input '{}' unexpectedly failed bind to a Maths Content variable", asciiMathInput);
+                throw new ResponseBindingException(responseDeclaration, responseData, "Math content is too complex for current implementation");
+            }
             final List<UpConversionFailure> upConversionFailures = resultWrapper.getUpConversionFailures();
             if (upConversionFailures != null && !upConversionFailures.isEmpty()) {
                 logger.debug("ASCIIMath input '{}' could not be bound to a Maths Content variable", asciiMathInput);

@@ -45,13 +45,14 @@ import uk.ac.ed.ph.qtiworks.mathassess.glue.maxima.QtiMaximaProcess;
  * <p>
  * In all other cases, you will be given an instance of a subclass of this (that contains extra bits
  * of information you can safely ignore) by appropriate methods in the glue layer.
- * 
+ *
  * @see QtiMaximaProcess#executeMathOutput(String, boolean)
  * @see QtiMaximaProcess#queryMaximaVariable(String, Class)
- * @see AsciiMathHelper#createMathsContentFromASCIIMath(String)
+ * @see AsciiMathHelper#createMathsContentFromAsciiMath(String)
+ *
  * @see MathsContentInputValueWrapper
  * @see MathsContentOutputValueWrapper
- * 
+ *
  * @author David McKain
  */
 public class MathsContentValueWrapper implements ValueWrapper {
@@ -61,12 +62,12 @@ public class MathsContentValueWrapper implements ValueWrapper {
      * <p>
      * This should be non-null if this MathsContent value was produced by an ASCIIMathML
      * input.
-     * 
+     *
      * @see AsciiMathHelper
      */
     protected String asciiMathInput;
-    
-    /** 
+
+    /**
      * Tidied up Presentation MathML (called <tt>PMathML</tt> in our spec document).
      * <p>
      * This {@link MathsContentValueWrapper} is considered to hold a null value if and only if
@@ -81,8 +82,8 @@ public class MathsContentValueWrapper implements ValueWrapper {
      * This is not strictly required anywhere.
      */
     protected String cMathML;
-    
-    /** 
+
+    /**
      * Up-converted form suitable for Maxima input.
      * <p>
      * You MUST fill this in when creating a new wrapper
@@ -93,13 +94,13 @@ public class MathsContentValueWrapper implements ValueWrapper {
      * fails, in which case it will be null.
      */
     protected String maximaInput;
-    
-    
+
+
     public final String getAsciiMathInput() {
         return asciiMathInput;
     }
-    
-    public final void setAsciiMathInput(String asciiMathInput) {
+
+    public final void setAsciiMathInput(final String asciiMathInput) {
         this.asciiMathInput = asciiMathInput;
     }
 
@@ -108,39 +109,39 @@ public class MathsContentValueWrapper implements ValueWrapper {
         return pMathML;
     }
 
-    public final void setPMathML(String pmathML) {
+    public final void setPMathML(final String pmathML) {
         this.pMathML = pmathML;
     }
-    
+
 
     public String getCMathML() {
         return cMathML;
     }
-    
-    public void setCMathML(String cmathML) {
+
+    public void setCMathML(final String cmathML) {
         this.cMathML = cmathML;
     }
-    
+
 
     public final String getMaximaInput() {
         return maximaInput;
     }
 
-    public final void setMaximaInput(String maximaInput) {
+    public final void setMaximaInput(final String maximaInput) {
         this.maximaInput = maximaInput;
     }
-    
-    
+
+
     @Override
     public final ValueCardinality getCardinality() {
         return ValueCardinality.MATHS_CONTENT;
     }
-    
+
     @Override
     public final boolean isNull() {
         return pMathML==null;
     }
-    
+
     @Override
     public String toString() {
         return getClass().getSimpleName()

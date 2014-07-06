@@ -45,7 +45,7 @@ import java.util.List;
  * You will get one of these coming out of the QTI/CAS layer as a response variable bound to
  * a <tt>mathEntryInteraction</tt>.
  * 
- * @see AsciiMathHelper#createMathsContentFromASCIIMath(String)
+ * @see AsciiMathHelper#createMathsContentFromAsciiMath(String)
  * @see WrapperUtilities
  *
  * @author David McKain

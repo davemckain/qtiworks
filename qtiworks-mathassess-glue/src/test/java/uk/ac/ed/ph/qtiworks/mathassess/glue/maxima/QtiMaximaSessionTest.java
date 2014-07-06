@@ -486,7 +486,7 @@ public class QtiMaximaSessionTest extends QtiMaximaSessionTestBase {
 
     @Test()
     public void testSubstituteComplex() throws Exception {
-        final MathsContentValueWrapper nValue = new AsciiMathHelper().createMathsContentFromASCIIMath("sin x");
+        final MathsContentValueWrapper nValue = new AsciiMathHelper().createMathsContentFromAsciiMath("sin x");
         process.passQtiVariableToMaxima("n", nValue);
 
         final Element mathmlElement = makeAuthoredMathML("<mi>n</mi><mi>x</mi>");
