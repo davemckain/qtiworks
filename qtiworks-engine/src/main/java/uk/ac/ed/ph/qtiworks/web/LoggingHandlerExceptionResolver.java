@@ -33,6 +33,8 @@
  */
 package uk.ac.ed.ph.qtiworks.web;
 
+import uk.ac.ed.ph.qtiworks.services.candidate.CandidateException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -65,7 +67,12 @@ public class LoggingHandlerExceptionResolver implements HandlerExceptionResolver
             final HttpServletResponse response,
             final Object handler,
             final Exception ex) {
-        logger.warn("Intercepted Exception from handler {}", handler, ex);
+        if (ex instanceof CandidateException) {
+            /* This will have been thrown by CandidateAuditLogger, so let's not log it again here */
+        }
+        else {
+            logger.warn("Intercepted Exception from handler {}", handler, ex);
+        }
         return null;
     }
 }
