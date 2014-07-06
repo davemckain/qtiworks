@@ -64,9 +64,9 @@ public final class ImportLtiDomainsAction extends ManagerAction {
     @Override
     public String[] getActionSummary() {
         return new String[] {
-        		"Imports LTI domain data into the system using data from a CSV file.",
-        		"CSV format: consumerKey,sharedSecret",
-        		"(We suggest using the domain name of the tool consumer as the consumerKey)"
+                "Imports LTI domain data into the system using data from a CSV file.",
+                "CSV format: consumerKey,sharedSecret",
+                "(We suggest using the domain name of the tool consumer as the consumerKey)"
         };
     }
 

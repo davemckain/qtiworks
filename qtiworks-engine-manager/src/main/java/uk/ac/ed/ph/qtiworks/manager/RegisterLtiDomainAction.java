@@ -57,9 +57,9 @@ public final class RegisterLtiDomainAction extends ManagerAction {
     @Override
     public String[] getActionSummary() {
         return new String[] {
-        		"Registers a new LTI domain.",
-        		"We sugggest using the TC domain name as the consumerKey.",
-        		"A shared secret will be generated if not explicitly provided."
+                "Registers a new LTI domain.",
+                "We sugggest using the TC domain name as the consumerKey.",
+                "A shared secret will be generated if not explicitly provided."
         };
     }
 

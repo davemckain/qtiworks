@@ -54,8 +54,8 @@ public final class BootstrapAction extends ManagerAction {
     @Override
     public String[] getActionSummary() {
         return new String[] {
-        		"Bootstraps the QTIWorks database and file store.",
-        		"WARNING! Any existing data will be deleted!"
+                "Bootstraps the QTIWorks database and file store.",
+                "WARNING! Any existing data will be deleted!"
         };
     }
 
@@ -72,7 +72,7 @@ public final class BootstrapAction extends ManagerAction {
 
     @Override
     public void run(final ApplicationContext applicationContext, final List<String> parameters) {
-    	/* (Bootstrap profile does stuff first) */
+        /* (Bootstrap profile does stuff first) */
 
         logger.info("Deleting any existing user data from filesystem");
         final FilespaceManager filespaceManager = applicationContext.getBean(FilespaceManager.class);

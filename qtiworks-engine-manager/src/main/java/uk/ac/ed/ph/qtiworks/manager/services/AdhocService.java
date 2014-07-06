@@ -49,6 +49,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class AdhocService {
 
     public void doWork(final List<String> parameters) throws Exception {
-    	/* Put something here when required */
+        /* Put something here when required */
     }
 }
