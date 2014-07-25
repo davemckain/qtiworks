@@ -271,11 +271,11 @@ rendering.
     <xsl:apply-templates/>
   </xsl:template>
 
-  <!-- param -->
+  <!-- param (override to handle template variables) -->
   <xsl:template match="qti:param">
     <xsl:variable name="templateValue" select="qw:get-template-value(@value)" as="element(qw:templateVariable)?"/>
     <!-- Note: spec is not explicit in that we really only allow single cardinality param substitution -->
-    <param name="{@name}" value="{if (exists($templateValue)
+    <param data-dave="yes" name="{@name}" value="{if (exists($templateValue)
         and qw:is-single-cardinality-value($templateValue)
         and qw:get-template-declaration(/, @value)[@paramVariable='true'])
       then qw:extract-single-cardinality-value($templateValue) else @value}"/>

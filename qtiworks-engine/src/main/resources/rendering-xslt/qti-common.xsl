@@ -473,7 +473,7 @@ rendering.
                        qti:dfn|qti:div|qti:em|qti:h1|qti:h2|qti:h3|qti:h4|qti:h5|qti:h6|qti:kbd|
                        qti:p|qti:pre|qti:q|qti:samp|qti:span|qti:strong|qti:var|
                        qti:dl|qti:dt|qti:dd|qti:ol|qti:ul|qti:li|
-                       qti:object|qti:b|qti:big|qti:hr|qti:i|qti:small|qti:sub|qti:sup|qti:tt|
+                       qti:object|qti:param|qti:b|qti:big|qti:hr|qti:i|qti:small|qti:sub|qti:sup|qti:tt|
                        qti:caption|qti:col|qti:colgroup|qti:table|qti:tbody|qti:td|qti:th|qti:tfoot|qti:tr|qti:thead|
                        qti:img|qti:a">
     <xsl:element name="{local-name()}">
