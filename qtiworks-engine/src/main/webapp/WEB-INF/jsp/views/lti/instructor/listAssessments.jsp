@@ -12,13 +12,13 @@ assessmentListRouting (aid -> action -> URL)
 
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
-<page:ltipage title="Assessment library">
+<page:ltipage title="Assessment Library">
 
   <header class="actionHeader">
     <nav class="breadcrumbs">
       <a href="${utils:escapeLink(primaryRouting['resourceDashboard'])}">Assessment Launch Dashboard</a> &#xbb;
     </nav>
-    <h2>Assessment library</h2>
+    <h2>Assessment Library</h2>
     <div class="hints">
       <p>
         The assessment library contains all of the the Assessments you have

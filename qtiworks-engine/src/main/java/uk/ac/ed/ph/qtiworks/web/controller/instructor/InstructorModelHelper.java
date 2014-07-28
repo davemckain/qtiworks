@@ -41,6 +41,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
 import uk.ac.ed.ph.qtiworks.services.AssessmentDataService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentReportingService;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStatusReport;
 import uk.ac.ed.ph.qtiworks.services.domain.CandidateEventSummaryData;
 import uk.ac.ed.ph.qtiworks.services.domain.CandidateSessionSummaryReport;
 import uk.ac.ed.ph.qtiworks.services.domain.PrivilegeException;
@@ -88,9 +89,10 @@ public class InstructorModelHelper {
 
     public Assessment setupModelForAssessment(final Assessment assessment, final Model model) {
         setupModel(model);
+        final AssessmentStatusReport assessmentStatusReport = assessmentDataService.getAssessmentStatusReport(assessment);
         model.addAttribute("assessment", assessment);
-        model.addAttribute("assessmentPackage", assessmentDataService.ensureSelectedAssessmentPackage(assessment));
-        model.addAttribute("assessmentStatusReport", assessmentDataService.getAssessmentStatusReport(assessment));
+        model.addAttribute("assessmentStatusReport", assessmentStatusReport);
+        model.addAttribute("assessmentPackage", assessmentStatusReport.getAssessmentPackage());
         model.addAttribute("assessmentRouting", instructorRouter.buildAssessmentRouting(assessment));
         model.addAttribute("deliverySettingsList", assessmentDataService.getCallerUserDeliverySettingsForType(assessment.getAssessmentType()));
         return assessment;

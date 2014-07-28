@@ -6,20 +6,20 @@ All Rights Reserved
 Model:
 
 assessment
+assessmentPackage
 assessmentStatusReport
 assessmentRouting (action -> URL)
 primaryRouting (action -> URL)
 
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
-<c:set var="assessmentPackage" value="${assessmentStatusReport.assessmentPackage}" scope="request"/>
 <c:set var="nonTerminatedCandidateRoleSessionCount" value="${assessmentStatusReport.nonTerminatedCandidateRoleSessionCount}" scope="request"/>
 <page:ltipage title="Replace Assessment Package Content">
 
   <header class="actionHeader">
     <nav class="breadcrumbs">
       <a href="${utils:escapeLink(primaryRouting['resourceDashboard'])}">Assessment Launch Dashboard</a> &#xbb;
-      <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Assessment library</a> &#xbb;
+      <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Assessment Library</a> &#xbb;
     </nav>
     <h2>
       <span class="assessmentLabel">Assessment&#xa0;${utils:formatAssessmentType(assessment)}</span>
