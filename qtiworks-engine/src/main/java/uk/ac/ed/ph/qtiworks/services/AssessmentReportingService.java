@@ -71,13 +71,13 @@ import java.util.zip.ZipOutputStream;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.io.Charsets;
 import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.csvreader.CsvWriter;
+import com.google.common.base.Charsets;
 
 /**
  * Middle tier service for reporting on assessment deliveries and candidate sessions.
