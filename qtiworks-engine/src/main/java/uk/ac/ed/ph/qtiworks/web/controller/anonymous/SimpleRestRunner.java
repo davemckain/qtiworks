@@ -66,7 +66,31 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * Very simple standalone REST-like runner.
+ * <h2>FIXME: This API is currently not usable. Do not use!</h2>
+ *
+ * <strong>Very</strong> simple standalone REST-like runner for uploading and launching
+ * assessments. This could be useful for authoring system who want to use QTIWorks for
+ * previewing/trying assessments.
+ *
+ * <h2>Usage</h2>
+ *
+ * POST an IMS Content Package containing a QTI assessment to the URL
+ * <code>/simplerestrunner</code>.
+ * <ul>
+ *   <li>
+ *     If the assessment is launchable, then QTIWorks will instantiate a new anonymous candidate
+ *     session on it, and will send back a 303 response with a JSESSIONID authentication cookie and URL
+ *     (via the <code>Location</code> response header) for accessing this candidate session.
+ *   </li>
+ *   <li>
+ *     If the assessment cannot be launched for some reason, QTIWorks will send back a 400 or 500
+ *     response. Further details about the error will be available within the {@link #ERROR_HEADER}
+ *     HTTP response header.
+ *   </li>
+ * </ul>
+ *
+ * FIXME: It's really not feasible for a browser to join the session specified by the JSESSIONID
+ * cookie, which was introduced in beta6. Therefore this API is not practically usable at present.
  *
  * @author David McKain
  */

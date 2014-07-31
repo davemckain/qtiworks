@@ -72,7 +72,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
- * This controller is used by the current (and slightly out of date) version of Uniqurate only.
+ * This RESTish controller is used by the current (and slightly out of date) version of
+ * Uniqurate only.
  * <p>
  * DO NOT USE this legacy controller for any new systems!
  * <p>
@@ -84,8 +85,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * is different from the one created when UQ triggers the initial {@link Delivery} creation.
  * This is because UQ doesn't pass the JSESSIONID cookie password on, so a fresh session is created
  * when the user's browser follows the redirect into the QTIWorks candidate session.
- * <p>
- * FIXME: Let's get UQ updated so that this doesn't have to be so complicated.
  *
  * @author David McKain
  */
