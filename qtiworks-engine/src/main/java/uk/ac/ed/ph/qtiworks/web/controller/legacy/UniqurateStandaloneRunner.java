@@ -111,6 +111,7 @@ public class UniqurateStandaloneRunner {
             final BindingResult errors) {
         /* Catch any binding errors */
         if (errors.hasErrors()) {
+            /* FIXME: Showing an upload form is the wrong thing to do. But contract with UQ says this will never happen */
             return "standalonerunner/uploadForm";
         }
         try {
@@ -127,6 +128,7 @@ public class UniqurateStandaloneRunner {
             return "redirect:/web/anonymous/standalonerunner/uqlauncher/" + delivery.getId() + "/" + deliveryToken;
         }
         catch (final AssessmentPackageDataImportException e) {
+            /* FIXME: Showing an upload form is the wrong thing to do. But contract with UQ says this will never happen */
             final EnumerableClientFailure<ImportFailureReason> failure = e.getFailure();
             failure.registerErrors(errors, "assessmentPackageUpload");
             return "standalonerunner/uploadForm";

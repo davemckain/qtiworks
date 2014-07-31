@@ -59,6 +59,10 @@ public class MultipartFileWrapper implements MultipartFile {
         this.contentType = contentType;
     }
 
+    public File getFile() {
+        return file;
+    }
+
     @Override
     public String getName() {
         return file.getName();
