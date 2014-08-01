@@ -119,7 +119,7 @@ public class AssessmentPackageFileImporter {
                 assessmentPackage = processUnpackedZip(importSandboxDirectory);
             }
             else {
-                logger.warn("Import data with MIME type {} was not a supported XML MIME type and no ZIP entries were found within", contentType);
+                logger.warn("Import data with MIME type {} was neither a supported XML MIME type nor a ZIP file (containing at least one entry)", contentType);
                 throw new AssessmentPackageDataImportException(ImportFailureReason.NOT_XML_OR_ZIP);
             }
         }
