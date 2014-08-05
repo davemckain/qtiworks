@@ -9,7 +9,7 @@ All Rights Reserved
 
   <div class="grid_12">
     <div class="intro">
-      QTIWorks is a new open-source system for managing, verifying and delivering Question &amp; Test
+      QTIWorks is an open-source system for managing, verifying and delivering Question &amp; Test
       Interoperability (QTI) v2.1 assessment items and tests. It can be launched from any system supporting the
       Learning Tools Interoperability (LTI) v1.1 specification.
       <a href="${utils:internalLink(pageContext, '/about/')}" title="About QTIWorks">Find out more about QTIWorks</a>.
