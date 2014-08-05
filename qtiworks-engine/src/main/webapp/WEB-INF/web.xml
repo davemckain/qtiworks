@@ -160,6 +160,7 @@ QTIWorks Delivery Engine web deployment descriptor
     <url-pattern>/anonymous/*</url-pattern>
   </filter-mapping>
   <filter-mapping>
+    <!-- (This mapping is kept for compatibility until Uniqurate is updated. Use /anonymous for everything else.) -->
     <filter-name>AnonymousAuthenticationFilter</filter-name>
     <url-pattern>/web/anonymous/*</url-pattern>
   </filter-mapping>

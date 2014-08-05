@@ -124,7 +124,7 @@ public class UniqurateStandaloneRunner {
                 return "standalonerunner/invalidUpload";
             }
             final Delivery delivery = assessmentManagementService.createDemoDelivery(assessment);
-            final String deliveryToken = candidateSessionLaunchService.generateUniqurateDeliveryToken(delivery);
+            final String deliveryToken = candidateSessionLaunchService.generateWebServiceDeliveryToken(delivery);
             return "redirect:/web/anonymous/standalonerunner/uqlauncher/" + delivery.getId() + "/" + deliveryToken;
         }
         catch (final AssessmentPackageDataImportException e) {
@@ -148,7 +148,7 @@ public class UniqurateStandaloneRunner {
             throws IOException {
         try {
             final String returnUrl = "/web/anonymous/standalonerunner/exit";
-            final CandidateSessionTicket candidateSessionTicket = candidateSessionLaunchService.launchLegacyUniqurateCandidateSession(httpSession, did, token, returnUrl);
+            final CandidateSessionTicket candidateSessionTicket = candidateSessionLaunchService.launchWebServiceCandidateSession(httpSession, did, token, returnUrl);
 
             /* Redirect to candidate dispatcher */
             return GlobalRouter.buildSessionStartRedirect(candidateSessionTicket);

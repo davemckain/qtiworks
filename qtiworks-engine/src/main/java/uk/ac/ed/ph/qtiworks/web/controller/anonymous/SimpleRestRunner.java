@@ -69,7 +69,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * <h2>NOTE: This API is currently a sketch. Do not rely on it!</h2>
+ * <h2>NOTE: This API is still currently a sketch. Do not rely on it yet!</h2>
  *
  * <strong>Very</strong> simple standalone REST-like runner for uploading and launching
  * assessments. This could be useful for authoring system who want to use QTIWorks for
@@ -91,9 +91,8 @@ import org.springframework.web.multipart.MultipartFile;
  *   </li>
  *   <li>
  *     If the assessment data is appropriate, or if the assessment cannot be launched for some
- *     reason, QTIWorks will send back a 400 or 500 response.
- *     Further details about the error will be available within the {@link #ERROR_HEADER}
- *     HTTP response header.
+ *     reason, QTIWorks will send back a 400 or 500 response. Further details about the error
+ *     will be available within the {@link #ERROR_HEADER} HTTP response header.
  *   </li>
  *   <li>
  *     Privacy notice: it is theoretically possible for other people to access the uploaded
@@ -161,12 +160,14 @@ public class SimpleRestRunner {
                 return;
             }
 
-            /* Create a delivery and a (hacky) token to pass back to access this delivery */
+            /* Create a delivery and a token to pass back for subsequently accessing this delivery */
             final Delivery delivery = assessmentManagementService.createDemoDelivery(assessment);
-            final String deliveryToken = candidateSessionLaunchService.generateUniqurateDeliveryToken(delivery);
+            final String deliveryToken = candidateSessionLaunchService.generateWebServiceDeliveryToken(delivery);
 
-            /* Create and return URL that can be passed on launching candidate sessions on this delivery */
-            final String deliveryLaunchUrl = qtiWorksDeploymentSettings.getBaseUrl() + "/anonymous/simplerestrunner/launcher/" + delivery.getId() + "/" + deliveryToken;
+            /* Create the URL that can be returned for launching candidate sessions on this delivery */
+            final String deliveryLaunchUrl = qtiWorksDeploymentSettings.getBaseUrl()
+                    + "/anonymous/simplerestrunner/launcher/" + delivery.getId()
+                    + "/" + deliveryToken;
             response.setHeader("Location", deliveryLaunchUrl);
             response.sendError(HttpServletResponse.SC_SEE_OTHER);
             return;
@@ -187,7 +188,7 @@ public class SimpleRestRunner {
         try {
             /* Create new candidate session */
             final String returnUrl = "/anonymous/simplerestrunner/exit";
-            final CandidateSessionTicket candidateSessionTicket = candidateSessionLaunchService.launchLegacyUniqurateCandidateSession(httpSession, did, deliveryToken, returnUrl);
+            final CandidateSessionTicket candidateSessionTicket = candidateSessionLaunchService.launchWebServiceCandidateSession(httpSession, did, deliveryToken, returnUrl);
 
             /* Redirect to candidate dispatcher */
             return GlobalRouter.buildSessionStartRedirect(candidateSessionTicket);
