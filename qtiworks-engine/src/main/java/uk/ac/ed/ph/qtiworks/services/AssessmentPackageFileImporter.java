@@ -105,7 +105,7 @@ public class AssessmentPackageFileImporter {
         Assert.notNull(multipartFile, "multipartFile");
         AssessmentPackage assessmentPackage = null;
 
-        final String contentType = multipartFile.getContentType();
+        final String contentType = ServiceUtilities.computeContentType(multipartFile);
         if ("application/xml".equals(contentType) || "text/xml".equals(contentType) || contentType.endsWith("+xml")) {
             /* Looks like an XML content type */
             logger.debug("Import data uses a known XML MIME type {} so saving to {} and treating as XML", contentType, importSandboxDirectory);

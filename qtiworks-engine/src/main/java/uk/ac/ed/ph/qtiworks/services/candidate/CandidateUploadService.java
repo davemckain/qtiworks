@@ -37,6 +37,7 @@ import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateFileSubmission;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.services.FilespaceManager;
+import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateFileSubmissionDao;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
@@ -83,7 +84,7 @@ public class CandidateUploadService {
         /* Create and persist submission */
         final CandidateFileSubmission result = new CandidateFileSubmission();
         result.setCandidateSession(candidateSession);
-        result.setContentType(multipartFile.getContentType());
+        result.setContentType(ServiceUtilities.computeContentType(multipartFile));
         result.setFileName(multipartFile.getOriginalFilename());
         result.setStoredFilePath(uploadFile.getAbsolutePath());
         candidateFileSubmissionDao.persist(result);

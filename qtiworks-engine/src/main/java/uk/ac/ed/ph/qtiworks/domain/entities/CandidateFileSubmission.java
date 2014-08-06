@@ -33,6 +33,8 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
+import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
+
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
 import java.util.Date;
@@ -84,7 +86,11 @@ public class CandidateFileSubmission implements BaseEntity, TimestampedOnCreatio
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationTime;
 
-    /** Content type of submitted file */
+    /**
+     * Content type of submitted file.
+     * If nothing is provided by the client, then
+     * {@link DomainConstants#DEFAULT_CONTENT_TYPE} is used.
+     */
     @Lob
     @Type(type="org.hibernate.type.TextType")
     @Basic(optional=false)

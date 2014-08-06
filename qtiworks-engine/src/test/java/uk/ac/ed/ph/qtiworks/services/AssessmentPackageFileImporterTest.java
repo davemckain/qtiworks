@@ -90,7 +90,7 @@ public class AssessmentPackageFileImporterTest {
     //----------------------------------------------------------
 
     @Test
-    public void importStandaloneItem() throws Exception {
+    public void importStandaloneItemXml() throws Exception {
         final MultipartFile multipartFile = getThisUnitTestMultipartFile("uk/ac/ed/ph/qtiworks/samples/ims/choice.xml", "text/xml");
 
         final AssessmentPackage result = assessmentPackageFileImporter.importAssessmentPackageData(importSandboxDirectory, multipartFile);
@@ -100,7 +100,7 @@ public class AssessmentPackageFileImporterTest {
     }
 
     @Test
-    public void importPackagedItem() throws Exception {
+    public void importItemPackageWithGoodContentType() throws Exception {
         final MultipartFile multipartFile = getThisUnitTestMultipartFile("uk/ac/ed/ph/qtiworks/services/Aardvark-cannon.zip", "application/zip");
 
         final AssessmentPackage result = assessmentPackageFileImporter.importAssessmentPackageData(importSandboxDirectory, multipartFile);
@@ -110,7 +110,17 @@ public class AssessmentPackageFileImporterTest {
     }
 
     @Test
-    public void importPackagedTest() throws Exception {
+    public void importItemPackageWithNullContentType() throws Exception {
+        final MultipartFile multipartFile = getThisUnitTestMultipartFile("uk/ac/ed/ph/qtiworks/services/Aardvark-cannon.zip", null);
+
+        final AssessmentPackage result = assessmentPackageFileImporter.importAssessmentPackageData(importSandboxDirectory, multipartFile);
+        Assert.assertEquals(importSandboxDirectory.getPath(), result.getSandboxPath());
+        Assert.assertEquals(AssessmentObjectType.ASSESSMENT_ITEM, result.getAssessmentType());
+        Assert.assertEquals(AssessmentPackageImportType.CONTENT_PACKAGE, result.getImportType());
+    }
+
+    @Test
+    public void importTestPackagedWithGoodContentType() throws Exception {
         final MultipartFile multipartFile = getThisUnitTestMultipartFile("uk/ac/ed/ph/qtiworks/services/WebDeveloperTest1.zip", "application/zip");
 
         final AssessmentPackage result = assessmentPackageFileImporter.importAssessmentPackageData(importSandboxDirectory, multipartFile);
