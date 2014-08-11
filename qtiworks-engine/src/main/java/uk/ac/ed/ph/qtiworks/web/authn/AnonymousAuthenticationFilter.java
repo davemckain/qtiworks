@@ -36,6 +36,8 @@ package uk.ac.ed.ph.qtiworks.web.authn;
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.domain.entities.AnonymousUser;
 import uk.ac.ed.ph.qtiworks.services.IdentityService;
+import uk.ac.ed.ph.qtiworks.services.RequestTimestampContext;
+import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.dao.AnonymousUserDao;
 
 import java.io.IOException;
@@ -52,8 +54,21 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
 
 /**
- * This filter "authenticates" an anonymous user when accessing stateful resources,
- * by creating a DB entity that store the user's state during her visit to the system.
+ * This filter "authenticates" an anonymous user when there is a requirement for the system to
+ * store information for the user. This works by creating a temporary {@link AnonymousUser}
+ * matched to the user's JSESSIONID for the user's visit.
+ *
+ * <h2>Further notes & issues</h2>
+ * <ul>
+ *   <li>
+ *     REST URLs are handled slightly differently. No HTTP session is created here, and a faked
+ *     session ID is used instead. This was a late addition before QTIWorks 1.0.0 was released and
+ *     would benefit from being tidied up slightly... (FIXME!)
+ *   </li>
+ *   <li>
+ *     This class doesn't handle session ID collisions well.
+ *   </li>
+ * </ul>
  *
  * @author David McKain
  */
@@ -66,12 +81,14 @@ public final class AnonymousAuthenticationFilter extends AbstractWebAuthenticati
 
     private IdentityService identityService;
     private AnonymousUserDao anonymousUserDao;
+    private RequestTimestampContext requestTimestampContext;
 
     @Override
     protected void initWithApplicationContext(final FilterConfig filterConfig, final WebApplicationContext webApplicationContext)
             throws Exception {
         identityService = webApplicationContext.getBean(IdentityService.class);
         anonymousUserDao = webApplicationContext.getBean(AnonymousUserDao.class);
+        requestTimestampContext = webApplicationContext.getBean(RequestTimestampContext.class);
     }
 
     @Override
@@ -80,16 +97,24 @@ public final class AnonymousAuthenticationFilter extends AbstractWebAuthenticati
             throws IOException, ServletException {
         /* See if we already have something in the session */
         AnonymousUser anonymousUser = null;
-        final Long anonymousUserId = (Long) session.getAttribute(ANONYMOUS_USER_ID_ATTRIBUTE_NAME);
-        if (anonymousUserId!=null) {
-            /* Try to reuse existing anonymous user */
-            anonymousUser = anonymousUserDao.findById(anonymousUserId);
+        final String pathInfo = request.getPathInfo();
+        if ("/simplerestrunner".equals(pathInfo)) {
+            /* Create a special user with HTTP session for REST URLs */
+            anonymousUser = createRestUser();
+            logger.debug("Created REST User {} for this request", anonymousUser);
         }
-        if (anonymousUserId==null || anonymousUser==null) {
-            /* Nothing in session or user with existing ID not found, so create new anonymous user */
-            anonymousUser = createAnonymousUser(session);
-            session.setAttribute(ANONYMOUS_USER_ID_ATTRIBUTE_NAME, anonymousUser.getId());
-            logger.debug("Created AnonymousUser {} for this session", anonymousUser);
+        else {
+            final Long anonymousUserId = (Long) session.getAttribute(ANONYMOUS_USER_ID_ATTRIBUTE_NAME);
+            if (anonymousUserId!=null) {
+                /* Try to reuse existing anonymous user */
+                anonymousUser = anonymousUserDao.findById(anonymousUserId);
+            }
+            if (anonymousUserId==null || anonymousUser==null) {
+                /* Nothing in session or user with existing ID not found, so create new anonymous user */
+                anonymousUser = createAnonymousUser(session);
+                session.setAttribute(ANONYMOUS_USER_ID_ATTRIBUTE_NAME, anonymousUser.getId());
+                logger.debug("Created AnonymousUser {} for this session", anonymousUser);
+            }
         }
 
         /* Make sure account is available (slightly pathological here) */
@@ -107,17 +132,38 @@ public final class AnonymousAuthenticationFilter extends AbstractWebAuthenticati
         }
     }
 
-    protected AnonymousUser createAnonymousUser(final HttpSession httpSession) {
+    private AnonymousUser createAnonymousUser(final HttpSession httpSession) {
         final String sessionId = httpSession.getId();
         AnonymousUser anonymousUser = anonymousUserDao.findBySessionId(sessionId);
         if (anonymousUser!=null) {
             throw new QtiWorksLogicException("AnonymousUser with session ID " + sessionId + " already exists in DB");
         }
         anonymousUser = new AnonymousUser();
-        anonymousUser.setFirstName("Anonymous");
-        anonymousUser.setLastName("User " + sessionId);
+        anonymousUser.setFirstName("Anonymous User");
+        anonymousUser.setLastName(sessionId);
         anonymousUser.setSessionId(sessionId);
         anonymousUserDao.persist(anonymousUser);
         return anonymousUser;
+    }
+
+    private AnonymousUser createRestUser() {
+        final String restRequestId =  createRestRequestId();
+        final AnonymousUser anonymousUser = new AnonymousUser();
+        anonymousUser.setFirstName("REST User");
+        anonymousUser.setLastName(restRequestId);
+        anonymousUser.setSessionId("REST-" + restRequestId);
+        anonymousUserDao.persist(anonymousUser);
+        return anonymousUser;
+    }
+
+    /**
+     * Creates a (hopefully unique) identifier for a REST request.
+     */
+    private String createRestRequestId() {
+        final String idBuilder = "REST/"
+                + requestTimestampContext.getCurrentRequestTimestamp().getTime()
+                + "/" + Thread.currentThread().getId()
+                + "/" + ServiceUtilities.createRandomAlphanumericToken(32);
+        return ServiceUtilities.computeSha1Digest(idBuilder);
     }
 }

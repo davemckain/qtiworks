@@ -134,7 +134,7 @@ public class CandidateSessionLaunchService {
             logAndThrowLaunchException(candidate, assessment, CandidateExceptionReason.LAUNCH_ASSESSMENT_NO_ACCESS);
         }
 
-        /* We don't check ownership of the Assessment here, since the session launching the
+        /* We don't check ownership of the Assessment here, since the user launching the
          * assessment (i.e. the end user) will be different from the one that initially created it
          * (i.e. the web service).
          * However, we will at least make sure that the Assessment is owned by an anonymous user.

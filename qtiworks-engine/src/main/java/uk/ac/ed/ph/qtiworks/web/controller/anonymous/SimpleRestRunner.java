@@ -182,7 +182,8 @@ public class SimpleRestRunner {
     }
 
     @RequestMapping(value="/simplerestrunner/launcher/{did}/{deliveryToken}", method={RequestMethod.GET, RequestMethod.POST})
-    public String uniqurateLauncher(final HttpSession httpSession, final HttpServletResponse httpResponse,
+    public void launchCandidateSession(final HttpSession httpSession, final HttpServletRequest request,
+            final HttpServletResponse response,
             @PathVariable final long did, @PathVariable final String deliveryToken)
             throws IOException {
         try {
@@ -191,11 +192,13 @@ public class SimpleRestRunner {
             final CandidateSessionTicket candidateSessionTicket = candidateSessionLaunchService.launchWebServiceCandidateSession(httpSession, did, deliveryToken, returnUrl);
 
             /* Redirect to candidate dispatcher */
-            return GlobalRouter.buildSessionStartRedirect(candidateSessionTicket);
+            final String launchUrl = request.getContextPath()
+                    + GlobalRouter.buildSessionStartWithinContextUrl(candidateSessionTicket);
+            response.setHeader("Location", launchUrl);
+            response.sendError(HttpServletResponse.SC_SEE_OTHER);
         }
         catch (final DomainEntityNotFoundException e) {
-            httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST);
-            return null;
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
         }
         catch (final CandidateException e) {
             /* This should not happen if underlying logic has been done correctly */
@@ -219,7 +222,7 @@ public class SimpleRestRunner {
         FileUtils.copyInputStreamToFile(request.getInputStream(), uploadFile);
         final MultipartFile multipartFile = new MultipartFileWrapper(uploadFile, uploadContentType);
 
-        /* Then we import this temp file into QTIWorks */
+        /* Then we import this temp file as an assessment */
         try {
             return assessmentManagementService.importAssessment(multipartFile, true);
         }
