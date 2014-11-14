@@ -71,35 +71,33 @@ import org.springframework.web.multipart.MultipartFile;
 /**
  * <h2>NOTE: This API is still currently a sketch. Do not rely on it yet!</h2>
  *
- * <strong>Very</strong> simple standalone REST-like runner for uploading and launching
- * assessments. This could be useful for authoring system who want to use QTIWorks for
- * previewing/trying assessments.
+ * This is a <strong>very</strong> simple standalone REST-like runner for uploading
+ * and launching assessments. It could be useful for authoring systems who want to
+ * use QTIWorks for previewing/trying assessments.
  *
  * <h2>Usage</h2>
  *
  * POST an IMS Content Package containing a QTI assessment to the URL
  * <code>$QTIWORKS_BASE_URL/anonymous/simplerestrunner</code>.
+ * <p>
+ * QTIWorks will attempt to import this data as a new assessment and check that it is launchable.
  * <ul>
  *   <li>
- *     QTIWorks will attempt to import this data as a new assessment.
- *   </li>
- *   <li>
- *     If the assessment is launchable, then QTIWorks will send back an HTTP 303 redirection
- *     response containing a URL that you can use to launch a new candidate session on the
+ *     If the assessment is launchable, QTIWorks will return an HTTP 303 redirection
+ *     response containing a URL that can be used to launch new candidate sessions on the
  *     assessment. This URL can be passed to a browser. (For convenience, this launch URL will
  *     respond to both GET and POST requests, even though GET is technically inappropriate.)
  *   </li>
  *   <li>
- *     If the assessment data is appropriate, or if the assessment cannot be launched for some
- *     reason, QTIWorks will send back a 400 or 500 response. Further details about the error
- *     will be available within the {@link #ERROR_HEADER} HTTP response header.
- *   </li>
- *   <li>
- *     Privacy notice: it is theoretically possible for other people to access the uploaded
- *     assessment data, either by guessing the Java session ID, or by guessing the assessment
- *     launch URL.
+ *     If the assessment data is inappropriate (e.g. not a QTI assessment) or if the assessment
+ *     has errors which prevent it from being launched, then QTIWorks will send back
+ *     a 400 or 500 response. Further details about the error will be available within the
+ *     {@value #ERROR_HEADER} HTTP response header.
  *   </li>
  * </ul>
+ * Security note: This implementation uses "security through obscurity". It is theoretically
+ * possible for other people to access the uploaded assessment data, either by guessing the
+ * launch URL that is generated here.
  *
  * @author David McKain
  */
