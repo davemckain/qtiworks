@@ -112,6 +112,7 @@ public final class FilespaceManager {
     }
 
     public boolean deleteAssessmentPackageSandboxes(final User owner) {
+        Assert.notNull(owner, "owner");
         return recursivelyDeleteDirectory(getAssessmentPackageSandboxBaseUri(owner));
     }
 
@@ -120,6 +121,7 @@ public final class FilespaceManager {
     }
 
     private String getAssessmentPackageSandboxBaseUri(final User owner) {
+        Assert.notNull(owner, "owner");
         return getAssessmentPackageSandboxBaseUri()
             + "/" + owner.getBusinessKey();
     }
