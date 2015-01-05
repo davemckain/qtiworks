@@ -27,9 +27,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Example of running <code>choice.xml</code> using the {@link SimpleJqtiFacade}.
- * <p>
- * (Not documented very well yet. Sorry!)
+ * Example of running the standard IMS <code>choice.xml</code> example using the {@link SimpleJqtiFacade}.
+ *
+ * <h3>How to run</h3>
+ *
+ * You can run this via Maven as follows:
+ * <pre>
+ * mvn exec:java -Dexec.mainClass=uk.ac.ed.ph.qtiworks.examples.DynamicItemExample
+ * </pre>
+ * You should also be able to run this inside your favourite IDE if you have loaded the QTIWorks
+ * source code into it.
  *
  * @author David McKain
  */
@@ -37,7 +44,7 @@ public final class ChoiceRunningExample {
 
     public static void main(final String[] args) {
         final ResourceLocator inputResourceLocator = new ClassPathResourceLocator();
-        final URI inputUri = URI.create("classpath:/choice.xml");
+        final URI inputUri = URI.create("classpath:/uk/ac/ed/ph/qtiworks/samples/ims/choice.xml");
 
         System.out.println("Reading");
         final SimpleJqtiFacade simpleJqtiFacade = new SimpleJqtiFacade();
