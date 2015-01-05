@@ -81,7 +81,7 @@ public final class RenderingExampleHelpers {
      * @param itemUri
      */
     public static ItemSessionController createItemSessionController(final ResourceLocator assessmentResourceLocator, final URI itemUri) {
-        System.out.println("Running " + itemUri + " from the ClassPath");
+        System.out.println("Running " + itemUri + " loaded from " + assessmentResourceLocator);
 
         final SimpleJqtiFacade simpleJqtiFacade = new SimpleJqtiFacade();
         final ResolvedAssessmentItem resolvedAssessmentItem = simpleJqtiFacade.loadAndResolveAssessmentItem(assessmentResourceLocator, itemUri);
@@ -93,7 +93,7 @@ public final class RenderingExampleHelpers {
     }
 
     public static TestSessionController createTestSessionController(final ResourceLocator assessmentResourceLocator, final URI testUri) {
-        System.out.println("Running " + testUri + " from the ClassPath");
+        System.out.println("Running " + testUri + " loaded from " + assessmentResourceLocator);
 
         final SimpleJqtiFacade simpleJqtiFacade = new SimpleJqtiFacade();
         final ResolvedAssessmentTest resolvedAssessmentTest = simpleJqtiFacade.loadAndResolveAssessmentTest(assessmentResourceLocator, testUri);
