@@ -37,6 +37,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.enumerate.TextFormatAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
+import uk.ac.ed.ph.jqtiplus.exception.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.exception.ResponseBindingException;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
@@ -56,6 +57,7 @@ import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
 import uk.ac.ed.ph.jqtiplus.value.ListValue;
 import uk.ac.ed.ph.jqtiplus.value.MultipleValue;
 import uk.ac.ed.ph.jqtiplus.value.OrderedValue;
+import uk.ac.ed.ph.jqtiplus.value.RecordValue;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.TextFormat;
 import uk.ac.ed.ph.jqtiplus.value.Value;
@@ -358,16 +360,32 @@ public final class ExtendedTextInteraction extends BlockInteraction implements S
         if (responseValue.isNull()) {
             /* (Empty response) */
         }
-        else if (responseValue.getCardinality().isList()) {
-            /* (Container response) */
-            final ListValue listValue = (ListValue) responseValue;
-            for (final SingleValue v : listValue) {
-                responseEntries.add(v);
-            }
-        }
         else {
-            /* (Single response) */
-            responseEntries.add((SingleValue) responseValue);
+            switch (responseValue.getCardinality()) {
+                case SINGLE:
+                    /* (Single response) */
+                    responseEntries.add((SingleValue) responseValue);
+                    break;
+
+                case RECORD:
+                    /* (Special record response. We'll validate the string value) */
+                    final RecordValue recordValue = (RecordValue) responseValue;
+                    final SingleValue stringValue = recordValue.get(StringInteraction.KEY_STRING_VALUE_NAME);
+                    responseEntries.add(stringValue);
+                    break;
+
+                case MULTIPLE:
+                case ORDERED:
+                    /* (Container response) */
+                    final ListValue listValue = (ListValue) responseValue;
+                    for (final SingleValue v : listValue) {
+                        responseEntries.add(v);
+                    }
+                    break;
+
+                default:
+                    throw new QtiLogicException("Unexpected switch case " + responseValue.getCardinality());
+            }
         }
 
         /* Now do the validation */
