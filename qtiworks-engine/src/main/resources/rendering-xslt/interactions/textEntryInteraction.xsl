@@ -14,7 +14,6 @@
     <input name="qtiworks_presented_{@responseIdentifier}" type="hidden" value="1"/>
     <span class="{local-name()}">
       <xsl:variable name="responseDeclaration" select="qw:get-response-declaration(/, @responseIdentifier)" as="element(qti:responseDeclaration)?"/>
-      <xsl:variable name="responseValue" select="qw:get-response-value(/, @responseIdentifier)" as="element(qw:responseVariable)?"/>
       <xsl:variable name="responseInput" select="qw:get-response-input(@responseIdentifier)" as="element(qw:responseInput)?"/>
       <xsl:variable name="responseInputString" select="qw:extract-single-cardinality-response-input($responseInput)" as="xs:string?"/>
       <xsl:variable name="checks" as="xs:string*">
@@ -30,7 +29,7 @@
         qw:to-javascript-arguments($checks),
         ')')" as="xs:string"/>
 
-      <input type="text" name="qtiworks_response_{@responseIdentifier}">
+      <input type="text" name="qtiworks_response_{@responseIdentifier}" value="{$responseInputString}">
         <xsl:if test="$isItemSessionEnded">
           <xsl:attribute name="disabled">disabled</xsl:attribute>
         </xsl:if>
@@ -40,16 +39,6 @@
         <xsl:if test="@expectedLength">
           <xsl:attribute name="size" select="@expectedLength"/>
         </xsl:if>
-        <xsl:choose>
-          <xsl:when test="$is-bad-response">
-            <!-- Response won't have been bound to variable, so show raw input -->
-            <xsl:attribute name="value" select="$responseInputString"/>
-          </xsl:when>
-          <xsl:when test="exists($responseValue)">
-            <!-- Response has been bound, so show current variable value -->
-            <xsl:attribute name="value" select="qw:extract-single-cardinality-value($responseValue)"/>
-          </xsl:when>
-        </xsl:choose>
         <xsl:if test="exists($checks)">
           <xsl:attribute name="onchange" select="$checkJavaScript"/>
         </xsl:if>
