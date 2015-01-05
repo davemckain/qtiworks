@@ -18,7 +18,6 @@ DM: I don't have anything to test this out with!
       <xsl:variable name="responseDeclaration" select="qw:get-response-declaration(/, @responseIdentifier)" as="element(qti:responseDeclaration)?"/>
       <xsl:variable name="responseValue" select="qw:get-response-value(/, @responseIdentifier)" as="element(qw:responseVariable)?"/>
       <xsl:variable name="responseInput" select="qw:get-response-input(@responseIdentifier)" as="element(qw:responseInput)?"/>
-      <xsl:variable name="rawInput" select="qw:extract-single-cardinality-response-input($responseInput)" as="xs:string?"/>
 
       <!-- Create JavaScript to check each field -->
       <xsl:variable name="checks" as="xs:string*">
@@ -61,7 +60,7 @@ DM: I don't have anything to test this out with!
         </div>
       </xsl:if>
       <xsl:choose>
-        <xsl:when test="$responseDeclaration/@cardinality='single'">
+        <xsl:when test="$responseDeclaration/@cardinality=('single','record')">
           <xsl:call-template name="singlebox">
             <xsl:with-param name="responseInput" select="$responseInput"/>
             <xsl:with-param name="checkJavaScript" select="$checkJavaScript"/>
