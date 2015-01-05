@@ -57,7 +57,6 @@ import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.state.TestPlan;
 import uk.ac.ed.ph.jqtiplus.state.TestProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
-import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.SimpleXsltStylesheetCache;
 
@@ -73,8 +72,8 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 public final class RenderingExampleHelpers {
 
     /**
-     * Loads in the example assessmentItem having the given URI using a
-     * {@link ClassPathResourceLocator}, then constructs a fresh {@link ItemSessionState}
+     * Loads in the example assessmentItem having the given URI using the provided
+     * {@link ResourceLocator}, then constructs a fresh {@link ItemSessionState}
      * and an {@link ItemSessionController}.
      *
      * @see ChoiceRunningExample

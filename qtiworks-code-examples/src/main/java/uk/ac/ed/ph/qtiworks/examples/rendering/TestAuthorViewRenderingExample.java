@@ -43,6 +43,7 @@ import uk.ac.ed.ph.jqtiplus.state.TestPlanNode;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNode.TestNodeType;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
+import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 
 import java.net.URI;
 import java.util.Date;
@@ -53,6 +54,13 @@ import org.apache.commons.io.output.StringBuilderWriter;
 
 /**
  * Example showing the author view of a test
+ *  *
+ * <h3>How to run</h3>
+ *
+ * You can run this via Maven as follows:
+ * <pre>
+ * mvn exec:java -Dexec.mainClass=uk.ac.ed.ph.qtiworks.examples.rendering.TestAuthorViewRenderingExample
+ * </pre>
  *
  * @author David McKain
  */
@@ -60,7 +68,7 @@ public final class TestAuthorViewRenderingExample {
 
     public static void main(final String[] args) {
         /* We'll be loading the following sample test from the classpath */
-        final ClassPathResourceLocator assessmentResourceLocator = new ClassPathResourceLocator();
+        final ResourceLocator assessmentResourceLocator = new ClassPathResourceLocator();
         final URI testUri = URI.create("classpath:/uk/ac/ed/ph/qtiworks/samples/testimplementation/dave/test-testFeedback.xml");
 
         /* Read and set up state & controller */
