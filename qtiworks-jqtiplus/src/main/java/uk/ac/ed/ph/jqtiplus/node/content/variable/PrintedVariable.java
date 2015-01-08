@@ -50,6 +50,9 @@ import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 /**
  * This is the only way how to show variables to actor.
  *
+ * FIXME: Need to support validation of number formats, printing using all number formats, validation
+ * of additonal attributes, printing using additional attributes etc.
+ *
  * @author Jonathon Hare
  */
 public final class PrintedVariable extends AbstractFlowBodyElement implements FlowStatic, InlineStatic, TextOrVariable {
@@ -181,12 +184,10 @@ public final class PrintedVariable extends AbstractFlowBodyElement implements Fl
     @Override
     public void validateThis(final ValidationContext context) {
         super.validateThis(context);
-        if (getIdentifier() != null) {
-            final Identifier identifier = getIdentifier();
+        final Identifier identifier = getIdentifier();
+        if (identifier != null) {
             final VariableDeclaration variableDeclaration = context.checkLocalVariableReference(this, identifier);
-            if (variableDeclaration!=null) {
-                context.checkVariableType(this, variableDeclaration, VariableType.TEMPLATE, VariableType.OUTCOME);
-            }
+            context.checkVariableType(this, variableDeclaration, VariableType.TEMPLATE, VariableType.OUTCOME);
         }
     }
 }
