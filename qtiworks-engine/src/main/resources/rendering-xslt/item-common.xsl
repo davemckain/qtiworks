@@ -45,8 +45,8 @@ rendering.
   <xsl:variable name="uncommittedResponseValues" select="$itemSessionState/qw:uncommittedResponseValue" as="element(qw:uncommittedResponseValue)*"/>
 
   <!-- Bad/invalid responses -->
-  <xsl:variable name="unboundResponseIdentifiers" select="$itemSessionState/@unboundResponseIdentifiers" as="xs:string*"/>
-  <xsl:variable name="invalidResponseIdentifiers" select="$itemSessionState/@invalidResponseIdentifiers" as="xs:string*"/>
+  <xsl:variable name="unboundResponseIdentifiers" select="tokenize($itemSessionState/@unboundResponseIdentifiers, '\s+')" as="xs:string*"/>
+  <xsl:variable name="invalidResponseIdentifiers" select="tokenize($itemSessionState/@invalidResponseIdentifiers, '\s+')" as="xs:string*"/>
 
   <!-- Is a model solution provided? -->
   <xsl:variable name="hasModelSolution" as="xs:boolean" select="exists(/qti:assessmentItem/qti:responseDeclaration/qti:correctResponse) or exists($overriddenCorrectResponses)"/>
