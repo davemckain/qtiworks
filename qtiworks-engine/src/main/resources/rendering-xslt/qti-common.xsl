@@ -549,8 +549,8 @@ rendering.
 
   <xsl:template name="includeAssessmentJsAndCss">
     <xsl:call-template name="includeJquery"/>
-    <link rel="stylesheet" href="{$webappContextPath}/rendering/css/assessment.css?{$qtiWorksVersion}" type="text/css" media="screen"/>
-    <script src="{$webappContextPath}/rendering/javascript/QtiWorksRendering.js?{$qtiWorksVersion}"/>
+    <link rel="stylesheet" href="{$webappContextPath}/rendering/css/assessment.css?v={$qtiWorksVersion}" type="text/css" media="screen"/>
+    <script src="{$webappContextPath}/rendering/javascript/QtiWorksRendering.js?v={$qtiWorksVersion}"/>
   </xsl:template>
 
   <xsl:template name="includeQtiWorksJsAndCss">
@@ -558,9 +558,9 @@ rendering.
     <link rel="stylesheet" href="{$webappContextPath}/lib/960/reset.css"/>
     <link rel="stylesheet" href="{$webappContextPath}/lib/960/text.css"/>
     <link rel="stylesheet" href="{$webappContextPath}/lib/fluid960gs/grid.css"/>
-    <link rel="stylesheet" href="{$webappContextPath}/includes/qtiworks.css?{$qtiWorksVersion}"/>
+    <link rel="stylesheet" href="{$webappContextPath}/includes/qtiworks.css?v={$qtiWorksVersion}"/>
     <xsl:call-template name="includeJquery"/>
-    <script src="{$webappContextPath}/includes/qtiworks.js?{$qtiWorksVersion}"/>
+    <script src="{$webappContextPath}/includes/qtiworks.js?v={$qtiWorksVersion}"/>
   </xsl:template>
 
 </xsl:stylesheet>
