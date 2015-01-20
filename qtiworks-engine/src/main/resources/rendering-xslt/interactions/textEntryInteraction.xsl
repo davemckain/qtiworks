@@ -18,6 +18,10 @@
       <xsl:variable name="responseInputString" select="qw:extract-single-cardinality-response-input($responseInput)" as="xs:string?"/>
       <xsl:variable name="checks" as="xs:string*">
         <xsl:choose>
+          <!--
+          NB: We don't presently do any JS checks for numeric values bound to records, as the JS isn't currently
+          clever enough to handle all numeric formats (e.g. 4e12)
+          -->
           <xsl:when test="$responseDeclaration/@baseType='float'"><xsl:sequence select="'float'"/></xsl:when>
           <xsl:when test="$responseDeclaration/@baseType='integer'"><xsl:sequence select="'integer'"/></xsl:when>
         </xsl:choose>
@@ -25,9 +29,10 @@
           <xsl:sequence select="('regex', @patternMask)"/>
         </xsl:if>
       </xsl:variable>
-      <xsl:variable name="checkJavaScript" select="concat('QtiWorksRendering.validateInput(this, ',
-        qw:to-javascript-arguments($checks),
-        ')')" as="xs:string"/>
+      <xsl:variable name="checkJavaScript" select="if (exists($checks))
+        then concat('QtiWorksRendering.validateInput(this, ',
+          qw:to-javascript-arguments($checks), ')')
+        else ()" as="xs:string?"/>
 
       <input type="text" name="qtiworks_response_{@responseIdentifier}" value="{$responseInputString}">
         <xsl:if test="$isItemSessionEnded">
@@ -45,7 +50,15 @@
       </input>
       <xsl:if test="$is-bad-response">
         <span class="badResponse">
-          You must enter a valid <xsl:value-of select="$responseDeclaration/@baseType"/>!
+          You must enter a valid
+          <xsl:choose>
+            <xsl:when test="$responseDeclaration/@cardinality='record'">
+              <xsl:value-of select="'number'"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="$responseDeclaration/@baseType"/>!
+            </xsl:otherwise>
+          </xsl:choose>
         </span>
       </xsl:if>
       <xsl:if test="$is-invalid-response">
