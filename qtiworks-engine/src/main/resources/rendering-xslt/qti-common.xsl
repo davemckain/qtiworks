@@ -335,7 +335,7 @@ rendering.
             <xsl:variable name="delimiter" select="if (exists($source/@delimiter)) then $source/@delimiter else ';'"/>
             <xsl:variable name="mappingIndicator" select="if ($source/@mappingIndicator) then $source/@mappingIndicator else '='"/>
             <xsl:variable name="to-print" as="xs:string*"
-              select="for $v in $valueHolder/qw:value return concat($v/@identifier, $mappingIndicator, $v/qw:value)"/>
+              select="for $v in $valueHolder/qw:value return concat($v/@fieldIdentifier, $mappingIndicator, $v/qw:value)"/>
             <xsl:value-of select="$to-print" separator="{$delimiter}"/>
           </xsl:otherwise>
         </xsl:choose>
