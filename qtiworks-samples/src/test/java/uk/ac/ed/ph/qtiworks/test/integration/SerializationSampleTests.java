@@ -37,6 +37,7 @@ import uk.ac.ed.ph.qtiworks.samples.LanguageSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.MathAssessSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment.Feature;
+import uk.ac.ed.ph.qtiworks.samples.QtiworksRegressionSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.StandardQtiSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.StompSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.UpmcSampleSet;
@@ -89,7 +90,7 @@ import org.xml.sax.InputSource;
  */
 @RunWith(Parameterized.class)
 public class SerializationSampleTests extends AbstractIntegrationTest {
-    
+
     @Parameters
     public static Collection<Object[]> data() {
         return TestUtils.makeTestParameters(
@@ -97,14 +98,15 @@ public class SerializationSampleTests extends AbstractIntegrationTest {
                 MathAssessSampleSet.instance().withoutFeatures(Feature.NOT_SCHEMA_VALID),
                 UpmcSampleSet.instance().withoutFeatures(Feature.NOT_SCHEMA_VALID),
                 StompSampleSet.instance().withoutFeatures(Feature.NOT_SCHEMA_VALID),
-                LanguageSampleSet.instance().withoutFeatures(Feature.NOT_SCHEMA_VALID)
+                LanguageSampleSet.instance().withoutFeatures(Feature.NOT_SCHEMA_VALID),
+                QtiworksRegressionSampleSet.instance().withoutFeatures(Feature.NOT_SCHEMA_VALID)
         );
     }
-    
-    public SerializationSampleTests(QtiSampleAssessment qtiSampleAssessment) {
+
+    public SerializationSampleTests(final QtiSampleAssessment qtiSampleAssessment) {
         super(qtiSampleAssessment);
     }
-    
+
     @Test
     public void test() throws Exception {
         final ResourceLocator sampleResourceLocator = new ClassPathResourceLocator();
@@ -113,29 +115,29 @@ public class SerializationSampleTests extends AbstractIntegrationTest {
         try {
             itemReadResult = objectReader.lookupRootNode(qtiSampleAssessment.assessmentClassPathUri(), AssessmentItem.class);
         }
-        catch (QtiXmlInterpretationException e) {
+        catch (final QtiXmlInterpretationException e) {
             System.out.println("Model building errors: " + ObjectDumper.dumpObject(e.getQtiModelBuildingErrors(), DumpMode.DEEP));
             throw e;
         }
-        AssessmentItem item = itemReadResult.getRootNode();
-        
-        XsltSerializationOptions serializationOptions = new XsltSerializationOptions();
+        final AssessmentItem item = itemReadResult.getRootNode();
+
+        final XsltSerializationOptions serializationOptions = new XsltSerializationOptions();
         serializationOptions.setIndenting(true);
-        TransformerHandler serializerHandler = XsltStylesheetManager.createSerializerHandler(serializationOptions);
-        StringWriter serializedXmlWriter = new StringWriter();
+        final TransformerHandler serializerHandler = XsltStylesheetManager.createSerializerHandler(serializationOptions);
+        final StringWriter serializedXmlWriter = new StringWriter();
         serializerHandler.setResult(new StreamResult(serializedXmlWriter));
-        
-        QtiSaxDocumentFirer saxEventFirer = new QtiSaxDocumentFirer(objectReader.getQtiXmlReader().getJqtiExtensionManager(), 
+
+        final QtiSaxDocumentFirer saxEventFirer = new QtiSaxDocumentFirer(objectReader.getQtiXmlReader().getJqtiExtensionManager(),
                 serializerHandler, new SaxFiringOptions());
         saxEventFirer.fireSaxDocument(item);
-        String serializedXml = serializedXmlWriter.toString();
-        
-        InputStream originalXmlStream = sampleResourceLocator.findResource(sampleResourceUri);
-        
+        final String serializedXml = serializedXmlWriter.toString();
+
+        final InputStream originalXmlStream = sampleResourceLocator.findResource(sampleResourceUri);
+
         XMLUnit.setIgnoreWhitespace(true);
         XMLUnit.setIgnoreComments(true);
-        Diff diff = new Diff(new InputSource(originalXmlStream), new InputSource(new StringReader(serializedXml)));
-        
+        final Diff diff = new Diff(new InputSource(originalXmlStream), new InputSource(new StringReader(serializedXml)));
+
         /* (We need to tell xmlunit to allow differences in namespace prefixes) */
         diff.overrideDifferenceListener(new QtiDifferenceListener(qtiSampleAssessment));
         if (!diff.identical()) {
@@ -146,7 +148,7 @@ public class SerializationSampleTests extends AbstractIntegrationTest {
             Assert.fail("XML differences found: " + diff.toString());
         }
     }
-    
+
     /**
      * Custom {@link DifferenceListener} to account for some differences we expect to
      * find between reading and subsequently serializing.
@@ -156,30 +158,30 @@ public class SerializationSampleTests extends AbstractIntegrationTest {
     protected static class QtiDifferenceListener implements DifferenceListener {
 
         private static final Logger logger = LoggerFactory.getLogger(QtiDifferenceListener.class);
-        
+
         private final QtiSampleAssessment qtiSampleResouce;
-        
-        public QtiDifferenceListener(QtiSampleAssessment qtiSampleResouce) {
+
+        public QtiDifferenceListener(final QtiSampleAssessment qtiSampleResouce) {
             this.qtiSampleResouce = qtiSampleResouce;
         }
 
         @Override
-        public void skippedComparison(Node input, Node output) {
+        public void skippedComparison(final Node input, final Node output) {
             /* No change */
         }
-        
+
         @Override
-        public int differenceFound(Difference difference) {
-            int differenceId = difference.getId();
-            NodeDetail inputNodeDetail = difference.getControlNodeDetail();
-            NodeDetail outputNodeDetail = difference.getTestNodeDetail();
-            String inputValue = inputNodeDetail.getValue();
-            String outputValue = outputNodeDetail.getValue();
+        public int differenceFound(final Difference difference) {
+            final int differenceId = difference.getId();
+            final NodeDetail inputNodeDetail = difference.getControlNodeDetail();
+            final NodeDetail outputNodeDetail = difference.getTestNodeDetail();
+            final String inputValue = inputNodeDetail.getValue();
+            final String outputValue = outputNodeDetail.getValue();
             switch (differenceId) {
                 case DifferenceConstants.NAMESPACE_PREFIX_ID:
                     /* Don't worry about namespace prefixes */
                     return DifferenceListener.RETURN_IGNORE_DIFFERENCE_NODES_IDENTICAL;
-                    
+
                 case DifferenceConstants.TEXT_VALUE_ID:
                     /* Different values. */
                     /* Test for equal floats */
@@ -192,7 +194,7 @@ public class SerializationSampleTests extends AbstractIntegrationTest {
                     }
                     /* If still here, then assume it's a difference */
                     return DifferenceListener.RETURN_ACCEPT_DIFFERENCE;
-                    
+
                 case DifferenceConstants.ATTR_VALUE_ID:
                     /* Different attribute values */
                     /* Test for equal floats */
@@ -205,24 +207,24 @@ public class SerializationSampleTests extends AbstractIntegrationTest {
                     }
                     /* If still here, then assume it's a difference */
                     return DifferenceListener.RETURN_ACCEPT_DIFFERENCE;
-                    
+
                 case DifferenceConstants.SCHEMA_LOCATION_ID:
                     /* Check xsi:schemaLocation */
                     return areSchemaLocationsGoodEnough(inputValue, outputValue) ? DifferenceListener.RETURN_IGNORE_DIFFERENCE_NODES_IDENTICAL : DifferenceListener.RETURN_ACCEPT_DIFFERENCE;
-                    
+
                 default:
                     /* Assume anything else is a valid difference */
                     return DifferenceListener.RETURN_ACCEPT_DIFFERENCE;
             }
         }
-        
-        private boolean areSchemaLocationsGoodEnough(String input, String output) {
-            Map<String, String> inputInfo = extractXsiSchemaLocationData(input);
-            Map<String, String> outputInfo = extractXsiSchemaLocationData(output);
-            for (Entry<String, String> inputEntry : inputInfo.entrySet()) {
-                String nsUri = inputEntry.getKey();
-                String inputSchemaUri = inputEntry.getValue();
-                String outputSchemaUri = outputInfo.get(nsUri);
+
+        private boolean areSchemaLocationsGoodEnough(final String input, final String output) {
+            final Map<String, String> inputInfo = extractXsiSchemaLocationData(input);
+            final Map<String, String> outputInfo = extractXsiSchemaLocationData(output);
+            for (final Entry<String, String> inputEntry : inputInfo.entrySet()) {
+                final String nsUri = inputEntry.getKey();
+                final String inputSchemaUri = inputEntry.getValue();
+                final String outputSchemaUri = outputInfo.get(nsUri);
                 if (outputSchemaUri==null) {
                     logger.warn("In sample {}: schema URI {} found in input XML but not included in output XML. Allowing this.", qtiSampleResouce, nsUri);
                 }
@@ -231,8 +233,8 @@ public class SerializationSampleTests extends AbstractIntegrationTest {
                             new Object[] { qtiSampleResouce, nsUri, inputSchemaUri, outputSchemaUri });
                 }
             }
-            for (Entry<String, String> outputEntry : outputInfo.entrySet()) {
-                String nsUri = outputEntry.getKey();
+            for (final Entry<String, String> outputEntry : outputInfo.entrySet()) {
+                final String nsUri = outputEntry.getKey();
                 if (!inputInfo.containsKey(nsUri)) {
                     logger.error("In sample {}: schema URI {} is in output XML but not input XML", qtiSampleResouce, nsUri);
                     return false;
@@ -240,42 +242,42 @@ public class SerializationSampleTests extends AbstractIntegrationTest {
             }
             return true;
         }
-        
-        private Map<String, String> extractXsiSchemaLocationData(String xsiSchemaLocationAttr) {
-            String[] splitData = xsiSchemaLocationAttr.split("\\s+");
-            Map<String, String> result = new HashMap<String, String>();
+
+        private Map<String, String> extractXsiSchemaLocationData(final String xsiSchemaLocationAttr) {
+            final String[] splitData = xsiSchemaLocationAttr.split("\\s+");
+            final Map<String, String> result = new HashMap<String, String>();
             for (int i=0; i<splitData.length; ) {
-                String nsUri = splitData[i++];
-                String schemaUri = splitData[i++];
+                final String nsUri = splitData[i++];
+                final String schemaUri = splitData[i++];
                 result.put(nsUri, schemaUri);
             }
             return result;
         }
-        
+
         /**
          * Tests whether two floats are exactly equal when parsed. This allows 2 and 2.0 to be considered
          * equal, even though they're different as Strings.
-         * 
+         *
          * @param controlValue
          * @param testValue
          * @return
          */
-        private boolean isEqualFloat(String controlValue, String testValue) {
+        private boolean isEqualFloat(final String controlValue, final String testValue) {
             float controlFloat;
             float testFloat;
             try {
                 controlFloat = Float.parseFloat(controlValue);
                 testFloat = Float.parseFloat(testValue);
             }
-            catch (NumberFormatException e) {
+            catch (final NumberFormatException e) {
                 return false;
             }
             return controlFloat==testFloat; /* Yes, really == here! */
         }
-        
-        private boolean isEqualFloatPair(String controlValue, String testValue) {
-            String[] controlSplit = controlValue.split("\\s+");
-            String[] testSplit = testValue.split("\\s+");
+
+        private boolean isEqualFloatPair(final String controlValue, final String testValue) {
+            final String[] controlSplit = controlValue.split("\\s+");
+            final String[] testSplit = testValue.split("\\s+");
             return controlSplit.length==2
                     && testSplit.length==2
                     && isEqualFloat(controlSplit[0], testSplit[0])

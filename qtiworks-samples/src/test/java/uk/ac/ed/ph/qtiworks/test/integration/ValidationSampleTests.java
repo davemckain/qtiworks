@@ -39,6 +39,7 @@ import uk.ac.ed.ph.qtiworks.samples.LanguageSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.MathAssessSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment.Feature;
+import uk.ac.ed.ph.qtiworks.samples.QtiworksRegressionSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.StandardQtiSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.StompSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.TestImplementationSampleSet;
@@ -64,7 +65,7 @@ import org.junit.runners.Parameterized.Parameters;
  */
 @RunWith(Parameterized.class)
 public class ValidationSampleTests extends AbstractIntegrationTest {
-    
+
     @Parameters
     public static Collection<Object[]> data() {
         return TestUtils.makeTestParameters(
@@ -73,19 +74,20 @@ public class ValidationSampleTests extends AbstractIntegrationTest {
                 UpmcSampleSet.instance(),
                 StompSampleSet.instance(),
                 LanguageSampleSet.instance(),
-                TestImplementationSampleSet.instance()
+                TestImplementationSampleSet.instance(),
+                QtiworksRegressionSampleSet.instance()
         );
     }
-    
-    public ValidationSampleTests(QtiSampleAssessment qtiSampleAssessment) {
+
+    public ValidationSampleTests(final QtiSampleAssessment qtiSampleAssessment) {
         super(qtiSampleAssessment);
     }
-    
+
     @Test
     public void test() throws Exception {
-        AssessmentObjectValidationResult<?> validationResult = validateSampleObject();
-        
-        boolean expectedValid = !qtiSampleAssessment.hasFeature(Feature.NOT_FULLY_VALID);
+        final AssessmentObjectValidationResult<?> validationResult = validateSampleObject();
+
+        final boolean expectedValid = !qtiSampleAssessment.hasFeature(Feature.NOT_FULLY_VALID);
         if (expectedValid != validationResult.isValid()) {
             System.out.println("Expected validity: " + expectedValid);
             System.out.println("Actual validation result: " + ObjectDumper.dumpObject(validationResult, DumpMode.DEEP));

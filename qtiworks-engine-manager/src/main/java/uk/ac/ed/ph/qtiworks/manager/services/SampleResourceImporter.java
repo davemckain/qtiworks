@@ -53,6 +53,7 @@ import uk.ac.ed.ph.qtiworks.samples.MathAssessSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment.Feature;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleSet;
+import uk.ac.ed.ph.qtiworks.samples.QtiworksRegressionSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.StandardQtiSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.StompSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.TestImplementationSampleSet;
@@ -178,7 +179,8 @@ public class SampleResourceImporter {
                 UpmcSampleSet.instance().withoutFeatures(badFeatures),
                 StompSampleSet.instance().withoutFeatures(badFeatures),
                 LanguageSampleSet.instance().withoutFeatures(badFeatures),
-                TestImplementationSampleSet.instance().withoutFeatures(badFeatures)
+                TestImplementationSampleSet.instance().withoutFeatures(badFeatures),
+                QtiworksRegressionSampleSet.instance().withoutFeatures(badFeatures)
         };
 
         /* If MathAssess extensions are not enabled, filter out assessments that need them */
@@ -322,7 +324,9 @@ public class SampleResourceImporter {
                     itemDeliverySettings.setPrompt("This is a very basic standard IMS sample question. It has no response processing (scoring) "
                             + "built in so isn't very interactve. There is also no model solution. It's therefore not much fun "
                             + "to play around with!");
+                    itemDeliverySettings.setMaxAttempts(Integer.valueOf(1));
                     itemDeliverySettings.setAllowSoftResetWhenOpen(true);
+                    itemDeliverySettings.setAllowSoftResetWhenEnded(true);
                     deliverySettings = itemDeliverySettings;
                     break;
                 }

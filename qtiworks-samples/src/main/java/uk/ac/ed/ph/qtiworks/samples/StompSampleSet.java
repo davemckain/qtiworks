@@ -46,7 +46,7 @@ public final class StompSampleSet {
             "stomp/Examples from Dick Bacon's SToMP system",
             new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "stomp/a_mcq_dkG2.xml", new String[] { "ststyle.css", "" }, Feature.NOT_SCHEMA_VALID, Feature.NOT_FULLY_VALID),
             new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "stomp/adap3_3pSM.xml", new String[] { "ststyle.css" }, Feature.NOT_SCHEMA_VALID, Feature.NOT_FULLY_VALID),
-            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "stomp/baseG.xml", new String[] { "ststyle.css" }, Feature.NOT_FULLY_VALID),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "stomp/baseG.xml", new String[] { "ststyle.css" }, Feature.NOT_RUNNABLE),
             new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "stomp/binary_2GS.xml", new String[] { "ststyle.css" }, Feature.NOT_SCHEMA_VALID, Feature.NOT_FULLY_VALID),
             new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "stomp/chc_inlineGS.xml", new String[] { "ststyle.css" }),
             new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "stomp/chc_mcqS.xml", new String[] { "ststyle.css" }),
