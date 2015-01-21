@@ -97,6 +97,7 @@ public final class ResponseDeclaration extends VariableDeclaration {
 
     @Override
     public void validateThis(final ValidationContext context) {
+        super.validateThis(context);
         if (getAreaMapping() != null && !hasBaseType(BaseType.POINT)) {
             context.fireValidationError(this, "Base type must be point when using areaMapping.");
         }

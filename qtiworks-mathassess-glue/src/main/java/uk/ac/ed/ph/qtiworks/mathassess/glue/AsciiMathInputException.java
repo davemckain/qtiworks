@@ -27,45 +27,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * This software is derived from (and contains code from) QTItools and MathAssessEngine.
- * QTItools is (c) 2008, University of Southampton.
+ * This software is derived from (and contains code from) QTITools and MathAssessEngine.
+ * QTITools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
 package uk.ac.ed.ph.qtiworks.mathassess.glue;
 
-import uk.ac.ed.ph.qtiworks.mathassess.glue.types.MathsContentOutputValueWrapper;
-
 /**
- * This Exception is thrown if a MathsContent value encoded inside a
- * {@link MathsContentOutputValueWrapper} does not have the required amount of semantics
- * to be handled in the appropriate way.
+ * Exception thrown when the SnuggleTeX ASCIIMath up-conversion process fails
+ * unexpectedly.
  * <p>
- * Normally this will be thrown if some MathML output cannot be up-converted to being
- * Maxima input again.
- * <p>
- * This one's a bit awkward as the underlying problem could be:
- * <ul>
- *   <li>The up-conversion process isn't clever enough.</li>
- *   <li>The content was authored directly and is genuinely outside the scope of what we support.</li>
- *   <li>The content arose as part of a Maxima call and has now gone outside the scope of what we support.</li>
- * <ul>
+ * FIXME: SnuggleTeX should ideally handle this case in a nicer way, then we
+ * wouldn't need to have this class. It's confusingly similar to
+ * {@link MathsContentTooComplexException}!
  *
  * @author David McKain
  */
-public final class MathsContentTooComplexException extends Exception {
+public final class AsciiMathInputException extends RuntimeException {
 
-    private static final long serialVersionUID = -3121152232236067772L;
+    private static final long serialVersionUID = -7314826897146140677L;
 
-    private final MathsContentOutputValueWrapper valueWrapper;
+    private final String asciiMathInput;
 
-    public MathsContentTooComplexException(final MathsContentOutputValueWrapper valueWrapper) {
-        super("MathsContent based on PMathML "
-                + valueWrapper.getPMathML()
-                + " cannot be up-converted into Maxima input format... probably too complex");
-        this.valueWrapper = valueWrapper;
+    public AsciiMathInputException(final String asciiMathInput) {
+        super("SnuggleTeX unexpectedly failed to handled ASCIIMath input " + asciiMathInput);
+        this.asciiMathInput = asciiMathInput;
     }
 
-    public MathsContentOutputValueWrapper getMathsContentValueWrapper() {
-        return valueWrapper;
+    public String getAsciiMathInput() {
+        return asciiMathInput;
     }
 }

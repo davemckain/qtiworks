@@ -39,6 +39,7 @@ import uk.ac.ed.ph.qtiworks.samples.LanguageSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.MathAssessSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment.Feature;
+import uk.ac.ed.ph.qtiworks.samples.QtiworksRegressionSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.StandardQtiSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.StompSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.UpmcSampleSet;
@@ -64,7 +65,7 @@ import org.junit.runners.Parameterized.Parameters;
  */
 @RunWith(Parameterized.class)
 public class QtiXmlReaderSampleTests extends AbstractIntegrationTest {
-    
+
     @Parameters
     public static Collection<Object[]> data() {
         return TestUtils.makeTestParameters(
@@ -72,18 +73,19 @@ public class QtiXmlReaderSampleTests extends AbstractIntegrationTest {
                 MathAssessSampleSet.instance(),
                 UpmcSampleSet.instance(),
                 StompSampleSet.instance(),
-                LanguageSampleSet.instance()
+                LanguageSampleSet.instance(),
+                QtiworksRegressionSampleSet.instance()
         );
     }
-    
-    public QtiXmlReaderSampleTests(QtiSampleAssessment qtiSampleAssessment) {
+
+    public QtiXmlReaderSampleTests(final QtiSampleAssessment qtiSampleAssessment) {
        super(qtiSampleAssessment);
-        
+
     }
-    
+
     @Test
     public void test() throws Exception {
-        XmlReadResult xmlReadResult = readSampleXml();
+        final XmlReadResult xmlReadResult = readSampleXml();
         if (!xmlReadResult.isSchemaValid() && !qtiSampleAssessment.hasFeature(Feature.NOT_SCHEMA_VALID)) {
             System.out.println("Schema validation expected success but failed. Details are: "
                     + ObjectDumper.dumpObject(xmlReadResult, DumpMode.DEEP));

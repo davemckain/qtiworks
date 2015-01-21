@@ -51,8 +51,8 @@ public final class ExportLtiDomainsAction extends ManagerAction {
     @Override
     public String[] getActionSummary() {
         return new String[] {
-        		"Outputs all registered LTI domain data to STDOUT in CSV format.",
-        		"CSV format: consumerKey,sharedSecret"
+                "Outputs all registered LTI domain data to STDOUT in CSV format.",
+                "CSV format: consumerKey,sharedSecret"
         };
     }
 

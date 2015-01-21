@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.qtiworks.mathassess.glue.types;
 
 import uk.ac.ed.ph.qtiworks.mathassess.glue.MathAssessCasException;
+
 import uk.ac.ed.ph.snuggletex.upconversion.MathMLUpConverter;
 import uk.ac.ed.ph.snuggletex.upconversion.UpConversionUtilities;
 import uk.ac.ed.ph.snuggletex.utilities.MathMLUtilities;
@@ -50,73 +51,73 @@ import org.w3c.dom.Document;
  * @author David McKain
  */
 public final class WrapperUtilities {
-    
+
     /**
      * Unravels an up-converted MathML document (as produced previously from either from raw
      * SnuggleTeX, ASCIIMathML or Maxima MathML output) and converts the result to a
      * {@link MathsContentValueWrapper}.
      */
-    public static MathsContentInputValueWrapper createFromUpconvertedASCIIMathInput(final String asciiMathInput, final Document upConvertedMathMLDocument) {
-        UnwrappedParallelMathMLDOM unwrappedDocument = MathMLUtilities.unwrapParallelMathMLDOM(upConvertedMathMLDocument.getDocumentElement());
-        MathsContentInputValueWrapper result = new MathsContentInputValueWrapper();
+    public static MathsContentInputValueWrapper createFromUpconvertedAsciiMathInput(final String asciiMathInput, final Document upConvertedMathmlDocument) {
+        final UnwrappedParallelMathMLDOM unwrappedDocument = MathMLUtilities.unwrapParallelMathMLDOM(upConvertedMathmlDocument.getDocumentElement());
+        final MathsContentInputValueWrapper result = new MathsContentInputValueWrapper();
         result.setAsciiMathInput(asciiMathInput);
-        
+
         /* Extract semantic PMathML */
-        Document pMathDocument = MathMLUtilities.isolateFirstSemanticsBranch(unwrappedDocument);
+        final Document pMathDocument = MathMLUtilities.isolateFirstSemanticsBranch(unwrappedDocument);
         result.setPMathML(MathMLUtilities.serializeDocument(pMathDocument));
-        
+
         /* Extract bracketed PMathML */
-        Document pMathBracketedDocument = MathMLUtilities.isolateAnnotationXML(unwrappedDocument, MathMLUpConverter.BRACKETED_PRESENTATION_MATHML_ANNOTATION_NAME);
+        final Document pMathBracketedDocument = MathMLUtilities.isolateAnnotationXML(unwrappedDocument, MathMLUpConverter.BRACKETED_PRESENTATION_MATHML_ANNOTATION_NAME);
         result.setPMathMLBracketed(MathMLUtilities.serializeDocument(pMathBracketedDocument));
 
         /* Extract up-converted information */
-        Document cMathDocument = MathMLUtilities.isolateAnnotationXML(unwrappedDocument, MathMLUpConverter.CONTENT_MATHML_ANNOTATION_NAME);
+        final Document cMathDocument = MathMLUtilities.isolateAnnotationXML(unwrappedDocument, MathMLUpConverter.CONTENT_MATHML_ANNOTATION_NAME);
         if (cMathDocument!=null) {
             result.setCMathML(MathMLUtilities.serializeDocument(cMathDocument));
         }
         result.setMaximaInput(unwrappedDocument.getTextAnnotations().get(MathMLUpConverter.MAXIMA_ANNOTATION_NAME));
-        
+
         /* Extract any up-conversion failures */
         result.setUpConversionFailures(UpConversionUtilities.extractUpConversionFailures(unwrappedDocument));
-        
+
         /* That's it! */
         return result;
     }
-    
+
     /**
      * Unravels an up-converted MathML document (as produced previously from either from raw
      * SnuggleTeX, ASCIIMathML or Maxima MathML output) and converts the result to a
      * {@link MathsContentValueWrapper}.
      */
     public static MathsContentOutputValueWrapper createFromUpconvertedMaximaOutput(final Document upConvertedMathMLDocument) {
-        UnwrappedParallelMathMLDOM unwrappedDocument = MathMLUtilities.unwrapParallelMathMLDOM(upConvertedMathMLDocument.getDocumentElement());
-        MathsContentOutputValueWrapper result = new MathsContentOutputValueWrapper();
-        
+        final UnwrappedParallelMathMLDOM unwrappedDocument = MathMLUtilities.unwrapParallelMathMLDOM(upConvertedMathMLDocument.getDocumentElement());
+        final MathsContentOutputValueWrapper result = new MathsContentOutputValueWrapper();
+
         /* Extract semantic PMathML */
-        Document pMathDocument = MathMLUtilities.isolateFirstSemanticsBranch(unwrappedDocument);
+        final Document pMathDocument = MathMLUtilities.isolateFirstSemanticsBranch(unwrappedDocument);
         result.setPMathML(MathMLUtilities.serializeDocument(pMathDocument));
         result.setPMathMLElement(pMathDocument.getDocumentElement());
 
         /* Extract up-converted information */
-        Document cMathDocument = MathMLUtilities.isolateAnnotationXML(unwrappedDocument, MathMLUpConverter.CONTENT_MATHML_ANNOTATION_NAME);
+        final Document cMathDocument = MathMLUtilities.isolateAnnotationXML(unwrappedDocument, MathMLUpConverter.CONTENT_MATHML_ANNOTATION_NAME);
         if (cMathDocument!=null) {
             result.setCMathML(MathMLUtilities.serializeDocument(cMathDocument));
         }
         result.setMaximaInput(unwrappedDocument.getTextAnnotations().get(MathMLUpConverter.MAXIMA_ANNOTATION_NAME));
-        
+
         /* Extract any up-conversion failures */
         result.setUpConversionFailures(UpConversionUtilities.extractUpConversionFailures(unwrappedDocument));
-        
+
         /* That's it! */
         return result;
     }
-    
+
     //------------------------------------------------------------------------
-    
+
     /**
      * Creates a {@link SingleValueWrapper} instance of the given type, representing a null
      * value.
-     * 
+     *
      * @param <B> underlying baseType
      * @param <S> required {@link SingleValueWrapper} type
      * @param resultClass Class specifying the required SingleValueWrapper type
@@ -125,11 +126,11 @@ public final class WrapperUtilities {
     S createSingleValue(final Class<S> resultClass) {
         return instantiateValueWrapper(resultClass);
     }
-    
+
     /**
      * Creates a {@link CompoundValueWrapper} instance of the given type, representing an empty
      * collection.
-     * 
+     *
      * @param <B> underlying baseType
      * @param <S> required {@link SingleValueWrapper} type for the elements in the collection
      * @param <C> required {@link CompoundValueWrapper} type.
@@ -139,94 +140,94 @@ public final class WrapperUtilities {
     C createCompoundValue(final Class<C> resultClass) {
         return instantiateValueWrapper(resultClass);
     }
-    
+
     /**
      * Creates a {@link CompoundValueWrapper} instance of the given type, containing
      * the given (wrapped) items.
-     * 
+     *
      * @param <B> underlying baseType
      * @param <S> required {@link SingleValueWrapper} type for the elements in the collection
      * @param <C> required {@link CompoundValueWrapper} type.
      * @param resultClass Class specifying the required SingleValueWrapper type
      * @param itemValueWrappers items to add to the resulting collection.
      */
-    public static <B, S extends SingleValueWrapper<B>, C extends CompoundValueWrapper<B,S>> 
+    public static <B, S extends SingleValueWrapper<B>, C extends CompoundValueWrapper<B,S>>
     C createCompoundValue(final Class<C> resultClass, final Iterable<S> itemValueWrappers) {
-        C result = createCompoundValue(resultClass);
-        for (S valueWrapper : itemValueWrappers) {
+        final C result = createCompoundValue(resultClass);
+        for (final S valueWrapper : itemValueWrappers) {
             result.add(valueWrapper);
         }
         return result;
     }
-    
+
     /**
      * Creates a {@link CompoundValueWrapper} instance of the given type, containing
      * the given (wrapped) items.
-     * 
+     *
      * @param <B> underlying baseType
      * @param <S> required {@link SingleValueWrapper} type for the elements in the collection
      * @param <C> required {@link CompoundValueWrapper} type.
      * @param resultClass Class specifying the required SingleValueWrapper type
      * @param itemValueWrappers items to add to the resulting collection.
      */
-    public static <B, S extends SingleValueWrapper<B>, C extends CompoundValueWrapper<B,S>> 
+    public static <B, S extends SingleValueWrapper<B>, C extends CompoundValueWrapper<B,S>>
     C createCompoundValue(final Class<C> resultClass, final S... itemValueWrappers) {
-        C result = createCompoundValue(resultClass);
-        for (S valueWrapper : itemValueWrappers) {
+        final C result = createCompoundValue(resultClass);
+        for (final S valueWrapper : itemValueWrappers) {
             result.add(valueWrapper);
         }
         return result;
     }
-    
-    
+
+
     /**
      * Creates a {@link CompoundValueWrapper} instance of the given type, containing
      * wrapped versions of the given raw items.
-     * 
+     *
      * @param <B> underlying baseType
      * @param <S> required {@link SingleValueWrapper} type for the elements in the collection
      * @param <C> required {@link CompoundValueWrapper} type.
      * @param resultWrapperClass Class specifying the required SingleValueWrapper type
      * @param itemValues items to add to the resulting collection.
      */
-    public static <B, S extends SingleValueWrapper<B>, C extends CompoundValueWrapper<B,S>> 
+    public static <B, S extends SingleValueWrapper<B>, C extends CompoundValueWrapper<B,S>>
     C createCompoundValue(final Class<C> resultWrapperClass, final Class<S> itemWrapperClass,
             final Iterable<B> itemValues) {
-        C result = createCompoundValue(resultWrapperClass);
-        for (B value : itemValues) {
-            S item = instantiateValueWrapper(itemWrapperClass);
+        final C result = createCompoundValue(resultWrapperClass);
+        for (final B value : itemValues) {
+            final S item = instantiateValueWrapper(itemWrapperClass);
             item.setValue(value);
             result.add(item);
         }
         return result;
     }
-    
+
     /**
      * Creates a {@link CompoundValueWrapper} instance of the given type, containing
      * wrapped versions of the given raw items.
-     * 
+     *
      * @param <B> underlying baseType
      * @param <S> required {@link SingleValueWrapper} type for the elements in the collection
      * @param <C> required {@link CompoundValueWrapper} type.
      * @param resultClass Class specifying the required SingleValueWrapper type
      * @param itemValues items to add to the resulting collection.
      */
-    public static <B, S extends SingleValueWrapper<B>, C extends CompoundValueWrapper<B,S>> 
-    C createCompoundValue(final Class<C> resultClass, final Class<S> itemClass, B... itemValues) {
-        C result = createCompoundValue(resultClass);
-        for (B value : itemValues) {
-            S item = instantiateValueWrapper(itemClass);
+    public static <B, S extends SingleValueWrapper<B>, C extends CompoundValueWrapper<B,S>>
+    C createCompoundValue(final Class<C> resultClass, final Class<S> itemClass, final B... itemValues) {
+        final C result = createCompoundValue(resultClass);
+        for (final B value : itemValues) {
+            final S item = instantiateValueWrapper(itemClass);
             item.setValue(value);
             result.add(item);
         }
         return result;
     }
-    
+
     private static <V extends ValueWrapper> V instantiateValueWrapper(final Class<V> valueWrapperClass) {
         try {
             return valueWrapperClass.newInstance();
         }
-        catch (Exception e) {
+        catch (final Exception e) {
             throw new MathAssessCasException("Unexpected Exception instantiating ValueWrapper of type "
                     + valueWrapperClass);
         }

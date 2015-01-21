@@ -6,6 +6,7 @@ All Rights Reserved
 Model:
 
 assessment
+assessmentPackage
 assessmentStatusReport
 assessmentRouting (action -> URL)
 primaryRouting (action -> URL)
@@ -30,6 +31,9 @@ primaryRouting (action -> URL)
         This lets you upload new QTI to replace what we have already stored in the system. You'll probably
         want to do this when trying out and/or debugging your own assessments that you are writing or generating
         in another system.
+      </p>
+      <p>
+        All of the existing assessment metadata (e.g. name and title) will be kept around.
       </p>
     </div>
   </header>
@@ -75,7 +79,7 @@ primaryRouting (action -> URL)
             <li>A self-contained QTI 2.1 Assessment Item XML file.</li>
           </ul>
           <p>
-            Please additiionally note that you MUST upload the same 'type' of
+            Please additionally note that you MUST upload the same 'type' of
             assessment. I.e. you must replace an item with an item or a test with
             a test.
           <p>

@@ -37,6 +37,7 @@ import uk.ac.ed.ph.qtiworks.samples.LanguageSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.MathAssessSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment.Feature;
+import uk.ac.ed.ph.qtiworks.samples.QtiworksRegressionSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.StandardQtiSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.StompSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.UpmcSampleSet;
@@ -69,7 +70,8 @@ public class TemplateProcessingSampleTests extends AbstractIntegrationTest {
                 MathAssessSampleSet.instance().withoutFeatures(Feature.NOT_SCHEMA_VALID),
                 UpmcSampleSet.instance().withoutFeatures(Feature.NOT_SCHEMA_VALID),
                 StompSampleSet.instance().withoutFeatures(Feature.NOT_SCHEMA_VALID),
-                LanguageSampleSet.instance().withoutFeatures(Feature.NOT_SCHEMA_VALID)
+                LanguageSampleSet.instance().withoutFeatures(Feature.NOT_SCHEMA_VALID),
+                QtiworksRegressionSampleSet.instance().withoutFeatures(Feature.NOT_SCHEMA_VALID)
         );
     }
 

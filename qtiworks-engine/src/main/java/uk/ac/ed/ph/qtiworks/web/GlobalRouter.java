@@ -78,7 +78,7 @@ public final class GlobalRouter {
      * This is suitable for returning in a Spring MVC controller.
      *
      * @param candidateSession candidate session to connect to
-     * @param xsrfToken XSRF token previously granted for accesing the session
+     * @param xsrfToken XSRF token previously granted for accessing the session
      * @return Spring redirect URL
      */
     public static String buildSessionStartRedirect(final CandidateSession candidateSession, final String xsrfToken) {
@@ -104,13 +104,21 @@ public final class GlobalRouter {
      * Creates a within context URL for launching the {@link CandidateSession}.
      *
      * @param candidateSession candidate session to connect to
-     * @param xsrfToken XSRF token previously granted for accesing the session
+     * @param xsrfToken XSRF token previously granted for accessing the session
      * @return within-context session launch URL
      */
     public static String buildSessionStartWithinContextUrl(final CandidateSession candidateSession, final String xsrfToken) {
         return buildSessionStartWithinContextUrl(candidateSession.getId(), xsrfToken, candidateSession.getDelivery().getAssessment().getAssessmentType());
     }
 
+    /**
+     * Creates a within context URL for launching the {@link CandidateSession} having the given
+     * ID (xid) and XSRF token.
+     *
+     * @param candidateSession candidate session to connect to
+     * @param xsrfToken XSRF token previously granted for accessing the session
+     * @return within-context session launch URL
+     */
     private static String buildSessionStartWithinContextUrl(final long xid, final String xsrfToken, final AssessmentObjectType assessmentObjectType) {
         return "/candidate/"
                 + (assessmentObjectType==AssessmentObjectType.ASSESSMENT_ITEM ? "itemsession" : "testsession")
@@ -118,4 +126,3 @@ public final class GlobalRouter {
                 + "/" + xsrfToken;
     }
 }
-

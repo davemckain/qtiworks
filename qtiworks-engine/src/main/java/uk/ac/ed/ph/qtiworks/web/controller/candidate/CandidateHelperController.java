@@ -35,6 +35,7 @@ package uk.ac.ed.ph.qtiworks.web.controller.candidate;
 
 import uk.ac.ed.ph.qtiworks.mathassess.XsltStylesheetCacheAdapter;
 import uk.ac.ed.ph.qtiworks.mathassess.glue.AsciiMathHelper;
+import uk.ac.ed.ph.qtiworks.mathassess.glue.AsciiMathInputException;
 
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetCache;
 
@@ -66,11 +67,13 @@ public class CandidateHelperController {
      * expecting to return JSON.
      *
      * Accept: application/json from client expected
+     *
+     * @throws AsciiMathInputException
      */
     @RequestMapping(value="/verifyAsciiMath", method=RequestMethod.POST)
-    public ResponseEntity<Map<String, String>>  verifyASCIIMath(@RequestParam("input") final String asciiMathInput) {
+    public ResponseEntity<Map<String, String>>  verifyAsciiMath(@RequestParam("input") final String asciiMathInput) {
         final AsciiMathHelper asciiMathHelper = new AsciiMathHelper(new XsltStylesheetCacheAdapter(stylesheetCache));
-        final Map<String, String> upConvertedAsciiMathInput = asciiMathHelper.upConvertASCIIMathInput(asciiMathInput);
+        final Map<String, String> upConvertedAsciiMathInput = asciiMathHelper.upConvertAsciiMathInput(asciiMathInput);
 
         final HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.setCacheControl("private, no-cache, no-store, max-age=0, must-revalidate");

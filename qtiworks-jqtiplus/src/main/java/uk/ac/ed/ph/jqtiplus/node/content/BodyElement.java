@@ -124,10 +124,10 @@ public abstract class BodyElement extends AbstractNode implements Content {
 
 
     public String getLabel() {
-        return getAttributes().getStringAttribute(ATTR_LANG_NAME).getComputedValue();
+        return getAttributes().getStringAttribute(ATTR_LABEL_NAME).getComputedValue();
     }
 
     public void setLabel(final String label) {
-        getAttributes().getStringAttribute(ATTR_LANG_NAME).setValue(label);
+        getAttributes().getStringAttribute(ATTR_LABEL_NAME).setValue(label);
     }
 }

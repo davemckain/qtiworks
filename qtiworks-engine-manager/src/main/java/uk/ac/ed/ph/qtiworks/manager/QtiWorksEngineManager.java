@@ -217,13 +217,13 @@ public final class QtiWorksEngineManager {
         if (errorMessage!=null) {
             System.err.println(errorMessage);
             if (action==null) {
-            	/* No action was selected, so print general usage */
-            	printUsage();
+                /* No action was selected, so print general usage */
+                printUsage();
             }
             else {
-            	/* Action was selected but parameters must not have been valid, so print usage for action */
-            	System.out.println(NEWLINE + "Usage for this Action:");
-            	printActionUsage(actionName, action);
+                /* Action was selected but parameters must not have been valid, so print usage for action */
+                System.out.println(NEWLINE + "Usage for this Action:");
+                printActionUsage(actionName, action);
             }
             System.exit(1);
         }
@@ -262,6 +262,6 @@ public final class QtiWorksEngineManager {
     }
 
     public static void main(final String[] args) {
-    	new QtiWorksEngineManager().run(args);
+        new QtiWorksEngineManager().run(args);
     }
 }

@@ -30,12 +30,12 @@ All Rights Reserved
     <link rel="stylesheet" href="${utils:internalLink(pageContext, '/lib/960/reset.css')}">
     <link rel="stylesheet" href="${utils:internalLink(pageContext, '/lib/960/text.css')}">
     <link rel="stylesheet" href="${utils:internalLink(pageContext, '/lib/fluid960gs/grid.css')}">
-    <link rel="stylesheet" href="${utils:internalLink(pageContext, '/includes/qtiworks.css')}?${qtiWorksVersion}">
+    <link rel="stylesheet" href="${utils:internalLink(pageContext, '/includes/qtiworks.css')}?v=${qtiWorksVersion}">
     <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.min.css">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
     <%-- TODO: Move the next script into a single library --%>
-    <script src="${utils:internalLink(pageContext, '/includes/qtiworks.js')}?${qtiWorksVersion}"></script>
+    <script src="${utils:internalLink(pageContext, '/includes/qtiworks.js')}?v=${qtiWorksVersion}"></script>
     <!--[if lt IE 9]><script src="${utils:internalLink(pageContext, '/lib/html5shiv.min.js')}"></script><![endif]-->
   </head>
   <body class="<c:out value='${cssClass}' default='page'/>">

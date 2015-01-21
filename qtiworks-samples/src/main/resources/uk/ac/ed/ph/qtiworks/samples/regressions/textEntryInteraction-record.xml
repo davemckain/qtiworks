@@ -1,0 +1,55 @@
+<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd"
+    identifier="textEntryInteraction-record"
+    title="Example of binding a textEntryInteraction to a record variable"
+    adaptive="false" timeDependent="false">
+  <responseDeclaration identifier="RESPONSE" cardinality="record"/>
+  <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float">
+    <defaultValue>
+      <value>0.0</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <outcomeDeclaration identifier="RESPONSE_COPY" cardinality="record"/>
+  <outcomeDeclaration identifier="FEEDBACK" cardinality="single" baseType="identifier">
+    <defaultValue>
+      <value>NO</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <itemBody>
+    <p>
+      Enter a number to demonstrate record cardinality responses:
+      <textEntryInteraction responseIdentifier="RESPONSE" expectedLength="10"/>
+    </p>
+    <p>
+      The feedback will show all of the resulting fields available.
+    </p>
+    <p>
+      <strong>Note:</strong> The exponent field will be set if you enter a number like <code>1.2e5</code>
+    </p>
+  </itemBody>
+  <responseProcessing>
+    <setOutcomeValue identifier="RESPONSE_COPY">
+      <variable identifier="RESPONSE"/>
+    </setOutcomeValue>
+    <setOutcomeValue identifier="SCORE">
+      <baseValue baseType="float">1.0</baseValue>
+    </setOutcomeValue>
+    <setOutcomeValue identifier="FEEDBACK">
+      <baseValue baseType="identifier">YES</baseValue>
+    </setOutcomeValue>
+  </responseProcessing>
+  <modalFeedback outcomeIdentifier="FEEDBACK" identifier="YES" showHide="show">
+    <ul>
+      <li>record value = <printedVariable identifier="RESPONSE_COPY"/></li>
+      <li>stringValue = <printedVariable identifier="RESPONSE_COPY" field="stringValue" /></li>
+      <li>floatValue = <printedVariable identifier="RESPONSE_COPY" field="floatValue" /></li>
+      <li>integerValue = <printedVariable identifier="RESPONSE_COPY" field="integerValue" /></li>
+      <li>leftDigits = <printedVariable identifier="RESPONSE_COPY" field="leftDigits" /></li>
+      <li>rightDigits = <printedVariable identifier="RESPONSE_COPY" field="rightDigits" /></li>
+      <li>ndp = <printedVariable identifier="RESPONSE_COPY" field="ndp" /></li>
+      <li>nsf = <printedVariable identifier="RESPONSE_COPY" field="nsf" /></li>
+      <li>exponent = <printedVariable identifier="RESPONSE_COPY" field="exponent" /></li>
+    </ul>
+  </modalFeedback>
+</assessmentItem>

@@ -33,15 +33,36 @@
  */
 package uk.ac.ed.ph.qtiworks.rendering;
 
+import java.util.IllegalFormatException;
+
 /**
  * Contains XSLT extension functions used by the rendering process
  *
  * @author David McKain
  */
 public final class XsltExtensionFunctions {
-    
-    public static String format(String format, Double arg) {
-        return String.format(format, arg);
+
+    /**
+     * This method is called by <code>printedVariable</code> to format a numeric value.
+     *
+     * FIXME: This implementation is highly deficient! See
+     * <a href="https://github.com/davemckain/qtiworks/issues/21">Issue #21</a>
+     * for details.
+     *
+     * @param format
+     * @param numberValue
+     * @return formatted String
+     */
+    public static String format(final String format, final Double numberValue) {
+        try {
+            return String.format(format, numberValue);
+        }
+        catch (final IllegalFormatException e) {
+            /* Our implementation doesn't support don't support C- or QTI-specific formats.
+             * In this case, we'll simply display the number as-is.
+             */
+            return numberValue.toString();
+        }
     }
-    
+
 }

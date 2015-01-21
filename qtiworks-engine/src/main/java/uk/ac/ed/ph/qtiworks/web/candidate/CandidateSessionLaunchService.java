@@ -117,9 +117,11 @@ public class CandidateSessionLaunchService {
     }
 
     //-------------------------------------------------
-    // Legacy Uniqurate session launching
+    // Session launching for web services
+    // (This uses a slightly different 2-step launch process that avoids cookies.)
 
-    public CandidateSessionTicket launchLegacyUniqurateCandidateSession(final HttpSession httpSession, final long did, final String uniqurateDeliveryToken, final String returnUrl)
+    public CandidateSessionTicket launchWebServiceCandidateSession(final HttpSession httpSession,
+            final long did, final String deliveryToken, final String returnUrl)
             throws CandidateException, DomainEntityNotFoundException {
         Assert.notNull(httpSession, "httpSession");
 
@@ -127,15 +129,15 @@ public class CandidateSessionLaunchService {
         final Delivery delivery = deliveryDao.requireFindById(did);
         final Assessment assessment = delivery.getAssessment();
         final User candidate = identityService.assertCurrentThreadUser();
-        final String deliveryToken = generateUniqurateDeliveryToken(delivery);
-        if (!deliveryToken.equals(uniqurateDeliveryToken)) {
+        final String deliveryTokenVerify = generateWebServiceDeliveryToken(delivery);
+        if (!deliveryTokenVerify.equals(deliveryToken)) {
             logAndThrowLaunchException(candidate, assessment, CandidateExceptionReason.LAUNCH_ASSESSMENT_NO_ACCESS);
         }
 
-        /* We don't check ownership of the Assessment, as UQ doesn't send the JSESSIONID cookie
-         * from when the Assessment was first created, so a second session gets created by the time
-         * we get here, hence the owner user and candidate are now different. Boo!
-         * However, we will at least make sure that the Assessment is owned by an anonymous user
+        /* We don't check ownership of the Assessment here, since the user launching the
+         * assessment (i.e. the end user) will be different from the one that initially created it
+         * (i.e. the web service).
+         * However, we will at least make sure that the Assessment is owned by an anonymous user.
          */
         if (!assessment.getOwnerUser().isAnonymous()) {
             logAndThrowLaunchException(candidate, assessment, CandidateExceptionReason.LAUNCH_ASSESSMENT_NO_ACCESS);
@@ -145,8 +147,12 @@ public class CandidateSessionLaunchService {
         return launchCandidateSession(httpSession, candidate, delivery, true, returnUrl, null, null);
     }
 
-    public String generateUniqurateDeliveryToken(final Delivery delivery) {
-        final String tokenData = "Uniqurate/"
+    /**
+     * Generates a "delivery token" for this launch. This is appended the WS launch URL to make it
+     * harder (but obviously not impossible) for a 3rd party to guess the launch URL.
+     */
+    public String generateWebServiceDeliveryToken(final Delivery delivery) {
+        final String tokenData = "QTIWorksWS/"
                 + delivery.getAssessment().getId()
                 + "/" + delivery.getAssessment().getOwnerUser().getId()
                 + "/" + ViewUtilities.getDateAndTimeFormat().format(delivery.getCreationTime());

@@ -165,6 +165,7 @@ public final class OutcomeDeclaration extends VariableDeclaration {
 
     @Override
     protected void validateThis(final ValidationContext context) {
+        super.validateThis(context);
         if (getNormalMaximum() != null) {
             if (getCardinality() != null && !getCardinality().isSingle()) {
                 context.fireAttributeValidationWarning(getAttributes().get(ATTR_NORMAL_MAXIMUM_NAME),

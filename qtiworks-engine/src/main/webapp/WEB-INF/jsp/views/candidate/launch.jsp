@@ -23,7 +23,7 @@ sessionEntryPath
     <meta charset="UTF-8">
     <title>QTIWorks Assessment Launcher</title>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-    <link rel="stylesheet" href="${utils:internalLink(pageContext, '/rendering/css/assessment.css')}?${qtiWorksVersion}">
+    <link rel="stylesheet" href="${utils:internalLink(pageContext, '/rendering/css/assessment.css')}?v=${qtiWorksVersion}">
     <script>
 $(window).ready(function() {
   var launchBox = $('#launchBox');

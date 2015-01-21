@@ -105,7 +105,7 @@ public class AssessmentPackageFileImporter {
         Assert.notNull(multipartFile, "multipartFile");
         AssessmentPackage assessmentPackage = null;
 
-        final String contentType = multipartFile.getContentType();
+        final String contentType = ServiceUtilities.computeContentType(multipartFile);
         if ("application/xml".equals(contentType) || "text/xml".equals(contentType) || contentType.endsWith("+xml")) {
             /* Looks like an XML content type */
             logger.debug("Import data uses a known XML MIME type {} so saving to {} and treating as XML", contentType, importSandboxDirectory);
@@ -119,7 +119,7 @@ public class AssessmentPackageFileImporter {
                 assessmentPackage = processUnpackedZip(importSandboxDirectory);
             }
             else {
-                logger.warn("Import data with MIME type {} was not a supported XML MIME type and no ZIP entries were found within", contentType);
+                logger.warn("Import data with MIME type {} was neither a supported XML MIME type nor a ZIP file (containing at least one entry)", contentType);
                 throw new AssessmentPackageDataImportException(ImportFailureReason.NOT_XML_OR_ZIP);
             }
         }

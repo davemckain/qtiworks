@@ -340,13 +340,21 @@ Common templates for item & test author views
           </span>
           <xsl:choose>
             <xsl:when test="@cardinality='single'">
-              <xsl:variable name="text" select="$valueHolder/qw:value" as="xs:string"/>
+              <xsl:variable name="singleValue" select="$valueHolder/qw:value" as="element(qw:value)"/>
               <xsl:choose>
-                <xsl:when test="contains($text, '&#x0a;')">
-                  <pre><xsl:value-of select="$text"/></pre>
+                <xsl:when test="@baseType='file'">
+                  <xsl:value-of select="$singleValue/@fileName"/>
                 </xsl:when>
                 <xsl:otherwise>
-                  <xsl:value-of select="$text"/>
+                  <xsl:variable name="text" select="$singleValue" as="xs:string"/>
+                  <xsl:choose>
+                    <xsl:when test="contains($text, '&#x0a;')">
+                      <pre><xsl:value-of select="$text"/></pre>
+                    </xsl:when>
+                    <xsl:otherwise>
+                      <xsl:value-of select="$text"/>
+                    </xsl:otherwise>
+                  </xsl:choose>
                 </xsl:otherwise>
               </xsl:choose>
             </xsl:when>

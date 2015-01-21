@@ -41,6 +41,8 @@ import uk.ac.ed.ph.jqtiplus.exception.ResponseBindingException;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.running.InteractionBindingContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
@@ -51,13 +53,9 @@ import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
-import uk.ac.ed.ph.jqtiplus.value.RecordValue;
-import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * A textEntry interaction is an inlineInteraction that obtains A
@@ -145,45 +143,39 @@ public final class TextEntryInteraction extends InlineInteraction implements Str
 
     @Override
     public ResponseDeclaration getStringIdentifierResponseDeclaration() {
-        if (getStringIdentifier() == null) {
+        final Identifier stringIdentifier = getStringIdentifier();
+        if (stringIdentifier == null) {
             return null;
         }
-        return getRootNode(AssessmentItem.class).getResponseDeclaration(getStringIdentifier());
+        final AssessmentItem assessmentItem = getRootNode(AssessmentItem.class);
+        return assessmentItem!=null ? assessmentItem.getResponseDeclaration(stringIdentifier) : null;
     }
 
     @Override
     protected void validateThis(final ValidationContext context, final ResponseDeclaration responseDeclaration) {
         if (responseDeclaration!=null) {
-            if (!(responseDeclaration.getCardinality().isSingle() || responseDeclaration.getCardinality().isRecord())) {
+            if (!responseDeclaration.hasCardinality(Cardinality.SINGLE, Cardinality.RECORD)) {
                 context.fireValidationError(this, "Response variable must have single or record cardinality");
             }
-            if (!responseDeclaration.getCardinality().isRecord()) {
-                if (!(responseDeclaration.getBaseType().isString() || responseDeclaration.getBaseType().isNumeric())) {
+            if (!responseDeclaration.hasCardinality(Cardinality.RECORD)) {
+                if (!responseDeclaration.hasBaseType(BaseType.STRING, BaseType.INTEGER, BaseType.FLOAT)) {
                     context.fireValidationError(this, "Response variable must have string or numeric base type");
                 }
             }
-            if (responseDeclaration.getBaseType() != null && !responseDeclaration.getBaseType().isFloat() && getBase() != 10) {
+            if (responseDeclaration.hasBaseType(BaseType.FLOAT) && getBase() != 10) {
                 context.fireValidationWarning(this, "JQTI currently doesn't support radix conversion for floats. Base attribute will be ignored.");
             }
         }
 
-        if (getStringIdentifier() != null) {
-            final ResponseDeclaration declaration = getStringIdentifierResponseDeclaration();
-            if (declaration != null && declaration.getBaseType() != null && !declaration.getBaseType().isString()) {
-                context.fireValidationError(this, "StringIdentifier response variable must have String base type");
+        final Identifier stringIdentifier = getStringIdentifier();
+        if (stringIdentifier != null) {
+            final VariableDeclaration stringDeclaration = context.checkLocalVariableReference(this, stringIdentifier);
+            if (stringDeclaration!=null) {
+                context.checkVariableType(this, stringDeclaration, VariableType.RESPONSE);
+                if (!stringDeclaration.hasBaseType(BaseType.STRING)) {
+                    context.fireValidationError(this, "StringIdentifier response variable must have String base type");
+                }
             }
-        }
-    }
-
-    @Override
-    public final void bindResponse(final InteractionBindingContext interactionBindingContext, final ResponseData responseData) throws ResponseBindingException {
-        super.bindResponse(interactionBindingContext, responseData);
-
-        /* Also handle stringIdentifier binding if required */
-        if (getStringIdentifier() != null) {
-            final ResponseDeclaration stringIdentifierResponseDeclaration = getStringIdentifierResponseDeclaration();
-            final Value value = parseResponse(stringIdentifierResponseDeclaration, responseData);
-            interactionBindingContext.bindResponseVariable(stringIdentifierResponseDeclaration.getIdentifier(), value);
         }
     }
 
@@ -205,14 +197,20 @@ public final class TextEntryInteraction extends InlineInteraction implements Str
         Value result;
         try {
             if (responseCardinality.isRecord()) {
-                result = TextEntryInteraction.parseRecordValueResponse(responseString, base);
-            }
-            else if (responseBaseType.isInteger()) {
                 if (responseString == null || responseString.trim().length() == 0) {
                     result = NullValue.INSTANCE;
                 }
                 else {
-                    result = IntegerValue.parseString(responseString, base);
+                    result = StringInteractionHelper.parseRecordValueResponse(responseString.trim(), base);
+                }
+            }
+            else if (responseBaseType.isInteger()) {
+                /* (Special handling is required for the 'base' attribute) */
+                if (responseString == null || responseString.trim().length() == 0) {
+                    result = NullValue.INSTANCE;
+                }
+                else {
+                    result = IntegerValue.parseString(responseString.trim(), base);
                 }
             }
             else {
@@ -226,63 +224,26 @@ public final class TextEntryInteraction extends InlineInteraction implements Str
     }
 
     @Override
+    public final void bindResponse(final InteractionBindingContext interactionBindingContext, final ResponseData responseData) throws ResponseBindingException {
+        super.bindResponse(interactionBindingContext, responseData);
+
+        /* Also handle stringIdentifier binding if required */
+        final ResponseDeclaration stringIdentifierResponseDeclaration = getStringIdentifierResponseDeclaration();
+        if (stringIdentifierResponseDeclaration != null) {
+            final Value value = parseResponse(stringIdentifierResponseDeclaration, responseData);
+            interactionBindingContext.bindResponseVariable(stringIdentifierResponseDeclaration.getIdentifier(), value);
+        }
+    }
+
+
+    @Override
     public boolean validateResponse(final InteractionBindingContext interactionBindingContext, final Value responseValue) {
-        if (getPatternMask() != null) {
-            if (!responseValue.toQtiString().matches(getPatternMask())) {
+        final String patternMask = getPatternMask();
+        if (patternMask != null) {
+            if (!responseValue.toQtiString().matches(patternMask)) {
                 return false;
             }
         }
-
         return true;
-    }
-
-    /**
-     * @throws QtiParseException
-     */
-    protected static Value parseRecordValueResponse(final String responseString, final int base) {
-        final Map<Identifier, SingleValue> recordBuilder = new HashMap<Identifier, SingleValue>();
-
-        recordBuilder.put(KEY_STRING_VALUE_NAME, BaseType.STRING.parseSingleValue(responseString));
-        recordBuilder.put(KEY_FLOAT_VALUE_NAME, BaseType.FLOAT.parseSingleValue(responseString));
-
-        String exponentIndicator = null;
-        if (responseString.contains("e")) {
-            exponentIndicator = "e";
-        }
-        if (responseString.contains("E")) {
-            exponentIndicator = "E";
-        }
-
-        final String exponentPart = exponentIndicator != null ? responseString.substring(responseString.indexOf(exponentIndicator) + 1) : ""; /* (Not null) */
-        final String responseStringAfterExp = exponentIndicator == null ? responseString : responseString.substring(0, responseString.indexOf(exponentIndicator)); /* (Not null) */
-        final String rightPart = responseStringAfterExp.contains(".") ? responseStringAfterExp.substring(responseStringAfterExp.indexOf(".") + 1) : ""; /* (Not null) */
-        final String leftPart = responseStringAfterExp.contains(".") ? responseStringAfterExp.substring(0, responseStringAfterExp.indexOf(".")) : responseStringAfterExp; /* (Not null) */
-
-        if (exponentIndicator == null && !responseStringAfterExp.contains(".")) {
-            recordBuilder.put(KEY_INTEGER_VALUE_NAME, IntegerValue.parseString(responseStringAfterExp, base));
-        }
-
-        recordBuilder.put(KEY_LEFT_DIGITS_NAME, new IntegerValue(leftPart.length()));
-        recordBuilder.put(KEY_RIGHT_DIGITS_NAME, new IntegerValue(rightPart.length()));
-
-        if (exponentIndicator != null) {
-            int frac = rightPart.length();
-            if (exponentPart.length() > 0) {
-                frac -= Integer.parseInt(exponentPart);
-            }
-            recordBuilder.put(KEY_NDP_NAME, new IntegerValue(frac));
-        }
-        else {
-            recordBuilder.put(KEY_NDP_NAME, IntegerValue.parseString(rightPart.isEmpty() ? "0" : rightPart));
-        }
-
-        int nsf = (leftPart.isEmpty()) ? 0 : new Integer(leftPart).toString().length();
-        nsf += rightPart.length();
-        recordBuilder.put(KEY_NSF_NAME, new IntegerValue(nsf));
-
-        if (exponentIndicator != null) {
-            recordBuilder.put(KEY_EXPONENT_NAME, IntegerValue.parseString(exponentPart.isEmpty() ? "0" : exponentPart));
-        }
-        return RecordValue.createRecordValue(recordBuilder);
     }
 }

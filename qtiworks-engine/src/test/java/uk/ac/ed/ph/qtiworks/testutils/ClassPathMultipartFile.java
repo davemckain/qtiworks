@@ -58,7 +58,6 @@ public final class ClassPathMultipartFile implements MultipartFile {
 
     public ClassPathMultipartFile(final String path, final String contentType) {
         Assert.notNull(path, "path");
-        Assert.notNull(contentType, "contentType");
         this.path = path;
         this.contentType = contentType;
     }

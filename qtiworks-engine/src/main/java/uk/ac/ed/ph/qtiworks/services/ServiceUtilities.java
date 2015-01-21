@@ -49,6 +49,8 @@ import java.security.SecureRandom;
 import java.util.Date;
 import java.util.Random;
 
+import javax.validation.constraints.NotNull;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
@@ -152,6 +154,20 @@ public final class ServiceUtilities {
     }
 
     //-----------------------------------------------------
+    // MultipartFile helpers
+
+    /**
+     * Returns a non-null Content Type for a {@link MultipartFile}, using the default value
+     * {@link DomainConstants#DEFAULT_CONTENT_TYPE} if nothing has been set.
+     */
+    @NotNull
+    public static String computeContentType(final MultipartFile multipartFile) {
+        String result = multipartFile.getContentType();
+        if (result==null) {
+            result = DomainConstants.DEFAULT_CONTENT_TYPE;
+        }
+        return result;
+    }
 
     public static InputStream ensureInputSream(final MultipartFile multipartFile) {
         try {
@@ -161,6 +177,8 @@ public final class ServiceUtilities {
             throw new QtiWorksRuntimeException("Unexpected Exception getting InputStream from MultipartFile", e);
         }
     }
+
+    //-----------------------------------------------------
 
     public static void ensureClose(final Closeable... streams) {
         IOException firstException = null;

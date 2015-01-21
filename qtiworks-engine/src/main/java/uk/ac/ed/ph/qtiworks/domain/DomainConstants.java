@@ -82,4 +82,10 @@ public final class DomainConstants {
      * the QTI <code>completionStatus</code> variable.
      */
     public static final int QTI_COMPLETION_STATUS_MAX_LENGTH = 13;
+
+    /**
+     * Default <tt>Content-Type</tt> to use in uploaded content if no
+     * value has been specified.
+     */
+    public static String DEFAULT_CONTENT_TYPE = "application/octet-stream";
 }

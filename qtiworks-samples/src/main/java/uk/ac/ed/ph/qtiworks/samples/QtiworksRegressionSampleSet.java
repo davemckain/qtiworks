@@ -31,59 +31,30 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.mathassess.glue.types;
-
-import uk.ac.ed.ph.qtiworks.mathassess.glue.AsciiMathHelper;
-import uk.ac.ed.ph.snuggletex.upconversion.UpConversionFailure;
-
-import java.util.List;
+package uk.ac.ed.ph.qtiworks.samples;
 
 /**
- * Extension of {@link MathsContentValueWrapper} that includes some other bits and pieces
- * of "internal" information that you are free to ignore if you want!
- * <p>
- * You will get one of these coming out of the QTI/CAS layer as a response variable bound to
- * a <tt>mathEntryInteraction</tt>.
- * 
- * @see AsciiMathHelper#createMathsContentFromAsciiMath(String)
- * @see WrapperUtilities
+ * Additional samples to help with regression testing. These try out less usual and/or special
+ * cases.
  *
  * @author David McKain
  */
-public final class MathsContentInputValueWrapper extends MathsContentValueWrapper {
-    
-    /** Bracketed Presentation MathML, used to echo the input back to the user */
-    private String pMathMLBracketed;
-    
-    /** Details of any up-conversion failures, null or empty if none occurred. */
-    private List<UpConversionFailure> upConversionFailures;
+public final class QtiworksRegressionSampleSet {
 
+    private static final QtiSampleSet instance = new QtiSampleSet("Additional QTIWorks regression examples",
+            "Additional items and tests to help demonstrate less usual features and special cases."
+            + " These can help with regression testing.",
+            new QtiSampleAssessment(DeliveryStyle.IMS_STANDARD, "regressions/textEntryInteraction-record.xml"),
+            new QtiSampleAssessment(DeliveryStyle.IMS_STANDARD, "regressions/extendedTextInteraction-record.xml"),
+            new QtiSampleAssessment(DeliveryStyle.IMS_STANDARD, "regressions/extendedTextInteraction-multiple1.xml"),
+            new QtiSampleAssessment(DeliveryStyle.IMS_STANDARD, "regressions/extendedTextInteraction-multiple2.xml")
+    );
 
-    public String getPMathMLBracketed() {
-        return pMathMLBracketed;
-    }
-    
-    public void setPMathMLBracketed(String pMathMLBracketed) {
-        this.pMathMLBracketed = pMathMLBracketed;
+    private QtiworksRegressionSampleSet() {
+        /* No constructor */
     }
 
-    public List<UpConversionFailure> getUpConversionFailures() {
-        return upConversionFailures;
-    }
-    
-    public void setUpConversionFailures(List<UpConversionFailure> upConversionFailures) {
-        this.upConversionFailures = upConversionFailures;
-    }
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName()
-            + "(asciiMathInput=" + asciiMathInput
-            + ",pMathML=" + pMathML
-            + ",pMathMLBracketed=" + pMathMLBracketed
-            + ",cMathML=" + cMathML
-            + ",maximaInput=" + maximaInput
-            + ",upConversionFailures=" + upConversionFailures
-            + ")";
+    public static QtiSampleSet instance() {
+        return instance;
     }
 }

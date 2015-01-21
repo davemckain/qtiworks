@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
+import uk.ac.ed.ph.qtiworks.web.authn.AnonymousAuthenticationFilter;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -44,6 +45,8 @@ import javax.persistence.Table;
 
 /**
  * Represents an anonymous user in the system
+ *
+ * @see AnonymousAuthenticationFilter
  *
  * @author David McKain
  */
@@ -64,6 +67,11 @@ public class AnonymousUser extends User implements BaseEntity, Comparable<Anonym
 
     private static final long serialVersionUID = 7821803746245696405L;
 
+    /**
+     * FIXME: No maximum length has been set for this, so it's using the implicit default (255).
+     * It needs to be large enough to hold a JSESSIONID, or one of the REST request tokens.
+     * See {@link AnonymousAuthenticationFilter}.
+     */
     @Basic(optional=false)
     @Column(name="session_id", unique=true)
     private String sessionId;

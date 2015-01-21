@@ -250,7 +250,17 @@ public class CandidateRenderingService extends CandidateServiceBase {
         /* Finally pass to rendering layer */
         candidateAuditLogger.logItemRendering(candidateEvent);
         final List<CandidateEventNotification> notifications = candidateEvent.getNotifications();
-        assessmentRenderer.renderItem(renderingRequest, notifications, result);
+        try {
+            assessmentRenderer.renderItem(renderingRequest, notifications, result);
+        }
+        catch (final RuntimeException e) {
+            /* Rendering is complex and may trigger an unexpected Exception (due to a bug in the XSLT).
+             * In this case, the best we can do for the candidate is to 'explode' the session.
+             * See bug #49.
+             */
+            handleExplosion(e, candidateSession);
+            assessmentRenderer.renderExploded(createTerminatedRenderingRequest(candidateSessionContext, renderingOptions), result);
+        }
     }
 
     //----------------------------------------------------
@@ -420,7 +430,17 @@ public class CandidateRenderingService extends CandidateServiceBase {
         /* Pass to rendering layer */
         candidateAuditLogger.logTestRendering(candidateEvent);
         final List<CandidateEventNotification> notifications = candidateEvent.getNotifications();
-        assessmentRenderer.renderTest(renderingRequest, notifications, result);
+        try {
+            assessmentRenderer.renderTest(renderingRequest, notifications, result);
+        }
+        catch (final RuntimeException e) {
+            /* Rendering is complex and may trigger an unexpected Exception (due to a bug in the XSLT).
+             * In this case, the best we can do for the candidate is to 'explode' the session.
+             * See bug #49.
+             */
+            handleExplosion(e, candidateSession);
+            assessmentRenderer.renderExploded(createTerminatedRenderingRequest(candidateSessionContext, renderingOptions), result);
+        }
     }
 
     private TestPlanNodeKey extractTargetItemKey(final CandidateEvent candidateEvent) {

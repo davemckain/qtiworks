@@ -46,6 +46,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 /**
  * This exception is thrown by the candidate service API when the caller
  * (representing the candidate) attempts an inappropriate or forbidden action.
+ * <p>
+ * Always let {@link CandidateAuditLogger} generate and throw these for you.
  *
  * @see CandidateExceptionReason
  * @see CandidateAuditLogger

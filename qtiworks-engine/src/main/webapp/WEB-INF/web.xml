@@ -4,7 +4,8 @@
 QTIWorks Delivery Engine web deployment descriptor
 
 -->
-<web-app xmlns="http://java.sun.com/xml/ns/javaee" version="2.5"
+<web-app version="2.5"
+    xmlns="http://java.sun.com/xml/ns/javaee"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
     metadata-complete="true">
@@ -101,7 +102,6 @@ QTIWorks Delivery Engine web deployment descriptor
   <servlet>
     <servlet-name>InstructorDispatcher</servlet-name>
     <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-    <load-on-startup>0</load-on-startup>
     <init-param>
       <param-name>contextClass</param-name>
       <param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
@@ -110,6 +110,7 @@ QTIWorks Delivery Engine web deployment descriptor
       <param-name>contextConfigLocation</param-name>
       <param-value>uk.ac.ed.ph.qtiworks.config.InstructorMvcConfiguration</param-value>
     </init-param>
+    <load-on-startup>0</load-on-startup>
   </servlet>
   <servlet-mapping>
     <servlet-name>InstructorDispatcher</servlet-name>
@@ -132,7 +133,6 @@ QTIWorks Delivery Engine web deployment descriptor
   <servlet>
     <servlet-name>LtiDispatcher</servlet-name>
     <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-    <load-on-startup>0</load-on-startup>
     <init-param>
       <param-name>contextClass</param-name>
       <param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
@@ -141,6 +141,7 @@ QTIWorks Delivery Engine web deployment descriptor
       <param-name>contextConfigLocation</param-name>
       <param-value>uk.ac.ed.ph.qtiworks.config.LtiMvcConfiguration</param-value>
     </init-param>
+    <load-on-startup>0</load-on-startup>
   </servlet>
   <servlet-mapping>
     <servlet-name>LtiDispatcher</servlet-name>
@@ -159,6 +160,7 @@ QTIWorks Delivery Engine web deployment descriptor
     <url-pattern>/anonymous/*</url-pattern>
   </filter-mapping>
   <filter-mapping>
+    <!-- (This mapping is kept for compatibility until Uniqurate is updated. Use /anonymous for everything else.) -->
     <filter-name>AnonymousAuthenticationFilter</filter-name>
     <url-pattern>/web/anonymous/*</url-pattern>
   </filter-mapping>
@@ -167,7 +169,6 @@ QTIWorks Delivery Engine web deployment descriptor
   <servlet>
     <servlet-name>AnonymousDispatcher</servlet-name>
     <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-    <load-on-startup>0</load-on-startup>
     <init-param>
       <param-name>contextClass</param-name>
       <param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
@@ -176,6 +177,7 @@ QTIWorks Delivery Engine web deployment descriptor
       <param-name>contextConfigLocation</param-name>
       <param-value>uk.ac.ed.ph.qtiworks.config.AnonymousMvcConfiguration</param-value>
     </init-param>
+    <load-on-startup>0</load-on-startup>
   </servlet>
   <servlet-mapping>
     <servlet-name>AnonymousDispatcher</servlet-name>
@@ -185,7 +187,6 @@ QTIWorks Delivery Engine web deployment descriptor
   <servlet>
     <servlet-name>LegacyAnonymousDispatcher</servlet-name>
     <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-    <load-on-startup>0</load-on-startup>
     <init-param>
       <param-name>contextClass</param-name>
       <param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
@@ -194,6 +195,7 @@ QTIWorks Delivery Engine web deployment descriptor
       <param-name>contextConfigLocation</param-name>
       <param-value>uk.ac.ed.ph.qtiworks.config.LegacyAnonymousMvcConfiguration</param-value>
     </init-param>
+    <load-on-startup>0</load-on-startup>
   </servlet>
   <servlet-mapping>
     <servlet-name>LegacyAnonymousDispatcher</servlet-name>
@@ -220,7 +222,6 @@ QTIWorks Delivery Engine web deployment descriptor
   <servlet>
     <servlet-name>CandidateDispatcher</servlet-name>
     <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-    <load-on-startup>0</load-on-startup>
     <init-param>
       <param-name>contextClass</param-name>
       <param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
@@ -229,6 +230,7 @@ QTIWorks Delivery Engine web deployment descriptor
       <param-name>contextConfigLocation</param-name>
       <param-value>uk.ac.ed.ph.qtiworks.config.CandidateMvcConfiguration</param-value>
     </init-param>
+    <load-on-startup>0</load-on-startup>
   </servlet>
   <servlet-mapping>
     <servlet-name>CandidateDispatcher</servlet-name>

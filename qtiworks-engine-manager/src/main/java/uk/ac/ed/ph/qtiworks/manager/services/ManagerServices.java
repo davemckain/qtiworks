@@ -68,9 +68,9 @@ public class ManagerServices {
     private static final Logger logger = LoggerFactory.getLogger(ManagerServices.class);
 
     public static final int LTI_SHARED_SECRET_MIN_LENGTH = 8;
-	public static final String QTI_SAMPLE_OWNER_LOGIN_NAME = "qtisamples";
-	public static final String QTI_SAMPLE_OWNER_FIRST_NAME = "QTI";
-	public static final String QTI_SAMPLE_OWNER_LAST_NAME = "Samples";
+    public static final String QTI_SAMPLE_OWNER_LOGIN_NAME = "qtisamples";
+    public static final String QTI_SAMPLE_OWNER_FIRST_NAME = "QTI";
+    public static final String QTI_SAMPLE_OWNER_LAST_NAME = "Samples";
 
     @Resource
     private QtiWorksDeploymentSettings qtiWorksDeploymentSettings;
@@ -90,7 +90,7 @@ public class ManagerServices {
     @Resource
     private LtiDomainDao ltiDomainDao;
 
-	//----------------------------------------------
+    //----------------------------------------------
 
     public SystemUser ensureInternalSystemUser(final UserRole userRole,
             final String loginName, final String firstName, final String lastName) {

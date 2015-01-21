@@ -12,6 +12,48 @@ All Rights Reserved
   </nav>
   <h2>QTIWorks Release Notes</h2>
 
+  <h3>Release 1.0-beta8 (21/01/2015)</h3>
+  <p>
+    This release incorporates minor bug fixes and some minor tidying.
+  </p>
+  <h4>Issues resolved</h4>
+  <ul>
+    <li>
+      <a href="https://github.com/davemckain/qtiworks/issues/46">#46</a>:
+      Fixed handling
+      of <code>&lt;param/&gt;</code> in rendering.
+    </li>
+    <li>
+      <a href="https://github.com/davemckain/qtiworks/issues/47">#47</a>:
+      Fixed regression in simple RESTish API for launching assessments in demo mode.
+    </li>
+    <li>
+      <a href="https://github.com/davemckain/qtiworks/issues/52">#52</a>:
+      Updated MathJax HTTPS URL
+    </li>
+    <li>
+      <a href="https://github.com/davemckain/qtiworks/issues/55">#55</a>:
+      Fixed <code>label</code> attribute in <code>BodyElement</code>.
+    </li>
+    <li>
+      <a href="https://github.com/davemckain/qtiworks/issues/55">#58</a>:
+      Fixes and improvements to <code>stringInteractions</code> when bound
+      to record cardinality variables.
+    </li>
+  </ul>
+  <h4>Other notable changes</h4>
+  <ul>
+    <li>
+      If QTIWorks encounters an internal error while rendering an assessment, the
+      candidate session will be marked as 'exploded' and a less scary error page will
+      be shown.
+    </li>
+    <li>
+      Validation for <code>responseDeclaration</code> and <code>outcomeDeclaration</code>
+      now checks baseType and cardinality. (There was a missing superclass class here.)
+    </li>
+  </ul>
+
   <h3>Release 1.0-beta7 (12/05/2014)</h3>
   <p>
     Security release. This fixes potential cross-site scripting (XSS) vulnerabilities

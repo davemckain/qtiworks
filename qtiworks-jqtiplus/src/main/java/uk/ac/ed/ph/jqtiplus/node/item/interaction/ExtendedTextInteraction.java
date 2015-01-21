@@ -37,6 +37,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.enumerate.TextFormatAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
+import uk.ac.ed.ph.jqtiplus.exception.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.exception.ResponseBindingException;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
@@ -56,6 +57,7 @@ import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
 import uk.ac.ed.ph.jqtiplus.value.ListValue;
 import uk.ac.ed.ph.jqtiplus.value.MultipleValue;
 import uk.ac.ed.ph.jqtiplus.value.OrderedValue;
+import uk.ac.ed.ph.jqtiplus.value.RecordValue;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.TextFormat;
 import uk.ac.ed.ph.jqtiplus.value.Value;
@@ -228,42 +230,55 @@ public final class ExtendedTextInteraction extends BlockInteraction implements S
 
     @Override
     public ResponseDeclaration getStringIdentifierResponseDeclaration() {
-        if (getStringIdentifier() == null) {
+        final Identifier stringIdentifier = getStringIdentifier();
+        if (stringIdentifier == null) {
             return null;
         }
-        return getRootNode(AssessmentItem.class).getResponseDeclaration(getStringIdentifier());
+        final AssessmentItem assessmentItem = getRootNode(AssessmentItem.class);
+        return assessmentItem!=null ? assessmentItem.getResponseDeclaration(stringIdentifier) : null;
     }
 
     @Override
     protected void validateThis(final ValidationContext context, final ResponseDeclaration responseDeclaration) {
+        /* Do basic checks on min/maxStrings */
         final Integer maxStrings = getMaxStrings();
         final int minStrings = getMinStrings();
+        final int maxStringsValue = maxStrings!=null ? maxStrings.intValue() : -1;
+        if (minStrings < 0) {
+            context.fireValidationError(this, "minStrings must be non-negative");
+        }
         if (maxStrings != null) {
-            if (maxStrings.intValue() < minStrings) {
+            if (maxStringsValue < 1) {
+                context.fireValidationError(this, "maxStrings must be positive if specified");
+            }
+            if (maxStringsValue < minStrings) {
                 context.fireValidationError(this, "maxStrings cannot be smaller than minStrings");
             }
         }
 
         if (responseDeclaration != null) {
-            if (minStrings > 1 || (maxStrings != null && maxStrings.intValue() > 1)) {
-                if (!responseDeclaration.getCardinality().isList()) {
-                    if (responseDeclaration.getCardinality().isRecord()) {
-                        context.fireValidationError(this,
-                                "JQTI doesn't currently support binding multiple strings to a record container (the spec is very unclear here)");
-                    }
-                    else {
-                        context.fireValidationError(this, "Response variable must have multiple or ordered cardinality");
-                    }
+            /* Make sure min/maxStrings are appropriate for the variable's cardinality */
+            final Cardinality cardinality = responseDeclaration.getCardinality();
+
+            if (cardinality.isRecord()) {
+                if (minStrings > 1) {
+                    context.fireValidationError(this, "minStrings must be 0 or 1 when bound to a record cardinality variables");
+                }
+                if (maxStringsValue > 1) {
+                    context.fireValidationError(this, "maxStrings must be 1 if specified while bound to a record cardinality variable");
+                }
+            }
+            else if (cardinality.isSingle()) {
+                if (minStrings > 1 || maxStringsValue > 1) {
+                    context.fireValidationError(this, "minStrings and maxStrings cannot exceed 1 when bound to single cardinality variables");
                 }
             }
 
-            if (!responseDeclaration.getCardinality().isRecord()) {
-                if (responseDeclaration.getBaseType() != null && !(responseDeclaration.getBaseType().isString() || responseDeclaration.getBaseType().isNumeric())) {
-                    context.fireValidationError(this, "Response variable must have string or numeric base type");
-                }
+            /* Do further baseType validation as appropriate */
+            if (!cardinality.isRecord() && !responseDeclaration.hasBaseType(BaseType.STRING, BaseType.INTEGER, BaseType.FLOAT)) {
+                context.fireValidationError(this, "Response variable must have string or numeric base type");
             }
-
-            if (responseDeclaration.getBaseType() != null && !responseDeclaration.getBaseType().isFloat() && getBase() != 10) {
+            if (responseDeclaration.hasBaseType(BaseType.FLOAT) && getBase() != 10) {
                 context.fireValidationWarning(this, "JQTI currently doesn't support radix conversion for floats. Base attribute will be ignored.");
             }
         }
@@ -273,26 +288,13 @@ public final class ExtendedTextInteraction extends BlockInteraction implements S
             final VariableDeclaration stringDeclaration = context.checkLocalVariableReference(this, stringIdentifier);
             if (stringDeclaration!=null) {
                 context.checkVariableType(this, stringDeclaration, VariableType.RESPONSE);
-                if ((getMinStrings() > 1 || (getMaxStrings() != null && getMaxStrings() > 1))
-                        && stringDeclaration.getCardinality() != null && !stringDeclaration.getCardinality().isList()) {
+                if ((minStrings > 1 || maxStringsValue > 1) && !stringDeclaration.getCardinality().isList()) {
                     context.fireValidationError(this, "StringIdentifier response variable must have multiple or ordered cardinality");
                 }
-                if (stringDeclaration.getBaseType() != null && !stringDeclaration.getBaseType().isString()) {
+                if (!stringDeclaration.hasBaseType(BaseType.STRING)) {
                     context.fireValidationError(this, "StringIdentifier response variable must have String base type");
                 }
             }
-        }
-    }
-
-
-    @Override
-    public void bindResponse(final InteractionBindingContext interactionBindingContext, final ResponseData responseData) throws ResponseBindingException {
-        super.bindResponse(interactionBindingContext, responseData);
-
-        /* Also handle stringIdentifier binding if required */
-        if (getStringIdentifier() != null) {
-            final Value value = parseResponse(getStringIdentifierResponseDeclaration(), responseData);
-            interactionBindingContext.bindResponseVariable(getStringIdentifierResponseDeclaration().getIdentifier(), value);
         }
     }
 
@@ -306,10 +308,10 @@ public final class ExtendedTextInteraction extends BlockInteraction implements S
         final BaseType responseBaseType = responseDeclaration.getBaseType();
         final int base = getBase();
 
-        /* Handle record special case */
         Value result;
         try {
             if (responseCardinality.isRecord()) {
+                /* Handle record special case */
                 String responseString;
                 if (stringResponseData.isEmpty()) {
                     responseString = "";
@@ -320,15 +322,18 @@ public final class ExtendedTextInteraction extends BlockInteraction implements S
                 else {
                     throw new ResponseBindingException(responseDeclaration, responseData, "Response to extendedTextEntryInteraction bound to a record variable should contain at most 1 element");
                 }
-                result = TextEntryInteraction.parseRecordValueResponse(responseString, getBase());
+                result = StringInteractionHelper.parseRecordValueResponse(responseString, getBase());
             }
             else if (responseBaseType.isInteger()) {
+                /* (Special handling is required for the 'base' attribute) */
                 if (responseCardinality.isList()) {
                     final List<IntegerValue> values = new ArrayList<IntegerValue>(stringResponseData.size());
                     for (final String stringResponseDatum : stringResponseData) {
-                        values.add(IntegerValue.parseString(stringResponseDatum, base));
+                        final String trimmedStringResponseDatum = stringResponseDatum.trim();
+                        if (!trimmedStringResponseDatum.isEmpty()) {
+                            values.add(IntegerValue.parseString(trimmedStringResponseDatum, base));
+                        }
                     }
-
                     if (responseCardinality == Cardinality.MULTIPLE) {
                         result = MultipleValue.createMultipleValue(values);
                     }
@@ -352,43 +357,77 @@ public final class ExtendedTextInteraction extends BlockInteraction implements S
     }
 
     @Override
+    public void bindResponse(final InteractionBindingContext interactionBindingContext, final ResponseData responseData) throws ResponseBindingException {
+        super.bindResponse(interactionBindingContext, responseData);
+
+        /* Also handle stringIdentifier binding if required */
+        if (getStringIdentifier() != null) {
+            final Value value = parseResponse(getStringIdentifierResponseDeclaration(), responseData);
+            interactionBindingContext.bindResponseVariable(getStringIdentifierResponseDeclaration().getIdentifier(), value);
+        }
+    }
+
+    @Override
     public boolean validateResponse(final InteractionBindingContext interactionBindingContext, final Value responseValue) {
-        /* Gather up the values */
-        final List<SingleValue> responseEntries = new ArrayList<SingleValue>();
+        final Cardinality responseCardinality = responseValue.getCardinality();
+
+        /* Gather up all non-empty string values */
+        final List<SingleValue> nonNullResponseStrings = new ArrayList<SingleValue>();
         if (responseValue.isNull()) {
             /* (Empty response) */
         }
-        else if (responseValue.getCardinality().isList()) {
-            /* (Container response) */
-            final ListValue listValue = (ListValue) responseValue;
-            for (final SingleValue v : listValue) {
-                responseEntries.add(v);
-            }
-        }
         else {
-            /* (Single response) */
-            responseEntries.add((SingleValue) responseValue);
+            switch (responseCardinality) {
+                case SINGLE:
+                    /* (Single response) */
+                    nonNullResponseStrings.add((SingleValue) responseValue);
+                    break;
+
+                case RECORD:
+                    /* (Special record response. We'll validate the string value) */
+                    final RecordValue recordValue = (RecordValue) responseValue;
+                    final SingleValue stringValue = recordValue.get(StringInteraction.KEY_STRING_VALUE_NAME);
+                    nonNullResponseStrings.add(stringValue);
+                    break;
+
+                case MULTIPLE:
+                case ORDERED:
+                    /* (Container response) */
+                    final ListValue listValue = (ListValue) responseValue;
+                    for (final SingleValue v : listValue) {
+                        if (!v.isNull()) {
+                            nonNullResponseStrings.add(v);
+                        }
+                    }
+                    break;
+
+                default:
+                    throw new QtiLogicException("Unexpected switch case " + responseCardinality);
+            }
         }
 
         /* Now do the validation */
         final Integer maxStrings = getMaxStrings();
         final int minStrings = getMinStrings();
         final String patternMask = getPatternMask();
-        if (responseEntries.size() >= 0 && responseEntries.size() < minStrings) {
+        final int nonNullResponseStringCount = nonNullResponseStrings.size();
+        if (nonNullResponseStringCount < minStrings) {
+            /* NB: This covers both the list container case, and the special case
+             * for single cardinality variables whereby minStrings==1 => non-empty value must be provided
+             */
             return false;
         }
-        if (maxStrings != null && responseEntries.size() > maxStrings.intValue()) {
+        if (maxStrings != null && nonNullResponseStringCount > maxStrings.intValue()) {
             return false;
         }
         if (patternMask != null) {
             final Pattern pattern = Pattern.compile(patternMask);
-            for (final SingleValue responseEntry : responseEntries) {
+            for (final SingleValue responseEntry : nonNullResponseStrings) {
                 if (!pattern.matcher(responseEntry.toQtiString()).matches()) {
                     return false;
                 }
             }
         }
-
         return true;
     }
 

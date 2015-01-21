@@ -56,8 +56,8 @@ public final class AdhocAction extends ManagerAction {
     @Override
     public String[] getActionSummary() {
         return new String[] {
-        		"(Internal developer action)"
-		};
+                "(Internal developer action)"
+        };
     }
 
     @Override

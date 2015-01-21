@@ -26,7 +26,7 @@ Shows information about a particular Assessment
         out (unless it has a lot of errors). You may also configure how LTI outcomes should be returned for
         this Assessment.
       </p>
-    <div>
+    </div>
   </header>
 
   <table class="dashboard">
@@ -148,10 +148,12 @@ Shows information about a particular Assessment
   </div>
   <table class="listTable">
     <thead>
-      <th></th>
-      <th>Title</th>
-      <th>Available to candidates?</th>
-      <th>Selected Delivery Settings</th>
+      <tr>
+        <th></th>
+        <th>Title</th>
+        <th>Available to candidates?</th>
+        <th>Selected Delivery Settings</th>
+      </tr>
     </thead>
     <tbody>
       <c:forEach var="delivery" items="${deliveryList}" varStatus="loopStatus">

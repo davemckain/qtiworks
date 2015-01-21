@@ -40,6 +40,7 @@ import uk.ac.ed.ph.qtiworks.rendering.ItemAuthorViewRenderingRequest;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
+import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 
 import java.net.URI;
 import java.util.Date;
@@ -57,7 +58,7 @@ public final class ItemAuthorViewRenderingExample {
 
     public static void main(final String[] args) {
         /* We'll be loading the following sample item from the classpath */
-        final ClassPathResourceLocator assessmentResourceLocator = new ClassPathResourceLocator();
+        final ResourceLocator assessmentResourceLocator = new ClassPathResourceLocator();
         final URI itemUri = URI.create("classpath:/uk/ac/ed/ph/qtiworks/samples/ims/choice.xml");
 
         /* Read and set up state & controller */

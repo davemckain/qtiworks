@@ -124,10 +124,11 @@ public class CandidateAuditLogger {
     }
 
     private void logPreSessionAction(final User candidateUser, final Delivery delivery, final String message) {
+        final Assessment assessment = delivery.getAssessment();
         logMessage(candidateUser,
                 null,
                 delivery.getId(),
-                delivery.getAssessment().getId(),
+                assessment!=null ? assessment.getId() : null, /* (Might be null for incomplete LTI domain launch) */
                 message);
     }
 

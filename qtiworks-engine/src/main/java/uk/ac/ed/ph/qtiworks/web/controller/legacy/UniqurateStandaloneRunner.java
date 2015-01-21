@@ -72,7 +72,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
- * This controller is used by the current (and slightly out of date) version of Uniqurate only.
+ * This RESTish controller is used by the current (and slightly out of date) version of
+ * Uniqurate only.
  * <p>
  * DO NOT USE this legacy controller for any new systems!
  * <p>
@@ -84,8 +85,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * is different from the one created when UQ triggers the initial {@link Delivery} creation.
  * This is because UQ doesn't pass the JSESSIONID cookie password on, so a fresh session is created
  * when the user's browser follows the redirect into the QTIWorks candidate session.
- * <p>
- * FIXME: Let's get UQ updated so that this doesn't have to be so complicated.
  *
  * @author David McKain
  */
@@ -112,6 +111,7 @@ public class UniqurateStandaloneRunner {
             final BindingResult errors) {
         /* Catch any binding errors */
         if (errors.hasErrors()) {
+            /* FIXME: Showing an upload form is the wrong thing to do. But contract with UQ says this will never happen */
             return "standalonerunner/uploadForm";
         }
         try {
@@ -124,10 +124,11 @@ public class UniqurateStandaloneRunner {
                 return "standalonerunner/invalidUpload";
             }
             final Delivery delivery = assessmentManagementService.createDemoDelivery(assessment);
-            final String deliveryToken = candidateSessionLaunchService.generateUniqurateDeliveryToken(delivery);
+            final String deliveryToken = candidateSessionLaunchService.generateWebServiceDeliveryToken(delivery);
             return "redirect:/web/anonymous/standalonerunner/uqlauncher/" + delivery.getId() + "/" + deliveryToken;
         }
         catch (final AssessmentPackageDataImportException e) {
+            /* FIXME: Showing an upload form is the wrong thing to do. But contract with UQ says this will never happen */
             final EnumerableClientFailure<ImportFailureReason> failure = e.getFailure();
             failure.registerErrors(errors, "assessmentPackageUpload");
             return "standalonerunner/uploadForm";
@@ -147,7 +148,7 @@ public class UniqurateStandaloneRunner {
             throws IOException {
         try {
             final String returnUrl = "/web/anonymous/standalonerunner/exit";
-            final CandidateSessionTicket candidateSessionTicket = candidateSessionLaunchService.launchLegacyUniqurateCandidateSession(httpSession, did, token, returnUrl);
+            final CandidateSessionTicket candidateSessionTicket = candidateSessionLaunchService.launchWebServiceCandidateSession(httpSession, did, token, returnUrl);
 
             /* Redirect to candidate dispatcher */
             return GlobalRouter.buildSessionStartRedirect(candidateSessionTicket);

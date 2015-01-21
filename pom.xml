@@ -27,14 +27,14 @@ All Rights Reserved
     <asciimath-parser.version>1.0</asciimath-parser.version>
     <snuggletex.version>1.3-SNAPSHOT</snuggletex.version>
     <jacomax.version>0.2.3</jacomax.version>
-    <slf4j.version>1.7.6</slf4j.version>
-    <logback.version>1.1.1</logback.version>
+    <slf4j.version>1.7.7</slf4j.version>
+    <logback.version>1.1.2</logback.version>
     <saxon9.version>9.1.0.8</saxon9.version>
     <xerces.version>2.11.0</xerces.version>
     <servlet-api.version>2.5</servlet-api.version>
     <jsp-api.version>2.1</jsp-api.version>
     <jstl.version>1.2</jstl.version>
-    <spring.version>3.2.8.RELEASE</spring.version>
+    <spring.version>3.2.10.RELEASE</spring.version>
     <hibernate.version>4.2.11.Final</hibernate.version>
     <hibernate-validator.version>4.3.1.Final</hibernate-validator.version>
     <mysql-connector.version>5.1.23</mysql-connector.version>
@@ -48,7 +48,7 @@ All Rights Reserved
     <commons-pool.version>1.5.7</commons-pool.version>
     <oauth.version>20100601</oauth.version>
     <httpclient.version>4.3.3</httpclient.version>
-    <guava.version>16.0.1</guava.version>
+    <guava.version>17.0</guava.version>
     <junit.version>4.11</junit.version>
     <xmlunit.version>1.5</xmlunit.version>
   </properties>
@@ -142,7 +142,7 @@ All Rights Reserved
         </plugin>
         <plugin>
           <artifactId>maven-jar-plugin</artifactId>
-          <version>2.4</version>
+          <version>2.5</version>
         </plugin>
         <plugin>
           <artifactId>maven-war-plugin</artifactId>
@@ -150,15 +150,15 @@ All Rights Reserved
         </plugin>
         <plugin>
           <artifactId>maven-install-plugin</artifactId>
-          <version>2.4</version>
+          <version>2.5.1</version>
         </plugin>
         <plugin>
           <artifactId>maven-shade-plugin</artifactId>
-          <version>2.2</version>
+          <version>2.3</version>
         </plugin>
         <plugin>
           <artifactId>maven-source-plugin</artifactId>
-          <version>2.2.1</version>
+          <version>2.3</version>
           <executions>
             <execution>
               <phase>verify</phase>
@@ -175,7 +175,7 @@ All Rights Reserved
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>findbugs-maven-plugin</artifactId>
-          <version>2.5.3</version>
+          <version>2.5.5</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -184,7 +184,7 @@ All Rights Reserved
     <plugins>
       <plugin>
         <artifactId>maven-project-info-reports-plugin</artifactId>
-        <version>2.4</version>
+        <version>2.7</version>
         <reportSets>
           <reportSet>
             <reports>
@@ -208,25 +208,25 @@ All Rights Reserved
       </plugin>
       <plugin>
         <artifactId>maven-jxr-plugin</artifactId>
-        <version>2.3</version>
+        <version>2.4</version>
         <configuration>
           <aggregate>true</aggregate>
         </configuration>
       </plugin>
       <plugin>
         <artifactId>maven-surefire-report-plugin</artifactId>
-        <version>2.12</version>
+        <version>2.17</version>
         <configuration>
           <aggregate>true</aggregate>
         </configuration>
       </plugin>
       <plugin>
         <artifactId>maven-changelog-plugin</artifactId>
-        <version>2.2</version>
+        <version>2.3</version>
       </plugin>
       <plugin>
         <artifactId>maven-changes-plugin</artifactId>
-        <version>2.6</version>
+        <version>2.10</version>
         <reportSets>
           <reportSet>
             <reports>

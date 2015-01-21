@@ -38,7 +38,6 @@ import uk.ac.ed.ph.qtiworks.web.controller.candidate.CandidateHelperController;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.io.Charsets;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -51,6 +50,8 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.JstlView;
 import org.springframework.web.servlet.view.UrlBasedViewResolver;
+
+import com.google.common.base.Charsets;
 
 /**
  * Defines beans for the candidate MVC dispatcher, which is configured in web.xml to handle

@@ -64,11 +64,11 @@ public final class ImportUsersAction extends ManagerAction {
 
     @Override
     public String[] getActionSummary() {
-    	return new String[] {
-    			"Imports standalone instructor users into the system using data from a CSV file.",
-    			"CSV format: loginName,firstName,lastName,emailAddress,password[,sysAdmin?(t|f)]",
-    			"sysAdmin field is optional and should be 't' for true, otherwise treated as false (default)."
-    	};
+        return new String[] {
+                "Imports standalone instructor users into the system using data from a CSV file.",
+                "CSV format: loginName,firstName,lastName,emailAddress,password[,sysAdmin?(t|f)]",
+                "sysAdmin field is optional and should be 't' for true, otherwise treated as false (default)."
+        };
     }
 
     @Override
