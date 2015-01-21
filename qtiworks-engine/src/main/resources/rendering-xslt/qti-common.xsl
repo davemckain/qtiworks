@@ -316,7 +316,19 @@ rendering.
         <!--  Ordered cardinality -->
         <xsl:choose>
           <xsl:when test="exists($source/@index)">
-            <xsl:value-of select="qw:extract-iterable-element($valueHolder, $source/@index)"/>
+            <xsl:choose>
+              <!--
+              The current implementation of @index is incomplete!
+              See https://github.com/davemckain/qtiworks/issues/57
+              -->
+              <xsl:when test="$source/@index castable as xs:integer">
+                <xsl:value-of select="qw:extract-iterable-element($valueHolder, xs:integer($source/@index))"/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="'[QTIWorks rendering currently does not support @index referencing a variable]'"/>
+                <xsl:message>Rendering currently does not support printedVariable/@index as a variable reference</xsl:message>
+              </xsl:otherwise>
+            </xsl:choose>
           </xsl:when>
           <xsl:otherwise>
             <xsl:variable name="delimiter" select="if (exists($source/@delimiter)) then $source/@delimiter else ';'"/>
