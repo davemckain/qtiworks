@@ -57,20 +57,20 @@ public final class CandidateSessionContext {
     private final CandidateSession candidateSession;
 
     /** Optional return URL to use when the session terminates */
-    private final String returnUrl;
+    private final String sessionExitReturnUrl;
 
-    public CandidateSessionContext(final CandidateSession candidateSession, final String returnUrl) {
+    public CandidateSessionContext(final CandidateSession candidateSession, final String sessionExitReturnUrl) {
         Assert.notNull(candidateSession, "candidateSession");
         this.candidateSession = candidateSession;
-        this.returnUrl = returnUrl;
+        this.sessionExitReturnUrl = sessionExitReturnUrl;
     }
 
     public CandidateSession getCandidateSession() {
         return candidateSession;
     }
 
-    public String getReturnUrl() {
-        return returnUrl;
+    public String getSessionExitReturnUrl() {
+        return sessionExitReturnUrl;
     }
 
     @Override

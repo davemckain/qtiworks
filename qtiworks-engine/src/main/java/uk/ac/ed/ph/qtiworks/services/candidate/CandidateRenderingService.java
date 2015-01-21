@@ -650,7 +650,6 @@ public class CandidateRenderingService extends CandidateServiceBase {
     private TerminatedRenderingRequest createTerminatedRenderingRequest(final CandidateSession candidateSession, final AbstractRenderingOptions renderingOptions) {
         final TerminatedRenderingRequest renderingRequest = new TerminatedRenderingRequest();
         initRenderingRequest(candidateSession, renderingRequest, renderingOptions);
-        renderingRequest.setExitSessionUrl(renderingOptions.getReturnUrl());
         return renderingRequest;
     }
 

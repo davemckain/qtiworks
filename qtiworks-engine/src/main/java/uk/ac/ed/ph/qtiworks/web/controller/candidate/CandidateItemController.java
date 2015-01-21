@@ -143,7 +143,7 @@ public class CandidateItemController extends CandidateControllerBase {
     private void configureBaseRenderingOptions(final String sessionBaseUrl,
             final CandidateSessionContext candidateSessionContext,
             final AbstractRenderingOptions renderingOptions) {
-        renderingOptions.setReturnUrl(candidateSessionContext.getReturnUrl());
+        renderingOptions.setSessionExitReturnUrl(candidateSessionContext.getSessionExitReturnUrl());
         renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
         renderingOptions.setSourceUrl(sessionBaseUrl + "/source");
         renderingOptions.setStateUrl(sessionBaseUrl + "/state");

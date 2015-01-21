@@ -76,8 +76,15 @@ public abstract class AbstractRenderingOptions implements Serializable {
     @NotNull
     private String validationUrl;
 
+    /**
+     * (Optional) Return URL to use to exit a session after termination.
+     *
+     * NB: This is usually not required as the MVC controller normally handles this redirect, but
+     * there are some cases (e.g. terminated & exploded) sessions where it makes sense to show this
+     * at the rendering layer.
+     */
     @NotNull
-    private String returnUrl;
+    private String sessionExitReturnUrl;
 
     //----------------------------------------------------
 
@@ -162,12 +169,12 @@ public abstract class AbstractRenderingOptions implements Serializable {
     }
 
 
-    public String getReturnUrl() {
-        return returnUrl;
+    public String getSessionExitReturnUrl() {
+        return sessionExitReturnUrl;
     }
 
-    public void setReturnUrl(final String returnUrl) {
-        this.returnUrl = returnUrl;
+    public void setSessionExitReturnUrl(final String sessionExitReturnUrl) {
+        this.sessionExitReturnUrl = sessionExitReturnUrl;
     }
 
     //----------------------------------------------------
