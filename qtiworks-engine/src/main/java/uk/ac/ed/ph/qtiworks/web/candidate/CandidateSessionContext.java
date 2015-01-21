@@ -39,8 +39,6 @@ import uk.ac.ed.ph.qtiworks.services.IdentityService;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
-import java.io.Serializable;
-
 /**
  * This provides information about the "current" {@link CandidateSession} being accessed by
  * a particular candidate. It is created by the {@link CandidateSessionAuthenticationFilter}
@@ -51,9 +49,7 @@ import java.io.Serializable;
  *
  * @author David McKain
  */
-public final class CandidateSessionContext implements Serializable {
-
-    private static final long serialVersionUID = 1412636123357858458L;
+public final class CandidateSessionContext {
 
     /**
      * Indicates which {@link CandidateSession} this ticket provides access to
