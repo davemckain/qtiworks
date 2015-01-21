@@ -47,7 +47,6 @@ import uk.ac.ed.ph.qtiworks.services.CandidateSessionFinisher;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.services.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateResponseDao;
-import uk.ac.ed.ph.qtiworks.web.candidate.CandidateSessionContext;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiCandidateStateException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
@@ -108,11 +107,10 @@ public class CandidateTestDeliveryService extends CandidateServiceBase {
     //----------------------------------------------------
     // Session entry
 
-    public CandidateSession enterOrReenterCandidateSession(final CandidateSessionContext candidateSessionContext)
+    public CandidateSession enterOrReenterCandidateSession(final CandidateSession candidateSession)
             throws CandidateException {
-        Assert.notNull(candidateSessionContext, "candidateSessionContext");
-        assertSessionType(candidateSessionContext, AssessmentObjectType.ASSESSMENT_TEST);
-        final CandidateSession candidateSession = candidateSessionContext.getCandidateSession();
+        Assert.notNull(candidateSession, "candidateSession");
+        assertSessionType(candidateSession, AssessmentObjectType.ASSESSMENT_TEST);
 
         final CandidateEvent mostRecentEvent = candidateDataService.getMostRecentEvent(candidateSession);
         if (mostRecentEvent==null && !candidateSession.isTerminated()) {
@@ -176,14 +174,13 @@ public class CandidateTestDeliveryService extends CandidateServiceBase {
     //----------------------------------------------------
     // Response handling
 
-    public CandidateSession handleResponses(final CandidateSessionContext candidateSessionContext,
+    public CandidateSession handleResponses(final CandidateSession candidateSession,
             final Map<Identifier, StringResponseData> stringResponseMap,
             final Map<Identifier, MultipartFile> fileResponseMap,
             final String candidateComment)
             throws CandidateException {
-        Assert.notNull(candidateSessionContext, "candidateSessionContext");
-        assertSessionType(candidateSessionContext, AssessmentObjectType.ASSESSMENT_TEST);
-        final CandidateSession candidateSession = candidateSessionContext.getCandidateSession();
+        Assert.notNull(candidateSession, "candidateSession");
+        assertSessionType(candidateSession, AssessmentObjectType.ASSESSMENT_TEST);
         assertSessionNotTerminated(candidateSession);
 
         /* Get current JQTI state and create JQTI controller */
@@ -320,11 +317,10 @@ public class CandidateTestDeliveryService extends CandidateServiceBase {
     //----------------------------------------------------
     // Navigation
 
-    public CandidateSession selectNavigationMenu(final CandidateSessionContext candidateSessionContext)
+    public CandidateSession selectNavigationMenu(final CandidateSession candidateSession)
             throws CandidateException {
-        Assert.notNull(candidateSessionContext, "candidateSessionContext");
-        assertSessionType(candidateSessionContext, AssessmentObjectType.ASSESSMENT_TEST);
-        final CandidateSession candidateSession = candidateSessionContext.getCandidateSession();
+        Assert.notNull(candidateSession, "candidateSession");
+        assertSessionType(candidateSession, AssessmentObjectType.ASSESSMENT_TEST);
         assertSessionNotTerminated(candidateSession);
 
         /* Get current JQTI state and create JQTI controller */
@@ -357,11 +353,10 @@ public class CandidateTestDeliveryService extends CandidateServiceBase {
         return candidateSession;
     }
 
-    public CandidateSession selectNonlinearItem(final CandidateSessionContext candidateSessionContext, final TestPlanNodeKey itemKey)
+    public CandidateSession selectNonlinearItem(final CandidateSession candidateSession, final TestPlanNodeKey itemKey)
             throws CandidateException {
-        Assert.notNull(candidateSessionContext, "candidateSessionContext");
-        assertSessionType(candidateSessionContext, AssessmentObjectType.ASSESSMENT_TEST);
-        final CandidateSession candidateSession = candidateSessionContext.getCandidateSession();
+        Assert.notNull(candidateSession, "candidateSession");
+        assertSessionType(candidateSession, AssessmentObjectType.ASSESSMENT_TEST);
         assertSessionNotTerminated(candidateSession);
 
         /* Get current JQTI state and create JQTI controller */
@@ -394,11 +389,10 @@ public class CandidateTestDeliveryService extends CandidateServiceBase {
         return candidateSession;
     }
 
-    public CandidateSession finishLinearItem(final CandidateSessionContext candidateSessionContext)
+    public CandidateSession finishLinearItem(final CandidateSession candidateSession)
             throws CandidateException {
-        Assert.notNull(candidateSessionContext, "candidateSessionContext");
-        assertSessionType(candidateSessionContext, AssessmentObjectType.ASSESSMENT_TEST);
-        final CandidateSession candidateSession = candidateSessionContext.getCandidateSession();
+        Assert.notNull(candidateSession, "candidateSession");
+        assertSessionType(candidateSession, AssessmentObjectType.ASSESSMENT_TEST);
 
         /* Get current JQTI state and create JQTI controller */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
@@ -443,11 +437,10 @@ public class CandidateTestDeliveryService extends CandidateServiceBase {
         return candidateSession;
     }
 
-    public CandidateSession endCurrentTestPart(final CandidateSessionContext candidateSessionContext)
+    public CandidateSession endCurrentTestPart(final CandidateSession candidateSession)
             throws CandidateException {
-        Assert.notNull(candidateSessionContext, "candidateSessionContext");
-        assertSessionType(candidateSessionContext, AssessmentObjectType.ASSESSMENT_TEST);
-        final CandidateSession candidateSession = candidateSessionContext.getCandidateSession();
+        Assert.notNull(candidateSession, "candidateSession");
+        assertSessionType(candidateSession, AssessmentObjectType.ASSESSMENT_TEST);
 
         /* Get current JQTI state and create JQTI controller */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
@@ -494,11 +487,10 @@ public class CandidateTestDeliveryService extends CandidateServiceBase {
     //----------------------------------------------------
     // Review
 
-    public CandidateSession reviewTestPart(final CandidateSessionContext candidateSessionContext)
+    public CandidateSession reviewTestPart(final CandidateSession candidateSession)
             throws CandidateException {
-        Assert.notNull(candidateSessionContext, "candidateSessionContext");
-        assertSessionType(candidateSessionContext, AssessmentObjectType.ASSESSMENT_TEST);
-        final CandidateSession candidateSession = candidateSessionContext.getCandidateSession();
+        Assert.notNull(candidateSession, "candidateSession");
+        assertSessionType(candidateSession, AssessmentObjectType.ASSESSMENT_TEST);
 
         /* Get current JQTI state and create JQTI controller */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
@@ -521,12 +513,11 @@ public class CandidateTestDeliveryService extends CandidateServiceBase {
         return candidateSession;
     }
 
-    public CandidateSession reviewItem(final CandidateSessionContext candidateSessionContext, final TestPlanNodeKey itemKey)
+    public CandidateSession reviewItem(final CandidateSession candidateSession, final TestPlanNodeKey itemKey)
             throws CandidateException {
-        Assert.notNull(candidateSessionContext, "candidateSessionContext");
+        Assert.notNull(candidateSession, "candidateSession");
         Assert.notNull(itemKey, "itemKey");
-        assertSessionType(candidateSessionContext, AssessmentObjectType.ASSESSMENT_TEST);
-        final CandidateSession candidateSession = candidateSessionContext.getCandidateSession();
+        assertSessionType(candidateSession, AssessmentObjectType.ASSESSMENT_TEST);
 
         /* Get current JQTI state and create JQTI controller */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
@@ -564,11 +555,10 @@ public class CandidateTestDeliveryService extends CandidateServiceBase {
     //----------------------------------------------------
     // Solution request
 
-    public CandidateSession requestSolution(final CandidateSessionContext candidateSessionContext, final TestPlanNodeKey itemKey)
+    public CandidateSession requestSolution(final CandidateSession candidateSession, final TestPlanNodeKey itemKey)
             throws CandidateException {
-        Assert.notNull(candidateSessionContext, "candidateSessionContext");
-        assertSessionType(candidateSessionContext, AssessmentObjectType.ASSESSMENT_TEST);
-        final CandidateSession candidateSession = candidateSessionContext.getCandidateSession();
+        Assert.notNull(candidateSession, "candidateSession");
+        assertSessionType(candidateSession, AssessmentObjectType.ASSESSMENT_TEST);
         Assert.notNull(itemKey, "itemKey");
 
         /* Get current JQTI state and create JQTI controller */
@@ -607,11 +597,10 @@ public class CandidateTestDeliveryService extends CandidateServiceBase {
     //----------------------------------------------------
     // Advance TestPart
 
-    public CandidateSession advanceTestPart(final CandidateSessionContext candidateSessionContext)
+    public CandidateSession advanceTestPart(final CandidateSession candidateSession)
             throws CandidateException {
-        Assert.notNull(candidateSessionContext, "candidateSessionContext");
-        assertSessionType(candidateSessionContext, AssessmentObjectType.ASSESSMENT_TEST);
-        final CandidateSession candidateSession = candidateSessionContext.getCandidateSession();
+        Assert.notNull(candidateSession, "candidateSession");
+        assertSessionType(candidateSession, AssessmentObjectType.ASSESSMENT_TEST);
 
         /* Get current JQTI state and create JQTI controller */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
@@ -669,11 +658,10 @@ public class CandidateTestDeliveryService extends CandidateServiceBase {
     //----------------------------------------------------
     // Exit (multi-part) test
 
-    public CandidateSession exitTest(final CandidateSessionContext candidateSessionContext)
+    public CandidateSession exitTest(final CandidateSession candidateSession)
             throws CandidateException {
-        Assert.notNull(candidateSessionContext, "candidateSessionContext");
-        assertSessionType(candidateSessionContext, AssessmentObjectType.ASSESSMENT_TEST);
-        final CandidateSession candidateSession = candidateSessionContext.getCandidateSession();
+        Assert.notNull(candidateSession, "candidateSession");
+        assertSessionType(candidateSession, AssessmentObjectType.ASSESSMENT_TEST);
 
         /* Get current JQTI state and create JQTI controller */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);

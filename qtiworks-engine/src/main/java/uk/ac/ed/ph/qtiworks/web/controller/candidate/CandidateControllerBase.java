@@ -91,6 +91,10 @@ public abstract class CandidateControllerBase {
         return identityService.assertCurrentThreadCandidateSessionContext();
     }
 
+    protected CandidateSession getCandidateSession() {
+        return getCandidateSessionContext().getCandidateSession();
+    }
+
     //----------------------------------------------------
     // Response helpers
 
@@ -167,7 +171,7 @@ public abstract class CandidateControllerBase {
         }
         else {
             final ServletOutputStreamer outputStreamer = new ServletOutputStreamer(response, resourceEtag);
-            candidateRenderingService.streamAssessmentPackageFile(getCandidateSessionContext(), fileHref, outputStreamer);
+            candidateRenderingService.streamAssessmentPackageFile(getCandidateSessionContext().getCandidateSession(), fileHref, outputStreamer);
         }
     }
 
@@ -188,7 +192,7 @@ public abstract class CandidateControllerBase {
         }
         else {
             final ServletOutputStreamer outputStreamer = new ServletOutputStreamer(response, resourceEtag);
-            candidateRenderingService.streamAssessmentSource(getCandidateSessionContext(), outputStreamer);
+            candidateRenderingService.streamAssessmentSource(getCandidateSession(), outputStreamer);
         }
     }
 
@@ -199,7 +203,7 @@ public abstract class CandidateControllerBase {
     protected void streamSessionState(final HttpServletResponse response)
             throws IOException, CandidateException {
         final ServletOutputStreamer outputStreamer = new ServletOutputStreamer(response, null /* No caching */);
-        candidateRenderingService.streamAssessmentState(getCandidateSessionContext(), outputStreamer);
+        candidateRenderingService.streamAssessmentState(getCandidateSession(), outputStreamer);
     }
 
     /**
@@ -210,7 +214,7 @@ public abstract class CandidateControllerBase {
             throws IOException, CandidateException {
         response.setContentType("application/xml");
         final ServletOutputStreamer outputStreamer = new ServletOutputStreamer(response, null /* No caching */);
-        candidateRenderingService.streamAssessmentResult(getCandidateSessionContext(), outputStreamer);
+        candidateRenderingService.streamAssessmentResult(getCandidateSession(), outputStreamer);
     }
 
     protected String showPackageValidationResult(final Model model)

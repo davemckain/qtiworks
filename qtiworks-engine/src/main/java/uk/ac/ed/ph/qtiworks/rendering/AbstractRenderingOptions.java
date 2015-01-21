@@ -76,6 +76,9 @@ public abstract class AbstractRenderingOptions implements Serializable {
     @NotNull
     private String validationUrl;
 
+    @NotNull
+    private String returnUrl;
+
     //----------------------------------------------------
 
     public SerializationMethod getSerializationMethod() {
@@ -156,6 +159,15 @@ public abstract class AbstractRenderingOptions implements Serializable {
 
     public void setValidationUrl(final String validationUrl) {
         this.validationUrl = validationUrl;
+    }
+
+
+    public String getReturnUrl() {
+        return returnUrl;
+    }
+
+    public void setReturnUrl(final String returnUrl) {
+        this.returnUrl = returnUrl;
     }
 
     //----------------------------------------------------

@@ -48,7 +48,6 @@ import uk.ac.ed.ph.qtiworks.services.CandidateSessionFinisher;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.services.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateResponseDao;
-import uk.ac.ed.ph.qtiworks.web.candidate.CandidateSessionContext;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiCandidateStateException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
@@ -109,11 +108,10 @@ public class CandidateItemDeliveryService extends CandidateServiceBase {
     //----------------------------------------------------
     // Session entry
 
-    public CandidateSession enterOrReenterCandidateSession(final CandidateSessionContext candidateSessionContext)
+    public CandidateSession enterOrReenterCandidateSession(final CandidateSession candidateSession)
             throws CandidateException {
-        Assert.notNull(candidateSessionContext, "candidateSessionContext");
-        assertSessionType(candidateSessionContext, AssessmentObjectType.ASSESSMENT_ITEM);
-        final CandidateSession candidateSession = candidateSessionContext.getCandidateSession();
+        Assert.notNull(candidateSession, "candidateSession");
+        assertSessionType(candidateSession, AssessmentObjectType.ASSESSMENT_ITEM);
         assertSessionNotTerminated(candidateSession);
 
         final CandidateEvent mostRecentEvent = candidateDataService.getMostRecentEvent(candidateSession);
@@ -166,14 +164,13 @@ public class CandidateItemDeliveryService extends CandidateServiceBase {
     //----------------------------------------------------
     // Response handling
 
-    public CandidateSession handleResponses(final CandidateSessionContext candidateSessionContext,
+    public CandidateSession handleResponses(final CandidateSession candidateSession,
             final Map<Identifier, StringResponseData> stringResponseMap,
             final Map<Identifier, MultipartFile> fileResponseMap,
             final String candidateComment)
             throws CandidateException {
-        Assert.notNull(candidateSessionContext, "candidateSessionContext");
-        assertSessionType(candidateSessionContext, AssessmentObjectType.ASSESSMENT_ITEM);
-        final CandidateSession candidateSession = candidateSessionContext.getCandidateSession();
+        Assert.notNull(candidateSession, "candidateSession");
+        assertSessionType(candidateSession, AssessmentObjectType.ASSESSMENT_ITEM);
         assertSessionNotTerminated(candidateSession);
 
         /* Retrieve current JQTI state and set up JQTI controller */
@@ -346,14 +343,13 @@ public class CandidateItemDeliveryService extends CandidateServiceBase {
     // Session end/close (by candidate)
 
     /**
-     * Ends/closes the {@link CandidateSession} encapsulated in the given {@link CandidateSessionContext},
+     * Ends/closes the {@link CandidateSession} encapsulated in the given {@link CandidateSession},
      * moving it into ended state.
      */
-    public CandidateSession endCandidateSession(final CandidateSessionContext candidateSessionContext)
+    public CandidateSession endCandidateSession(final CandidateSession candidateSession)
             throws CandidateException {
-        Assert.notNull(candidateSessionContext, "candidateSessionContext");
-        assertSessionType(candidateSessionContext, AssessmentObjectType.ASSESSMENT_ITEM);
-        final CandidateSession candidateSession = candidateSessionContext.getCandidateSession();
+        Assert.notNull(candidateSession, "candidateSession");
+        assertSessionType(candidateSession, AssessmentObjectType.ASSESSMENT_ITEM);
         assertSessionNotTerminated(candidateSession);
 
         /* Retrieve current JQTI state and set up JQTI controller */
@@ -411,11 +407,10 @@ public class CandidateItemDeliveryService extends CandidateServiceBase {
      *
      * @see ItemSessionController#resetItemSessionHard(Date, boolean)
      */
-    public CandidateSession resetCandidateSessionHard(final CandidateSessionContext candidateSessionContext)
+    public CandidateSession resetCandidateSessionHard(final CandidateSession candidateSession)
             throws CandidateException {
-        Assert.notNull(candidateSessionContext, "candidateSessionContext");
-        assertSessionType(candidateSessionContext, AssessmentObjectType.ASSESSMENT_ITEM);
-        final CandidateSession candidateSession = candidateSessionContext.getCandidateSession();
+        Assert.notNull(candidateSession, "candidateSession");
+        assertSessionType(candidateSession, AssessmentObjectType.ASSESSMENT_ITEM);
         assertSessionNotTerminated(candidateSession);
 
         /* Retrieve current JQTI state and set up JQTI controller */
@@ -462,17 +457,16 @@ public class CandidateItemDeliveryService extends CandidateServiceBase {
     // Session soft reset
 
     /**
-     * Performs a soft reset on the {@link CandidateSession} encapsulated in the given {@link CandidateSessionContext},
+     * Performs a soft reset on the {@link CandidateSession} encapsulated in the given {@link CandidateSession},
      * returning the
      * updated {@link CandidateSession}.
      *
      * @see ItemSessionController#resetItemSessionSoft(Date, boolean)
      */
-    public CandidateSession resetCandidateSessionSoft(final CandidateSessionContext candidateSessionContext)
+    public CandidateSession resetCandidateSessionSoft(final CandidateSession candidateSession)
             throws CandidateException {
-        Assert.notNull(candidateSessionContext, "candidateSessionContext");
-        assertSessionType(candidateSessionContext, AssessmentObjectType.ASSESSMENT_ITEM);
-        final CandidateSession candidateSession = candidateSessionContext.getCandidateSession();
+        Assert.notNull(candidateSession, "candidateSession");
+        assertSessionType(candidateSession, AssessmentObjectType.ASSESSMENT_ITEM);
         assertSessionNotTerminated(candidateSession);
 
         /* Retrieve current JQTI state and set up JQTI controller */
@@ -522,11 +516,10 @@ public class CandidateItemDeliveryService extends CandidateServiceBase {
      * Logs a {@link CandidateItemEventType#SOLUTION} event, closing the item session if it hasn't
      * already been closed (and if this is allowed).
      */
-    public CandidateSession requestSolution(final CandidateSessionContext candidateSessionContext)
+    public CandidateSession requestSolution(final CandidateSession candidateSession)
             throws CandidateException {
-        Assert.notNull(candidateSessionContext, "candidateSessionContext");
-        assertSessionType(candidateSessionContext, AssessmentObjectType.ASSESSMENT_ITEM);
-        final CandidateSession candidateSession = candidateSessionContext.getCandidateSession();
+        Assert.notNull(candidateSession, "candidateSession");
+        assertSessionType(candidateSession, AssessmentObjectType.ASSESSMENT_ITEM);
         assertSessionNotTerminated(candidateSession);
 
         /* Retrieve current JQTI state and set up JQTI controller */
@@ -582,16 +575,15 @@ public class CandidateItemDeliveryService extends CandidateServiceBase {
     // Session termination (by candidate)
 
     /**
-     * Exits/terminates the {@link CandidateSession} encapsulated within the given {@link CandidateSessionContext}.
+     * Exits/terminates the {@link CandidateSession} encapsulated within the given {@link CandidateSession}.
      * <p>
      * Currently we're always allowing this action to be made when in
      * interacting or closed states.
      */
-    public CandidateSession exitCandidateSession(final CandidateSessionContext candidateSessionContext)
+    public CandidateSession exitCandidateSession(final CandidateSession candidateSession)
             throws CandidateException {
-        Assert.notNull(candidateSessionContext, "candidateSessionContext");
-        assertSessionType(candidateSessionContext, AssessmentObjectType.ASSESSMENT_ITEM);
-        final CandidateSession candidateSession = candidateSessionContext.getCandidateSession();
+        Assert.notNull(candidateSession, "candidateSession");
+        assertSessionType(candidateSession, AssessmentObjectType.ASSESSMENT_ITEM);
         assertSessionNotTerminated(candidateSession);
 
         /* Retrieve current JQTI state and set up JQTI controller */
