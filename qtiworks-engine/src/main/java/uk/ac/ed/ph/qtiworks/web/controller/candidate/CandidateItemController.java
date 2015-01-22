@@ -86,9 +86,10 @@ public class CandidateItemController extends CandidateControllerBase {
     }
 
     @RequestMapping(value="/itemsession/{xid}/{xsrfToken}/enter", method=RequestMethod.POST)
-    public String enterSession(@PathVariable final long xid, @PathVariable final String xsrfToken)
+    public String enterSession(final HttpServletRequest request,
+            @PathVariable final long xid, @PathVariable final String xsrfToken)
             throws CandidateException {
-        candidateItemDeliveryService.enterOrReenterCandidateSession(getCandidateSession());
+        candidateItemDeliveryService.enterOrReenterCandidateSession(getCandidateSession(request));
 
         /* Redirect to rendering of current session state */
         return redirectToRenderSession(xid, xsrfToken);
@@ -101,10 +102,11 @@ public class CandidateItemController extends CandidateControllerBase {
      * Renders the current state of the given session
      */
     @RequestMapping(value="/itemsession/{xid}/{xsrfToken}/render", method=RequestMethod.GET)
-    public void renderCurrentItemSessionState(@PathVariable final long xid, @PathVariable final String xsrfToken,
+    public void renderCurrentItemSessionState(final HttpServletRequest request,
+            @PathVariable final long xid, @PathVariable final String xsrfToken,
             final HttpServletResponse response)
             throws IOException, CandidateException {
-        final CandidateSessionContext candidateSessionContext = getCandidateSessionContext();
+        final CandidateSessionContext candidateSessionContext = getCandidateSessionContext(request);
 
         /* Create appropriate options that link back to this controller */
         final String sessionBaseUrl = "/candidate/itemsession/" + xid + "/" + xsrfToken;
@@ -125,10 +127,11 @@ public class CandidateItemController extends CandidateControllerBase {
      * Renders the authoring view of the given session
      */
     @RequestMapping(value="/itemsession/{xid}/{xsrfToken}/author-view", method=RequestMethod.GET)
-    public void renderCurrentItemAuthoringView(@PathVariable final long xid, @PathVariable final String xsrfToken,
+    public void renderCurrentItemAuthoringView(final HttpServletRequest request,
+            @PathVariable final long xid, @PathVariable final String xsrfToken,
             final HttpServletResponse response)
             throws IOException, CandidateException {
-        final CandidateSessionContext candidateSessionContext = getCandidateSessionContext();
+        final CandidateSessionContext candidateSessionContext = getCandidateSessionContext(request);
 
         /* Create appropriate options that link back to this controller */
         final String sessionBaseUrl = "/candidate/itemsession/" + xid + "/" + xsrfToken;
@@ -177,7 +180,7 @@ public class CandidateItemController extends CandidateControllerBase {
         final String candidateComment = extractCandidateComment(request);
 
         /* Call up service layer */
-        candidateItemDeliveryService.handleResponses(getCandidateSession(), stringResponseMap,
+        candidateItemDeliveryService.handleResponses(getCandidateSession(request), stringResponseMap,
                 fileResponseMap, candidateComment);
 
         /* Redirect to rendering of current session state */
@@ -191,9 +194,10 @@ public class CandidateItemController extends CandidateControllerBase {
      * Resets the given {@link CandidateSession}
      */
     @RequestMapping(value="/itemsession/{xid}/{xsrfToken}/reset-soft", method=RequestMethod.POST)
-    public String resetSessionSoft(@PathVariable final long xid, @PathVariable final String xsrfToken)
+    public String resetSessionSoft(final HttpServletRequest request,
+            @PathVariable final long xid, @PathVariable final String xsrfToken)
             throws CandidateException {
-        candidateItemDeliveryService.resetCandidateSessionSoft(getCandidateSession());
+        candidateItemDeliveryService.resetCandidateSessionSoft(getCandidateSession(request));
 
         /* Redirect to rendering of current session state */
         return redirectToRenderSession(xid, xsrfToken);
@@ -203,9 +207,10 @@ public class CandidateItemController extends CandidateControllerBase {
      * Re-initialises the given {@link CandidateSession}
      */
     @RequestMapping(value="/itemsession/{xid}/{xsrfToken}/reset-hard", method=RequestMethod.POST)
-    public String resetSessionHard(@PathVariable final long xid, @PathVariable final String xsrfToken)
+    public String resetSessionHard(final HttpServletRequest request,
+            @PathVariable final long xid, @PathVariable final String xsrfToken)
             throws CandidateException {
-        candidateItemDeliveryService.resetCandidateSessionHard(getCandidateSession());
+        candidateItemDeliveryService.resetCandidateSessionHard(getCandidateSession(request));
 
         /* Redirect to rendering of current session state */
         return redirectToRenderSession(xid, xsrfToken);
@@ -215,9 +220,10 @@ public class CandidateItemController extends CandidateControllerBase {
      * Closes (but does not exit) the given {@link CandidateSession}
      */
     @RequestMapping(value="/itemsession/{xid}/{xsrfToken}/close", method=RequestMethod.POST)
-    public String closeSession(@PathVariable final long xid, @PathVariable final String xsrfToken)
+    public String closeSession(final HttpServletRequest request,
+            @PathVariable final long xid, @PathVariable final String xsrfToken)
             throws CandidateException {
-        candidateItemDeliveryService.endCandidateSession(getCandidateSession());
+        candidateItemDeliveryService.endCandidateSession(getCandidateSession(request));
 
         /* Redirect to rendering of current session state */
         return redirectToRenderSession(xid, xsrfToken);
@@ -227,9 +233,10 @@ public class CandidateItemController extends CandidateControllerBase {
      * Transitions the given {@link CandidateSession} to solution state
      */
     @RequestMapping(value="/itemsession/{xid}/{xsrfToken}/solution", method=RequestMethod.POST)
-    public String transitionSessionToSolutionState(@PathVariable final long xid, @PathVariable final String xsrfToken)
+    public String transitionSessionToSolutionState(final HttpServletRequest request,
+            @PathVariable final long xid, @PathVariable final String xsrfToken)
             throws CandidateException {
-        candidateItemDeliveryService.requestSolution(getCandidateSession());
+        candidateItemDeliveryService.requestSolution(getCandidateSession(request));
 
         /* Redirect to rendering of current session state */
         return redirectToRenderSession(xid, xsrfToken);
@@ -239,10 +246,11 @@ public class CandidateItemController extends CandidateControllerBase {
      * Exits the given {@link CandidateSession}
      */
     @RequestMapping(value="/itemsession/{xid}/{xsrfToken}/exit", method=RequestMethod.POST)
-    public String exitSession(@SuppressWarnings("unused") @PathVariable final long xid, @PathVariable final String xsrfToken)
+    public String exitSession(final HttpServletRequest request,
+            @SuppressWarnings("unused") @PathVariable final long xid, @PathVariable final String xsrfToken)
             throws CandidateException {
-        final CandidateSessionContext candidateSessionContext = getCandidateSessionContext();
-        candidateItemDeliveryService.exitCandidateSession(getCandidateSession());
+        final CandidateSessionContext candidateSessionContext = getCandidateSessionContext(request);
+        candidateItemDeliveryService.exitCandidateSession(candidateSessionContext.getCandidateSession());
         return redirectToExitUrl(candidateSessionContext, xsrfToken);
     }
 
@@ -254,11 +262,11 @@ public class CandidateItemController extends CandidateControllerBase {
      */
     @Override
     @RequestMapping(value="/itemsession/{xid}/{xsrfToken}/file", method=RequestMethod.GET)
-    public void streamAssessmentPackageFile(@PathVariable final long xid, @PathVariable final String xsrfToken,
-            @RequestParam("href") final String fileHref,
-            final HttpServletRequest request, final HttpServletResponse response)
+    public void streamAssessmentPackageFile(final HttpServletRequest request, final HttpServletResponse response,
+            @PathVariable final long xid, @PathVariable final String xsrfToken,
+            @RequestParam("href") final String fileHref)
             throws IOException, CandidateException {
-         super.streamAssessmentPackageFile(xid, xsrfToken, fileHref, request, response);
+         super.streamAssessmentPackageFile(request, response, xid, xsrfToken, fileHref);
     }
 
     //----------------------------------------------------
@@ -269,11 +277,10 @@ public class CandidateItemController extends CandidateControllerBase {
      */
     @Override
     @RequestMapping(value="/itemsession/{xid}/{xsrfToken}/source", method=RequestMethod.GET)
-    public void streamAssessmentSource(@PathVariable final long xid,
-            @PathVariable final String xsrfToken,
-            final HttpServletRequest request, final HttpServletResponse response)
+    public void streamAssessmentSource(final HttpServletRequest request, final HttpServletResponse response,
+            @PathVariable final long xid, @PathVariable final String xsrfToken)
             throws IOException, CandidateException {
-        super.streamAssessmentSource(xid, xsrfToken, request, response);
+        super.streamAssessmentSource(request, response, xid, xsrfToken);
     }
 
     /**
@@ -281,10 +288,11 @@ public class CandidateItemController extends CandidateControllerBase {
      * {@link CandidateSession}
      */
     @RequestMapping(value="/itemsession/{xid}/{xsrfToken}/state", method=RequestMethod.GET)
-    public void streamItemSessionState(@SuppressWarnings("unused") @PathVariable final long xid,
-            @SuppressWarnings("unused") @PathVariable final String xsrfToken, final HttpServletResponse response)
+    public void streamItemSessionState(final HttpServletRequest request, final HttpServletResponse response,
+            @SuppressWarnings("unused") @PathVariable final long xid,
+            @SuppressWarnings("unused") @PathVariable final String xsrfToken)
             throws IOException, CandidateException {
-        super.streamSessionState(response);
+        super.streamSessionState(request, response);
     }
 
     /**
@@ -292,18 +300,19 @@ public class CandidateItemController extends CandidateControllerBase {
      * {@link CandidateSession}
      */
     @RequestMapping(value="/itemsession/{xid}/{xsrfToken}/result", method=RequestMethod.GET)
-    public void streamAssessmentResult(@SuppressWarnings("unused") @PathVariable final long xid,
-            @SuppressWarnings("unused") @PathVariable final String xsrfToken,
-            final HttpServletResponse response)
+    public void streamAssessmentResult(final HttpServletRequest request, final HttpServletResponse response,
+            @SuppressWarnings("unused") @PathVariable final long xid,
+            @SuppressWarnings("unused") @PathVariable final String xsrfToken)
             throws IOException, CandidateException {
-        super.streamAssessmentResult(response);
+        super.streamAssessmentResult(request, response);
     }
 
     @RequestMapping(value="/itemsession/{xid}/{xsrfToken}/validation", method=RequestMethod.GET)
-    public String showPackageValidationResult(@SuppressWarnings("unused") @PathVariable final long xid,
+    public String showPackageValidationResult(final HttpServletRequest request,
+            @SuppressWarnings("unused") @PathVariable final long xid,
             @SuppressWarnings("unused") @PathVariable final String xsrfToken, final Model model)
             throws CandidateException {
-        return super.showPackageValidationResult(model);
+        return super.showPackageValidationResult(request, model);
     }
 
     //----------------------------------------------------

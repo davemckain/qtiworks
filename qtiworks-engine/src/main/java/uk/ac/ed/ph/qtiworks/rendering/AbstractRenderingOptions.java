@@ -83,7 +83,6 @@ public abstract class AbstractRenderingOptions implements Serializable {
      * there are some cases (e.g. terminated & exploded) sessions where it makes sense to show this
      * at the rendering layer.
      */
-    @NotNull
     private String sessionExitReturnUrl;
 
     //----------------------------------------------------
