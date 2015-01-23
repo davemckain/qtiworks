@@ -175,8 +175,8 @@ public class LtiInstructorAssessmentManagementController {
         }
         final DeliverySettings theseDeliverySettings = thisDelivery.getDeliverySettings(); /* NB: May be null */
         final Delivery demoDelivery = assessmentManagementService.createDemoDelivery(thisAssessment, theseDeliverySettings);
-        final String returnUrl = ltiInstructorRouter.buildWithinContextUrl(""); /* (Back to dashboard) */
-        return runDelivery(httpSession, demoDelivery, true, returnUrl);
+        final String sessionExitReturnUrl = ltiInstructorRouter.buildWithinContextUrl(""); /* (Back to dashboard) */
+        return runDelivery(httpSession, demoDelivery, true, sessionExitReturnUrl);
     }
 
     @RequestMapping(value="/toggle-availability", method=RequestMethod.POST)
@@ -383,8 +383,8 @@ public class LtiInstructorAssessmentManagementController {
             throws PrivilegeException, DomainEntityNotFoundException, CandidateException {
         final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
         final Delivery demoDelivery = assessmentManagementService.createDemoDelivery(assessment);
-        final String returnUrl = ltiInstructorRouter.buildWithinContextUrl("/assessment/" + aid);
-        return runDelivery(httpSession, demoDelivery, true, returnUrl);
+        final String sessionExitReturnUrl = ltiInstructorRouter.buildWithinContextUrl("/assessment/" + aid);
+        return runDelivery(httpSession, demoDelivery, true, sessionExitReturnUrl);
     }
 
     @RequestMapping(value="/assessment/{aid}/try/{dsid}", method=RequestMethod.POST)
@@ -394,15 +394,15 @@ public class LtiInstructorAssessmentManagementController {
         final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
         final DeliverySettings deliverySettings = assessmentManagementService.lookupAndMatchDeliverySettings(dsid, assessment);
         final Delivery demoDelivery = assessmentManagementService.createDemoDelivery(assessment, deliverySettings);
-        final String returnUrl = ltiInstructorRouter.buildWithinContextUrl("/assessment/" + aid);
-        return runDelivery(httpSession, demoDelivery, true, returnUrl);
+        final String sessionExitReturnUrl = ltiInstructorRouter.buildWithinContextUrl("/assessment/" + aid);
+        return runDelivery(httpSession, demoDelivery, true, sessionExitReturnUrl);
     }
 
-    private String runDelivery(final HttpSession httpSession, final Delivery delivery, final boolean authorMode, final String returnUrl)
+    private String runDelivery(final HttpSession httpSession, final Delivery delivery, final boolean authorMode, final String sessionExitReturnUrl)
             throws CandidateException {
         /* FIXME: Need to move the target method up to WS level */
         final User caller = identityService.getCurrentThreadUser();
-        final CandidateSessionTicket candidateSessionTicket = candidateSessionLaunchService.launchInstructorTrialSession(httpSession, caller, delivery, authorMode, returnUrl);
+        final CandidateSessionTicket candidateSessionTicket = candidateSessionLaunchService.launchInstructorTrialSession(httpSession, caller, delivery, authorMode, sessionExitReturnUrl);
         return GlobalRouter.buildSessionStartRedirect(candidateSessionTicket);
     }
 

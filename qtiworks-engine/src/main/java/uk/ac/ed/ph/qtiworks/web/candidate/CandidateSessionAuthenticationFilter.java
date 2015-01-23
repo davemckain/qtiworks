@@ -147,7 +147,7 @@ public final class CandidateSessionAuthenticationFilter extends AbstractWebAuthe
         }
 
         /* Finally store information about this session in the request and continue with filter chain */
-        final CandidateSessionContext candidateSessionContext = new CandidateSessionContext(candidateSession, candidateSessionTicket.getReturnUrl());
+        final CandidateSessionContext candidateSessionContext = new CandidateSessionContext(candidateSession, candidateSessionTicket.getSessionExitReturnUrl());
         setCurrentRequestCandidateSessionContext(request, candidateSessionContext);
         chain.doFilter(request, response);
     }

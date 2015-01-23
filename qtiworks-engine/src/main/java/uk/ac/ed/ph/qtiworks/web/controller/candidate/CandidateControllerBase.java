@@ -235,13 +235,13 @@ public abstract class CandidateControllerBase {
     }
 
     protected final String redirectToExitUrl(final CandidateSessionContext candidateSessionContext, final String xsrfToken) {
-        final String returnUrl = candidateSessionContext.getSessionExitReturnUrl();
-        if (returnUrl==null) {
+        final String sessionExitReturnUrl = candidateSessionContext.getSessionExitReturnUrl();
+        if (sessionExitReturnUrl==null) {
             /* No (or unsafe) exit URL provided, so redirect to normal rendering, which will
              * show a generic "this assessment is now complete" page.
              */
             return redirectToRenderSession(candidateSessionContext.getCandidateSession(), xsrfToken);
         }
-        return "redirect:" + returnUrl;
+        return "redirect:" + sessionExitReturnUrl;
     }
 }
