@@ -42,6 +42,7 @@ import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.running.InteractionBindingContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
+import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
 import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
 import uk.ac.ed.ph.jqtiplus.value.Orientation;
@@ -189,8 +190,13 @@ public final class SliderInteraction extends BlockInteraction {
             return false;
         }
 
+        final ResponseDeclaration responseDeclaration = getResponseDeclaration();
+        if (responseDeclaration == null) {
+            return false;
+        }
+
         /* Make sure response is between the required min and max */
-        if (getResponseDeclaration().getBaseType().isFloat()) {
+        if (responseDeclaration.hasBaseType(BaseType.FLOAT)) {
             final double doubleValue = ((FloatValue) responseValue).doubleValue();
             if (doubleValue < getLowerBound() || doubleValue > getUpperBound()) {
                 return false;

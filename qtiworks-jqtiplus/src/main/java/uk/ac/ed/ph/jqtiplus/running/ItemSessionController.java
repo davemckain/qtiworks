@@ -808,7 +808,7 @@ public final class ItemSessionController extends ItemProcessingController implem
                     final EndAttemptInteraction endAttemptInteraction = (EndAttemptInteraction) interaction;
                     final Value responseValue = itemSessionState.getResponseValue(interaction);
                     if (responseValue==null) {
-                        throw new QtiCandidateStateException("Expected to find a response value for identifier " + interaction.getResponseDeclaration());
+                        throw new QtiCandidateStateException("Expected to find a response value for identifier " + interaction.getResponseIdentifier());
                     }
                     if (!responseValue.hasSignature(Signature.SINGLE_BOOLEAN)) {
                         fireRuntimeWarning(item,
