@@ -167,7 +167,7 @@ public abstract class Interaction extends BodyElement {
         Assert.notNull(responseData, "responseData");
         final ResponseDeclaration responseDeclaration = getResponseDeclaration();
         if (responseDeclaration == null) {
-            interactionBindingContext.fireRuntimeError(this, "No response found with identifier " + getResponseIdentifier());
+            interactionBindingContext.fireRuntimeError(this, "No corresponding responseDeclaration found with identifier " + getResponseIdentifier());
             return;
         }
         final Value value = parseResponse(responseDeclaration, responseData);
