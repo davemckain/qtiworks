@@ -58,14 +58,14 @@ public abstract class AssessmentObjectValidationResult<E extends AssessmentObjec
 
     private final ResolvedAssessmentObject<E> resolvedAssessmentObject;
     private final NotificationRecorder notificationRecorder;
-    private boolean hasErrors;
-    private boolean hasWarnings;
+    private boolean hasModelValidationErrors;
+    private boolean hasModelValidationWarnings;
 
     public AssessmentObjectValidationResult(final ResolvedAssessmentObject<E> resolvedAssessmentObject) {
         this.resolvedAssessmentObject = resolvedAssessmentObject;
         this.notificationRecorder = new NotificationRecorder(NotificationLevel.WARNING);
-        this.hasErrors = false;
-        this.hasWarnings = false;
+        this.hasModelValidationErrors = false;
+        this.hasModelValidationWarnings = false;
     }
 
     @ObjectDumperOptions(DumpMode.IGNORE)
@@ -73,12 +73,12 @@ public abstract class AssessmentObjectValidationResult<E extends AssessmentObjec
         return resolvedAssessmentObject;
     }
 
-    public boolean hasErrors() {
-        return hasErrors;
+    public boolean hasModelValidationErrors() {
+        return hasModelValidationErrors;
     }
 
-    public boolean hasWarnings() {
-        return hasWarnings;
+    public boolean hasModelValidationWarnings() {
+        return hasModelValidationWarnings;
     }
 
     public List<Notification> getNotifications() {
@@ -90,12 +90,12 @@ public abstract class AssessmentObjectValidationResult<E extends AssessmentObjec
     }
 
     @ObjectDumperOptions(DumpMode.IGNORE)
-    public List<Notification> getErrors() {
+    public List<Notification> getModelValidationErrors() {
         return getNotificationsAtLevel(NotificationLevel.ERROR);
     }
 
     @ObjectDumperOptions(DumpMode.IGNORE)
-    public List<Notification> getWarnings() {
+    public List<Notification> getModelValidationWarnings() {
         return getNotificationsAtLevel(NotificationLevel.WARNING);
     }
 
@@ -110,11 +110,11 @@ public abstract class AssessmentObjectValidationResult<E extends AssessmentObjec
         if (notificationType==NotificationType.MODEL_VALIDATION) {
             if (notificationLevel.compareTo(NotificationLevel.WARNING) >= 0) {
                 notificationRecorder.onNotification(notification);
-                if (!hasErrors && notificationLevel==NotificationLevel.ERROR) {
-                    hasErrors = true;
+                if (!hasModelValidationErrors && notificationLevel==NotificationLevel.ERROR) {
+                    hasModelValidationErrors = true;
                 }
-                else if (!hasWarnings && notificationLevel==NotificationLevel.WARNING) {
-                    hasWarnings = true;
+                else if (!hasModelValidationWarnings && notificationLevel==NotificationLevel.WARNING) {
+                    hasModelValidationWarnings = true;
                 }
             }
             else {
@@ -130,15 +130,24 @@ public abstract class AssessmentObjectValidationResult<E extends AssessmentObjec
         }
     }
 
+    /**
+     * Returns whether this {@link AssessmentObject} is "fully valid", in that schema validation succeeded,
+     * the JQTI+ model build succeeded, and the additional JQTI+ validation checks all succeeded without warnings.
+     */
     public boolean isValid() {
         return resolvedAssessmentObject.getRootNodeLookup().wasSuccessful()
-                && !hasWarnings()
-                && !hasErrors();
+                && !hasModelValidationWarnings()
+                && !hasModelValidationErrors();
     }
 
+    /**
+     * Returns whether this {@link AssessmentObject} is almost "fully valid", in that schema validation succeeded,
+     * the JQTI+ model build succeeded, and the additional JQTI+ validation checks all succeeded,
+     * possibly with warnings.
+     */
     public boolean isValidationWarningsOnly() {
         return resolvedAssessmentObject.getRootNodeLookup().wasSuccessful()
-                && hasWarnings()
-                && !hasErrors();
+                && hasModelValidationWarnings()
+                && !hasModelValidationErrors();
     }
 }

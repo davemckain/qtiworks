@@ -60,8 +60,8 @@ public final class ItemValidationResult extends AssessmentObjectValidationResult
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(resolvedAssessmentItem=" + getResolvedAssessmentItem()
-                + ",errors=" + getErrors()
-                + ",warnings=" + getWarnings()
+                + ",errors=" + getModelValidationErrors()
+                + ",warnings=" + getModelValidationWarnings()
                 + ")";
     }
 }

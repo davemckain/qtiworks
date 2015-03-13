@@ -128,12 +128,12 @@ public final class AssessmentObjectValidator {
                 final ItemValidationResult itemValidationResult = validateItem(resolvedAssessmentItem);
                 result.addItemValidationResult(itemValidationResult);
                 if (resolvedAssessmentItem.getItemLookup().wasSuccessful()) {
-                    if (itemValidationResult.hasErrors()) {
+                    if (itemValidationResult.hasModelValidationErrors()) {
                         result.add(new Notification(test, null, NotificationType.MODEL_VALIDATION, NotificationLevel.ERROR,
                                 itemReferenceDescription
                                 + " has errors. Please see the attached validation result for this item for further information"));
                     }
-                    if (itemValidationResult.hasWarnings()) {
+                    if (itemValidationResult.hasModelValidationWarnings()) {
                         result.add(new Notification(test, null, NotificationType.MODEL_VALIDATION, NotificationLevel.WARNING,
                                 itemReferenceDescription
                                 + " has warnings. Please see the attached validation result for this item for further information"));

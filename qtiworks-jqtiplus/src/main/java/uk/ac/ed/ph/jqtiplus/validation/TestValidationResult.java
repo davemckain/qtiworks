@@ -76,8 +76,8 @@ public final class TestValidationResult extends AssessmentObjectValidationResult
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(resolvedAssessmentTest=" + getResolvedAssessmentTest()
-                + ",errors=" + getErrors()
-                + ",warnings=" + getWarnings()
+                + ",errors=" + getModelValidationErrors()
+                + ",warnings=" + getModelValidationWarnings()
                 + ",itemValidationResults=" + itemValidationResults
                 + ")";
     }
