@@ -1,4 +1,10 @@
-<!-- Tests the various *OrVariableRef possibilities -->
+<!--
+
+Example of an assessmentItem that passes all of the QTIWorks validation checks.
+
+(Actually, this one was initially created to test various *OrVariableRef scenarios.)
+
+-->
 <assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd"

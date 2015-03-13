@@ -1,0 +1,22 @@
+<!--
+
+Example of an assessmentItem that fails the 'JQTI+ model build' process.
+
+In this case, we try to set a float variable to a string value, which is not legal
+but something that cannot be checked as part of schema validation.
+
+-->
+<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd"
+  identifier="modelBuildFailure" title="Example item which can't be built into a JQTI+ model" adaptive="false" timeDependent="false">
+  <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float">
+    <defaultValue>
+      <!-- Model build fails as the following value is not a float -->
+      <value>BAD</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <itemBody>
+    <p>Minimal Example</p>
+  </itemBody>
+</assessmentItem>
