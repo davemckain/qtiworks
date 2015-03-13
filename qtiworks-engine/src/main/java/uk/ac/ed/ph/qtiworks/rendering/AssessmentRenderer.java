@@ -484,7 +484,7 @@ public class AssessmentRenderer {
 
         final Map<String, Object> xsltParameters = new HashMap<String, Object>();
         setBaseRenderingParameters(xsltParameters, request, null);
-        xsltParameters.put("exitSessionUrl", request.getExitSessionUrl());
+        xsltParameters.put("exitSessionUrl", request.getRenderingOptions().getSessionExitReturnUrl());
 
         doTransform(request, null, terminatedXsltUri, xsltParameters, result);
     }
@@ -501,7 +501,7 @@ public class AssessmentRenderer {
 
         final Map<String, Object> xsltParameters = new HashMap<String, Object>();
         setBaseRenderingParameters(xsltParameters, request, null);
-        xsltParameters.put("exitSessionUrl", request.getExitSessionUrl());
+        xsltParameters.put("exitSessionUrl", request.getRenderingOptions().getSessionExitReturnUrl());
 
         doTransform(request, null, explodedXsltUri, xsltParameters, result);
     }

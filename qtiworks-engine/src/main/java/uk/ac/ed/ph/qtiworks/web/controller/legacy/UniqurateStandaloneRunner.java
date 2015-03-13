@@ -147,8 +147,8 @@ public class UniqurateStandaloneRunner {
             @PathVariable final long did, @PathVariable final String token)
             throws IOException {
         try {
-            final String returnUrl = "/web/anonymous/standalonerunner/exit";
-            final CandidateSessionTicket candidateSessionTicket = candidateSessionLaunchService.launchWebServiceCandidateSession(httpSession, did, token, returnUrl);
+            final String sessionExitReturnUrl = "/web/anonymous/standalonerunner/exit";
+            final CandidateSessionTicket candidateSessionTicket = candidateSessionLaunchService.launchWebServiceCandidateSession(httpSession, did, token, sessionExitReturnUrl);
 
             /* Redirect to candidate dispatcher */
             return GlobalRouter.buildSessionStartRedirect(candidateSessionTicket);

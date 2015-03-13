@@ -99,8 +99,8 @@ public class SystemSamplesController {
     public String startItemSession(@PathVariable final String sampleCategoryAnchor, @PathVariable final long aid,
             final HttpSession httpSession)
             throws DomainEntityNotFoundException, CandidateException {
-        final String returnUrl = anonymousRouter.buildWithinContextUrl("/samples") + "#" + sampleCategoryAnchor;
-        final CandidateSessionTicket candidateSessionTicket = candidateSessionLaunchService.launchSystemSampleSession(httpSession, aid, returnUrl);
+        final String sessionExitReturnUrl = anonymousRouter.buildWithinContextUrl("/samples") + "#" + sampleCategoryAnchor;
+        final CandidateSessionTicket candidateSessionTicket = candidateSessionLaunchService.launchSystemSampleSession(httpSession, aid, sessionExitReturnUrl);
         return GlobalRouter.buildSessionStartRedirect(candidateSessionTicket);
     }
 }

@@ -34,26 +34,22 @@
 package uk.ac.ed.ph.qtiworks.web.candidate;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
-import uk.ac.ed.ph.qtiworks.services.IdentityService;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
-import java.io.Serializable;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * This provides information about the "current" {@link CandidateSession} being accessed by
  * a particular candidate. It is created by the {@link CandidateSessionAuthenticationFilter}
- * and stored and accessed in the candidate services layer via the {@link IdentityService}.
+ * and stored in the {@link HttpServletRequest} for access by subsequent controllers
  *
- * @see IdentityService#getCurrentThreadCandidateSessionContext()
  * @see CandidateSessionAuthenticationFilter
  *
  * @author David McKain
  */
-public final class CandidateSessionContext implements Serializable {
-
-    private static final long serialVersionUID = 1412636123357858458L;
+public final class CandidateSessionContext {
 
     /**
      * Indicates which {@link CandidateSession} this ticket provides access to
@@ -61,20 +57,20 @@ public final class CandidateSessionContext implements Serializable {
     private final CandidateSession candidateSession;
 
     /** Optional return URL to use when the session terminates */
-    private final String returnUrl;
+    private final String sessionExitReturnUrl;
 
-    public CandidateSessionContext(final CandidateSession candidateSession, final String returnUrl) {
+    public CandidateSessionContext(final CandidateSession candidateSession, final String sessionExitReturnUrl) {
         Assert.notNull(candidateSession, "candidateSession");
         this.candidateSession = candidateSession;
-        this.returnUrl = returnUrl;
+        this.sessionExitReturnUrl = sessionExitReturnUrl;
     }
 
     public CandidateSession getCandidateSession() {
         return candidateSession;
     }
 
-    public String getReturnUrl() {
-        return returnUrl;
+    public String getSessionExitReturnUrl() {
+        return sessionExitReturnUrl;
     }
 
     @Override

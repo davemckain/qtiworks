@@ -81,17 +81,18 @@ public class CandidateTestController extends CandidateControllerBase {
     // Session containment and launching
 
     @RequestMapping(value="/testsession/{xid}/{xsrfToken}", method=RequestMethod.GET)
-    public String driveSession(final HttpServletResponse response, final Model model, @PathVariable final long xid, @PathVariable final String xsrfToken) {
+    public String driveSession(final HttpServletResponse response, final Model model,
+            @PathVariable final long xid, @PathVariable final String xsrfToken) {
         response.setHeader("Cache-Control", "no-cache, no-store, max-age=0, must-revalidate");
         model.addAttribute("sessionEntryPath", "/candidate/testsession/" + xid + "/" + xsrfToken + "/enter");
         return "launch";
     }
 
     @RequestMapping(value="/testsession/{xid}/{xsrfToken}/enter", method=RequestMethod.POST)
-    public String enterSession(@PathVariable final long xid, @PathVariable final String xsrfToken)
+    public String enterSession(final HttpServletRequest request,
+            @PathVariable final long xid, @PathVariable final String xsrfToken)
             throws CandidateException {
-        final CandidateSessionContext candidateSessionContext = getCandidateSessionContext();
-        candidateTestDeliveryService.enterOrReenterCandidateSession(candidateSessionContext);
+        candidateTestDeliveryService.enterOrReenterCandidateSession(getCandidateSession(request));
 
         /* Redirect to rendering of current session state */
         return redirectToRenderSession(xid, xsrfToken);
@@ -104,15 +105,15 @@ public class CandidateTestController extends CandidateControllerBase {
      * Renders the current state of the given session
      */
     @RequestMapping(value="/testsession/{xid}/{xsrfToken}/render", method=RequestMethod.GET)
-    public void renderCurrentTestSessionState(@PathVariable final long xid, @PathVariable final String xsrfToken,
-            final HttpServletResponse response)
+    public void renderCurrentTestSessionState(final HttpServletRequest request, final HttpServletResponse response,
+            @PathVariable final long xid, @PathVariable final String xsrfToken)
             throws IOException, CandidateException {
-        final CandidateSessionContext candidateSessionContext = getCandidateSessionContext();
+        final CandidateSessionContext candidateSessionContext = getCandidateSessionContext(request);
 
         /* Create appropriate options that link back to this controller */
         final String sessionBaseUrl = "/candidate/testsession/" + xid + "/" + xsrfToken;
         final TestRenderingOptions renderingOptions = new TestRenderingOptions();
-        configureBaseRenderingOptions(sessionBaseUrl, renderingOptions);
+        configureBaseRenderingOptions(sessionBaseUrl, candidateSessionContext, renderingOptions);
         renderingOptions.setTestPartNavigationUrl(sessionBaseUrl + "/test-part-navigation");
         renderingOptions.setSelectTestItemUrl(sessionBaseUrl + "/select-item");
         renderingOptions.setAdvanceTestItemUrl(sessionBaseUrl + "/finish-item");
@@ -124,28 +125,33 @@ public class CandidateTestController extends CandidateControllerBase {
         renderingOptions.setExitTestUrl(sessionBaseUrl + "/exit-test");
 
         final ServletOutputStreamer outputStreamer = new ServletOutputStreamer(response, null /* No caching */);
-        candidateRenderingService.renderCurrentCandidateTestSessionState(candidateSessionContext, renderingOptions, outputStreamer);
+        candidateRenderingService.renderCurrentCandidateTestSessionState(candidateSessionContext.getCandidateSession(),
+                renderingOptions, outputStreamer);
     }
 
     /**
      * Renders the authoring view of the given session
      */
     @RequestMapping(value="/testsession/{xid}/{xsrfToken}/author-view", method=RequestMethod.GET)
-    public void renderCurrentItemAuthoringView(@PathVariable final long xid, @PathVariable final String xsrfToken,
-            final HttpServletResponse response)
+    public void renderCurrentItemAuthoringView(final HttpServletRequest request, final HttpServletResponse response,
+            @PathVariable final long xid, @PathVariable final String xsrfToken)
             throws IOException, CandidateException {
-        final CandidateSessionContext candidateSessionContext = getCandidateSessionContext();
+        final CandidateSessionContext candidateSessionContext = getCandidateSessionContext(request);
 
         /* Create appropriate options that link back to this controller */
         final String sessionBaseUrl = "/candidate/testsession/" + xid + "/" + xsrfToken;
         final AuthorViewRenderingOptions renderingOptions = new AuthorViewRenderingOptions();
-        configureBaseRenderingOptions(sessionBaseUrl, renderingOptions);
+        configureBaseRenderingOptions(sessionBaseUrl, candidateSessionContext, renderingOptions);
 
         final ServletOutputStreamer outputStreamer = new ServletOutputStreamer(response, null /* No caching */);
-        candidateRenderingService.renderCurrentCandidateTestSessionStateAuthorView(candidateSessionContext, renderingOptions, outputStreamer);
+        candidateRenderingService.renderCurrentCandidateTestSessionStateAuthorView(candidateSessionContext.getCandidateSession(),
+                renderingOptions, outputStreamer);
     }
 
-    private void configureBaseRenderingOptions(final String sessionBaseUrl, final AbstractRenderingOptions renderingOptions) {
+    private void configureBaseRenderingOptions(final String sessionBaseUrl,
+            final CandidateSessionContext candidateSessionContext,
+            final AbstractRenderingOptions renderingOptions) {
+        renderingOptions.setSessionExitReturnUrl(candidateSessionContext.getSessionExitReturnUrl());
         renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
         renderingOptions.setSourceUrl(sessionBaseUrl + "/source");
         renderingOptions.setStateUrl(sessionBaseUrl + "/state");
@@ -166,8 +172,6 @@ public class CandidateTestController extends CandidateControllerBase {
     public String handleResponses(final HttpServletRequest request, @PathVariable final long xid,
             @PathVariable final String xsrfToken)
             throws CandidateException {
-        final CandidateSessionContext candidateSessionContext = getCandidateSessionContext();
-
         /* First need to extract responses */
         final Map<Identifier, StringResponseData> stringResponseMap = extractStringResponseData(request);
 
@@ -181,7 +185,7 @@ public class CandidateTestController extends CandidateControllerBase {
         final String candidateComment = extractCandidateComment(request);
 
         /* Call up service layer */
-        candidateTestDeliveryService.handleResponses(candidateSessionContext, stringResponseMap, fileResponseMap, candidateComment);
+        candidateTestDeliveryService.handleResponses(getCandidateSession(request), stringResponseMap, fileResponseMap, candidateComment);
 
         /* Redirect to rendering of current session state */
         return redirectToRenderSession(xid, xsrfToken);
@@ -191,104 +195,105 @@ public class CandidateTestController extends CandidateControllerBase {
     // Test navigation and lifecycle
 
     /**
-     * @see CandidateTestDeliveryService#selectNavigationMenu(CandidateSessionContext)
+     * @see CandidateTestDeliveryService#selectNavigationMenu(CandidateSession)
      */
     @RequestMapping(value="/testsession/{xid}/{xsrfToken}/test-part-navigation", method=RequestMethod.POST)
-    public String showNavigationMenu(@PathVariable final long xid, @PathVariable final String xsrfToken)
+    public String showNavigationMenu(final HttpServletRequest request,
+            @PathVariable final long xid, @PathVariable final String xsrfToken)
             throws CandidateException {
-        final CandidateSessionContext candidateSessionContext = getCandidateSessionContext();
-        candidateTestDeliveryService.selectNavigationMenu(candidateSessionContext);
+        candidateTestDeliveryService.selectNavigationMenu(getCandidateSession(request));
 
         /* Redirect to rendering of current session state */
         return redirectToRenderSession(xid, xsrfToken);
     }
 
     /**
-     * @see CandidateTestDeliveryService#selectNonlinearItem(CandidateSessionContext, TestPlanNodeKey)
+     * @see CandidateTestDeliveryService#selectNonlinearItem(CandidateSession, TestPlanNodeKey)
      */
     @RequestMapping(value="/testsession/{xid}/{xsrfToken}/select-item/{key}", method=RequestMethod.POST)
-    public String selectNonlinearItem(@PathVariable final long xid, @PathVariable final String xsrfToken, @PathVariable final String key)
+    public String selectNonlinearItem(final HttpServletRequest request,
+            @PathVariable final long xid, @PathVariable final String xsrfToken, @PathVariable final String key)
             throws CandidateException {
-        final CandidateSessionContext candidateSessionContext = getCandidateSessionContext();
-        candidateTestDeliveryService.selectNonlinearItem(candidateSessionContext, TestPlanNodeKey.fromString(key));
+        candidateTestDeliveryService.selectNonlinearItem(getCandidateSession(request), TestPlanNodeKey.fromString(key));
 
         /* Redirect to rendering of current session state */
         return redirectToRenderSession(xid, xsrfToken);
     }
 
     /**
-     * @see CandidateTestDeliveryService#finishLinearItem(CandidateSessionContext)
+     * @see CandidateTestDeliveryService#finishLinearItem(CandidateSession)
      */
     @RequestMapping(value="/testsession/{xid}/{xsrfToken}/finish-item", method=RequestMethod.POST)
-    public String finishLinearItem(@PathVariable final long xid, @PathVariable final String xsrfToken)
+    public String finishLinearItem(final HttpServletRequest request,
+            @PathVariable final long xid, @PathVariable final String xsrfToken)
             throws CandidateException {
-        final CandidateSessionContext candidateSessionContext = getCandidateSessionContext();
-        candidateTestDeliveryService.finishLinearItem(candidateSessionContext);
+        candidateTestDeliveryService.finishLinearItem(getCandidateSession(request));
 
         /* Redirect to rendering of current session state */
         return redirectToRenderSession(xid, xsrfToken);
     }
 
     /**
-     * @see CandidateTestDeliveryService#endCurrentTestPart(CandidateSessionContext)
+     * @see CandidateTestDeliveryService#endCurrentTestPart(CandidateSession)
      */
     @RequestMapping(value="/testsession/{xid}/{xsrfToken}/end-test-part", method=RequestMethod.POST)
-    public String endCurrentTestPart(@PathVariable final long xid, @PathVariable final String xsrfToken)
+    public String endCurrentTestPart(final HttpServletRequest request,
+            @PathVariable final long xid, @PathVariable final String xsrfToken)
             throws CandidateException {
-        final CandidateSessionContext candidateSessionContext = getCandidateSessionContext();
-        candidateTestDeliveryService.endCurrentTestPart(candidateSessionContext);
+        candidateTestDeliveryService.endCurrentTestPart(getCandidateSession(request));
 
         /* Redirect to rendering of current session state */
         return redirectToRenderSession(xid, xsrfToken);
     }
 
     /**
-     * @see CandidateTestDeliveryService#reviewTestPart(CandidateSessionContext)
+     * @see CandidateTestDeliveryService#reviewTestPart(CandidateSession)
      */
     @RequestMapping(value="/testsession/{xid}/{xsrfToken}/review-test-part", method=RequestMethod.POST)
-    public String reviewTestPart(@PathVariable final long xid, @PathVariable final String xsrfToken)
+    public String reviewTestPart(final HttpServletRequest request,
+            @PathVariable final long xid, @PathVariable final String xsrfToken)
             throws CandidateException {
-        final CandidateSessionContext candidateSessionContext = getCandidateSessionContext();
-        candidateTestDeliveryService.reviewTestPart(candidateSessionContext);
+        candidateTestDeliveryService.reviewTestPart(getCandidateSession(request));
 
         /* Redirect to rendering of current session state */
         return redirectToRenderSession(xid, xsrfToken);
     }
 
     /**
-     * @see CandidateTestDeliveryService#reviewItem(CandidateSessionContext, TestPlanNodeKey)
+     * @see CandidateTestDeliveryService#reviewItem(CandidateSession, TestPlanNodeKey)
      */
     @RequestMapping(value="/testsession/{xid}/{xsrfToken}/review-item/{key}", method=RequestMethod.POST)
-    public String reviewItem(@PathVariable final long xid, @PathVariable final String xsrfToken, @PathVariable final String key)
+    public String reviewItem(final HttpServletRequest request,
+            @PathVariable final long xid, @PathVariable final String xsrfToken, @PathVariable final String key)
             throws CandidateException {
-        final CandidateSessionContext candidateSessionContext = getCandidateSessionContext();
-        candidateTestDeliveryService.reviewItem(candidateSessionContext, TestPlanNodeKey.fromString(key));
+        candidateTestDeliveryService.reviewItem(getCandidateSession(request), TestPlanNodeKey.fromString(key));
 
         /* Redirect to rendering of current session state */
         return redirectToRenderSession(xid, xsrfToken);
     }
 
     /**
-     * @see CandidateTestDeliveryService#requestSolution(CandidateSessionContext, TestPlanNodeKey)
+     * @see CandidateTestDeliveryService#requestSolution(CandidateSession, TestPlanNodeKey)
      */
     @RequestMapping(value="/testsession/{xid}/{xsrfToken}/item-solution/{key}", method=RequestMethod.POST)
-    public String showItemSolution(@PathVariable final long xid, @PathVariable final String xsrfToken, @PathVariable final String key)
+    public String showItemSolution(final HttpServletRequest request,
+            @PathVariable final long xid, @PathVariable final String xsrfToken, @PathVariable final String key)
             throws CandidateException {
-        final CandidateSessionContext candidateSessionContext = getCandidateSessionContext();
-        candidateTestDeliveryService.requestSolution(candidateSessionContext, TestPlanNodeKey.fromString(key));
+        candidateTestDeliveryService.requestSolution(getCandidateSession(request), TestPlanNodeKey.fromString(key));
 
         /* Redirect to rendering of current session state */
         return redirectToRenderSession(xid, xsrfToken);
     }
 
     /**
-     * @see CandidateTestDeliveryService#advanceTestPart(CandidateSessionContext)
+     * @see CandidateTestDeliveryService#advanceTestPart(CandidateSession)
      */
     @RequestMapping(value="/testsession/{xid}/{xsrfToken}/advance-test-part", method=RequestMethod.POST)
-    public String advanceTestPart(@PathVariable final long xid, @PathVariable final String xsrfToken)
+    public String advanceTestPart(final HttpServletRequest request,
+            @PathVariable final long xid, @PathVariable final String xsrfToken)
             throws CandidateException {
-        final CandidateSessionContext candidateSessionContext = getCandidateSessionContext();
-        final CandidateSession candidateSession = candidateTestDeliveryService.advanceTestPart(candidateSessionContext);
+        final CandidateSessionContext candidateSessionContext = getCandidateSessionContext(request);
+        final CandidateSession candidateSession = candidateTestDeliveryService.advanceTestPart(candidateSessionContext.getCandidateSession());
         String redirect;
         if (candidateSession.isTerminated()) {
             /* We exited the test */
@@ -302,13 +307,14 @@ public class CandidateTestController extends CandidateControllerBase {
     }
 
     /**
-     * @see CandidateTestDeliveryService#exitTest(CandidateSessionContext)
+     * @see CandidateTestDeliveryService#exitTest(CandidateSession)
      */
     @RequestMapping(value="/testsession/{xid}/{xsrfToken}/exit-test", method=RequestMethod.POST)
-    public String exitTest(@SuppressWarnings("unused") @PathVariable final long xid, @PathVariable final String xsrfToken)
+    public String exitTest(final HttpServletRequest request,
+            @SuppressWarnings("unused") @PathVariable final long xid, @PathVariable final String xsrfToken)
             throws CandidateException {
-        final CandidateSessionContext candidateSessionContext = getCandidateSessionContext();
-        candidateTestDeliveryService.exitTest(candidateSessionContext);
+        final CandidateSessionContext candidateSessionContext = getCandidateSessionContext(request);
+        candidateTestDeliveryService.exitTest(candidateSessionContext.getCandidateSession());
         return redirectToExitUrl(candidateSessionContext, xsrfToken);
     }
 
@@ -320,11 +326,11 @@ public class CandidateTestController extends CandidateControllerBase {
      */
     @Override
     @RequestMapping(value="/testsession/{xid}/{xsrfToken}/file", method=RequestMethod.GET)
-    public void streamAssessmentPackageFile(@PathVariable final long xid, @PathVariable final String xsrfToken,
-            @RequestParam("href") final String fileHref,
-            final HttpServletRequest request, final HttpServletResponse response)
+    public void streamAssessmentPackageFile(final HttpServletRequest request, final HttpServletResponse response,
+            @PathVariable final long xid, @PathVariable final String xsrfToken,
+            @RequestParam("href") final String fileHref)
             throws IOException, CandidateException {
-        super.streamAssessmentPackageFile(xid, xsrfToken, fileHref, request, response);
+        super.streamAssessmentPackageFile(request, response, xid, xsrfToken, fileHref);
     }
 
     //----------------------------------------------------
@@ -335,10 +341,10 @@ public class CandidateTestController extends CandidateControllerBase {
      */
     @Override
     @RequestMapping(value="/testsession/{xid}/{xsrfToken}/source", method=RequestMethod.GET)
-    public void streamAssessmentSource(@PathVariable final long xid, @PathVariable final String xsrfToken,
-            final HttpServletRequest request, final HttpServletResponse response)
+    public void streamAssessmentSource(final HttpServletRequest request, final HttpServletResponse response,
+            @PathVariable final long xid, @PathVariable final String xsrfToken)
             throws IOException, CandidateException {
-        super.streamAssessmentSource(xid, xsrfToken, request, response);
+        super.streamAssessmentSource(request, response, xid, xsrfToken);
     }
 
     /**
@@ -346,11 +352,11 @@ public class CandidateTestController extends CandidateControllerBase {
      * {@link CandidateSession}
      */
     @RequestMapping(value="/testsession/{xid}/{xsrfToken}/state", method=RequestMethod.GET)
-    public void streamTestSessionState(@SuppressWarnings("unused") @PathVariable final long xid,
-            @SuppressWarnings("unused") @PathVariable final String xsrfToken,
-            final HttpServletResponse response)
+    public void streamTestSessionState(final HttpServletRequest request, final HttpServletResponse response,
+            @SuppressWarnings("unused") @PathVariable final long xid,
+            @SuppressWarnings("unused") @PathVariable final String xsrfToken)
             throws IOException, CandidateException {
-        super.streamSessionState(response);
+        super.streamSessionState(request, response);
     }
 
     /**
@@ -358,19 +364,20 @@ public class CandidateTestController extends CandidateControllerBase {
      * {@link CandidateSession}
      */
     @RequestMapping(value="/testsession/{xid}/{xsrfToken}/result", method=RequestMethod.GET)
-    public void streamAssessmentResult(@SuppressWarnings("unused") @PathVariable final long xid,
-            @SuppressWarnings("unused") @PathVariable final String xsrfToken,
-            final HttpServletResponse response)
+    public void streamAssessmentResult(final HttpServletRequest request, final HttpServletResponse response,
+            @SuppressWarnings("unused") @PathVariable final long xid,
+            @SuppressWarnings("unused") @PathVariable final String xsrfToken)
             throws IOException, CandidateException {
-        super.streamAssessmentResult(response);
+        super.streamAssessmentResult(request, response);
     }
 
     @RequestMapping(value="/testsession/{xid}/{xsrfToken}/validation", method=RequestMethod.GET)
-    public String showPackageValidationResult(@SuppressWarnings("unused") @PathVariable final long xid,
+    public String showPackageValidationResult(final HttpServletRequest request,
+            @SuppressWarnings("unused") @PathVariable final long xid,
             @SuppressWarnings("unused") @PathVariable final String xsrfToken,
             final Model model)
             throws CandidateException {
-        return super.showPackageValidationResult(model);
+        return super.showPackageValidationResult(request, model);
     }
 
     //----------------------------------------------------
