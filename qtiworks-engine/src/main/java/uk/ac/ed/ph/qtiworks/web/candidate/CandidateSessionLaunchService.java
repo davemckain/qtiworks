@@ -112,7 +112,7 @@ public class CandidateSessionLaunchService {
         final User candidate = identityService.assertCurrentThreadUser();
         final Assessment assessment = delivery.getAssessment();
         if (!assessment.getOwnerUser().equals(candidate)) {
-            logAndThrowLaunchException(candidate, assessment, CandidateExceptionReason.LAUNCH_ASSESSMENT_NO_ACCESS);
+            logAndThrowLaunchException(candidate, delivery, CandidateExceptionReason.LAUNCH_ASSESSMENT_NO_ACCESS);
         }
         return launchCandidateSession(httpSession, candidate, delivery, true, sessionExitReturnUrl, null, null);
     }
@@ -132,7 +132,7 @@ public class CandidateSessionLaunchService {
         final User candidate = identityService.assertCurrentThreadUser();
         final String deliveryTokenVerify = generateWebServiceDeliveryToken(delivery);
         if (!deliveryTokenVerify.equals(deliveryToken)) {
-            logAndThrowLaunchException(candidate, assessment, CandidateExceptionReason.LAUNCH_ASSESSMENT_NO_ACCESS);
+            logAndThrowLaunchException(candidate, delivery, CandidateExceptionReason.LAUNCH_ASSESSMENT_NO_ACCESS);
         }
 
         /* We don't check ownership of the Assessment here, since the user launching the
@@ -141,7 +141,7 @@ public class CandidateSessionLaunchService {
          * However, we will at least make sure that the Assessment is owned by an anonymous user.
          */
         if (!assessment.getOwnerUser().isAnonymous()) {
-            logAndThrowLaunchException(candidate, assessment, CandidateExceptionReason.LAUNCH_ASSESSMENT_NO_ACCESS);
+            logAndThrowLaunchException(candidate, delivery, CandidateExceptionReason.LAUNCH_ASSESSMENT_NO_ACCESS);
         }
 
         /* OK then, we can finally launch a new CandidateSession */
