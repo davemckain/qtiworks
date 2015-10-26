@@ -106,6 +106,7 @@ public final class QtiXmlReader {
         for (final Entry<String, ExtensionNamespaceInfo> entry : jqtiExtensionManager.getExtensionNamepaceInfoMap().entrySet()) {
             resultingSchemaMapTemplate.put(entry.getKey(), entry.getValue().getSchemaLocationUri());
         }
+        resultingSchemaMapTemplate.put(QtiConstants.QTI_22_NAMESPACE_URI, QtiConstants.QTI_22_SCHEMA_LOCATION);
         resultingSchemaMapTemplate.put(QtiConstants.QTI_21_NAMESPACE_URI, QtiConstants.QTI_21_SCHEMA_LOCATION);
         resultingSchemaMapTemplate.put(QtiConstants.QTI_RESULT_21_NAMESPACE_URI, QtiConstants.QTI_RESULT_21_SCHEMA_LOCATION);
         resultingSchemaMapTemplate.put(QtiConstants.QTI_20_NAMESPACE_URI, QtiConstants.QTI_20_SCHEMA_LOCATION);
