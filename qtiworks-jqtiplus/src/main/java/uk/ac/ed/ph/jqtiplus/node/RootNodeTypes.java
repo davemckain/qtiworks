@@ -154,14 +154,17 @@ public enum RootNodeTypes {
         /* Check namespaces */
         final String namespaceUri = sourceElement.getNamespaceURI();
         if (root instanceof AssessmentResult) {
-            if (!QtiConstants.QTI_RESULT_21_NAMESPACE_URI.equals(namespaceUri)) {
+            if (!QtiConstants.QTI_METADATA_22_SCHEMA_LOCATION.equals(namespaceUri)
+                    && !QtiConstants.QTI_RESULT_21_NAMESPACE_URI.equals(namespaceUri)) {
                 throw new IllegalArgumentException("Element {" + namespaceUri
                         + "}" + sourceElement.getLocalName()
                         + " is not in the correct namespace " + QtiConstants.QTI_RESULT_21_NAMESPACE_URI);
             }
         }
         else {
-            if (!QtiConstants.QTI_21_NAMESPACE_URI.equals(namespaceUri) && !QtiConstants.QTI_20_NAMESPACE_URI.equals(namespaceUri)) {
+            if (!QtiConstants.QTI_22_NAMESPACE_URI.equals(namespaceUri)
+                    && !QtiConstants.QTI_21_NAMESPACE_URI.equals(namespaceUri)
+                    && !QtiConstants.QTI_20_NAMESPACE_URI.equals(namespaceUri)) {
                 throw new IllegalArgumentException("Element {" + namespaceUri
                         + "}" + sourceElement.getLocalName()
                         + " is not in either the QTI 2.1 or 2.0 namespaces");
