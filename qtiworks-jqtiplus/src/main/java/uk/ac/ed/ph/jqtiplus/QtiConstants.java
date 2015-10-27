@@ -45,10 +45,14 @@ public final class QtiConstants {
     public static final String QTI_20_NAMESPACE_URI = "http://www.imsglobal.org/xsd/imsqti_v2p0";
     public static final String QTI_21_NAMESPACE_URI = "http://www.imsglobal.org/xsd/imsqti_v2p1";
     public static final String QTI_RESULT_21_NAMESPACE_URI = "http://www.imsglobal.org/xsd/imsqti_result_v2p1";
+    public static final String QTI_22_NAMESPACE_URI = "http://www.imsglobal.org/xsd/imsqti_v2p2";
 
     public static final String QTI_20_SCHEMA_LOCATION = "http://www.imsglobal.org/xsd/imsqti_v2p0.xsd";
     public static final String QTI_21_SCHEMA_LOCATION = "http://www.imsglobal.org/xsd/imsqti_v2p1.xsd";
     public static final String QTI_RESULT_21_SCHEMA_LOCATION = "http://www.imsglobal.org/xsd/imsqti_result_v2p1.xsd";
+    public static final String QTI_22_SCHEMA_LOCATION = "http://www.imsglobal.org/xsd/imsqti_v2p2.xsd";
+    public static final String QTI_MODEL_22_SCHEMA_LOCATION = "http://www.imsglobal.org/xsd/qtiv2p2_imscpv1p2_v1p0.xsd";
+    public static final String QTI_METADATA_22_SCHEMA_LOCATION = "http://www.imsglobal.org/xsd/imsqti_metadata_v2p2.xsd";
 
     public static final String CP_11_NAMESPACE_URI = "http://www.imsglobal.org/xsd/imscp_v1p1";
     public static final String CP_12_NAMESPACE_URI = "http://www.imsglobal.org/xsd/imscp_v1p2";
