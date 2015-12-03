@@ -35,6 +35,7 @@ package uk.ac.ed.ph.jqtiplus.node.test;
 
 import uk.ac.ed.ph.jqtiplus.QtiConstants;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
+import uk.ac.ed.ph.jqtiplus.group.item.StylesheetGroup;
 import uk.ac.ed.ph.jqtiplus.group.outcome.declaration.OutcomeDeclarationGroup;
 import uk.ac.ed.ph.jqtiplus.group.outcome.processing.OutcomeProcessingGroup;
 import uk.ac.ed.ph.jqtiplus.group.test.TestFeedbackGroup;
@@ -43,6 +44,7 @@ import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.IdentifiableNode;
+import uk.ac.ed.ph.jqtiplus.node.item.Stylesheet;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.test.outcome.processing.OutcomeProcessing;
@@ -96,6 +98,7 @@ public final class AssessmentTest extends ControlObject<String> implements Asses
         getNodeGroups().add(new TestPartGroup(this));
         getNodeGroups().add(new OutcomeProcessingGroup(this));
         getNodeGroups().add(new TestFeedbackGroup(this));
+        getNodeGroups().add(new StylesheetGroup(this));         // stylesheet [0..*]
 
         /* create a special declaration for the internal duration variable */
         durationResponseDeclaration = new ResponseDeclaration(this);
@@ -167,6 +170,14 @@ public final class AssessmentTest extends ControlObject<String> implements Asses
         getAttributes().getStringAttribute(ATTR_TOOL_VERSION_NAME).setValue(toolVersion);
     }
 
+    /**
+     * Gets stylesheet children.
+     *
+     * @return stylesheet children
+     */
+    public List<Stylesheet> getStylesheets() {
+        return getNodeGroups().getStylesheetGroup().getStylesheets();
+    }
 
     @Override
     public List<OutcomeDeclaration> getOutcomeDeclarations() {
