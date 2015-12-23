@@ -47,7 +47,7 @@ All Rights Reserved
     <commons-fileupload.version>1.3.1</commons-fileupload.version>
     <commons-pool.version>2.4.2</commons-pool.version>
     <oauth.version>20100601</oauth.version>
-    <httpclient.version>4.3.6</httpclient.version>
+    <httpclient.version>4.5.1</httpclient.version>
     <guava.version>18.0</guava.version>
     <junit.version>4.12</junit.version>
     <xmlunit.version>1.6</xmlunit.version>
