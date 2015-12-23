@@ -27,8 +27,8 @@ All Rights Reserved
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>commons-pool</groupId>
-      <artifactId>commons-pool</artifactId>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-pool2</artifactId>
       <version>${commons-pool.version}</version>
     </dependency>
     <dependency>
