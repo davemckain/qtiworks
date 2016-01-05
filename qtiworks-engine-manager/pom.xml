@@ -22,7 +22,7 @@ etc...
   <parent>
     <groupId>uk.ac.ed.ph.qtiworks</groupId>
     <artifactId>qtiworks</artifactId>
-    <version>1.0-beta8</version>
+    <version>1.0-beta9</version>
   </parent>
   <dependencies>
     <dependency>
