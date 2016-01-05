@@ -1,0 +1,22 @@
+<!--
+
+Example of an assessmentItem that fails the additional JQTI+ validation checks.
+
+-->
+<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd"
+  identifier="minimal" title="Minimal QTI 2.1 Example" adaptive="false" timeDependent="false">
+  <responseDeclaration identifier="RESPONSE" cardinality="single" baseType="float">
+    <defaultValue>
+      <value>0.0</value>
+    </defaultValue>
+  </responseDeclaration>
+  <itemBody>
+    <div>
+      <choiceInteraction responseIdentifier="RESPONSE" shuffle="false" maxChoices="1">
+        <simpleChoice identifier="CHOICE1">1</simpleChoice>
+      </choiceInteraction>
+    </div>
+  </itemBody>
+</assessmentItem>

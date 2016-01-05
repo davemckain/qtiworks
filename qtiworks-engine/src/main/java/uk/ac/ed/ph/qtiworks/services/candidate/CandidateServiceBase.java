@@ -39,7 +39,6 @@ import uk.ac.ed.ph.qtiworks.services.CandidateAuditLogger;
 import uk.ac.ed.ph.qtiworks.services.CandidateDataService;
 import uk.ac.ed.ph.qtiworks.services.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
-import uk.ac.ed.ph.qtiworks.web.candidate.CandidateSessionContext;
 
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 
@@ -80,9 +79,8 @@ public abstract class CandidateServiceBase {
     //----------------------------------------------------
     // Access controls
 
-    protected void assertSessionType(final CandidateSessionContext candidateSessionContext, final AssessmentObjectType assessmentObjectType)
+    protected void assertSessionType(final CandidateSession candidateSession, final AssessmentObjectType assessmentObjectType)
             throws CandidateException {
-        final CandidateSession candidateSession = candidateSessionContext.getCandidateSession();
         if (assessmentObjectType != candidateSession.getDelivery().getAssessment().getAssessmentType()) {
             candidateAuditLogger.logAndThrowCandidateException(candidateSession, CandidateExceptionReason.SESSION_WRONG_TYPE);
         }

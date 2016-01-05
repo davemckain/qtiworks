@@ -186,8 +186,8 @@ public class SimpleRestRunner {
             throws IOException {
         try {
             /* Create new candidate session */
-            final String returnUrl = "/anonymous/simplerestrunner/exit";
-            final CandidateSessionTicket candidateSessionTicket = candidateSessionLaunchService.launchWebServiceCandidateSession(httpSession, did, deliveryToken, returnUrl);
+            final String sessionExistReturnUrl = "/anonymous/simplerestrunner/exit";
+            final CandidateSessionTicket candidateSessionTicket = candidateSessionLaunchService.launchWebServiceCandidateSession(httpSession, did, deliveryToken, sessionExistReturnUrl);
 
             /* Redirect to candidate dispatcher */
             final String launchUrl = request.getContextPath()

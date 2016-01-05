@@ -66,22 +66,19 @@ public final class CandidateException extends Exception {
     private final CandidateExceptionReason candidateExceptionReason;
 
     /**
-     * Use this for an exception in creating a {@link CandidateSession} on an {@link Assessment}
-     * when the {@link Delivery} to be run has not yet been determined.
-     *
-     * @see CandidateSessionStarter
+     * Use this for an exception on an already established {@link CandidateSession}.
      */
-    public CandidateException(final User candidate, final Assessment assessment, final CandidateExceptionReason candidateExceptionReason) {
-        super("CandidateException launching CandidateSession for User " + candidate.getId() + " on Assessment " + assessment.getId() + "; reason=" + candidateExceptionReason);
-        this.candidate = candidate;
-        this.candidateSession = null;
-        this.delivery = null;
-        this.assessment = assessment;
+    public CandidateException(final CandidateSession candidateSession, final CandidateExceptionReason candidateExceptionReason) {
+        super("CandidateException on CandidateSession " + candidateSession.getId() + "; reason=" + candidateExceptionReason);
+        this.candidate = candidateSession.getCandidate();
+        this.candidateSession = candidateSession;
+        this.delivery = candidateSession.getDelivery();
+        this.assessment = delivery.getAssessment();
         this.candidateExceptionReason = candidateExceptionReason;
     }
 
     /**
-     * Use this for an exception in creating a {@link CandidateSession} on a non-null {@link Delivery}
+     * Use this for an exception in creating a {@link CandidateSession} on a non-null {@link Delivery}.
      *
      * @see CandidateSessionStarter
      */
@@ -95,14 +92,17 @@ public final class CandidateException extends Exception {
     }
 
     /**
-     * Use this for an exception on an already established {@link CandidateSession}.
+     * Use this for an exception in creating a {@link CandidateSession} on an {@link Assessment}
+     * when the {@link Delivery} to be run has not yet been determined.
+     *
+     * @see CandidateSessionStarter
      */
-    public CandidateException(final CandidateSession candidateSession, final CandidateExceptionReason candidateExceptionReason) {
-        super("CandidateException on CandidateSession " + candidateSession.getId() + "; reason=" + candidateExceptionReason);
-        this.candidate = candidateSession.getCandidate();
-        this.candidateSession = candidateSession;
-        this.delivery = candidateSession.getDelivery();
-        this.assessment = delivery.getAssessment();
+    public CandidateException(final User candidate, final Assessment assessment, final CandidateExceptionReason candidateExceptionReason) {
+        super("CandidateException launching CandidateSession for User " + candidate.getId() + " on Assessment " + assessment.getId() + "; reason=" + candidateExceptionReason);
+        this.candidate = candidate;
+        this.candidateSession = null;
+        this.delivery = null;
+        this.assessment = assessment;
         this.candidateExceptionReason = candidateExceptionReason;
     }
 

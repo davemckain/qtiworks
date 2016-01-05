@@ -256,8 +256,8 @@ public class InstructorAssessmentManagementController {
     private String runDelivery(final HttpSession httpSession, final long aid, final Delivery delivery, final boolean authorMode)
             throws CandidateException {
         final User caller = identityService.getCurrentThreadUser();
-        final String returnUrl = instructorRouter.buildWithinContextUrl("/assessment/" + aid);
-        final CandidateSessionTicket candidateSessionTicket = candidateSessionLaunchService.launchInstructorTrialSession(httpSession, caller, delivery, authorMode, returnUrl);
+        final String sessionExitReturnUrl = instructorRouter.buildWithinContextUrl("/assessment/" + aid);
+        final CandidateSessionTicket candidateSessionTicket = candidateSessionLaunchService.launchInstructorTrialSession(httpSession, caller, delivery, authorMode, sessionExitReturnUrl);
         return GlobalRouter.buildSessionStartRedirect(candidateSessionTicket);
     }
 
@@ -318,8 +318,8 @@ public class InstructorAssessmentManagementController {
             throws PrivilegeException, DomainEntityNotFoundException, CandidateException {
         final User caller = identityService.getCurrentThreadUser();
         final Delivery delivery = assessmentManagementService.lookupDelivery(did);
-        final String returnUrl = instructorRouter.buildWithinContextUrl("/delivery/" + did);
-        final CandidateSessionTicket candidateSessionTicket = candidateSessionLaunchService.launchInstructorTrialSession(httpSession, caller, delivery, true, returnUrl);
+        final String sessionExitReturnUrl = instructorRouter.buildWithinContextUrl("/delivery/" + did);
+        final CandidateSessionTicket candidateSessionTicket = candidateSessionLaunchService.launchInstructorTrialSession(httpSession, caller, delivery, true, sessionExitReturnUrl);
         return GlobalRouter.buildSessionStartRedirect(candidateSessionTicket);
     }
 

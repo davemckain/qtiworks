@@ -180,8 +180,8 @@ public class AssessmentPackageFileService {
                 final AssessmentObjectValidationResult<?> validationResult = loadAndValidateAssessment(assessmentPackage);
                 assessmentPackage.setValidated(true);
                 assessmentPackage.setLaunchable(validationResult.getResolvedAssessmentObject().getRootNodeLookup().wasSuccessful());
-                assessmentPackage.setErrorCount(validationResult.getErrors().size());
-                assessmentPackage.setWarningCount(validationResult.getWarnings().size());
+                assessmentPackage.setErrorCount(validationResult.getModelValidationErrors().size());
+                assessmentPackage.setWarningCount(validationResult.getModelValidationWarnings().size());
                 assessmentPackage.setValid(validationResult.isValid());
             }
         }
@@ -372,8 +372,8 @@ public class AssessmentPackageFileService {
         /* Record summary result back into AssessmentPackage */
         assessmentPackage.setValidated(true);
         assessmentPackage.setLaunchable(result.getResolvedAssessmentObject().getRootNodeLookup().wasSuccessful());
-        assessmentPackage.setErrorCount(result.getErrors().size());
-        assessmentPackage.setWarningCount(result.getWarnings().size());
+        assessmentPackage.setErrorCount(result.getModelValidationErrors().size());
+        assessmentPackage.setWarningCount(result.getModelValidationWarnings().size());
         assessmentPackage.setValid(result.isValid());
         return result;
     }

@@ -103,6 +103,10 @@ public abstract class CustomInteraction<E extends JqtiExtensionPackage<E>> exten
     protected void bindResponse(final E jqtiExtensionPackage, final InteractionBindingContext interactionBindingContext, final ResponseData responseData)
             throws ResponseBindingException {
         final ResponseDeclaration responseDeclaration = getResponseDeclaration();
+        if (responseDeclaration == null) {
+            interactionBindingContext.fireRuntimeError(this, "No corresponding responseDeclaration found with identifier " + getResponseIdentifier());
+            return;
+        }
         final Value value = parseResponse(jqtiExtensionPackage, responseDeclaration, responseData);
         interactionBindingContext.bindResponseVariable(responseDeclaration.getIdentifier(), value);
     }

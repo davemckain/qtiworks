@@ -40,8 +40,6 @@ import uk.ac.ed.ph.qtiworks.services.IdentityService;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
-import java.io.Serializable;
-
 /**
  * This provides LTI-specific information about the "current" LTI instructor user. It is
  * stored in the current thread by the {@link IdentityService} whenever the current user
@@ -56,9 +54,7 @@ import java.io.Serializable;
  *
  * @author David McKain
  */
-public final class LtiIdentityContext implements Serializable {
-
-    private static final long serialVersionUID = 1412636123357858458L;
+public final class LtiIdentityContext {
 
     /**
      * Indicates which {@link LtiResource} this tickets provides access to,

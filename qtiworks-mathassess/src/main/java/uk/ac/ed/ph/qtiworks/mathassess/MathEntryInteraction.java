@@ -149,6 +149,10 @@ public final class MathEntryInteraction extends CustomInteraction<MathAssessExte
             throws ResponseBindingException {
         /* Bind response value as normal */
         final ResponseDeclaration responseDeclaration = getResponseDeclaration();
+        if (responseDeclaration == null) {
+            interactionBindingContext.fireRuntimeError(this, "No corresponding responseDeclaration found with identifier " + getResponseIdentifier());
+            return;
+        }
         final Value value = parseResponse(mathAssessExtensionPackage, responseDeclaration, responseData);
         interactionBindingContext.bindResponseVariable(responseDeclaration.getIdentifier(), value);
 

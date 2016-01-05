@@ -100,6 +100,10 @@ public abstract class Interaction extends BodyElement {
     }
 
     /**
+     * Returns the (first) {@link ResponseDeclaration} corresponding to this {@link Interaction}.
+     * <p>
+     * Note that this may return NULL for invalid items.
+     * <p>
      * NB: Don't use this for validation as it only returns the first {@link ResponseDeclaration}
      * if found, so is no good for validating references.
      */
@@ -162,6 +166,10 @@ public abstract class Interaction extends BodyElement {
             throws ResponseBindingException {
         Assert.notNull(responseData, "responseData");
         final ResponseDeclaration responseDeclaration = getResponseDeclaration();
+        if (responseDeclaration == null) {
+            interactionBindingContext.fireRuntimeError(this, "No corresponding responseDeclaration found with identifier " + getResponseIdentifier());
+            return;
+        }
         final Value value = parseResponse(responseDeclaration, responseData);
         interactionBindingContext.bindResponseVariable(responseDeclaration.getIdentifier(), value);
     }

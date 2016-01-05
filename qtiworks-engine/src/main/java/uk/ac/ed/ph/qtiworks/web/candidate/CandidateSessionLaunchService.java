@@ -102,7 +102,8 @@ public class CandidateSessionLaunchService {
     //-------------------------------------------------
     // Anonymous session launching
 
-    public CandidateSessionTicket launchAnonymousCandidateSession(final HttpSession httpSession, final Delivery delivery, final String returnUrl)
+    public CandidateSessionTicket launchAnonymousCandidateSession(final HttpSession httpSession,
+            final Delivery delivery, final String sessionExitReturnUrl)
             throws CandidateException {
         Assert.notNull(httpSession, "httpSession");
         Assert.notNull(delivery, "delivery");
@@ -111,9 +112,9 @@ public class CandidateSessionLaunchService {
         final User candidate = identityService.assertCurrentThreadUser();
         final Assessment assessment = delivery.getAssessment();
         if (!assessment.getOwnerUser().equals(candidate)) {
-            logAndThrowLaunchException(candidate, assessment, CandidateExceptionReason.LAUNCH_ASSESSMENT_NO_ACCESS);
+            logAndThrowLaunchException(candidate, delivery, CandidateExceptionReason.LAUNCH_ASSESSMENT_NO_ACCESS);
         }
-        return launchCandidateSession(httpSession, candidate, delivery, true, returnUrl, null, null);
+        return launchCandidateSession(httpSession, candidate, delivery, true, sessionExitReturnUrl, null, null);
     }
 
     //-------------------------------------------------
@@ -121,7 +122,7 @@ public class CandidateSessionLaunchService {
     // (This uses a slightly different 2-step launch process that avoids cookies.)
 
     public CandidateSessionTicket launchWebServiceCandidateSession(final HttpSession httpSession,
-            final long did, final String deliveryToken, final String returnUrl)
+            final long did, final String deliveryToken, final String sessionExitReturnUrl)
             throws CandidateException, DomainEntityNotFoundException {
         Assert.notNull(httpSession, "httpSession");
 
@@ -131,7 +132,7 @@ public class CandidateSessionLaunchService {
         final User candidate = identityService.assertCurrentThreadUser();
         final String deliveryTokenVerify = generateWebServiceDeliveryToken(delivery);
         if (!deliveryTokenVerify.equals(deliveryToken)) {
-            logAndThrowLaunchException(candidate, assessment, CandidateExceptionReason.LAUNCH_ASSESSMENT_NO_ACCESS);
+            logAndThrowLaunchException(candidate, delivery, CandidateExceptionReason.LAUNCH_ASSESSMENT_NO_ACCESS);
         }
 
         /* We don't check ownership of the Assessment here, since the user launching the
@@ -140,11 +141,11 @@ public class CandidateSessionLaunchService {
          * However, we will at least make sure that the Assessment is owned by an anonymous user.
          */
         if (!assessment.getOwnerUser().isAnonymous()) {
-            logAndThrowLaunchException(candidate, assessment, CandidateExceptionReason.LAUNCH_ASSESSMENT_NO_ACCESS);
+            logAndThrowLaunchException(candidate, delivery, CandidateExceptionReason.LAUNCH_ASSESSMENT_NO_ACCESS);
         }
 
         /* OK then, we can finally launch a new CandidateSession */
-        return launchCandidateSession(httpSession, candidate, delivery, true, returnUrl, null, null);
+        return launchCandidateSession(httpSession, candidate, delivery, true, sessionExitReturnUrl, null, null);
     }
 
     /**
@@ -162,13 +163,14 @@ public class CandidateSessionLaunchService {
     //-------------------------------------------------
     // System sample launching
 
-    public CandidateSessionTicket launchSystemSampleSession(final HttpSession httpSession, final long aid, final String returnUrl)
+    public CandidateSessionTicket launchSystemSampleSession(final HttpSession httpSession,
+            final long aid, final String sessionExitReturnUrl)
             throws DomainEntityNotFoundException, CandidateException {
         Assert.notNull(httpSession, "httpSession");
 
         final User candidate = identityService.assertCurrentThreadUser();
         final Delivery sampleDelivery = lookupSystemSampleDelivery(aid);
-        return launchCandidateSession(httpSession, candidate, sampleDelivery, true, returnUrl, null, null);
+        return launchCandidateSession(httpSession, candidate, sampleDelivery, true, sessionExitReturnUrl, null, null);
     }
 
     private Delivery lookupSystemSampleDelivery(final long aid)
@@ -195,11 +197,12 @@ public class CandidateSessionLaunchService {
     //----------------------------------------------------
     // Instructor mode
 
-    public CandidateSessionTicket launchInstructorTrialSession(final HttpSession httpSession, final User candidate, final Delivery delivery, final boolean authorMode,
-            final String returnUrl)
+    public CandidateSessionTicket launchInstructorTrialSession(final HttpSession httpSession,
+            final User candidate, final Delivery delivery, final boolean authorMode,
+            final String sessionExitReturnUrl)
             throws CandidateException {
         Assert.notNull(httpSession, "httpSession");
-        return launchCandidateSession(httpSession, candidate, delivery, authorMode, returnUrl, null, null);
+        return launchCandidateSession(httpSession, candidate, delivery, authorMode, sessionExitReturnUrl, null, null);
     }
 
     //----------------------------------------------------
@@ -212,7 +215,7 @@ public class CandidateSessionLaunchService {
      * Access controls are checked on the {@link Delivery}.
      */
     public CandidateSessionTicket launchLinkLevelLtiCandidateSession(final HttpSession httpSession,
-            final LtiUser candidate, final String returnUrl,
+            final LtiUser candidate, final String sessionExitReturnUrl,
             final String lisOutcomeServiceUrl, final String lisResultSourcedid)
             throws CandidateException {
         Assert.notNull(httpSession, "httpSession");
@@ -234,13 +237,13 @@ public class CandidateSessionLaunchService {
         /* Now launch session */
         return launchCandidateSession(httpSession, candidate, delivery,
                 false /* Never use author mode here */,
-                sanitiseReturnUrl(returnUrl) /* Return URL might not be trustworthy */,
+                sanitiseReturnUrl(sessionExitReturnUrl) /* Return URL might not be trustworthy */,
                 lisOutcomeServiceUrl, lisResultSourcedid);
     }
 
     public CandidateSessionTicket launchDomainLevelLtiCandidateSession(final HttpSession httpSession,
             final LtiUser candidate, final LtiResource ltiResource,
-            final String returnUrl, final String lisOutcomeServiceUrl, final String lisResultSourcedid)
+            final String sessionExitReturnUrl, final String lisOutcomeServiceUrl, final String lisResultSourcedid)
             throws CandidateException {
         Assert.notNull(httpSession, "httpSession");
         Assert.notNull(candidate, "candidate");
@@ -262,17 +265,19 @@ public class CandidateSessionLaunchService {
 
         /* Now launch session */
         return launchCandidateSession(httpSession, candidate, delivery, authorMode,
-                sanitiseReturnUrl(returnUrl) /* Return URL might not be trustworthy */,
+                sanitiseReturnUrl(sessionExitReturnUrl) /* Return URL might not be trustworthy */,
                 lisOutcomeServiceUrl, lisResultSourcedid);
     }
 
     //----------------------------------------------------
     // Low-level launches.
     // NB: Caller should have checked that candidate is allowed to launch session before here,
-    // and the returnUrl should have been sanitised (if appropriate) beforehand too.
+    // and the sessionExitReturnUrl should have been sanitised (if appropriate) beforehand too.
 
-    private CandidateSessionTicket launchCandidateSession(final HttpSession httpSession, final User candidate, final Delivery delivery, final boolean authorMode,
-            final String returnUrl, final String lisOutcomeServiceUrl, final String lisResultSourcedid)
+    private CandidateSessionTicket launchCandidateSession(final HttpSession httpSession,
+            final User candidate, final Delivery delivery, final boolean authorMode,
+            final String sessionExitReturnUrl,
+            final String lisOutcomeServiceUrl, final String lisResultSourcedid)
             throws CandidateException {
         /* Create/reuse session */
         final CandidateSession candidateSession = candidateSessionStarter.launchCandidateSession(candidate, delivery,
@@ -286,7 +291,7 @@ public class CandidateSessionLaunchService {
                 candidate.getId(),
                 candidateSession.getId(),
                 delivery.getAssessment().getAssessmentType(),
-                returnUrl);
+                sessionExitReturnUrl);
         CandidateSessionAuthenticationFilter.authenticateUserForHttpSession(httpSession, candidateSessionTicket);
 
         /* Caller should now issue appropriate redirect to session... */
@@ -305,24 +310,24 @@ public class CandidateSessionLaunchService {
         candidateAuditLogger.logAndThrowCandidateException(candidate, assessment, reason);
     }
 
-    private String sanitiseReturnUrl(final String returnUrl) {
-        if (returnUrl==null) {
+    private String sanitiseReturnUrl(final String sessionExitReturnUrl) {
+        if (sessionExitReturnUrl==null) {
             return null;
         }
         /* Allow valid http:// or https:// URIs only */
         final URI exitUrlUri;
         try {
-            exitUrlUri = new URI(returnUrl);
+            exitUrlUri = new URI(sessionExitReturnUrl);
         }
         catch (final URISyntaxException e) {
-            auditLogger.recordEvent("Rejecting return URL " + returnUrl + " - not a URI");
+            auditLogger.recordEvent("Rejecting return URL " + sessionExitReturnUrl + " - not a URI");
             return null;
         }
         final String scheme = exitUrlUri.getScheme();
         if (!scheme.equals("http") && !scheme.equals("https")) {
-            auditLogger.recordEvent("Rejecting return URL " + returnUrl + " - only accepting http and https schemes");
+            auditLogger.recordEvent("Rejecting return URL " + sessionExitReturnUrl + " - only accepting http and https schemes");
         }
         /* If still here, then OK */
-        return returnUrl;
+        return sessionExitReturnUrl;
     }
 }

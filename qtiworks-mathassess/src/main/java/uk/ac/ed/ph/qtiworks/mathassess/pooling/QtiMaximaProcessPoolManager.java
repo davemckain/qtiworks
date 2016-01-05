@@ -42,7 +42,7 @@ import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jacomax.MaximaConfiguration;
 import uk.ac.ed.ph.snuggletex.utilities.StylesheetCache;
 
-import org.apache.commons.pool.impl.GenericObjectPool;
+import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,7 +61,7 @@ public final class QtiMaximaProcessPoolManager implements QtiMaximaProcessManage
     private StylesheetCache stylesheetCache;
     private MaximaConfiguration maximaConfiguration;
 
-    private GenericObjectPool qtiMaximaProcessPool;
+    private GenericObjectPool<QtiMaximaProcess> qtiMaximaProcessPool;
 
     public StylesheetCache getStylesheetCache() {
         return stylesheetCache;
@@ -85,13 +85,13 @@ public final class QtiMaximaProcessPoolManager implements QtiMaximaProcessManage
     public void init() {
         Assert.notNull(maximaConfiguration, "maximaConfiguration");
         Assert.notNull(stylesheetCache, "stylesheetCache");
-        final PoolableQtiMaximaProcessFactory factory = new PoolableQtiMaximaProcessFactory();
+        final PooledQtiMaximaProcessFactory factory = new PooledQtiMaximaProcessFactory();
         factory.setMaximaConfiguration(maximaConfiguration);
         factory.setStylesheetCache(stylesheetCache);
         factory.init();
 
         logger.info("Creating QtiMaximaProcess Object pool");
-        qtiMaximaProcessPool = new GenericObjectPool(factory);
+        qtiMaximaProcessPool = new GenericObjectPool<QtiMaximaProcess>(factory);
         qtiMaximaProcessPool.setTestOnBorrow(true);
         qtiMaximaProcessPool.setTestOnReturn(true);
     }
@@ -111,7 +111,7 @@ public final class QtiMaximaProcessPoolManager implements QtiMaximaProcessManage
     @Override
     public QtiMaximaProcess obtainProcess() {
         try {
-            return (QtiMaximaProcess) qtiMaximaProcessPool.borrowObject();
+            return qtiMaximaProcessPool.borrowObject();
         }
         catch (final Exception e) {
             throw new MathAssessCasException("Could not obtain QtiMaximaProcess from pool", e);

@@ -65,9 +65,22 @@ import javax.persistence.TemporalType;
  * (This class is should be considered abstract, though has been made concrete to allow
  * the underlying JPA reflection magic to work correctly.)
  * <p>
- * Developer note: The ID of a {@link User} is often referred to as an
- * <code>uid</code> in the code. That name is however not used as the name of the ID column
- * in the database, since <code>uid</code> is a reserved word in some databases (e.g. Oracle).
+ *
+ * <h2>Developer notes</h2>
+ *
+ * <ul>
+ *   <li>
+ *     Subclasses should implement the {@link #getBusinessKey()} method. The business key
+ *     <strong>MUST</strong> be a 'path' string with depth 2, i.e. <code>foo/bar</code>,
+ *     as this is used to build directories for storing assessment files and a fixed depth
+ *     is assumed by the data deletion code.
+ *   </li>
+ *   <li>
+ *     The ID of a {@link User} is often referred to as an <code>uid</code> in the code.
+ *     That name is however not used as the name of the ID column in the database,
+ *     since <code>uid</code> is a reserved word in some databases (e.g. Oracle).
+ *   </li>
+ * </ul>
  *
  * @author David McKain
  */

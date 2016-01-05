@@ -20,7 +20,7 @@ All Rights Reserved
   <c:when test="${qtiXmlObjectReadResult==null}">
     <%-- Did not get this far --%>
   </c:when>
-  <c:when test="${empty validationResult.errors && empty validationResult.warnings}">
+  <c:when test="${empty validationResult.modelValidationErrors && empty validationResult.modelValidationWarnings}">
     <div class="resultPanel success">
       <h4>JQTI+ validation succeeded</h4>
       <div class="details">
@@ -49,7 +49,7 @@ All Rights Reserved
             </tr>
           </thead>
           <tbody>
-            <c:forEach var="i" items="${validationResult.errors}">
+            <c:forEach var="i" items="${validationResult.modelValidationErrors}">
               <c:set var="node" value="${i.qtiNode}"/>
               <tr>
                <td class="center">Error</td>
@@ -59,7 +59,7 @@ All Rights Reserved
                <td><c:out value="${i.message}"/></td>
               </tr>
             </c:forEach>
-            <c:forEach var="i" items="${validationResult.warnings}">
+            <c:forEach var="i" items="${validationResult.modelValidationWarnings}">
               <c:set var="node" value="${i.qtiNode}"/>
               <tr>
                <td class="center">Warning</td>

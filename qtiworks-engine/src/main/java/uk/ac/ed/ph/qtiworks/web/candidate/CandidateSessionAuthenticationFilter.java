@@ -33,9 +33,9 @@
  */
 package uk.ac.ed.ph.qtiworks.web.candidate;
 
+import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
-import uk.ac.ed.ph.qtiworks.services.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.services.dao.UserDao;
 import uk.ac.ed.ph.qtiworks.web.authn.AbstractWebAuthenticationFilter;
@@ -67,18 +67,26 @@ public final class CandidateSessionAuthenticationFilter extends AbstractWebAuthe
 
     private static final Logger logger = LoggerFactory.getLogger(CandidateSessionAuthenticationFilter.class);
 
+    /**
+     * Base name of the session attributes used to store {@link CandidateSessionTicket}s for the
+     * current session.
+     */
     public static final String CANDIDATE_SESSION_TICKET_ATTRIBUTE_BASE_NAME = "qtiworks.web.authn.candidateSessionTickets.lrid.";
+
+    /**
+     * Name of the request attribute used to store the {@link CandidateSessionContext} for the
+     * current request
+     */
+    public static final String CANDIDATE_SESSION_CONTEXT_REQUEST_ATTRIBUTE_NAME = "qtiworks.web.authn.candidateSessionContext";
 
     private UserDao userDao;
     private CandidateSessionDao candidateSessionDao;
-    private IdentityService identityService;
 
     @Override
     protected void initWithApplicationContext(final FilterConfig filterConfig, final WebApplicationContext webApplicationContext)
             throws Exception {
         candidateSessionDao = webApplicationContext.getBean(CandidateSessionDao.class);
         userDao = webApplicationContext.getBean(UserDao.class);
-        identityService = webApplicationContext.getBean(IdentityService.class);
     }
 
     @Override
@@ -138,18 +146,14 @@ public final class CandidateSessionAuthenticationFilter extends AbstractWebAuthe
             return;
         }
 
-        /* Finally set up identity and continue with filter chain */
-        final CandidateSessionContext candidateSessionContext = new CandidateSessionContext(candidateSession, candidateSessionTicket.getReturnUrl());
-        identityService.setCurrentThreadUser(user);
-        identityService.setCurrentThreadCandidateSessionContext(candidateSessionContext);
-        try {
-            chain.doFilter(request, response);
-        }
-        finally {
-            identityService.setCurrentThreadUser(null);
-            identityService.setCurrentThreadCandidateSessionContext(null);
-        }
+        /* Finally store information about this session in the request and continue with filter chain */
+        final CandidateSessionContext candidateSessionContext = new CandidateSessionContext(candidateSession, candidateSessionTicket.getSessionExitReturnUrl());
+        setCurrentRequestCandidateSessionContext(request, candidateSessionContext);
+        chain.doFilter(request, response);
     }
+
+    //-------------------------------------------------
+    // CandidateSession authentication at HTTP Session level
 
     public static void authenticateUserForHttpSession(final HttpSession httpSsession, final CandidateSessionTicket candidateSessionTicket) {
         final Long xid = candidateSessionTicket.getCandidateSessionId();
@@ -168,5 +172,21 @@ public final class CandidateSessionAuthenticationFilter extends AbstractWebAuthe
 
     private static String getCandidateSessionTicketSessionKey(final long xid) {
         return CANDIDATE_SESSION_TICKET_ATTRIBUTE_BASE_NAME + Long.toString(xid);
+    }
+
+    //-------------------------------------------------
+    // CandidateSession "authentication" for current HTTP request
+
+    private static void setCurrentRequestCandidateSessionContext(final HttpServletRequest request, final CandidateSessionContext candidateSessionContext) {
+        request.setAttribute(CANDIDATE_SESSION_CONTEXT_REQUEST_ATTRIBUTE_NAME, candidateSessionContext);
+    }
+
+    public static CandidateSessionContext requireCurrentRequestCandidateSessionContext(final HttpServletRequest request) {
+        final CandidateSessionContext result = (CandidateSessionContext) request.getAttribute(CANDIDATE_SESSION_CONTEXT_REQUEST_ATTRIBUTE_NAME);
+        if (result==null) {
+            throw new QtiWorksLogicException("Failed to retrieve CandidateSessionContext from HttpServletRequest!");
+
+        }
+        return result;
     }
 }

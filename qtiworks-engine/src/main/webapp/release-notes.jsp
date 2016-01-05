@@ -12,6 +12,36 @@ All Rights Reserved
   </nav>
   <h2>QTIWorks Release Notes</h2>
 
+  <h3>Release 1.0-beta9 (05/01/2016)</h3>
+  <p>
+    This release rolls up some minor improvements and fixes made during 2015.
+    There are no new features or functionality included here.
+  </p>
+  <ul>
+    <li>
+      <a href="https://github.com/davemckain/qtiworks/issues/57">#57</a>:
+      Added guard to prevent blow-ups when the <code>@index</code> attribute of
+      a <code>printedVariable</code> is a variable reference.
+      (This missing functionality is still be to be implemented.)
+    </li>
+    <li>
+      Simplified some of the internal candidate session access management.
+    </li>
+    <li>
+      Minor change to validation result objects to make it easier to extract
+      information from them, and some improvements to the validation examples.
+      (Note that this introduces a minor API change to the validation classes.
+      Please refer to the examples if you are affected by this.)
+    </li>
+    <li>
+      The QTIWorks engine exception logger now no longer logs certain exceptions
+      caused by clients, such as bad HTTP methods. Logging these is usually not helpful.
+    </li>
+    <li>
+      QTIWorks engine library dependencies have been refreshed to current versions.
+    </li>
+  </ul>
+
   <h3>Release 1.0-beta8 (21/01/2015)</h3>
   <p>
     This release incorporates minor bug fixes and some minor tidying.
@@ -234,7 +264,7 @@ All Rights Reserved
       fashion.
     </li>
     <li>
-      Improved handling of responceProcessing templates that fail to load at
+      Improved handling of responseProcessing templates that fail to load at
       runtime. These are now logged as runtime warnings.
     </li>
     <li>
@@ -857,7 +887,7 @@ All Rights Reserved
   <p>
     Fixed bug introduced when refactoring endAttemptInteraction,
     which prevented it from working correctly. Also added some experimental
-    stlying on feedback elements, which will need further work.
+    styling on feedback elements, which will need further work.
     Further significant refactoring work has been done on JQTI+, in particular
     the API for extensions (customOperator/customInteraction). I have also
     started laying the ORM pipework for the webapp domain model.

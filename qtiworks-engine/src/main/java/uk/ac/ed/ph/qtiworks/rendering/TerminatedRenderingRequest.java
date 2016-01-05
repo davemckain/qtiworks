@@ -41,14 +41,6 @@ package uk.ac.ed.ph.qtiworks.rendering;
  */
 public final class TerminatedRenderingRequest extends AbstractRenderingRequest<AbstractRenderingOptions> {
 
-    private String exitSessionUrl;
-
-    public String getExitSessionUrl() {
-        return exitSessionUrl;
-    }
-
-    public void setExitSessionUrl(final String exitSessionUrl) {
-        this.exitSessionUrl = exitSessionUrl;
-    }
+    /* Nothing to add here! */
 
 }

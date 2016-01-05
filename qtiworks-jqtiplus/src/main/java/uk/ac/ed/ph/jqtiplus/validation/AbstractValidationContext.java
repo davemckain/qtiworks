@@ -94,14 +94,18 @@ abstract class AbstractValidationContext<E extends AssessmentObject> extends Lis
         }
         else {
             final StringBuilder messageBuilder = new StringBuilder("Variable ")
-                .append(variableDeclaration)
+                .append(variableDeclaration.getIdentifier())
                 .append(" must be a ");
             for (int i=0; i<allowedTypes.length; i++) {
-                messageBuilder.append(allowedTypes[i].getName())
-                    .append(i < allowedTypes.length-1 ? ", " : " or ");
+                messageBuilder.append(allowedTypes[i].getName());
+                if (i < allowedTypes.length - 1) {
+                    messageBuilder.append(i == allowedTypes.length - 1 ? " or " : ", ");
+                }
             }
-            messageBuilder.append(" variable but is a ")
-                .append(variableDeclaration.getVariableType().getName())
+            final VariableType variableType = variableDeclaration.getVariableType();
+            messageBuilder.append(" variable but is ")
+                .append(variableType==VariableType.OUTCOME ? "an " : "a ")
+                .append(variableType.getName())
                 .append(" variable");
             fireValidationError(owner, messageBuilder.toString());
             result = false;

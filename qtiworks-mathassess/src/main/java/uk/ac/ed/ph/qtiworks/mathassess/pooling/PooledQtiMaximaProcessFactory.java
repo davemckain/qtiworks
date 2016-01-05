@@ -42,18 +42,20 @@ import uk.ac.ed.ph.jacomax.MaximaInteractiveProcess;
 import uk.ac.ed.ph.jacomax.MaximaProcessLauncher;
 import uk.ac.ed.ph.snuggletex.utilities.StylesheetCache;
 
-import org.apache.commons.pool.PoolableObjectFactory;
+import org.apache.commons.pool2.PooledObject;
+import org.apache.commons.pool2.PooledObjectFactory;
+import org.apache.commons.pool2.impl.DefaultPooledObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implementation of {@link PoolableObjectFactory} catering {@link QtiMaximaProcess}s.
+ * Implementation of {@link PooledObjectFactory} catering {@link QtiMaximaProcess}s.
  *
  * @author David McKain
  */
-final class PoolableQtiMaximaProcessFactory implements PoolableObjectFactory {
+final class PooledQtiMaximaProcessFactory implements PooledObjectFactory<QtiMaximaProcess> {
 
-    private static final Logger logger = LoggerFactory.getLogger(PoolableQtiMaximaProcessFactory.class);
+    private static final Logger logger = LoggerFactory.getLogger(PooledQtiMaximaProcessFactory.class);
 
     private StylesheetCache stylesheetCache;
     private MaximaConfiguration maximaConfiguration;
@@ -86,25 +88,25 @@ final class PoolableQtiMaximaProcessFactory implements PoolableObjectFactory {
     }
 
     @Override
-    public Object makeObject() {
+    public PooledObject<QtiMaximaProcess> makeObject() {
         logger.debug("Creating new pooled Maxima process");
         final MaximaInteractiveProcess maximaInteractiveProcess = maximaProcessLauncher.launchInteractiveProcess();
         final QtiMaximaProcess process = new QtiMaximaProcess(maximaInteractiveProcess, stylesheetCache);
         process.init();
-        return process;
+        return new DefaultPooledObject<QtiMaximaProcess>(process);
     }
 
     @Override
-    public void activateObject(final Object obj) {
+    public void activateObject(final PooledObject<QtiMaximaProcess> obj) {
         logger.debug("Activating Maxima process and setting new random state");
-        final QtiMaximaProcess process = (QtiMaximaProcess) obj;
+        final QtiMaximaProcess process = obj.getObject();
         process.setRandomState();
     }
 
     @Override
-    public void passivateObject(final Object obj) {
+    public void passivateObject(final PooledObject<QtiMaximaProcess> obj) {
         logger.debug("Resetting Maxima process and passivating");
-        final QtiMaximaProcess process = (QtiMaximaProcess) obj;
+        final QtiMaximaProcess process = obj.getObject();
         if (process.isTerminated()) {
             throw new IllegalStateException("Expected pool to verify Objects before passivation");
         }
@@ -118,15 +120,15 @@ final class PoolableQtiMaximaProcessFactory implements PoolableObjectFactory {
     }
 
     @Override
-    public boolean validateObject(final Object obj) {
-        final QtiMaximaProcess process = (QtiMaximaProcess) obj;
+    public boolean validateObject(final PooledObject<QtiMaximaProcess> obj) {
+        final QtiMaximaProcess process = obj.getObject();
         return !process.isTerminated();
     }
 
     @Override
-    public void destroyObject(final Object obj) {
+    public void destroyObject(final PooledObject<QtiMaximaProcess> obj) {
         logger.debug("Terminating pooled Maxima process");
-        final QtiMaximaProcess process = (QtiMaximaProcess) obj;
+        final QtiMaximaProcess process = obj.getObject();
         process.terminate();
     }
 }

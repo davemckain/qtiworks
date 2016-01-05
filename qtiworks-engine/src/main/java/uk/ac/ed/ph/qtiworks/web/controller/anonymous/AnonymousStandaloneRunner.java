@@ -116,8 +116,8 @@ public class AnonymousStandaloneRunner {
                 return "standalonerunner/invalidUpload";
             }
             final Delivery delivery = assessmentManagementService.createDemoDelivery(assessment);
-            final String returnUrl = anonymousRouter.buildWithinContextUrl("/standalonerunner");
-            final CandidateSessionTicket candidateSessionTicket = candidateSessionLaunchService.launchAnonymousCandidateSession(httpSession, delivery, returnUrl);
+            final String sessionExitReturnUrl = anonymousRouter.buildWithinContextUrl("/standalonerunner");
+            final CandidateSessionTicket candidateSessionTicket = candidateSessionLaunchService.launchAnonymousCandidateSession(httpSession, delivery, sessionExitReturnUrl);
             return GlobalRouter.buildSessionStartRedirect(candidateSessionTicket);
         }
         catch (final AssessmentPackageDataImportException e) {

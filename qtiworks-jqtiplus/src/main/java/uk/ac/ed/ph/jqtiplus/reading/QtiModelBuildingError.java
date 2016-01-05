@@ -39,9 +39,13 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.XmlSourceLocationInformation;
 import java.io.Serializable;
 
 /**
- * Records a {@link QtiModelException} (thrown when building a JQTI Object model) within the
- * result of {@link QtiXmlReader}.
- * 
+ * Records a {@link QtiModelException} (thrown when building a JQTI Object model).
+ * These are accumulated by a {@link QtiObjectReader} and bundled into a
+ * {@link QtiXmlInterpretationException}
+ *
+ * @see QtiObjectReader
+ * @see QtiXmlInterpretationException
+ *
  * @author David McKain
  */
 public final class QtiModelBuildingError implements Serializable {
@@ -53,7 +57,7 @@ public final class QtiModelBuildingError implements Serializable {
     private final String elementNamespace;
     private final XmlSourceLocationInformation elementLocation;
 
-    public QtiModelBuildingError(QtiModelException exception, String elementLocalName, String elementNamespace, XmlSourceLocationInformation location) {
+    public QtiModelBuildingError(final QtiModelException exception, final String elementLocalName, final String elementNamespace, final XmlSourceLocationInformation location) {
         this.exception = exception;
         this.elementLocalName = elementLocalName;
         this.elementNamespace = elementNamespace;
@@ -63,11 +67,11 @@ public final class QtiModelBuildingError implements Serializable {
     public QtiModelException getException() {
         return exception;
     }
-    
+
     public String getElementLocalName() {
         return elementLocalName;
     }
-    
+
     public String getElementNamespace() {
         return elementNamespace;
     }

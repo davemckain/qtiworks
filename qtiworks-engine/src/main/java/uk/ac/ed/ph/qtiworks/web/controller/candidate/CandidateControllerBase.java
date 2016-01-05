@@ -87,8 +87,12 @@ public abstract class CandidateControllerBase {
      * Retrieves the {@link CandidateSessionContext} for this request, which will have been set up
      * by the {@link CandidateSessionAuthenticationFilter}.
      */
-    protected CandidateSessionContext getCandidateSessionContext() {
-        return identityService.assertCurrentThreadCandidateSessionContext();
+    protected CandidateSessionContext getCandidateSessionContext(final HttpServletRequest request) {
+        return CandidateSessionAuthenticationFilter.requireCurrentRequestCandidateSessionContext(request);
+    }
+
+    protected CandidateSession getCandidateSession(final HttpServletRequest request) {
+        return getCandidateSessionContext(request).getCandidateSession();
     }
 
     //----------------------------------------------------
@@ -155,9 +159,9 @@ public abstract class CandidateControllerBase {
     /**
      * Serves the given (white-listed) file in the given {@link AssessmentPackage}
      */
-    protected void streamAssessmentPackageFile(@PathVariable final long xid, @PathVariable final String xsrfToken,
-            @RequestParam("href") final String fileHref,
-            final HttpServletRequest request, final HttpServletResponse response)
+    protected void streamAssessmentPackageFile(final HttpServletRequest request, final HttpServletResponse response,
+            @PathVariable final long xid, @PathVariable final String xsrfToken,
+            @RequestParam("href") final String fileHref)
             throws IOException, CandidateException {
         final String fingerprint = "session/" + xid + "/" + xsrfToken + "/file/" + fileHref;
         final String resourceEtag = WebUtilities.computeEtag(fingerprint);
@@ -167,7 +171,8 @@ public abstract class CandidateControllerBase {
         }
         else {
             final ServletOutputStreamer outputStreamer = new ServletOutputStreamer(response, resourceEtag);
-            candidateRenderingService.streamAssessmentPackageFile(getCandidateSessionContext(), fileHref, outputStreamer);
+            candidateRenderingService.streamAssessmentPackageFile(getCandidateSession(request),
+                    fileHref, outputStreamer);
         }
     }
 
@@ -177,8 +182,8 @@ public abstract class CandidateControllerBase {
     /**
      * Serves the source of the given {@link AssessmentPackage}
      */
-    protected void streamAssessmentSource(final long xid, final String xsrfToken,
-            final HttpServletRequest request, final HttpServletResponse response)
+    protected void streamAssessmentSource(final HttpServletRequest request, final HttpServletResponse response,
+            final long xid, final String xsrfToken)
             throws IOException, CandidateException {
         final String fingerprint = "session/" + xid + "/" + xsrfToken + "/source";
         final String resourceEtag = WebUtilities.computeEtag(fingerprint);
@@ -188,7 +193,7 @@ public abstract class CandidateControllerBase {
         }
         else {
             final ServletOutputStreamer outputStreamer = new ServletOutputStreamer(response, resourceEtag);
-            candidateRenderingService.streamAssessmentSource(getCandidateSessionContext(), outputStreamer);
+            candidateRenderingService.streamAssessmentSource(getCandidateSession(request), outputStreamer);
         }
     }
 
@@ -196,27 +201,26 @@ public abstract class CandidateControllerBase {
      * Streams a {@link ItemSessionState} or {@link TestSessionState} representing
      * the current state of the given {@link CandidateSession}
      */
-    protected void streamSessionState(final HttpServletResponse response)
+    protected void streamSessionState(final HttpServletRequest request, final HttpServletResponse response)
             throws IOException, CandidateException {
         final ServletOutputStreamer outputStreamer = new ServletOutputStreamer(response, null /* No caching */);
-        candidateRenderingService.streamAssessmentState(getCandidateSessionContext(), outputStreamer);
+        candidateRenderingService.streamAssessmentState(getCandidateSession(request), outputStreamer);
     }
 
     /**
      * Streams an {@link AssessmentResult} representing the current state of the given
      * {@link CandidateSession}
      */
-    protected void streamAssessmentResult(final HttpServletResponse response)
+    protected void streamAssessmentResult(final HttpServletRequest request, final HttpServletResponse response)
             throws IOException, CandidateException {
         response.setContentType("application/xml");
         final ServletOutputStreamer outputStreamer = new ServletOutputStreamer(response, null /* No caching */);
-        candidateRenderingService.streamAssessmentResult(getCandidateSessionContext(), outputStreamer);
+        candidateRenderingService.streamAssessmentResult(getCandidateSession(request), outputStreamer);
     }
 
-    protected String showPackageValidationResult(final Model model)
+    protected String showPackageValidationResult(final HttpServletRequest request, final Model model)
             throws CandidateException {
-        final CandidateSessionContext candidateSessionContext = getCandidateSessionContext();
-        final CandidateSession candidateSession = candidateSessionContext.getCandidateSession();
+        final CandidateSession candidateSession = getCandidateSession(request);
         model.addAttribute("validationResult", candidateRenderingService.generateValidationResult(candidateSession));
         return "validationResult";
     }
@@ -231,13 +235,13 @@ public abstract class CandidateControllerBase {
     }
 
     protected final String redirectToExitUrl(final CandidateSessionContext candidateSessionContext, final String xsrfToken) {
-        final String returnUrl = candidateSessionContext.getReturnUrl();
-        if (returnUrl==null) {
+        final String sessionExitReturnUrl = candidateSessionContext.getSessionExitReturnUrl();
+        if (sessionExitReturnUrl==null) {
             /* No (or unsafe) exit URL provided, so redirect to normal rendering, which will
              * show a generic "this assessment is now complete" page.
              */
             return redirectToRenderSession(candidateSessionContext.getCandidateSession(), xsrfToken);
         }
-        return "redirect:" + returnUrl;
+        return "redirect:" + sessionExitReturnUrl;
     }
 }

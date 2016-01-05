@@ -74,16 +74,16 @@ public final class CandidateSessionTicket implements Serializable {
     /** Indicates whether this is an item or test session */
     private final AssessmentObjectType assessmentObjectType;
 
-    /** URL to return to once the session has terminated */
-    private final String returnUrl;
+    /** Optional return URL to use when the session terminates */
+    private final String sessionExitReturnUrl;
 
     public CandidateSessionTicket(final String xsrfToken, final long userId, final long candidateSessionId,
-            final AssessmentObjectType assessmentObjectType, final String returnUrl) {
+            final AssessmentObjectType assessmentObjectType, final String sessionExitReturnUrl) {
         this.xsrfToken = xsrfToken;
         this.userId = userId;
         this.candidateSessionId = candidateSessionId;
         this.assessmentObjectType = assessmentObjectType;
-        this.returnUrl = returnUrl;
+        this.sessionExitReturnUrl = sessionExitReturnUrl;
     }
 
     public String getXsrfToken() {
@@ -102,8 +102,8 @@ public final class CandidateSessionTicket implements Serializable {
         return assessmentObjectType;
     }
 
-    public String getReturnUrl() {
-        return returnUrl;
+    public String getSessionExitReturnUrl() {
+        return sessionExitReturnUrl;
     }
 
     @Override
