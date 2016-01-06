@@ -47,12 +47,12 @@ import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.domain.entities.UserRole;
 import uk.ac.ed.ph.qtiworks.services.AuditLogger;
 import uk.ac.ed.ph.qtiworks.services.CandidateAuditLogger;
-import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.services.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateException;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateExceptionReason;
 import uk.ac.ed.ph.qtiworks.services.dao.AssessmentDao;
+import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliveryDao;
 import uk.ac.ed.ph.qtiworks.web.view.ViewUtilities;
 
@@ -72,8 +72,6 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * Helper service for launching and authenticating users to {@link CandidateSession}s in various
  * ways.
- *
- * @see CandidateSessionStarter
  *
  * @author David McKain
  */
@@ -97,7 +95,7 @@ public class CandidateSessionLaunchService {
     private DeliveryDao deliveryDao;
 
     @Resource
-    private CandidateSessionStarter candidateSessionStarter;
+    private CandidateSessionDao candidateSessionDao;
 
     //-------------------------------------------------
     // Anonymous session launching
@@ -280,7 +278,7 @@ public class CandidateSessionLaunchService {
             final String lisOutcomeServiceUrl, final String lisResultSourcedid)
             throws CandidateException {
         /* Create/reuse session */
-        final CandidateSession candidateSession = candidateSessionStarter.createCandidateSession(candidate, delivery,
+        final CandidateSession candidateSession = obtainCandidateSession(candidate, delivery,
                 authorMode, lisOutcomeServiceUrl, lisResultSourcedid);
 
         /* Create XSRF token */
@@ -296,6 +294,62 @@ public class CandidateSessionLaunchService {
 
         /* Caller should now issue appropriate redirect to session... */
         return candidateSessionTicket;
+    }
+
+    /**
+     * Either creates a new {@link CandidateSession} for the given {@link User} on the
+     * given {@link Delivery}, or returns the most recently created non-terminated session of the
+     * same type.
+     * <p>
+     * NB: No checks are made on whether the {@link User} should be allowed to start a session
+     * on this {@link Delivery}.
+     */
+    private CandidateSession obtainCandidateSession(final User candidate, final Delivery delivery,
+            final boolean authorMode, final String lisOutcomeServiceUrl,
+            final String lisResultSourcedid)
+            throws CandidateException {
+        Assert.notNull(candidate, "candidate");
+        Assert.notNull(delivery, "delivery");
+
+        /* Make sure Candidate's account is not disabled */
+        if (candidate.isLoginDisabled()) {
+            logAndThrowLaunchException(candidate, delivery, CandidateExceptionReason.USER_ACCOUNT_DISABLED);
+        }
+
+        /* Make sure Delivery is runnable */
+        if (delivery.getAssessment()==null) {
+            logAndThrowLaunchException(candidate, delivery, CandidateExceptionReason.LAUNCH_INCOMPLETE_DELIVERY);
+        }
+
+        /* If the candidate already has any non-terminated sessions open for this Delivery,
+         * then we shall reconnect to the (most recent) session instead of creating a new one.
+         */
+        final List<CandidateSession> existingSessions = candidateSessionDao.getNonTerminatedForDeliveryAndCandidate(delivery, candidate);
+        if (!existingSessions.isEmpty()) {
+            final CandidateSession mostRecent = existingSessions.get(existingSessions.size()-1);
+            auditLogger.recordEvent("Reconnected to existing CandidateSession #" + mostRecent.getId()
+                    + " on Delivery #" + delivery.getId());
+            return mostRecent;
+        }
+
+        /* No existing CandidateSession to reconnect to, so create a new one.
+         *
+         * (NB: The session will later need to be explicitly entered before anything can be done
+         * with it.)
+         */
+        final CandidateSession candidateSession = new CandidateSession();
+        candidateSession.setLisOutcomeServiceUrl(lisOutcomeServiceUrl);
+        candidateSession.setLisResultSourcedid(lisResultSourcedid);
+        candidateSession.setCandidate(candidate);
+        candidateSession.setDelivery(delivery);
+        candidateSession.setAuthorMode(authorMode);
+        candidateSession.setFinishTime(null);
+        candidateSession.setTerminationTime(null);
+        candidateSession.setExploded(false);
+        candidateSessionDao.persist(candidateSession);
+        auditLogger.recordEvent("Created and initialised new CandidateSession #" + candidateSession.getId()
+                + " on Delivery #" + delivery.getId());
+        return candidateSession;
     }
 
     private void logAndThrowLaunchException(final User candidate, final Delivery delivery,
