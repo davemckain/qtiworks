@@ -280,7 +280,7 @@ public class CandidateSessionLaunchService {
             final String lisOutcomeServiceUrl, final String lisResultSourcedid)
             throws CandidateException {
         /* Create/reuse session */
-        final CandidateSession candidateSession = candidateSessionStarter.launchCandidateSession(candidate, delivery,
+        final CandidateSession candidateSession = candidateSessionStarter.createCandidateSession(candidate, delivery,
                 authorMode, lisOutcomeServiceUrl, lisResultSourcedid);
 
         /* Create XSRF token */

@@ -39,9 +39,8 @@ import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateException;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateExceptionReason;
-import uk.ac.ed.ph.qtiworks.services.candidate.CandidateItemDeliveryService;
-import uk.ac.ed.ph.qtiworks.services.candidate.CandidateTestDeliveryService;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
+import uk.ac.ed.ph.qtiworks.web.candidate.CandidateSessionLaunchService;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 
@@ -57,8 +56,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Helper service for creating new (or reconnecting to existing) {@link CandidateSession}s
  * on a {@link Delivery} or {@link Assessment}.
  *
- * @see CandidateItemDeliveryService
- * @see CandidateTestDeliveryService
+ * @see CandidateSessionLaunchService
  *
  * @author David McKain
  */
@@ -82,27 +80,14 @@ public class CandidateSessionStarter {
     // Low-level session creation
 
     /**
-     * Starts new {@link CandidateSession} for the current thread's {@link User}
-     * on the given {@link Delivery}
+     * Either creates a new {@link CandidateSession} for the given {@link User} on the
+     * given {@link Delivery}, or returns the most recently created non-terminated session of the
+     * same type.
      * <p>
      * NB: No checks are made on whether the {@link User} should be allowed to start a session
      * on this {@link Delivery}.
      */
-    public CandidateSession launchCandidateSession(final Delivery delivery, final boolean authorMode,
-            final String lisOutcomeServiceUrl, final String lisResultSourcedid)
-            throws CandidateException {
-        Assert.notNull(delivery, "delivery");
-        final User candidate = identityService.assertCurrentThreadUser();
-        return launchCandidateSession(candidate, delivery, authorMode, lisOutcomeServiceUrl, lisResultSourcedid);
-    }
-
-    /**
-     * Starts new {@link CandidateSession} for the given {@link User} on the given {@link Delivery}
-     * <p>
-     * NB: No checks are made on whether the {@link User} should be allowed to start a session
-     * on this {@link Delivery}.
-     */
-    public CandidateSession launchCandidateSession(final User candidate, final Delivery delivery,
+    public CandidateSession createCandidateSession(final User candidate, final Delivery delivery,
             final boolean authorMode, final String lisOutcomeServiceUrl,
             final String lisResultSourcedid)
             throws CandidateException {
@@ -130,7 +115,7 @@ public class CandidateSessionStarter {
             return mostRecent;
         }
 
-        /* No existing session to reconnect to, so create a new session.
+        /* No existing CandidateSession to reconnect to, so create a new one.
          *
          * (NB: The session will later need to be explicitly entered before anything can be done
          * with it.)

@@ -44,9 +44,9 @@ import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.ResponseLegality;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionFinisher;
-import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.services.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateResponseDao;
+import uk.ac.ed.ph.qtiworks.web.candidate.CandidateSessionLaunchService;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiCandidateStateException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
@@ -85,9 +85,9 @@ import org.springframework.web.multipart.MultipartFile;
  * <p>
  * NOTE: Remember there is no {@link IdentityService} for candidates.
  *
- * @see CandidateSessionStarter
  * @see CandidateRenderingService
  * @see CandidateItemDeliveryService
+ * @see CandidateSessionLaunchService
  *
  * @author David McKain
  */
