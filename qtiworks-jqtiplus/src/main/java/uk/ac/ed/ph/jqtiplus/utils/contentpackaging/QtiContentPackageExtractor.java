@@ -79,11 +79,10 @@ public final class QtiContentPackageExtractor {
 
     /** <tt>cp:resource/@type</tt> for supported QTI items. */
     private static final String[] ITEM_TYPES = {
-        "imsqti_item_xmlv2p2", /* Josh's list */
         "qtiv2p2_imscpv1p2_v1p0",
         "imscp_v1p1",
         "imsqti_v2p2",
-        "imsqti_item_xmlv2p2",
+        "imsqti_item_xmlv2p2", /* Josh's list */
         "imsqti_item_xmlv2p1", /* (Correct for QTI 2.1) */
         "imsqti_item_xml_v2p1" /* (Compatibility for old aqurate) */
     };
