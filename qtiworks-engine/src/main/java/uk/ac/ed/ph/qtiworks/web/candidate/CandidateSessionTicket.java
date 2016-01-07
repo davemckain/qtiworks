@@ -44,11 +44,11 @@ import java.io.Serializable;
 import javax.servlet.http.HttpSession;
 
 /**
- * This "ticket" is created and stored in the HTTP session and provides access
+ * This "ticket" is created and stored in the HTTP session and grants access
  * for a particular {@link User} to a particular {@link CandidateSession}.
  * <p>
- * An instance of this will used to create a {@link CandidateSessionContext}, which
- * gets passed to the candidate service layer.
+ * An instance of this will used to create a {@link CandidateSessionContext} for each
+ * subsequent HTTP request, which is passed to the candidate service layer.
  * <p>
  * Developer note: Instances of this class will be stored in the
  * session, so should be immutable.

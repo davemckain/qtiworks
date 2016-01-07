@@ -53,13 +53,13 @@ public abstract class AbstractWebAuthenticationFilter extends AbstractWebFilterU
     @Override
     public final void doWebFilter(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse, final FilterChain chain)
             throws IOException, ServletException {
-        final HttpSession session = httpRequest.getSession();
-        doFilterAuthentication(httpRequest, httpResponse, chain, session);
+        final HttpSession httpSession = httpRequest.getSession();
+        doFilterAuthentication(httpRequest, httpResponse, chain, httpSession);
     }
 
     protected abstract void doFilterAuthentication(final HttpServletRequest httpRequest,
             final HttpServletResponse httpResponse, final FilterChain chain,
-            final HttpSession session)
+            final HttpSession httpSession)
             throws IOException, ServletException;
 
 }

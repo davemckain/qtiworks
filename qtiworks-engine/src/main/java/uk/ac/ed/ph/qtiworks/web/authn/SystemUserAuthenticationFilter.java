@@ -106,10 +106,10 @@ public final class SystemUserAuthenticationFilter extends AbstractWebAuthenticat
 
     @Override
     protected void doFilterAuthentication(final HttpServletRequest request, final HttpServletResponse response,
-            final FilterChain chain, final HttpSession session) throws IOException, ServletException {
+            final FilterChain chain, final HttpSession httpSession) throws IOException, ServletException {
         /* Try to extract authenticated User ID from Session */
         User currentUser = null;
-        final Long currentUserId = (Long) session.getAttribute(SYSTEM_USER_ID_IDENTITY_ATTRIBUTE_NAME);
+        final Long currentUserId = (Long) httpSession.getAttribute(SYSTEM_USER_ID_IDENTITY_ATTRIBUTE_NAME);
         if (currentUserId!=null) {
             /* Already authenticated */
             currentUser = userDao.findById(currentUserId);
@@ -145,7 +145,7 @@ public final class SystemUserAuthenticationFilter extends AbstractWebAuthenticat
         }
 
         /* Indicate successful authn by storing user ID in session */
-        session.setAttribute(SYSTEM_USER_ID_IDENTITY_ATTRIBUTE_NAME, currentUserId);
+        httpSession.setAttribute(SYSTEM_USER_ID_IDENTITY_ATTRIBUTE_NAME, currentUserId);
 
         /* Then continue with the next link in the chain, passing the wrapped request so that
          * the next handler in the chain doesn't can pull out authentication details as normal.

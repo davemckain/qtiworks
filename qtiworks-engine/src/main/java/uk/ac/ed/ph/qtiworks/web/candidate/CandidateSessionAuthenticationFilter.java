@@ -69,13 +69,13 @@ public final class CandidateSessionAuthenticationFilter extends AbstractWebAuthe
 
     /**
      * Base name of the session attributes used to store {@link CandidateSessionTicket}s for the
-     * current session.
+     * current HTTP session.
      */
-    public static final String CANDIDATE_SESSION_TICKET_ATTRIBUTE_BASE_NAME = "qtiworks.web.authn.candidateSessionTickets.lrid.";
+    public static final String CANDIDATE_SESSION_TICKET_ATTRIBUTE_BASE_NAME = "qtiworks.web.authn.candidateSessionTickets.xid.";
 
     /**
      * Name of the request attribute used to store the {@link CandidateSessionContext} for the
-     * current request
+     * current HTTP request
      */
     public static final String CANDIDATE_SESSION_CONTEXT_REQUEST_ATTRIBUTE_NAME = "qtiworks.web.authn.candidateSessionContext";
 
@@ -93,7 +93,8 @@ public final class CandidateSessionAuthenticationFilter extends AbstractWebAuthe
     protected void doFilterAuthentication(final HttpServletRequest request, final HttpServletResponse response, final FilterChain chain,
             final HttpSession httpSession)
             throws IOException, ServletException {
-        /* Determine which CandidateSession we're authenticating from  pathInfo, which should be of the form /(item|test)session/{xid}/{xsrfToken}/... */
+        /* Determine which CandidateSession we're authenticating from pathInfo,
+         * which should be of the form /(item|test)session/{xid}/{xsrfToken}/... */
         final String pathInfo = request.getPathInfo();
         final Pattern pathPattern = Pattern.compile("^/(?:item|test)session/(\\d+)/([A-Za-z0-9]+)(/|$)");
         final Matcher pathMatcher = pathPattern.matcher(pathInfo);
@@ -124,7 +125,7 @@ public final class CandidateSessionAuthenticationFilter extends AbstractWebAuthe
         }
 
         /* The user's ticket for accessing this CandidateSession should have been stored in the HTTP session previously */
-        final CandidateSessionTicket candidateSessionTicket = getCandidateSessionTicketForSession(httpSession, xid);
+        final CandidateSessionTicket candidateSessionTicket = getCandidateSessionTicketForHttpSession(httpSession, xid);
         if (candidateSessionTicket==null) {
             logger.warn("Failed to retrieve CandidateSessionTicket from HttpSession for CandidateSession {}", xid);
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden. You do not have access to this assessment session. Please launch this assessment again.");
@@ -155,19 +156,22 @@ public final class CandidateSessionAuthenticationFilter extends AbstractWebAuthe
     //-------------------------------------------------
     // CandidateSession authentication at HTTP Session level
 
-    public static void authenticateUserForHttpSession(final HttpSession httpSsession, final CandidateSessionTicket candidateSessionTicket) {
+    public static void authenticateUserForHttpSession(final HttpSession httpSession, final CandidateSessionTicket candidateSessionTicket) {
         final Long xid = candidateSessionTicket.getCandidateSessionId();
-        httpSsession.setAttribute(getCandidateSessionTicketSessionKey(xid), candidateSessionTicket);
+        httpSession.setAttribute(getCandidateSessionTicketSessionKey(xid), candidateSessionTicket);
     }
 
-    /** TODO: This is not currently being used. */
+    /**
+     * TODO: This is not currently being used. It would be nice to fix this, but access will be revoked anyway
+     * once the HTTP session expires.
+     */
     public static void deauthenticateUserFromHttpSession(final HttpSession httpSession, final CandidateSession candidateSession) {
         final Long xid = candidateSession.getId();
         httpSession.removeAttribute(getCandidateSessionTicketSessionKey(xid));
     }
 
-    private static CandidateSessionTicket getCandidateSessionTicketForSession(final HttpSession session, final long xid) {
-        return (CandidateSessionTicket) session.getAttribute(getCandidateSessionTicketSessionKey(xid));
+    private static CandidateSessionTicket getCandidateSessionTicketForHttpSession(final HttpSession httpSession, final long xid) {
+        return (CandidateSessionTicket) httpSession.getAttribute(getCandidateSessionTicketSessionKey(xid));
     }
 
     private static String getCandidateSessionTicketSessionKey(final long xid) {

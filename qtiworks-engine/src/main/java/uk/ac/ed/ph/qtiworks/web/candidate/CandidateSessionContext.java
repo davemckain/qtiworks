@@ -43,7 +43,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * This provides information about the "current" {@link CandidateSession} being accessed by
  * a particular candidate. It is created by the {@link CandidateSessionAuthenticationFilter}
- * and stored in the {@link HttpServletRequest} for access by subsequent controllers
+ * and stored in the {@link HttpServletRequest} for subsequent access by controllers.
  *
  * @see CandidateSessionAuthenticationFilter
  *
@@ -51,15 +51,13 @@ import javax.servlet.http.HttpServletRequest;
  */
 public final class CandidateSessionContext {
 
-    /**
-     * Indicates which {@link CandidateSession} this ticket provides access to
-     */
+    /** Indicates which {@link CandidateSession} this context provides access to */
     private final CandidateSession candidateSession;
 
     /** Optional return URL to use when the session terminates */
     private final String sessionExitReturnUrl;
 
-    public CandidateSessionContext(final CandidateSession candidateSession, final String sessionExitReturnUrl) {
+    CandidateSessionContext(final CandidateSession candidateSession, final String sessionExitReturnUrl) {
         Assert.notNull(candidateSession, "candidateSession");
         this.candidateSession = candidateSession;
         this.sessionExitReturnUrl = sessionExitReturnUrl;
