@@ -61,7 +61,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipInputStream;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -131,16 +130,11 @@ public class AssessmentPackageFileImporter {
     private AssessmentPackage importStandaloneXml(final File importSandboxDirectory, final MultipartFile multipartFile) {
         /* Save XML */
         final File resultFile = new File(importSandboxDirectory, STANDALONE_XML_IMPORT_FILE_NAME);
-        InputStream inputStream = null;
         try {
-            inputStream = ServiceUtilities.ensureInputSream(multipartFile);
-            FileUtils.copyInputStreamToFile(inputStream, resultFile);
+            multipartFile.transferTo(resultFile);
         }
         catch (final IOException e) {
             throw QtiWorksRuntimeException.unexpectedException(e);
-        }
-        finally {
-            ServiceUtilities.ensureClose(inputStream);
         }
 
         /* Create AssessmentPackage representing this */
