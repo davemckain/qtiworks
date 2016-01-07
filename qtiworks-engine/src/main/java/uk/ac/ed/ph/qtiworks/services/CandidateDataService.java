@@ -103,11 +103,13 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.Document;
+
+import com.google.common.base.Charsets;
+import com.google.common.io.Files;
 
 /**
  * Low level services for manipulating candidate data, such as recording
@@ -657,7 +659,7 @@ public class CandidateDataService {
         }
         try {
             /* NB: We're using the fact that we're writing out as UTF-8 when storing these files */
-            return FileUtils.readFileToString(getAssessmentResultFile(candidateSession), "UTF-8");
+            return Files.toString(getAssessmentResultFile(candidateSession), Charsets.UTF_8);
         }
         catch (final IOException e) {
             throw QtiWorksRuntimeException.unexpectedException(e);

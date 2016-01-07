@@ -42,6 +42,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.services.AssessmentDataService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.FilespaceManager;
+import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageDataImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.PrivilegeException;
@@ -58,7 +59,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -217,7 +217,7 @@ public class SimpleRestRunner {
         /* First we must upload the POST payload into a temp file */
         final String uploadContentType = request.getContentType();
         final File uploadFile = filespaceManager.createTempFile();
-        FileUtils.copyInputStreamToFile(request.getInputStream(), uploadFile);
+        ServiceUtilities.copyInputStreamToFile(request.getInputStream(), uploadFile);
         final MultipartFile multipartFile = new MultipartFileWrapper(uploadFile, uploadContentType);
 
         /* Then we import this temp file as an assessment */

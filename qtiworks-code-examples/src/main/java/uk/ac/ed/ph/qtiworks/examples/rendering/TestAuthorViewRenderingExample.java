@@ -50,11 +50,11 @@ import java.util.Date;
 
 import javax.xml.transform.stream.StreamResult;
 
-import org.apache.commons.io.output.StringBuilderWriter;
+import com.google.common.io.CharStreams;
 
 /**
  * Example showing the author view of a test
- *  *
+ *
  * <h3>How to run</h3>
  *
  * You can run this via Maven as follows:
@@ -103,13 +103,13 @@ public final class TestAuthorViewRenderingExample {
         renderingRequest.setValid(true);
 
         /* Set up result */
-        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
-        final StreamResult result = new StreamResult(stringBuilderWriter);
+        final StringBuilder stringBuilder = new StringBuilder();
+        final StreamResult result = new StreamResult(CharStreams.asWriter(stringBuilder));
 
         System.out.println("\nRendering");
         final AssessmentRenderer renderer = RenderingExampleHelpers.createAssessmentRenderer();
         renderer.renderTestAuthorView(renderingRequest, null/* (=Ignore notifications) */, result);
-        final String rendered = stringBuilderWriter.toString();
+        final String rendered = stringBuilder.toString();
         System.out.println("Rendered HTML: " + rendered);
     }
 }

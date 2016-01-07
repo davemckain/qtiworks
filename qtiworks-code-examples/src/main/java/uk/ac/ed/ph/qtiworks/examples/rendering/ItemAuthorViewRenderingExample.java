@@ -47,10 +47,17 @@ import java.util.Date;
 
 import javax.xml.transform.stream.StreamResult;
 
-import org.apache.commons.io.output.StringBuilderWriter;
+import com.google.common.io.CharStreams;
 
 /**
  * Example rendering the author view of an item immediately after entry.
+ *
+ * <h3>How to run</h3>
+ *
+ * You can run this via Maven as follows:
+ * <pre>
+ * mvn exec:java -Dexec.mainClass=uk.ac.ed.ph.qtiworks.examples.rendering.ItemAuthorViewRenderingExample
+ * </pre>
  *
  * @author David McKain
  */
@@ -84,13 +91,13 @@ public final class ItemAuthorViewRenderingExample {
         renderingRequest.setAuthorMode(true);
 
         /* Set up result */
-        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
-        final StreamResult result = new StreamResult(stringBuilderWriter);
+        final StringBuilder stringBuilder = new StringBuilder();
+        final StreamResult result = new StreamResult(CharStreams.asWriter(stringBuilder));
 
         System.out.println("\nRendering");
         final AssessmentRenderer renderer = RenderingExampleHelpers.createAssessmentRenderer();
         renderer.renderItemAuthorView(renderingRequest, null /* (=Ignore notifications) */, result);
-        final String rendered = stringBuilderWriter.toString();
+        final String rendered = stringBuilder.toString();
         System.out.println("Rendered HTML: " + rendered);
     }
 }

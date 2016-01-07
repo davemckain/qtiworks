@@ -42,9 +42,9 @@ import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
 import java.security.SecureRandom;
 import java.util.Date;
 import java.util.Random;
@@ -55,7 +55,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.google.common.base.Charsets;
 import com.google.common.hash.Hashing;
+import com.google.common.io.ByteStreams;
 
 /**
  * Dumping ground for utilities that currently don't belong anywhere else.
@@ -123,7 +125,7 @@ public final class ServiceUtilities {
      * Computes a hex-encoded SHA1 digest of the given String
      */
     public static String computeSha1Digest(final String string) {
-        return Hashing.sha1().hashString(string, Charset.forName("UTF-8")).toString();
+        return Hashing.sha1().hashString(string, Charsets.UTF_8).toString();
     }
 
     public static String createSalt() {
@@ -279,6 +281,17 @@ public final class ServiceUtilities {
 
     //-----------------------------------------------------
     // File streaming
+
+    public static void copyInputStreamToFile(final InputStream inputStream, final File outputFile)
+            throws IOException {
+        final FileOutputStream outputFileStream = new FileOutputStream(outputFile);
+        try {
+            ByteStreams.copy(inputStream, outputFileStream);
+        }
+        finally {
+            ensureClose(outputFileStream);
+        }
+    }
 
     public static void streamFile(final File file, final String contentType,
             final Date lastModifiedTime, final OutputStreamer outputStreamer)

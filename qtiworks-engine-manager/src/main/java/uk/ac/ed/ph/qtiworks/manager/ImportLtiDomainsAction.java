@@ -45,10 +45,11 @@ import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
+
+import com.google.common.io.Closeables;
 
 /**
  * Imports {@link LtiDomain} data from a CSV file
@@ -112,7 +113,7 @@ public final class ImportLtiDomainsAction extends ManagerAction {
             logger.error("Unexpected Exception reading in " + ltiDomainsCsv, e);
         }
         finally {
-            IOUtils.closeQuietly(importReader);
+            Closeables.closeQuietly(importReader);
         }
     }
 

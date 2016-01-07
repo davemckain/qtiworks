@@ -46,10 +46,11 @@ import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
+
+import com.google.common.io.Closeables;
 
 /**
  * Imports users from a CSV file
@@ -117,7 +118,7 @@ public final class ImportUsersAction extends ManagerAction {
             logger.error("Unexpected Exception reading in " + userImportCsv, e);
         }
         finally {
-            IOUtils.closeQuietly(importReader);
+            Closeables.closeQuietly(importReader);
         }
         logger.info("Created {} new user(s)", usersCreatedCount);
     }

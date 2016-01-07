@@ -50,7 +50,7 @@ import java.util.Date;
 
 import javax.xml.transform.stream.StreamResult;
 
-import org.apache.commons.io.output.StringBuilderWriter;
+import com.google.common.io.CharStreams;
 
 /**
  * Example of rendering the state of a test after the first item has been selected.
@@ -102,13 +102,13 @@ public final class TestRenderingExample {
         renderingRequest.setTestRenderingMode(null);
 
         /* Set up result */
-        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
-        final StreamResult result = new StreamResult(stringBuilderWriter);
+        final StringBuilder stringBuilder = new StringBuilder();
+        final StreamResult result = new StreamResult(CharStreams.asWriter(stringBuilder));
 
         System.out.println("\nRendering");
         final AssessmentRenderer renderer = RenderingExampleHelpers.createAssessmentRenderer();
         renderer.renderTest(renderingRequest, null/* (=Ignore notifications) */, result);
-        final String rendered = stringBuilderWriter.toString();
+        final String rendered = stringBuilder.toString();
         System.out.println("Rendered HTML: " + rendered);
     }
 }

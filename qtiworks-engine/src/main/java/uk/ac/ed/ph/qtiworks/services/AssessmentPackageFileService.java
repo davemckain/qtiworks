@@ -72,7 +72,6 @@ import java.util.Date;
 import javax.activation.FileTypeMap;
 import javax.annotation.Resource;
 
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -425,8 +424,7 @@ public class AssessmentPackageFileService {
                             + " yielded null lookup. The sample bootstrap process may need to be redone.");
                 }
                 try {
-                    FileUtils.copyInputStreamToFile(sampleFileStream, tempFile);
-                    sampleFileStream.close();
+                    ServiceUtilities.copyInputStreamToFile(sampleFileStream, tempFile);
                 }
                 catch (final IOException e) {
                     throw new QtiWorksRuntimeException("Sample AssessmentPackage file with href " + fileHref
