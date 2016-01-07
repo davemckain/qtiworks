@@ -44,7 +44,7 @@ import java.util.Date;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.io.IOUtils;
+import com.google.common.io.ByteStreams;
 
 /**
  * Implementation of {@link OutputStreamer} suitable for streaming data
@@ -86,13 +86,8 @@ public final class ServletOutputStreamer implements OutputStreamer {
             httpServletResponse.setHeader("Cache-Control", "private, no-cache, no-store, max-age=0, must-revalidate");
         }
 
-        /* Final stream data to ServletOutputStream */
+        /* Finally stream data to ServletOutputStream */
         final ServletOutputStream servletOutputStream = httpServletResponse.getOutputStream();
-        try {
-            IOUtils.copy(resultStream, servletOutputStream);
-        }
-        finally {
-            servletOutputStream.flush();
-        }
+        ByteStreams.copy(resultStream, servletOutputStream);
     }
 }
