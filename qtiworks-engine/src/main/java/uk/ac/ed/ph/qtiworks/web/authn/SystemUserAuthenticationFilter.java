@@ -105,8 +105,9 @@ public final class SystemUserAuthenticationFilter extends AbstractWebAuthenticat
     }
 
     @Override
-    protected void doFilterAuthentication(final HttpServletRequest request, final HttpServletResponse response,
-            final FilterChain chain, final HttpSession httpSession) throws IOException, ServletException {
+    protected void doFilterAuthentication(final HttpServletRequest httpServletRequest,
+            final HttpServletResponse httpServletResponse, final FilterChain filterChain,
+            final HttpSession httpSession) throws IOException, ServletException {
         /* Try to extract authenticated User ID from Session */
         User currentUser = null;
         final Long currentUserId = (Long) httpSession.getAttribute(SYSTEM_USER_ID_IDENTITY_ATTRIBUTE_NAME);
@@ -115,14 +116,14 @@ public final class SystemUserAuthenticationFilter extends AbstractWebAuthenticat
             currentUser = userDao.findById(currentUserId);
             if (currentUser==null) {
                 /* User no longer exists. (Unlikely to happen!) */
-                response.sendError(HttpServletResponse.SC_FORBIDDEN, "Your account no longer exists");
+                httpServletResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Your account no longer exists");
                 return;
             }
         }
         else {
             /* Not authenticated. Ask subclass to do whatever is required to authenticate
              */
-            currentUser = abstractSystemUserAuthenticator.doAuthentication(request, response);
+            currentUser = abstractSystemUserAuthenticator.doAuthentication(httpServletRequest, httpServletResponse);
             if (currentUser==null) {
                 /* Not authenticated. Subclass will have set the Response Object up to ensure the
                  * correct thing happens next so we return now.
@@ -134,13 +135,13 @@ public final class SystemUserAuthenticationFilter extends AbstractWebAuthenticat
 
         /* Make sure account is available */
         if (currentUser.isLoginDisabled()) {
-            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Your account is currently disabled");
+            httpServletResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Your account is currently disabled");
             return;
         }
 
         /* Make sure user role is acceptable */
         if (!allowedRoles.contains(currentUser.getUserRole())) {
-            response.sendError(HttpServletResponse.SC_FORBIDDEN, "You do not have the required system role to access this resource");
+            httpServletResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "You do not have the required system role to access this resource");
             return;
         }
 
@@ -153,7 +154,7 @@ public final class SystemUserAuthenticationFilter extends AbstractWebAuthenticat
          *  */
         try {
             identityService.setCurrentThreadUser(currentUser);
-            chain.doFilter(request, response);
+            filterChain.doFilter(httpServletRequest, httpServletResponse);
         }
         finally {
             /* Ensure we clear state afterwards for consistency */

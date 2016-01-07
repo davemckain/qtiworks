@@ -90,17 +90,18 @@ public final class CandidateSessionAuthenticationFilter extends AbstractWebAuthe
     }
 
     @Override
-    protected void doFilterAuthentication(final HttpServletRequest request, final HttpServletResponse response, final FilterChain chain,
+    protected void doFilterAuthentication(final HttpServletRequest httpServletRequest,
+            final HttpServletResponse httpServletResponse, final FilterChain filterChain,
             final HttpSession httpSession)
             throws IOException, ServletException {
         /* Determine which CandidateSession we're authenticating from pathInfo,
          * which should be of the form /(item|test)session/{xid}/{xsrfToken}/... */
-        final String pathInfo = request.getPathInfo();
+        final String pathInfo = httpServletRequest.getPathInfo();
         final Pattern pathPattern = Pattern.compile("^/(?:item|test)session/(\\d+)/([A-Za-z0-9]+)(/|$)");
         final Matcher pathMatcher = pathPattern.matcher(pathInfo);
         if (!pathMatcher.find()) {
             logger.warn("Failed regex match on resource path {}", pathInfo);
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            httpServletResponse.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
         final String xidString = pathMatcher.group(1);
@@ -111,7 +112,7 @@ public final class CandidateSessionAuthenticationFilter extends AbstractWebAuthe
         }
         catch (final NumberFormatException e) {
             logger.warn("Failed to parse CandidateSession ID from path {}", pathInfo);
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            httpServletResponse.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
         final String xsrfToken = pathMatcher.group(2);
@@ -120,7 +121,7 @@ public final class CandidateSessionAuthenticationFilter extends AbstractWebAuthe
         final CandidateSession candidateSession = candidateSessionDao.findById(xid);
         if (candidateSession==null) {
             logger.warn("Failed to look up CandidateSession with ID {}", xid);
-            response.sendError(HttpServletResponse.SC_FORBIDDEN);
+            httpServletResponse.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;
         }
 
@@ -128,14 +129,14 @@ public final class CandidateSessionAuthenticationFilter extends AbstractWebAuthe
         final CandidateSessionTicket candidateSessionTicket = getCandidateSessionTicketForHttpSession(httpSession, xid);
         if (candidateSessionTicket==null) {
             logger.warn("Failed to retrieve CandidateSessionTicket from HttpSession for CandidateSession {}", xid);
-            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden. You do not have access to this assessment session. Please launch this assessment again.");
+            httpServletResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden. You do not have access to this assessment session. Please launch this assessment again.");
             return;
         }
 
         /* Make sure supplied XSRF token agrees with the one already generated */
         if (!candidateSessionTicket.getXsrfToken().equals(xsrfToken)) {
             logger.warn("XSRF Token mismatch on CandidateSession {}", xid);
-            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden. You do not have permission to access to this assessment session. Please launch this assessment again.");
+            httpServletResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden. You do not have permission to access to this assessment session. Please launch this assessment again.");
         }
 
         /* Look up user running this session */
@@ -143,14 +144,14 @@ public final class CandidateSessionAuthenticationFilter extends AbstractWebAuthe
         final User user = userDao.findById(userId);
         if (user==null) {
             logger.warn("User {} in CandidateSessionTicket does not exist", xid);
-            response.sendError(HttpServletResponse.SC_FORBIDDEN);
+            httpServletResponse.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;
         }
 
         /* Finally store information about this session in the request and continue with filter chain */
         final CandidateSessionContext candidateSessionContext = new CandidateSessionContext(candidateSession, candidateSessionTicket.getSessionExitReturnUrl());
-        setCurrentRequestCandidateSessionContext(request, candidateSessionContext);
-        chain.doFilter(request, response);
+        setCurrentRequestCandidateSessionContext(httpServletRequest, candidateSessionContext);
+        filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
 
     //-------------------------------------------------
@@ -181,15 +182,14 @@ public final class CandidateSessionAuthenticationFilter extends AbstractWebAuthe
     //-------------------------------------------------
     // CandidateSession "authentication" for current HTTP request
 
-    private static void setCurrentRequestCandidateSessionContext(final HttpServletRequest request, final CandidateSessionContext candidateSessionContext) {
-        request.setAttribute(CANDIDATE_SESSION_CONTEXT_REQUEST_ATTRIBUTE_NAME, candidateSessionContext);
+    private static void setCurrentRequestCandidateSessionContext(final HttpServletRequest httpServletRequest, final CandidateSessionContext candidateSessionContext) {
+        httpServletRequest.setAttribute(CANDIDATE_SESSION_CONTEXT_REQUEST_ATTRIBUTE_NAME, candidateSessionContext);
     }
 
-    public static CandidateSessionContext requireCurrentRequestCandidateSessionContext(final HttpServletRequest request) {
-        final CandidateSessionContext result = (CandidateSessionContext) request.getAttribute(CANDIDATE_SESSION_CONTEXT_REQUEST_ATTRIBUTE_NAME);
+    public static CandidateSessionContext requireCurrentRequestCandidateSessionContext(final HttpServletRequest httpServletRequest) {
+        final CandidateSessionContext result = (CandidateSessionContext) httpServletRequest.getAttribute(CANDIDATE_SESSION_CONTEXT_REQUEST_ATTRIBUTE_NAME);
         if (result==null) {
             throw new QtiWorksLogicException("Failed to retrieve CandidateSessionContext from HttpServletRequest!");
-
         }
         return result;
     }

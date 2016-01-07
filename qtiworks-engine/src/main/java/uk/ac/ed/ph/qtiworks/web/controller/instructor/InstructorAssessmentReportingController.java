@@ -95,7 +95,7 @@ public class InstructorAssessmentReportingController {
     }
 
     @RequestMapping(value="/delivery/{did}/terminate-all-sessions", method=RequestMethod.POST)
-    public String terminateAllCandidateSessions(final RedirectAttributes redirectAttributes, @PathVariable final long did)
+    public String terminateAllCandidateSessions(@PathVariable final long did, final RedirectAttributes redirectAttributes)
             throws PrivilegeException, DomainEntityNotFoundException {
         final int terminated = assessmentProctoringService.terminateCandidateSessionsForDelivery(did);
         GlobalRouter.addFlashMessage(redirectAttributes, "Terminated " + terminated + " candidate session" + (terminated!=1 ? "s" : ""));
@@ -103,7 +103,7 @@ public class InstructorAssessmentReportingController {
     }
 
     @RequestMapping(value="/delivery/{did}/delete-all-sessions", method=RequestMethod.POST)
-    public String deleteAllCandidateSessions(final RedirectAttributes redirectAttributes, @PathVariable final long did)
+    public String deleteAllCandidateSessions(@PathVariable final long did, final RedirectAttributes redirectAttributes)
             throws PrivilegeException, DomainEntityNotFoundException {
         final int deletedCount = assessmentProctoringService.deleteCandidateSessionsForDelivery(did);
 
@@ -112,18 +112,18 @@ public class InstructorAssessmentReportingController {
     }
 
     @RequestMapping(value="/delivery/candidate-summary-report-{did}.csv", method=RequestMethod.GET)
-    public void streamDeliveryCandidateSummaryReportCsv(final HttpServletResponse response, @PathVariable final long did)
+    public void streamDeliveryCandidateSummaryReportCsv(@PathVariable final long did, final HttpServletResponse httpServletResponse)
             throws PrivilegeException, DomainEntityNotFoundException, IOException {
-        response.setContentType("text/plain");
-        response.setCharacterEncoding("UTF-8");
-        assessmentReportingService.streamDeliveryCandidateSummaryReportCsv(did, response.getOutputStream());
+        httpServletResponse.setContentType("text/plain");
+        httpServletResponse.setCharacterEncoding("UTF-8");
+        assessmentReportingService.streamDeliveryCandidateSummaryReportCsv(did, httpServletResponse.getOutputStream());
     }
 
     @RequestMapping(value="/delivery/candidate-results-{did}.zip", method=RequestMethod.GET)
-    public void streamDeliveryCandidateResults(final HttpServletResponse response, @PathVariable final long did)
+    public void streamDeliveryCandidateResults(@PathVariable final long did, final HttpServletResponse httpServletResponse)
             throws PrivilegeException, DomainEntityNotFoundException, IOException {
-        response.setContentType("application/zip");
-        assessmentReportingService.streamAssessmentReports(did, response.getOutputStream());
+        httpServletResponse.setContentType("application/zip");
+        assessmentReportingService.streamAssessmentReports(did, httpServletResponse.getOutputStream());
     }
 
     //------------------------------------------------------
@@ -143,10 +143,10 @@ public class InstructorAssessmentReportingController {
     }
 
     @RequestMapping(value="/candidate-session/{xid}/result", method=RequestMethod.GET)
-    public void streamResult(final HttpServletResponse response, @PathVariable final long xid)
+    public void streamResult(@PathVariable final long xid, final HttpServletResponse httpServletResponse)
             throws DomainEntityNotFoundException, IOException, PrivilegeException {
-        response.setContentType("application/xml");
-        assessmentReportingService.streamCandidateAssessmentResult(xid, response.getOutputStream());
+        httpServletResponse.setContentType("application/xml");
+        assessmentReportingService.streamCandidateAssessmentResult(xid, httpServletResponse.getOutputStream());
     }
 
     @RequestMapping(value="/candidate-session/{xid}/terminate", method=RequestMethod.POST)

@@ -39,6 +39,7 @@ import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Date;
 
 import javax.servlet.ServletOutputStream;
@@ -47,11 +48,14 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.common.io.ByteStreams;
 
 /**
- * Implementation of {@link OutputStreamer} suitable for streaming data
- * via an {@link HttpServletResponse}.
+ * Implementation of {@link OutputStreamer} suitable for streaming data to the
+ * {@link OutputStream} of a {@link HttpServletResponse}.
  * <p>
  * This supports optional caching for resources via entity tags where it is considered safe
  * or sensible to do so.
+ * <p>
+ * Developer note: an instance of this class should be instantiated and used once
+ * for a given {@link HttpServletResponse}, and then discarded.
  *
  * @author David McKain
  */

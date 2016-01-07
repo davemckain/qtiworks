@@ -92,12 +92,13 @@ public final class AnonymousAuthenticationFilter extends AbstractWebAuthenticati
     }
 
     @Override
-    protected void doFilterAuthentication(final HttpServletRequest request, final HttpServletResponse response,
-            final FilterChain chain, final HttpSession httpSession)
+    protected void doFilterAuthentication(final HttpServletRequest httpServletRequest,
+            final HttpServletResponse httpServletResponse,
+            final FilterChain filterChain, final HttpSession httpSession)
             throws IOException, ServletException {
         /* See if we already have something in the session */
         AnonymousUser anonymousUser = null;
-        final String pathInfo = request.getPathInfo();
+        final String pathInfo = httpServletRequest.getPathInfo();
         if ("/simplerestrunner".equals(pathInfo)) {
             /* Create a special user with HTTP session for REST URLs */
             anonymousUser = createRestUser();
@@ -119,13 +120,13 @@ public final class AnonymousAuthenticationFilter extends AbstractWebAuthenticati
 
         /* Make sure account is available (slightly pathological here) */
         if (anonymousUser.isLoginDisabled()) {
-            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Your account is currently disabled");
+            httpServletResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Your account is currently disabled");
             return;
         }
 
         identityService.setCurrentThreadUser(anonymousUser);
         try {
-            chain.doFilter(request, response);
+            filterChain.doFilter(httpServletRequest, httpServletResponse);
         }
         finally {
             identityService.setCurrentThreadUser(null);

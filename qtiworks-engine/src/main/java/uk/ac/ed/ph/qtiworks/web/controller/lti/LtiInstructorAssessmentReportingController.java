@@ -120,20 +120,20 @@ public class LtiInstructorAssessmentReportingController {
     }
 
     @RequestMapping(value="/candidate-summary-report-{lrid}.csv", method=RequestMethod.GET)
-    public void streamDeliveryCandidateSummaryReportCsv(final HttpServletResponse response)
+    public void streamDeliveryCandidateSummaryReportCsv(final HttpServletResponse httpServletResponse)
             throws PrivilegeException, DomainEntityNotFoundException, IOException {
         final Delivery thisDelivery = identityService.assertCurrentThreadLtiIdentityContext().getLtiResource().getDelivery();
-        response.setContentType("text/plain");
-        response.setCharacterEncoding("UTF-8");
-        assessmentReportingService.streamDeliveryCandidateSummaryReportCsv(thisDelivery.getId(), response.getOutputStream());
+        httpServletResponse.setContentType("text/plain");
+        httpServletResponse.setCharacterEncoding("UTF-8");
+        assessmentReportingService.streamDeliveryCandidateSummaryReportCsv(thisDelivery.getId(), httpServletResponse.getOutputStream());
     }
 
     @RequestMapping(value="/candidate-results-{lrid}.zip", method=RequestMethod.GET)
-    public void streamDeliveryCandidateResults(final HttpServletResponse response)
+    public void streamDeliveryCandidateResults(final HttpServletResponse httpServletResponse)
             throws PrivilegeException, DomainEntityNotFoundException, IOException {
         final Delivery thisDelivery = identityService.assertCurrentThreadLtiIdentityContext().getLtiResource().getDelivery();
-        response.setContentType("application/zip");
-        assessmentReportingService.streamAssessmentReports(thisDelivery.getId(), response.getOutputStream());
+        httpServletResponse.setContentType("application/zip");
+        assessmentReportingService.streamAssessmentReports(thisDelivery.getId(), httpServletResponse.getOutputStream());
     }
 
     //------------------------------------------------------
@@ -153,10 +153,10 @@ public class LtiInstructorAssessmentReportingController {
     }
 
     @RequestMapping(value="/candidate-session/{xid}/result", method=RequestMethod.GET)
-    public void streamResult(final HttpServletResponse response, @PathVariable final long xid)
+    public void streamResult(@PathVariable final long xid, final HttpServletResponse httpServletResponse)
             throws DomainEntityNotFoundException, IOException, PrivilegeException {
-        response.setContentType("application/xml");
-        assessmentReportingService.streamCandidateAssessmentResult(xid, response.getOutputStream());
+        httpServletResponse.setContentType("application/xml");
+        assessmentReportingService.streamCandidateAssessmentResult(xid, httpServletResponse.getOutputStream());
     }
 
     @RequestMapping(value="/candidate-session/{xid}/terminate", method=RequestMethod.POST)

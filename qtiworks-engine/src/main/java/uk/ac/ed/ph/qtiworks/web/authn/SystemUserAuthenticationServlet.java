@@ -46,6 +46,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -74,40 +75,29 @@ public final class SystemUserAuthenticationServlet extends HttpServlet {
     public static final String PROTECTED_REQUEST_URI_PARAM = "protectedRequestUri";
     public static final String FORM_LOGIN_JSP_PATH = "/WEB-INF/jsp/login/systemUserLogin.jsp";
 
-    private transient SystemUserDao systemUserDao;
-    private transient AuditLogger auditLogger;
+    private SystemUserDao systemUserDao;
+    private AuditLogger auditLogger;
 
-    /** Ensures that the non-serializable properties of this servlet are created. */
-    private void requireBeans() throws ServletException {
-        if (auditLogger==null || systemUserDao==null) {
-            try {
-                final ApplicationContext appContext = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletConfig().getServletContext());
-                auditLogger = appContext.getBean(AuditLogger.class);
-                systemUserDao = appContext.getBean(SystemUserDao.class);
-            }
-            catch (final Exception e) {
-                logger.error("Bean access failed on " + this.getClass().getSimpleName(), e);
-                throw new ServletException(e);
-            }
-        }
+    @Override
+    public void init(final ServletConfig servletConfig) {
+        final ApplicationContext appContext = WebApplicationContextUtils.getRequiredWebApplicationContext(servletConfig.getServletContext());
+        auditLogger = appContext.getBean(AuditLogger.class);
+        systemUserDao = appContext.getBean(SystemUserDao.class);
     }
 
     @Override
-    protected void doPost(final HttpServletRequest request, final HttpServletResponse response)
+    protected void doPost(final HttpServletRequest httpServletRequest, final HttpServletResponse httpServletResponse)
             throws ServletException, IOException {
-        /* Make sure beans are set up. (These are not serializable, so have to be declared transient.) */
-        requireBeans();
-
         /* Recover and validate the URI of the original protected resource. We'll redirect to this on success */
-        final URI protectedResourceUri = extractRedirectUri(request);
+        final URI protectedResourceUri = extractRedirectUri(httpServletRequest);
         if (protectedResourceUri==null) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            httpServletResponse.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 
         /* Get supplied login credentials */
-        final String loginName = StringUtilities.emptyIfNull(request.getParameter(LOGIN_NAME_PARAM)).trim();
-        final String password = StringUtilities.emptyIfNull(request.getParameter(PASSWORD_PARAM)).trim();
+        final String loginName = StringUtilities.emptyIfNull(httpServletRequest.getParameter(LOGIN_NAME_PARAM)).trim();
+        final String password = StringUtilities.emptyIfNull(httpServletRequest.getParameter(PASSWORD_PARAM)).trim();
         final List<String> errors = new ArrayList<String>();
         final SystemUser authenticatedUser = tryAuthentication(loginName, password, errors);
         if (authenticatedUser!=null) {
@@ -116,17 +106,17 @@ public final class SystemUserAuthenticationServlet extends HttpServlet {
              */
             auditLogger.recordEvent(authenticatedUser, "System/form authentication succeeded for " + loginName);
             logger.debug("Authentication succeeded - redirecting to {}", protectedResourceUri);
-            request.getSession().setAttribute(SystemUserAuthenticationFilter.SYSTEM_USER_ID_IDENTITY_ATTRIBUTE_NAME, authenticatedUser.getId());
-            response.sendRedirect(protectedResourceUri.toString()); /* (This is safe as we have sanitised this URI) */
+            httpServletRequest.getSession().setAttribute(SystemUserAuthenticationFilter.SYSTEM_USER_ID_IDENTITY_ATTRIBUTE_NAME, authenticatedUser.getId());
+            httpServletResponse.sendRedirect(protectedResourceUri.toString()); /* (This is safe as we have sanitised this URI) */
         }
         else {
             /* Forward to login error page, keeping the referral details in session */
             auditLogger.recordEvent("System/form authentication failed for " + loginName);
             logger.debug("Authentication failed - redirecting back to {}", FORM_LOGIN_JSP_PATH);
-            request.setAttribute("errors", errors);
-            request.setAttribute("loginName", loginName);
-            request.setAttribute("password", password);
-            request.getRequestDispatcher(FORM_LOGIN_JSP_PATH).forward(request, response);
+            httpServletRequest.setAttribute("errors", errors);
+            httpServletRequest.setAttribute("loginName", loginName);
+            httpServletRequest.setAttribute("password", password);
+            httpServletRequest.getRequestDispatcher(FORM_LOGIN_JSP_PATH).forward(httpServletRequest, httpServletResponse);
         }
     }
 
@@ -168,11 +158,11 @@ public final class SystemUserAuthenticationServlet extends HttpServlet {
      * Extracts and checks the return URI specified in the {@link #PROTECTED_REQUEST_URI_PARAM}
      * parameter. Basic validation is done to ensure that it is a relative URI.
      *
-     * @param request
+     * @param httpServletRequest
      * @return extracted and validated return URI, or null if no valid URI was specified.
      */
-    private URI extractRedirectUri(final HttpServletRequest request) {
-        final String protectedRequestUriString = request.getParameter(PROTECTED_REQUEST_URI_PARAM);
+    private URI extractRedirectUri(final HttpServletRequest httpServletRequest) {
+        final String protectedRequestUriString = httpServletRequest.getParameter(PROTECTED_REQUEST_URI_PARAM);
         if (protectedRequestUriString==null) {
             /* Hmmm.... not supplied. Let's fail appropriately */
             logger.warn("Parameter {} not found", PROTECTED_REQUEST_URI_PARAM);

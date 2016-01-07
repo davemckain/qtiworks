@@ -50,8 +50,8 @@ import javax.servlet.http.HttpSession;
  * An instance of this will used to create a {@link CandidateSessionContext} for each
  * subsequent HTTP request, which is passed to the candidate service layer.
  * <p>
- * Developer note: Instances of this class will be stored in the
- * session, so should be immutable.
+ * Developer note: Instances of this class will be stored in the {@link HttpSession},
+ * so should be immutable and contain suitably safe data.
 
  * @see CandidateSessionAuthenticationFilter
  * @see CandidateSessionContext

@@ -51,14 +51,15 @@ import javax.servlet.http.HttpSession;
 public abstract class AbstractWebAuthenticationFilter extends AbstractWebFilterUsingApplicationContext {
 
     @Override
-    public final void doWebFilter(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse, final FilterChain chain)
+    public final void doWebFilter(final HttpServletRequest httpServletRequest,
+            final HttpServletResponse httpServletResponse, final FilterChain filterChain)
             throws IOException, ServletException {
-        final HttpSession httpSession = httpRequest.getSession();
-        doFilterAuthentication(httpRequest, httpResponse, chain, httpSession);
+        final HttpSession httpSession = httpServletRequest.getSession();
+        doFilterAuthentication(httpServletRequest, httpServletResponse, filterChain, httpSession);
     }
 
-    protected abstract void doFilterAuthentication(final HttpServletRequest httpRequest,
-            final HttpServletResponse httpResponse, final FilterChain chain,
+    protected abstract void doFilterAuthentication(final HttpServletRequest httpServletRequest,
+            final HttpServletResponse httpServletResponse, final FilterChain filterChain,
             final HttpSession httpSession)
             throws IOException, ServletException;
 

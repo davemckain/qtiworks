@@ -119,14 +119,14 @@ public class LtiLaunchService {
      * <p>
      * An {@link LtiUser} corresponding to the launch will be created or reused as required.
      *
-     * @param request
+     * @param httpServletRequest
      * @param ltiLaunchType
      * @throws IOException
      */
-    public DecodedLtiLaunch decodeLtiLaunchData(final HttpServletRequest request, final LtiLaunchType ltiLaunchType)
+    public DecodedLtiLaunch decodeLtiLaunchData(final HttpServletRequest httpServletRequest, final LtiLaunchType ltiLaunchType)
             throws IOException {
         /* Log OAuth parameters for debugging purposes */
-        final OAuthMessage oauthMessage = OAuthServlet.getMessage(request, null);
+        final OAuthMessage oauthMessage = OAuthServlet.getMessage(httpServletRequest, null);
         if (logger.isDebugEnabled()) {
             final List<Entry<String, String>> parameters = oauthMessage.getParameters();
             for (final Entry<String, String> entry : parameters) {
@@ -190,8 +190,8 @@ public class LtiLaunchService {
         }
     }
 
-    public static boolean isBasicLtiLaunchRequest(final HttpServletRequest request) {
-        return "basic-lti-launch-request".equals(request.getParameter("lti_message_type"));
+    public static boolean isBasicLtiLaunchRequest(final HttpServletRequest httpServletRequest) {
+        return "basic-lti-launch-request".equals(httpServletRequest.getParameter("lti_message_type"));
     }
 
     public static boolean isBasicLtiLaunchRequest(final LtiLaunchData ltiLaunchData) {

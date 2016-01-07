@@ -65,12 +65,12 @@ public final class RequestTimestampFilter extends AbstractWebFilterUsingApplicat
     }
 
     @Override
-    public void doWebFilter(final HttpServletRequest request, final HttpServletResponse response, final FilterChain filterChain)
+    public void doWebFilter(final HttpServletRequest httpServletRequest, final HttpServletResponse httpServletResponse, final FilterChain filterChain)
             throws IOException, ServletException {
         try {
             final Date timestamp = new Date();
             requestTimestampContext.setCurrentRequestTimestamp(timestamp);
-            filterChain.doFilter(request, response);
+            filterChain.doFilter(httpServletRequest, httpServletResponse);
         }
         finally {
             requestTimestampContext.setCurrentRequestTimestamp(null);

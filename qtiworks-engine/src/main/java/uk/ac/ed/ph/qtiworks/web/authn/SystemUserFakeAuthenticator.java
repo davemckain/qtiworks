@@ -60,7 +60,7 @@ public final class SystemUserFakeAuthenticator extends AbstractSystemUserAuthent
     }
 
     @Override
-    protected SystemUser doAuthentication(final HttpServletRequest request, final HttpServletResponse response) {
+    protected SystemUser doAuthentication(final HttpServletRequest httpServletRequest, final HttpServletResponse httpServletResponse) {
         return lookupFakeUser();
     }
 

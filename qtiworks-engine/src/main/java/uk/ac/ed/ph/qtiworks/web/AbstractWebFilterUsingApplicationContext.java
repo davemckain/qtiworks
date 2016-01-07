@@ -99,28 +99,29 @@ public abstract class AbstractWebFilterUsingApplicationContext implements Filter
      * into {@link HttpServletRequest} and {@link HttpServletResponse}, before passing to subclass.
      */
     @Override
-    public final void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain)
+    public final void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse,
+            final FilterChain filterChain)
             throws IOException, ServletException {
         /* This filter can only HTTP stuff */
-        if (!(request instanceof HttpServletRequest)) {
-            throw new QtiWorksLogicException("Expected request to be a HttpServletRequest");
+        if (!(servletRequest instanceof HttpServletRequest)) {
+            throw new QtiWorksLogicException("Expected servletRequest to be a HttpServletRequest");
         }
-        if (!(response instanceof HttpServletResponse)) {
-            throw new QtiWorksLogicException("Expected response to be a HttpServletResponse");
+        if (!(servletResponse instanceof HttpServletResponse)) {
+            throw new QtiWorksLogicException("Expected servletResponse to be a HttpServletResponse");
         }
-        final HttpServletRequest httpRequest = (HttpServletRequest) request;
-        final HttpServletResponse httpResponse = (HttpServletResponse) response;
-        doWebFilter(httpRequest, httpResponse, chain);
+        final HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
+        final HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
+        doWebFilter(httpServletRequest, httpServletResponse, filterChain);
     }
 
     /**
      * Subclasses should implement this to do their filtering.
      *
-     * @param httpRequest
-     * @param httpResponse
-     * @param chain
+     * @param httpServletRequest
+     * @param httpServletResponse
+     * @param filterChain
      */
-    protected abstract void doWebFilter(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse,
-            final FilterChain chain)
+    protected abstract void doWebFilter(final HttpServletRequest httpServletRequest, final HttpServletResponse httpServletResponse,
+            final FilterChain filterChain)
             throws IOException, ServletException;
 }

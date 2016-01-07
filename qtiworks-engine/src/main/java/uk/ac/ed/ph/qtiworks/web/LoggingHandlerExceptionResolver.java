@@ -64,8 +64,8 @@ public class LoggingHandlerExceptionResolver implements HandlerExceptionResolver
     }
 
     @Override
-    public ModelAndView resolveException(final HttpServletRequest request,
-            final HttpServletResponse response,
+    public ModelAndView resolveException(final HttpServletRequest httpServletRequest,
+            final HttpServletResponse httpServletResponse,
             final Object handler,
             final Exception ex) {
         if (ex instanceof CandidateException || ex instanceof HttpRequestMethodNotSupportedException) {
