@@ -14,9 +14,8 @@ assessment is not set up or if the Delivery is not enabled etc.
   <h2>Assessment Unavailable</h2>
 
   <p>
-    This Assessment is not available to you at present. Please contact your instructor
-    for further advice.
+    This assessment is not available to candidates at present.
+    Please contact your instructor for further advice.
   </p>
 
 </page:page>
-

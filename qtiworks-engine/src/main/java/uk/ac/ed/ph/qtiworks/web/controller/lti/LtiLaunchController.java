@@ -103,15 +103,16 @@ public class LtiLaunchController {
 
         if (userRole==UserRole.INSTRUCTOR) {
             /* If user is an instructor, we'll forward to the LTI instructor MVC after
-             * "authenticating" the user by creating and storing an LtiDomainTicket
+             * "authenticating" the user by creating and storing an LtiAuthenticationTicket
              * in the session */
-            final LtiAuthenticationTicket ltiDomainTicket = new LtiAuthenticationTicket(ltiUser.getId(), ltiResource.getId(),ltiLaunchData.getLaunchPresentationReturnUrl());
-            LtiResourceAuthenticationFilter.authenticateUserForResource(httpSession, ltiDomainTicket);
+            final LtiAuthenticationTicket ltiAuthenticationTicket = new LtiAuthenticationTicket(ltiUser.getId(), ltiResource.getId(),ltiLaunchData.getLaunchPresentationReturnUrl());
+            LtiResourceAuthenticationFilter.authenticateUserForResource(httpSession, ltiAuthenticationTicket);
             return "redirect:/lti/resource/" + ltiResource.getId();
         }
         else if (userRole==UserRole.CANDIDATE) {
             /* If user is a candidate, then we'll launch/reuse a candidate session */
             if (ltiResource==null) {
+                /* Instructor hasn't set things up yet! */
                 return "candidateLaunchError";
             }
 
@@ -166,7 +167,7 @@ public class LtiLaunchController {
     }
 
     /**
-     * Older URI for a link-level LTI launch.
+     * Legacy URI for a link-level LTI launch.
      * <p>
      * (This is kept for backwards compatibility with existing LTI links, but should not be used
      * for new links.)
