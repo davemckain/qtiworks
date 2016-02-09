@@ -110,6 +110,9 @@ public final class QtiXmlReader {
         resultingSchemaMapTemplate.put(QtiConstants.QTI_21_NAMESPACE_URI, QtiConstants.QTI_21_SCHEMA_LOCATION);
         resultingSchemaMapTemplate.put(QtiConstants.QTI_RESULT_21_NAMESPACE_URI, QtiConstants.QTI_RESULT_21_SCHEMA_LOCATION);
         resultingSchemaMapTemplate.put(QtiConstants.QTI_20_NAMESPACE_URI, QtiConstants.QTI_20_SCHEMA_LOCATION);
+        resultingSchemaMapTemplate.put(QtiConstants.MATHML_NAMESPACE_URI, QtiConstants.MATHML_SCHEMA_LOCATION);
+        resultingSchemaMapTemplate.put(QtiConstants.MATHML_3_NAMESPACE_URI, QtiConstants.MATHML_3_SCHEMA_LOCATION);
+        resultingSchemaMapTemplate.put(QtiConstants.MATHML_3_NAMESPACE_URI_2010, QtiConstants.MATHML_3_SCHEMA_LOCATION);
 
         this.jqtiExtensionManager = jqtiExtensionManager;
         this.xmlResourceReader = new XmlResourceReader(JQTIPLUS_PARSER_RESOURCE_LOCATOR, resultingSchemaMapTemplate, schemaCache);

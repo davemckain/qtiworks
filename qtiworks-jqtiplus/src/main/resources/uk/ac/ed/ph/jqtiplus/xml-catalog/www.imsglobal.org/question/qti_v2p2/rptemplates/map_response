@@ -1,0 +1,17 @@
+<responseProcessing xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p2 http://www.imsglobal.org/xsd/qti/qtiv2p2/imsqti_v2p2.xsd" xmlns="http://www.imsglobal.org/xsd/imsqti_v2p2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> 
+	<responseCondition>
+		<responseIf>
+			<isNull>
+				<variable identifier="RESPONSE"/>
+			</isNull>
+			<setOutcomeValue identifier="SCORE">
+				<baseValue baseType="float">0.0</baseValue>
+			</setOutcomeValue>
+		</responseIf>
+		<responseElse>
+			<setOutcomeValue identifier="SCORE">
+				<mapResponse identifier="RESPONSE"/>
+			</setOutcomeValue>
+		</responseElse>
+	</responseCondition>
+</responseProcessing>
