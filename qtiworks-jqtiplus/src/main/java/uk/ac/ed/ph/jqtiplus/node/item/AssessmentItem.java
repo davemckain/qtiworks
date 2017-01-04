@@ -122,7 +122,7 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
         getAttributes().add(new StringAttribute(this, ATTR_TITLE_NAME, true));
         getAttributes().add(new StringAttribute(this, ATTR_LABEL_NAME, false));
         getAttributes().add(new StringAttribute(this, ATTR_LANG_NAME, XMLConstants.XML_NS_URI, null, false));
-        getAttributes().add(new BooleanAttribute(this, ATTR_ADAPTIVE_NAME, true));
+        getAttributes().add(new BooleanAttribute(this, ATTR_ADAPTIVE_NAME, false, false));
         getAttributes().add(new BooleanAttribute(this, ATTR_TIME_DEPENDENT_NAME, true));
         getAttributes().add(new StringAttribute(this, ATTR_TOOL_NAME_NAME, false));
         getAttributes().add(new StringAttribute(this, ATTR_TOOL_VERSION_NAME, false));
