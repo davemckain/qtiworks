@@ -66,7 +66,7 @@ public class QtiSerializerTest {
         final String expectedXml = "<assessmentItem xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"
                 + " xmlns='http://www.imsglobal.org/xsd/imsqti_v2p1'"
                 + " xsi:schemaLocation='http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd'"
-                + " identifier='' title='' adaptive='' timeDependent=''/>";
+                + " identifier='' title='' timeDependent=''/>";
 
         serializeAndCompare(item, expectedXml, new SaxFiringOptions());
     }
@@ -79,7 +79,7 @@ public class QtiSerializerTest {
         saxFiringOptions.setOmitSchemaLocation(true);
 
         final String expectedXml = "<assessmentItem xmlns='http://www.imsglobal.org/xsd/imsqti_v2p1'"
-                + " identifier='' title='' adaptive='' timeDependent=''/>";
+                + " identifier='' title='' timeDependent=''/>";
 
         serializeAndCompare(item, expectedXml, saxFiringOptions);
     }
@@ -94,7 +94,7 @@ public class QtiSerializerTest {
         final String expectedXml = "<q:assessmentItem xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"
                 + " xmlns:q='http://www.imsglobal.org/xsd/imsqti_v2p1'"
                 + " xsi:schemaLocation='http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd'"
-                + " identifier='' title='' adaptive='' timeDependent=''/>";
+                + " identifier='' title='' timeDependent=''/>";
 
 
         serializeAndCompare(item, expectedXml, saxFiringOptions);
@@ -114,7 +114,7 @@ public class QtiSerializerTest {
         final String expectedXml = "<assessmentItem xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"
                 + " xmlns='http://www.imsglobal.org/xsd/imsqti_v2p1'"
                 + " xsi:schemaLocation='http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd'"
-                + " identifier='' title='' adaptive='' timeDependent=''>"
+                + " identifier='' title='' timeDependent=''>"
                 + "<itemBody>"
                 + "<p xml:base='urn:test'/>"
                 + "</itemBody>"
@@ -137,7 +137,7 @@ public class QtiSerializerTest {
         final String expectedXml = "<assessmentItem xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"
                 + " xmlns='http://www.imsglobal.org/xsd/imsqti_v2p1'"
                 + " xsi:schemaLocation='http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd'"
-                + " identifier='' title='' adaptive='' timeDependent=''>"
+                + " identifier='' title='' timeDependent=''>"
                 + "<itemBody>"
                 + "<math xmlns='http://www.w3.org/1998/Math/MathML'><mrow/></math>"
                 + "</itemBody>"
@@ -162,7 +162,7 @@ public class QtiSerializerTest {
                 + " xmlns='http://www.imsglobal.org/xsd/imsqti_v2p1'"
                 + " xmlns:m='http://www.w3.org/1998/Math/MathML'"
                 + " xsi:schemaLocation='http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd'"
-                + " identifier='' title='' adaptive='' timeDependent=''>"
+                + " identifier='' title='' timeDependent=''>"
                 + "<itemBody>"
                 + "<m:math><m:mrow/></m:math>"
                 + "</itemBody>"
@@ -188,7 +188,7 @@ public class QtiSerializerTest {
                 + " xmlns:m='http://www.imsglobal.org/xsd/imsqti_v2p1'"
                 + " xmlns:m0='http://www.w3.org/1998/Math/MathML'"
                 + " xsi:schemaLocation='http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd'"
-                + " identifier='' title='' adaptive='' timeDependent=''>"
+                + " identifier='' title='' timeDependent=''>"
                 + "<m:itemBody>"
                 + "<m0:math><m0:mrow/></m0:math>"
                 + "</m:itemBody>"
@@ -211,7 +211,7 @@ public class QtiSerializerTest {
         final String expectedXml = "<assessmentItem xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"
                 + " xmlns='http://www.imsglobal.org/xsd/imsqti_v2p1'"
                 + " xsi:schemaLocation='http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd'"
-                + " identifier='' title='' adaptive='' timeDependent=''>"
+                + " identifier='' title='' timeDependent=''>"
                 + "<itemBody>"
                 + "<math xmlns='http://www.w3.org/1998/Math/MathML'>"
                 + "<silly xmlns='urn:silly'/>"
