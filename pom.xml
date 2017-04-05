@@ -27,14 +27,14 @@ All Rights Reserved
     <asciimath-parser.version>1.0</asciimath-parser.version>
     <snuggletex.version>1.3-SNAPSHOT</snuggletex.version>
     <jacomax.version>0.2.3</jacomax.version>
-    <slf4j.version>1.7.13</slf4j.version>
-    <logback.version>1.1.3</logback.version>
+    <slf4j.version>1.7.25</slf4j.version>
+    <logback.version>1.1.11</logback.version>
     <saxon9.version>9.1.0.8</saxon9.version>
     <xerces.version>2.11.0</xerces.version>
     <servlet-api.version>2.5</servlet-api.version>
     <jsp-api.version>2.1</jsp-api.version>
     <jstl.version>1.2</jstl.version>
-    <spring.version>3.2.16.RELEASE</spring.version>
+    <spring.version>3.2.18.RELEASE</spring.version>
     <hibernate.version>4.2.21.Final</hibernate.version>
     <hibernate-validator.version>4.3.2.Final</hibernate-validator.version>
     <mysql-connector.version>5.1.23</mysql-connector.version>
@@ -42,11 +42,11 @@ All Rights Reserved
     <javacsv.version>2.0</javacsv.version>
     <jackson.version>2.5.5</jackson.version>
     <commons-dbcp.version>1.4</commons-dbcp.version><!-- NB: Would like to upgrade to v2 but this required Java 1.7 -->
-    <commons-fileupload.version>1.3.1</commons-fileupload.version>
+    <commons-fileupload.version>1.3.2</commons-fileupload.version>
     <commons-pool.version>2.4.2</commons-pool.version>
     <oauth.version>20100601</oauth.version>
-    <httpclient.version>4.5.1</httpclient.version>
-    <guava.version>18.0</guava.version>
+    <httpclient.version>4.5.3</httpclient.version>
+    <guava.version>20.0</guava.version><!-- NB: This is the last version compatible with JDK 1.6 -->
     <junit.version>4.12</junit.version>
     <xmlunit.version>1.6</xmlunit.version>
   </properties>
