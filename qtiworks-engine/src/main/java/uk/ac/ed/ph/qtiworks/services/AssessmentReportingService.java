@@ -71,13 +71,13 @@ import java.util.zip.ZipOutputStream;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.csvreader.CsvWriter;
 import com.google.common.base.Charsets;
+import com.google.common.io.Files;
 
 /**
  * Middle tier service for reporting on assessment deliveries and candidate sessions.
@@ -464,7 +464,7 @@ public class AssessmentReportingService {
 
         /* Add result to ZIP */
         zipOutputStream.putNextEntry(new ZipEntry(zipEntryName));
-        FileUtils.copyFile(assessmentResultFile, zipOutputStream);
+        Files.copy(assessmentResultFile, zipOutputStream);
         zipOutputStream.closeEntry();
     }
 

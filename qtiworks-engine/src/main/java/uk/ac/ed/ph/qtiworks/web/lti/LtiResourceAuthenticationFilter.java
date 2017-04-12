@@ -85,16 +85,16 @@ public final class LtiResourceAuthenticationFilter extends AbstractWebAuthentica
     }
 
     @Override
-    protected void doFilterAuthentication(final HttpServletRequest request, final HttpServletResponse response, final FilterChain chain,
-            final HttpSession session)
+    protected void doFilterAuthentication(final HttpServletRequest httpServletRequest, final HttpServletResponse httpServletResponse, final FilterChain filterChain,
+            final HttpSession httpSession)
             throws IOException, ServletException {
         /* Determine which LTI resource we're working on from the pathInfo, which should be of the form /resource/{lrid}... */
-        final String pathInfo = request.getPathInfo();
+        final String pathInfo = httpServletRequest.getPathInfo();
         final Pattern pathPattern = Pattern.compile("^/resource/(\\d+)");
         final Matcher pathMatcher = pathPattern.matcher(pathInfo);
         if (!pathMatcher.find()) {
             logger.warn("Failed regex match on resource path {}", pathInfo);
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            httpServletResponse.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
         final String lridString = pathMatcher.group(1);
@@ -105,7 +105,7 @@ public final class LtiResourceAuthenticationFilter extends AbstractWebAuthentica
         }
         catch (final NumberFormatException e) {
             logger.warn("Failed to parse resource ID from path {}", pathInfo);
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            httpServletResponse.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 
@@ -113,15 +113,15 @@ public final class LtiResourceAuthenticationFilter extends AbstractWebAuthentica
         final LtiResource ltiResource = ltiResourceDao.findById(lrid);
         if (ltiResource==null) {
             logger.warn("Failed to look up LtiResource with ID {}", lrid);
-            response.sendError(HttpServletResponse.SC_FORBIDDEN);
+            httpServletResponse.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;
         }
 
         /* The user's ticket for accessing this resource should have been stored in the session previously */
-        final LtiAuthenticationTicket ltiAuthenticationTicket = getLtiAuthenticationTicketForResource(session, lrid);
+        final LtiAuthenticationTicket ltiAuthenticationTicket = getLtiAuthenticationTicketForResource(httpSession, lrid);
         if (ltiAuthenticationTicket==null) {
             logger.warn("Failed to retrieve LtiAuthenticationTicket from HttpSession for LtiResource with lrid {}", lrid);
-            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden. This resource is only available via an LTI domain link from a Tool Provider. Please try the launch from your Tool Provider again.");
+            httpServletResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden. This resource is only available via an LTI domain link from a Tool Provider. Please try the launch from your Tool Provider again.");
             return;
         }
 
@@ -130,7 +130,7 @@ public final class LtiResourceAuthenticationFilter extends AbstractWebAuthentica
         final LtiUser ltiUser = ltiUserDao.findById(ltiUserId);
         if (ltiUser==null) {
             logger.warn("LtiUser {} in LtiAuthenticationTicket does not exist", lrid);
-            response.sendError(HttpServletResponse.SC_FORBIDDEN);
+            httpServletResponse.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;
         }
 
@@ -139,7 +139,7 @@ public final class LtiResourceAuthenticationFilter extends AbstractWebAuthentica
         identityService.setCurrentThreadUser(ltiUser);
         identityService.setCurrentThreadLtiIdentityContext(ltiIdentityContext);
         try {
-            chain.doFilter(request, response);
+            filterChain.doFilter(httpServletRequest, httpServletResponse);
         }
         finally {
             identityService.setCurrentThreadUser(null);
@@ -147,9 +147,9 @@ public final class LtiResourceAuthenticationFilter extends AbstractWebAuthentica
         }
     }
 
-    public static void authenticateUserForResource(final HttpSession httpSsession, final LtiAuthenticationTicket ltiDomainTicket) {
+    public static void authenticateUserForResource(final HttpSession httpSession, final LtiAuthenticationTicket ltiDomainTicket) {
         final Long lrid = ltiDomainTicket.getLtiResouceId();
-        httpSsession.setAttribute(getLtiTicketSessionKey(lrid), ltiDomainTicket);
+        httpSession.setAttribute(getLtiTicketSessionKey(lrid), ltiDomainTicket);
     }
 
     public static void deauthenticateUserFromResource(final HttpSession httpSession, final LtiResource ltiResource) {
@@ -157,8 +157,8 @@ public final class LtiResourceAuthenticationFilter extends AbstractWebAuthentica
         httpSession.removeAttribute(getLtiTicketSessionKey(lrid));
     }
 
-    private static LtiAuthenticationTicket getLtiAuthenticationTicketForResource(final HttpSession session, final long lrid) {
-        return (LtiAuthenticationTicket) session.getAttribute(getLtiTicketSessionKey(lrid));
+    private static LtiAuthenticationTicket getLtiAuthenticationTicketForResource(final HttpSession httpSession, final long lrid) {
+        return (LtiAuthenticationTicket) httpSession.getAttribute(getLtiTicketSessionKey(lrid));
     }
 
     private static String getLtiTicketSessionKey(final long lrid) {

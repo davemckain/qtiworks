@@ -78,13 +78,13 @@ public class LtiLaunchController {
 
     /** Domain-level LTI launch */
     @RequestMapping(value="/domainlaunch", method=RequestMethod.POST)
-    public String ltiDomainLevelLaunch(final HttpSession httpSession, final HttpServletRequest request,
-            final HttpServletResponse response)
+    public String ltiDomainLevelLaunch(final HttpSession httpSession, final HttpServletRequest httpServletRequest,
+            final HttpServletResponse httpServletResponse)
             throws IOException {
         /* Decode LTI launch request, and bail out on error */
-        final DecodedLtiLaunch decodedLtiLaunch = ltiLaunchService.decodeLtiLaunchData(request, LtiLaunchType.DOMAIN);
+        final DecodedLtiLaunch decodedLtiLaunch = ltiLaunchService.decodeLtiLaunchData(httpServletRequest, LtiLaunchType.DOMAIN);
         if (decodedLtiLaunch.isError()) {
-            response.sendError(decodedLtiLaunch.getErrorCode(), decodedLtiLaunch.getErrorMessage());
+            httpServletResponse.sendError(decodedLtiLaunch.getErrorCode(), decodedLtiLaunch.getErrorMessage());
             return null;
         }
         final LtiLaunchData ltiLaunchData = decodedLtiLaunch.getLtiLaunchData();
@@ -93,7 +93,7 @@ public class LtiLaunchController {
         final LtiUser ltiUser = decodedLtiLaunch.getLtiUser();
         final LtiDomain ltiDomain = ltiUser.getLtiDomain();
         if (ltiDomain==null) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "The tool consumer has attempted a domain-level launch using a link-level key");
+            httpServletResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "The tool consumer has attempted a domain-level launch using a link-level key");
             return null;
         }
 
@@ -103,15 +103,16 @@ public class LtiLaunchController {
 
         if (userRole==UserRole.INSTRUCTOR) {
             /* If user is an instructor, we'll forward to the LTI instructor MVC after
-             * "authenticating" the user by creating and storing an LtiDomainTicket
+             * "authenticating" the user by creating and storing an LtiAuthenticationTicket
              * in the session */
-            final LtiAuthenticationTicket ltiDomainTicket = new LtiAuthenticationTicket(ltiUser.getId(), ltiResource.getId(),ltiLaunchData.getLaunchPresentationReturnUrl());
-            LtiResourceAuthenticationFilter.authenticateUserForResource(httpSession, ltiDomainTicket);
+            final LtiAuthenticationTicket ltiAuthenticationTicket = new LtiAuthenticationTicket(ltiUser.getId(), ltiResource.getId(),ltiLaunchData.getLaunchPresentationReturnUrl());
+            LtiResourceAuthenticationFilter.authenticateUserForResource(httpSession, ltiAuthenticationTicket);
             return "redirect:/lti/resource/" + ltiResource.getId();
         }
         else if (userRole==UserRole.CANDIDATE) {
             /* If user is a candidate, then we'll launch/reuse a candidate session */
             if (ltiResource==null) {
+                /* Instructor hasn't set things up yet! */
                 return "candidateLaunchError";
             }
 
@@ -137,13 +138,13 @@ public class LtiLaunchController {
 
     /** Link-level LTI launch (always treated as candidate) */
     @RequestMapping(value="/linklaunch", method=RequestMethod.POST)
-    public String ltiLinkLevelLaunch(final HttpSession httpSession, final HttpServletRequest request,
-            final HttpServletResponse response)
+    public String ltiLinkLevelLaunch(final HttpSession httpSession, final HttpServletRequest httpServletRequest,
+            final HttpServletResponse httpServletResponse)
             throws IOException {
         /* Decode LTI launch request, and bail out on error */
-        final DecodedLtiLaunch decodedLtiLaunch = ltiLaunchService.decodeLtiLaunchData(request, LtiLaunchType.LINK);
+        final DecodedLtiLaunch decodedLtiLaunch = ltiLaunchService.decodeLtiLaunchData(httpServletRequest, LtiLaunchType.LINK);
         if (decodedLtiLaunch.isError()) {
-            response.sendError(decodedLtiLaunch.getErrorCode(), decodedLtiLaunch.getErrorMessage());
+            httpServletResponse.sendError(decodedLtiLaunch.getErrorCode(), decodedLtiLaunch.getErrorMessage());
             return null;
         }
 
@@ -166,24 +167,24 @@ public class LtiLaunchController {
     }
 
     /**
-     * Older URI for a link-level LTI launch.
+     * Legacy URI for a link-level LTI launch.
      * <p>
      * (This is kept for backwards compatibility with existing LTI links, but should not be used
      * for new links.)
      */
     @RequestMapping(value="/launch/{did}", method=RequestMethod.POST)
-    public String deprecatedLtiLinkLevelLaunch(final HttpSession httpSession, final HttpServletRequest request, final HttpServletResponse response,
+    public String deprecatedLtiLinkLevelLaunch(final HttpSession httpSession, final HttpServletRequest httpServletRequest, final HttpServletResponse httpServletResponse,
             @SuppressWarnings("unused") @PathVariable final long did)
             throws IOException {
-        return ltiLinkLevelLaunch(httpSession, request, response);
+        return ltiLinkLevelLaunch(httpSession, httpServletRequest, httpServletResponse);
     }
 
     //------------------------------------------------------
 
     /** LTI debugging and diagnostic help */
     @RequestMapping(value="/debug", method=RequestMethod.POST)
-    public String ltiDebug(final HttpServletRequest httpRequest, final Model model) throws IOException {
-        final DecodedLtiLaunch decodedLtiLaunch = ltiLaunchService.decodeLtiLaunchData(httpRequest, LtiLaunchType.DOMAIN);
+    public String ltiDebug(final HttpServletRequest httpServletRequest, final Model model) throws IOException {
+        final DecodedLtiLaunch decodedLtiLaunch = ltiLaunchService.decodeLtiLaunchData(httpServletRequest, LtiLaunchType.DOMAIN);
         model.addAttribute("object", decodedLtiLaunch);
         return "ltiDebug";
     }

@@ -324,7 +324,7 @@ public class InstructorAssessmentManagementController {
     }
 
     @RequestMapping(value="/assessment/{aid}/deliveries/create", method=RequestMethod.GET)
-    public String showCreateDeliveryForm(final Model model, @PathVariable final long aid)
+    public String showCreateDeliveryForm(@PathVariable final long aid, final Model model)
             throws PrivilegeException, DomainEntityNotFoundException {
         final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
         final DeliveryTemplate template = assessmentDataService.createDeliveryTemplate(assessment);

@@ -39,19 +39,23 @@ import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Date;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.io.IOUtils;
+import com.google.common.io.ByteStreams;
 
 /**
- * Implementation of {@link OutputStreamer} suitable for streaming data
- * via an {@link HttpServletResponse}.
+ * Implementation of {@link OutputStreamer} suitable for streaming data to the
+ * {@link OutputStream} of a {@link HttpServletResponse}.
  * <p>
  * This supports optional caching for resources via entity tags where it is considered safe
  * or sensible to do so.
+ * <p>
+ * Developer note: an instance of this class should be instantiated and used once
+ * for a given {@link HttpServletResponse}, and then discarded.
  *
  * @author David McKain
  */
@@ -86,13 +90,8 @@ public final class ServletOutputStreamer implements OutputStreamer {
             httpServletResponse.setHeader("Cache-Control", "private, no-cache, no-store, max-age=0, must-revalidate");
         }
 
-        /* Final stream data to ServletOutputStream */
+        /* Finally stream data to ServletOutputStream */
         final ServletOutputStream servletOutputStream = httpServletResponse.getOutputStream();
-        try {
-            IOUtils.copy(resultStream, servletOutputStream);
-        }
-        finally {
-            servletOutputStream.flush();
-        }
+        ByteStreams.copy(resultStream, servletOutputStream);
     }
 }

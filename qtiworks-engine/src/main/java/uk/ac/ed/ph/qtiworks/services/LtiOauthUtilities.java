@@ -61,11 +61,11 @@ import net.oauth.client.OAuthClient;
 import net.oauth.client.OAuthResponseMessage;
 import net.oauth.client.httpclient4.HttpClient4;
 
-import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
 
+import com.google.common.io.BaseEncoding;
 import com.google.common.xml.XmlEscapers;
 
 /**
@@ -293,6 +293,6 @@ public final class LtiOauthUtilities {
         catch (final Exception e) {
             throw new QtiWorksLogicException("Unexpected failure computing body digest");
         }
-        return Base64.encodeBase64String(md.digest());
+        return BaseEncoding.base64().encode(md.digest());
     }
 }

@@ -143,8 +143,8 @@ public class UniqurateStandaloneRunner {
      * FIXME: Yes, this really is a non-idempotent GET. Boo!
      */
     @RequestMapping(value="/standalonerunner/uqlauncher/{did}/{token}", method=RequestMethod.GET)
-    public String uniqurateLauncher(final HttpSession httpSession, final HttpServletResponse httpResponse,
-            @PathVariable final long did, @PathVariable final String token)
+    public String uniqurateLauncher(@PathVariable final long did, @PathVariable final String token,
+            final HttpSession httpSession, final HttpServletResponse httpServletResponse)
             throws IOException {
         try {
             final String sessionExitReturnUrl = "/web/anonymous/standalonerunner/exit";
@@ -154,7 +154,7 @@ public class UniqurateStandaloneRunner {
             return GlobalRouter.buildSessionStartRedirect(candidateSessionTicket);
         }
         catch (final DomainEntityNotFoundException e) {
-            httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            httpServletResponse.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return null;
         }
         catch (final CandidateException e) {

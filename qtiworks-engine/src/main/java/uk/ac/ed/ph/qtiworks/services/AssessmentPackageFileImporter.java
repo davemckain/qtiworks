@@ -61,12 +61,12 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipInputStream;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.google.common.io.ByteStreams;
 
 /**
  * Tiny helper service for importing assessment package data into the filesystem
@@ -131,16 +131,11 @@ public class AssessmentPackageFileImporter {
     private AssessmentPackage importStandaloneXml(final File importSandboxDirectory, final MultipartFile multipartFile) {
         /* Save XML */
         final File resultFile = new File(importSandboxDirectory, STANDALONE_XML_IMPORT_FILE_NAME);
-        InputStream inputStream = null;
         try {
-            inputStream = ServiceUtilities.ensureInputSream(multipartFile);
-            FileUtils.copyInputStreamToFile(inputStream, resultFile);
+            multipartFile.transferTo(resultFile);
         }
         catch (final IOException e) {
             throw QtiWorksRuntimeException.unexpectedException(e);
-        }
-        finally {
-            ServiceUtilities.ensureClose(inputStream);
         }
 
         /* Create AssessmentPackage representing this */
@@ -169,7 +164,7 @@ public class AssessmentPackageFileImporter {
                     ServiceUtilities.ensureFileCreated(destFile);
                     final FileOutputStream destOutputStream = new FileOutputStream(destFile);
                     try {
-                        IOUtils.copy(zipInputStream, destOutputStream);
+                        ByteStreams.copy(zipInputStream, destOutputStream);
                     }
                     finally {
                         ServiceUtilities.ensureClose(destOutputStream);

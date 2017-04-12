@@ -139,7 +139,7 @@ public class LtiInstructorAssessmentManagementController {
      * by the TC, so we simply response with an error in that case.
      */
     @RequestMapping(value="/exit", method=RequestMethod.POST)
-    public String exit(final HttpSession httpSession, final HttpServletResponse response) throws IOException {
+    public String exit(final HttpSession httpSession, final HttpServletResponse httpServletResponse) throws IOException {
         /* Extract return URL */
         final LtiIdentityContext ltiIdentityContext = identityService.assertCurrentThreadLtiIdentityContext();
         final String returnUrl = ltiIdentityContext.getReturnUrl();
@@ -149,7 +149,7 @@ public class LtiInstructorAssessmentManagementController {
 
         /* Finally redirect if possible */
         if (returnUrl==null) {
-            response.sendError(HttpServletResponse.SC_FORBIDDEN, "The tool consumer did not send a return URL to exit to");
+            httpServletResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "The tool consumer did not send a return URL to exit to");
             return null;
         }
         return "redirect:" + returnUrl;
@@ -163,14 +163,14 @@ public class LtiInstructorAssessmentManagementController {
     }
 
     @RequestMapping(value="/try", method=RequestMethod.POST)
-    public String tryThisAssessment(final HttpSession httpSession, final HttpServletResponse response)
+    public String tryThisAssessment(final HttpSession httpSession, final HttpServletResponse httpServletResponse)
             throws PrivilegeException, IOException,
             CandidateException, IncompatiableDeliverySettingsException {
         final Delivery thisDelivery = identityService.getCurrentThreadLtiIdentityContext().getLtiResource().getDelivery();
         final Assessment thisAssessment = thisDelivery.getAssessment();
         if (thisAssessment==null) {
             /* Assessment hasn't been matched to this resource yet */
-            response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, "An Assessment has not been selected for this resource yet");
+            httpServletResponse.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, "An Assessment has not been selected for this resource yet");
             return null;
         }
         final DeliverySettings theseDeliverySettings = thisDelivery.getDeliverySettings(); /* NB: May be null */

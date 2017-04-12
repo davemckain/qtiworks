@@ -49,13 +49,13 @@ import javax.servlet.http.HttpServletRequest;
  */
 public final class ViewUtilities {
 
-    public static String createInternalLink(final HttpServletRequest request, final String withinContextPath) {
-        return buildPageLink(request.getContextPath(), withinContextPath, null, null);
+    public static String createInternalLink(final HttpServletRequest httpServletResponse, final String withinContextPath) {
+        return buildPageLink(httpServletResponse.getContextPath(), withinContextPath, null, null);
     }
 
-    public static String createInternalLink(final HttpServletRequest request, final String withinContextPath,
+    public static String createInternalLink(final HttpServletRequest httpServletResponse, final String withinContextPath,
             final String pathInfo, final String fragment, final Object... nameValueParams) {
-        return buildPageLink(request.getContextPath(), withinContextPath, pathInfo, fragment, nameValueParams);
+        return buildPageLink(httpServletResponse.getContextPath(), withinContextPath, pathInfo, fragment, nameValueParams);
     }
 
     private static String buildPageLink(final String base, final String withinContextPath,

@@ -38,7 +38,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.services.CandidateAuditLogger;
-import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
+import uk.ac.ed.ph.qtiworks.web.candidate.CandidateSessionLaunchService;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -80,7 +80,7 @@ public final class CandidateException extends Exception {
     /**
      * Use this for an exception in creating a {@link CandidateSession} on a non-null {@link Delivery}.
      *
-     * @see CandidateSessionStarter
+     * @see CandidateSessionLaunchService
      */
     public CandidateException(final User candidate, final Delivery delivery, final CandidateExceptionReason candidateExceptionReason) {
         super("CandidateException launching CandidateSession for User " + candidate.getId() + " on Delivery " + delivery.getId() + "; reason=" + candidateExceptionReason);
@@ -95,7 +95,7 @@ public final class CandidateException extends Exception {
      * Use this for an exception in creating a {@link CandidateSession} on an {@link Assessment}
      * when the {@link Delivery} to be run has not yet been determined.
      *
-     * @see CandidateSessionStarter
+     * @see CandidateSessionLaunchService
      */
     public CandidateException(final User candidate, final Assessment assessment, final CandidateExceptionReason candidateExceptionReason) {
         super("CandidateException launching CandidateSession for User " + candidate.getId() + " on Assessment " + assessment.getId() + "; reason=" + candidateExceptionReason);

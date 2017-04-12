@@ -92,40 +92,41 @@ public final class AnonymousAuthenticationFilter extends AbstractWebAuthenticati
     }
 
     @Override
-    protected void doFilterAuthentication(final HttpServletRequest request, final HttpServletResponse response,
-            final FilterChain chain, final HttpSession session)
+    protected void doFilterAuthentication(final HttpServletRequest httpServletRequest,
+            final HttpServletResponse httpServletResponse,
+            final FilterChain filterChain, final HttpSession httpSession)
             throws IOException, ServletException {
         /* See if we already have something in the session */
         AnonymousUser anonymousUser = null;
-        final String pathInfo = request.getPathInfo();
+        final String pathInfo = httpServletRequest.getPathInfo();
         if ("/simplerestrunner".equals(pathInfo)) {
             /* Create a special user with HTTP session for REST URLs */
             anonymousUser = createRestUser();
             logger.debug("Created REST User {} for this request", anonymousUser);
         }
         else {
-            final Long anonymousUserId = (Long) session.getAttribute(ANONYMOUS_USER_ID_ATTRIBUTE_NAME);
+            final Long anonymousUserId = (Long) httpSession.getAttribute(ANONYMOUS_USER_ID_ATTRIBUTE_NAME);
             if (anonymousUserId!=null) {
                 /* Try to reuse existing anonymous user */
                 anonymousUser = anonymousUserDao.findById(anonymousUserId);
             }
             if (anonymousUserId==null || anonymousUser==null) {
                 /* Nothing in session or user with existing ID not found, so create new anonymous user */
-                anonymousUser = createAnonymousUser(session);
-                session.setAttribute(ANONYMOUS_USER_ID_ATTRIBUTE_NAME, anonymousUser.getId());
+                anonymousUser = createAnonymousUser(httpSession);
+                httpSession.setAttribute(ANONYMOUS_USER_ID_ATTRIBUTE_NAME, anonymousUser.getId());
                 logger.debug("Created AnonymousUser {} for this session", anonymousUser);
             }
         }
 
         /* Make sure account is available (slightly pathological here) */
         if (anonymousUser.isLoginDisabled()) {
-            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Your account is currently disabled");
+            httpServletResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Your account is currently disabled");
             return;
         }
 
         identityService.setCurrentThreadUser(anonymousUser);
         try {
-            chain.doFilter(request, response);
+            filterChain.doFilter(httpServletRequest, httpServletResponse);
         }
         finally {
             identityService.setCurrentThreadUser(null);

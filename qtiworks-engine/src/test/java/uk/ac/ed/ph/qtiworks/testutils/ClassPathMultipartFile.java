@@ -34,16 +34,19 @@
 package uk.ac.ed.ph.qtiworks.testutils;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
+import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.google.common.io.ByteStreams;
 
 /**
  * Trivial implementation of {@link MultipartFile} that loads a single resource using the
@@ -91,13 +94,13 @@ public final class ClassPathMultipartFile implements MultipartFile {
     public byte[] getBytes() {
         final InputStream inputStream = getInputStream();
         try {
-            return IOUtils.toByteArray(getInputStream());
+            return ByteStreams.toByteArray(getInputStream());
         }
         catch (final IOException e) {
             throw new QtiWorksRuntimeException("Failed to read data from " + path);
         }
         finally {
-            IOUtils.closeQuietly(inputStream);
+            ServiceUtilities.ensureClose(inputStream);
         }
     }
 
@@ -112,16 +115,16 @@ public final class ClassPathMultipartFile implements MultipartFile {
     }
 
     @Override
-    public void transferTo(final File dest) {
-        final InputStream inputStream = getInputStream();
+    public void transferTo(final File dest) throws IOException {
+        InputStream inputStream = null;
+        OutputStream destOutputStream = null;
         try {
-            FileUtils.copyInputStreamToFile(inputStream, dest);
-        }
-        catch (final IOException e) {
-            throw new QtiWorksRuntimeException("Failed to transfer file " + path + " to " + dest, e);
+            inputStream = getInputStream();
+            destOutputStream = new FileOutputStream(dest);
+            ByteStreams.copy(inputStream, destOutputStream);
         }
         finally {
-            IOUtils.closeQuietly(inputStream);
+            ServiceUtilities.ensureClose(inputStream, destOutputStream);
         }
     }
 

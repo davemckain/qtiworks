@@ -64,11 +64,11 @@ public abstract class AbstractSystemUserAuthenticator {
      * {@link SystemUser} if authentication succeeds, otherwise set up the {@link HttpServletResponse} as
      * appropriate (e.g. redirect to login page) and return null.
      *
-     * @param request
-     * @param response
+     * @param httpServletRequest
+     * @param httpServletResponse
      * @throws IOException
      * @throws ServletException
      */
-    protected abstract SystemUser doAuthentication(HttpServletRequest request, HttpServletResponse response)
+    protected abstract SystemUser doAuthentication(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)
             throws IOException, ServletException;
 }

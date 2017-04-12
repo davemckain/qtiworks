@@ -87,12 +87,12 @@ public abstract class CandidateControllerBase {
      * Retrieves the {@link CandidateSessionContext} for this request, which will have been set up
      * by the {@link CandidateSessionAuthenticationFilter}.
      */
-    protected CandidateSessionContext getCandidateSessionContext(final HttpServletRequest request) {
-        return CandidateSessionAuthenticationFilter.requireCurrentRequestCandidateSessionContext(request);
+    protected CandidateSessionContext getCandidateSessionContext(final HttpServletRequest httpServletRequest) {
+        return CandidateSessionAuthenticationFilter.requireCurrentRequestCandidateSessionContext(httpServletRequest);
     }
 
-    protected CandidateSession getCandidateSession(final HttpServletRequest request) {
-        return getCandidateSessionContext(request).getCandidateSession();
+    protected CandidateSession getCandidateSession(final HttpServletRequest httpServletRequest) {
+        return getCandidateSessionContext(httpServletRequest).getCandidateSession();
     }
 
     //----------------------------------------------------
@@ -123,18 +123,18 @@ public abstract class CandidateControllerBase {
         return fileResponseMap;
     }
 
-    protected String extractCandidateComment(final HttpServletRequest request) {
-        if (request.getParameter("qtiworks_comment_presented")==null) {
+    protected String extractCandidateComment(final HttpServletRequest httpServletRequest) {
+        if (httpServletRequest.getParameter("qtiworks_comment_presented")==null) {
             /* No comment box given to candidate */
             return null;
         }
-        return StringUtilities.emptyIfNull(request.getParameter("qtiworks_comment"));
+        return StringUtilities.emptyIfNull(httpServletRequest.getParameter("qtiworks_comment"));
     }
 
-    protected Map<Identifier, StringResponseData> extractStringResponseData(final HttpServletRequest request) {
+    protected Map<Identifier, StringResponseData> extractStringResponseData(final HttpServletRequest httpServletRequest) {
         final Map<Identifier, StringResponseData> responseMap = new HashMap<Identifier, StringResponseData>();
         @SuppressWarnings("unchecked")
-        final Set<String> parameterNames = request.getParameterMap().keySet();
+        final Set<String> parameterNames = httpServletRequest.getParameterMap().keySet();
         for (final String name : parameterNames) {
             if (name.startsWith("qtiworks_presented_")) {
                 final String responseIdentifierString = name.substring("qtiworks_presented_".length());
@@ -145,7 +145,7 @@ public abstract class CandidateControllerBase {
                 catch (final QtiParseException e) {
                     throw new BadResponseWebPayloadException("Bad response identifier encoded in parameter  " + name, e);
                 }
-                final String[] responseValues = request.getParameterValues("qtiworks_response_" + responseIdentifierString);
+                final String[] responseValues = httpServletRequest.getParameterValues("qtiworks_response_" + responseIdentifierString);
                 final StringResponseData stringResponseData = new StringResponseData(responseValues);
                 responseMap.put(responseIdentifier, stringResponseData);
             }
@@ -159,19 +159,19 @@ public abstract class CandidateControllerBase {
     /**
      * Serves the given (white-listed) file in the given {@link AssessmentPackage}
      */
-    protected void streamAssessmentPackageFile(final HttpServletRequest request, final HttpServletResponse response,
+    protected void streamAssessmentPackageFile(final HttpServletRequest httpServletRequest, final HttpServletResponse httpServletResponse,
             @PathVariable final long xid, @PathVariable final String xsrfToken,
             @RequestParam("href") final String fileHref)
             throws IOException, CandidateException {
         final String fingerprint = "session/" + xid + "/" + xsrfToken + "/file/" + fileHref;
         final String resourceEtag = WebUtilities.computeEtag(fingerprint);
-        final String requestEtag = request.getHeader("If-None-Match");
+        final String requestEtag = httpServletRequest.getHeader("If-None-Match");
         if (resourceEtag.equals(requestEtag)) {
-            response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+            httpServletResponse.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
         }
         else {
-            final ServletOutputStreamer outputStreamer = new ServletOutputStreamer(response, resourceEtag);
-            candidateRenderingService.streamAssessmentPackageFile(getCandidateSession(request),
+            final ServletOutputStreamer outputStreamer = new ServletOutputStreamer(httpServletResponse, resourceEtag);
+            candidateRenderingService.streamAssessmentPackageFile(getCandidateSession(httpServletRequest),
                     fileHref, outputStreamer);
         }
     }
@@ -182,18 +182,18 @@ public abstract class CandidateControllerBase {
     /**
      * Serves the source of the given {@link AssessmentPackage}
      */
-    protected void streamAssessmentSource(final HttpServletRequest request, final HttpServletResponse response,
+    protected void streamAssessmentSource(final HttpServletRequest httpServletRequest, final HttpServletResponse httpServletResponse,
             final long xid, final String xsrfToken)
             throws IOException, CandidateException {
         final String fingerprint = "session/" + xid + "/" + xsrfToken + "/source";
         final String resourceEtag = WebUtilities.computeEtag(fingerprint);
-        final String requestEtag = request.getHeader("If-None-Match");
+        final String requestEtag = httpServletRequest.getHeader("If-None-Match");
         if (resourceEtag.equals(requestEtag)) {
-            response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+            httpServletResponse.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
         }
         else {
-            final ServletOutputStreamer outputStreamer = new ServletOutputStreamer(response, resourceEtag);
-            candidateRenderingService.streamAssessmentSource(getCandidateSession(request), outputStreamer);
+            final ServletOutputStreamer outputStreamer = new ServletOutputStreamer(httpServletResponse, resourceEtag);
+            candidateRenderingService.streamAssessmentSource(getCandidateSession(httpServletRequest), outputStreamer);
         }
     }
 
@@ -201,26 +201,26 @@ public abstract class CandidateControllerBase {
      * Streams a {@link ItemSessionState} or {@link TestSessionState} representing
      * the current state of the given {@link CandidateSession}
      */
-    protected void streamSessionState(final HttpServletRequest request, final HttpServletResponse response)
+    protected void streamSessionState(final HttpServletRequest httpServletRequest, final HttpServletResponse httpServletResponse)
             throws IOException, CandidateException {
-        final ServletOutputStreamer outputStreamer = new ServletOutputStreamer(response, null /* No caching */);
-        candidateRenderingService.streamAssessmentState(getCandidateSession(request), outputStreamer);
+        final ServletOutputStreamer outputStreamer = new ServletOutputStreamer(httpServletResponse, null /* No caching */);
+        candidateRenderingService.streamAssessmentState(getCandidateSession(httpServletRequest), outputStreamer);
     }
 
     /**
      * Streams an {@link AssessmentResult} representing the current state of the given
      * {@link CandidateSession}
      */
-    protected void streamAssessmentResult(final HttpServletRequest request, final HttpServletResponse response)
+    protected void streamAssessmentResult(final HttpServletRequest httpServletRequest, final HttpServletResponse httpServletResponse)
             throws IOException, CandidateException {
-        response.setContentType("application/xml");
-        final ServletOutputStreamer outputStreamer = new ServletOutputStreamer(response, null /* No caching */);
-        candidateRenderingService.streamAssessmentResult(getCandidateSession(request), outputStreamer);
+        httpServletResponse.setContentType("application/xml");
+        final ServletOutputStreamer outputStreamer = new ServletOutputStreamer(httpServletResponse, null /* No caching */);
+        candidateRenderingService.streamAssessmentResult(getCandidateSession(httpServletRequest), outputStreamer);
     }
 
-    protected String showPackageValidationResult(final HttpServletRequest request, final Model model)
+    protected String showPackageValidationResult(final HttpServletRequest httpServletRequest, final Model model)
             throws CandidateException {
-        final CandidateSession candidateSession = getCandidateSession(request);
+        final CandidateSession candidateSession = getCandidateSession(httpServletRequest);
         model.addAttribute("validationResult", candidateRenderingService.generateValidationResult(candidateSession));
         return "validationResult";
     }

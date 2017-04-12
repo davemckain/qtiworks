@@ -53,7 +53,7 @@ import java.io.Serializable;
  * other pieces of useful information.
  * <p>
  * Developer note: Instances of this class will be stored in the
- * session, so should be immutable.
+ * client's HTTP session, so should be immutable and safe for storing in this way.
  *
  * @see LtiResourceAuthenticationFilter
  * @see LtiLaunchController

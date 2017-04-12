@@ -84,25 +84,26 @@ public final class SystemUserFormAuthenticator extends AbstractSystemUserAuthent
     }
 
     @Override
-    protected SystemUser doAuthentication(final HttpServletRequest request, final HttpServletResponse response)
+    protected SystemUser doAuthentication(final HttpServletRequest httpServletRequest, final HttpServletResponse httpServletResponse)
             throws IOException, ServletException {
         /* Not authenticated, so forward to login JSP */
 
         /* Need to record full HTTP parameters! We'll make this easy by only allowing GET
          * requests here. */
-        if (!request.getMethod().equals("GET")) {
-            response.sendError(HttpServletResponse.SC_FORBIDDEN);
+        if (!httpServletRequest.getMethod().equals("GET")) {
+            httpServletResponse.sendError(HttpServletResponse.SC_FORBIDDEN);
             return null;
         }
         /* Retrieve URL of protected Resource, including query String */
-        String requestUri = request.getRequestURI();
-        final String queryString = request.getQueryString();
+        String requestUri = httpServletRequest.getRequestURI();
+        final String queryString = httpServletRequest.getQueryString();
         if (queryString!=null) {
             requestUri += "?" + queryString;
         }
         logger.debug("Forwarding to login page at {}", SystemUserAuthenticationServlet.FORM_LOGIN_JSP_PATH);
-        request.setAttribute(PROTECTED_REQUEST_URI_NAME, requestUri);
-        request.getRequestDispatcher(SystemUserAuthenticationServlet.FORM_LOGIN_JSP_PATH).forward(request, response);
+        httpServletRequest.setAttribute(PROTECTED_REQUEST_URI_NAME, requestUri);
+        httpServletRequest.getRequestDispatcher(SystemUserAuthenticationServlet.FORM_LOGIN_JSP_PATH)
+            .forward(httpServletRequest, httpServletResponse);
         return null;
     }
 }

@@ -54,16 +54,16 @@ public final class WebUtilities {
      * Wrapper round {@link FilterConfig#getInitParameter(String)} that throws a
      * {@link ServletException} if the parameter could not be found.
      *
-     * @param config
+     * @param filterConfig
      * @param paramName
      * @throws ServletException
      */
-    public static String getRequiredInitParameter(final FilterConfig config, final String paramName)
+    public static String getRequiredInitParameter(final FilterConfig filterConfig, final String paramName)
             throws ServletException {
-        final String result = config.getInitParameter(paramName);
+        final String result = filterConfig.getInitParameter(paramName);
         if (result == null) {
             throw new ServletException("Could not look up <init-param/> " + paramName
-                    + " for filter " + config.getFilterName());
+                    + " for filter " + filterConfig.getFilterName());
         }
         return result;
     }

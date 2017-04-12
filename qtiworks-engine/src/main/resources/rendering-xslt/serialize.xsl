@@ -21,9 +21,8 @@ hence slightly easier to debug.
   <xsl:param name="contentType" as="xs:string"/>
   <xsl:param name="outputMethod" as="xs:string"/>
 
-  <!-- New MathJax CDN URL (September 2014) now works over HTTP and HTTPS -->
-  <!-- FIXME: Allow MathJax URL to be overridden in qtiworks-deployment.properties -->
-  <xsl:param name="mathJaxUrl" select="'//cdn.mathjax.org/mathjax/2.1-latest/MathJax.js?config=MML_HTMLorMML'" as="xs:string"/>
+  <!-- FIXME: Allow MathJax URL and config to be overridden in qtiworks-deployment.properties -->
+  <xsl:param name="mathJaxUrl" select="'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=MML_HTMLorMML'" as="xs:string"/>
   <xsl:param name="mathJaxConfig" as="xs:string?"/>
 
   <!-- ************************************************************ -->

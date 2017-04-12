@@ -42,6 +42,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.services.AssessmentDataService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.FilespaceManager;
+import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageDataImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.PrivilegeException;
@@ -58,7 +59,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -84,7 +84,7 @@ import org.springframework.web.multipart.MultipartFile;
  * <ul>
  *   <li>
  *     If the assessment is launchable, QTIWorks will return an HTTP 303 redirection
- *     response containing a URL that can be used to launch new candidate sessions on the
+ *     httpServletResponse containing a URL that can be used to launch new candidate sessions on the
  *     assessment. This URL can be passed to a browser. (For convenience, this launch URL will
  *     respond to both GET and POST requests, even though GET is technically inappropriate.)
  *   </li>
@@ -96,7 +96,7 @@ import org.springframework.web.multipart.MultipartFile;
  *   </li>
  * </ul>
  * Security note: This implementation uses "security through obscurity". It is theoretically
- * possible for other people to access the uploaded assessment data, either by guessing the
+ * possible for other people to access the uploaded assessment data by guessing the
  * launch URL that is generated here.
  *
  * @author David McKain
@@ -127,23 +127,23 @@ public class SimpleRestRunner {
     //--------------------------------------------------------------------
 
     @RequestMapping(value="/simplerestrunner", method=RequestMethod.POST)
-    public void simpleRestRunner(final HttpServletRequest request, final HttpServletResponse response)
+    public void simpleRestRunner(final HttpServletRequest httpServletRequest, final HttpServletResponse httpServletResponse)
             throws IOException {
         /* Import POST payload as an Assessment */
         final Assessment assessment;
         try {
-            assessment = importPostPayloadAsAssessment(request);
+            assessment = importPostPayloadAsAssessment(httpServletRequest);
         }
         catch (final IOException e) {
             /* Couldn't read in POST data */
-            response.setHeader(ERROR_HEADER, "post-read-error");
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            httpServletResponse.setHeader(ERROR_HEADER, "post-read-error");
+            httpServletResponse.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return;
         }
         catch (final AssessmentPackageDataImportException e) {
             /* QTIWorks didn't like the assessment package content */
-            response.setHeader(ERROR_HEADER, "assessment-content-error (" + e.getFailure().getReason().toString() + ")");
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            httpServletResponse.setHeader(ERROR_HEADER, "assessment-content-error (" + e.getFailure().getReason().toString() + ")");
+            httpServletResponse.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 
@@ -153,8 +153,8 @@ public class SimpleRestRunner {
             if (!assessmentPackage.isLaunchable()) {
                 /* Assessment isn't launchable, so reject it
                  * (Client can examine header and subsequently choose to validate the assessment.) */
-                response.setHeader(ERROR_HEADER, "assessment-not-launchable");
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+                httpServletResponse.setHeader(ERROR_HEADER, "assessment-not-launchable");
+                httpServletResponse.sendError(HttpServletResponse.SC_BAD_REQUEST);
                 return;
             }
 
@@ -166,8 +166,8 @@ public class SimpleRestRunner {
             final String deliveryLaunchUrl = qtiWorksDeploymentSettings.getBaseUrl()
                     + "/anonymous/simplerestrunner/launcher/" + delivery.getId()
                     + "/" + deliveryToken;
-            response.setHeader("Location", deliveryLaunchUrl);
-            response.sendError(HttpServletResponse.SC_SEE_OTHER);
+            httpServletResponse.setHeader("Location", deliveryLaunchUrl);
+            httpServletResponse.sendError(HttpServletResponse.SC_SEE_OTHER);
             return;
         }
         catch (final PrivilegeException e) {
@@ -180,8 +180,8 @@ public class SimpleRestRunner {
     }
 
     @RequestMapping(value="/simplerestrunner/launcher/{did}/{deliveryToken}", method={RequestMethod.GET, RequestMethod.POST})
-    public void launchCandidateSession(final HttpSession httpSession, final HttpServletRequest request,
-            final HttpServletResponse response,
+    public void launchCandidateSession(final HttpSession httpSession, final HttpServletRequest httpServletRequest,
+            final HttpServletResponse httpServletResponse,
             @PathVariable final long did, @PathVariable final String deliveryToken)
             throws IOException {
         try {
@@ -190,13 +190,13 @@ public class SimpleRestRunner {
             final CandidateSessionTicket candidateSessionTicket = candidateSessionLaunchService.launchWebServiceCandidateSession(httpSession, did, deliveryToken, sessionExistReturnUrl);
 
             /* Redirect to candidate dispatcher */
-            final String launchUrl = request.getContextPath()
+            final String launchUrl = httpServletRequest.getContextPath()
                     + GlobalRouter.buildSessionStartWithinContextUrl(candidateSessionTicket);
-            response.setHeader("Location", launchUrl);
-            response.sendError(HttpServletResponse.SC_SEE_OTHER);
+            httpServletResponse.setHeader("Location", launchUrl);
+            httpServletResponse.sendError(HttpServletResponse.SC_SEE_OTHER);
         }
         catch (final DomainEntityNotFoundException e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            httpServletResponse.sendError(HttpServletResponse.SC_BAD_REQUEST);
         }
         catch (final CandidateException e) {
             /* This should not happen if underlying logic has been done correctly */
@@ -212,12 +212,12 @@ public class SimpleRestRunner {
 
     //--------------------------------------------------------------------
 
-    private Assessment importPostPayloadAsAssessment(final HttpServletRequest request)
+    private Assessment importPostPayloadAsAssessment(final HttpServletRequest httpServletRequest)
             throws IOException, AssessmentPackageDataImportException {
         /* First we must upload the POST payload into a temp file */
-        final String uploadContentType = request.getContentType();
+        final String uploadContentType = httpServletRequest.getContentType();
         final File uploadFile = filespaceManager.createTempFile();
-        FileUtils.copyInputStreamToFile(request.getInputStream(), uploadFile);
+        ServiceUtilities.copyInputStreamToFile(httpServletRequest.getInputStream(), uploadFile);
         final MultipartFile multipartFile = new MultipartFileWrapper(uploadFile, uploadContentType);
 
         /* Then we import this temp file as an assessment */

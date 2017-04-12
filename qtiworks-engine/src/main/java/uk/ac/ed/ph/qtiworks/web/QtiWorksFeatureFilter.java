@@ -65,10 +65,10 @@ public final class QtiWorksFeatureFilter extends AbstractWebFilterUsingApplicati
     }
 
     @Override
-    public void doWebFilter(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse, final FilterChain chain)
+    public void doWebFilter(final HttpServletRequest httpServletRequest, final HttpServletResponse httpServletResponse, final FilterChain filterChain)
             throws IOException, ServletException {
-        final String servletPath = httpRequest.getServletPath();
-        final String pathInfo = httpRequest.getPathInfo();
+        final String servletPath = httpServletRequest.getServletPath();
+        final String pathInfo = httpServletRequest.getPathInfo();
 
         final boolean isPublicUrl = servletPath.startsWith("/public/")
                 || servletPath.equals("/anonymous")
@@ -81,23 +81,23 @@ public final class QtiWorksFeatureFilter extends AbstractWebFilterUsingApplicati
         if (!qtiWorksDeploymentSettings.isPublicDemosEnabled()) {
             /* Public demos are disabled, so intercept access to those URLs */
             if (isPublicUrl && !isRestUrl) {
-                disallow(httpRequest, httpResponse);
+                disallow(httpServletRequest, httpServletResponse);
                 return;
             }
         }
         if (!qtiWorksDeploymentSettings.isRestEnabled()) {
             /* REST functionality disabled */
             if (isRestUrl) {
-                disallow(httpRequest, httpResponse);
+                disallow(httpServletRequest, httpServletResponse);
                 return;
             }
         }
-        chain.doFilter(httpRequest, httpResponse);
+        filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
 
-    private void disallow(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse) throws IOException {
-        logger.info("Access to {} is being forbidden as the corresponding feature is not enabled", httpRequest.getServletPath());
-        httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "This feature is not enabled in this instance of QTIWorks");
+    private void disallow(final HttpServletRequest httpServletRequest, final HttpServletResponse httpServletResponse) throws IOException {
+        logger.info("Access to {} is being forbidden as the corresponding feature is not enabled", httpServletRequest.getServletPath());
+        httpServletResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "This feature is not enabled in this instance of QTIWorks");
     }
 
 }
