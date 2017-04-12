@@ -12,6 +12,38 @@ All Rights Reserved
   </nav>
   <h2>QTIWorks Release Notes</h2>
 
+  <h3>Release 1.0-beta10 (12/04/2017)</h3>
+  <p>
+    This release rolls up some minor improvements and fixes made since the last beta.
+    It also updates the URL of the MathJax CDN following the announcement of the
+    closure of <code>cdn.mathjax.org</code>.
+    There are no new features or functionality included here. Full details:
+  </p>
+  <ul>
+    <li>
+      <a href="https://github.com/davemckain/qtiworks/issues/70">#70</a>:
+      QTIWorks now uses the <code>cdnjs.cloudflare.com</code> content delivery
+      network (CDN) to load the MathJax libraries used to render MathML.
+      This is a response to the recent announcement of the imminent closure of the
+      CDN at <code>cdn.mathjax.org</code>.
+    </li>
+    <li>
+      Tidied up and consolidated some of the candidate session management classes
+      in the QTIWorks engine.
+    </li>
+    <li>
+      Refreshed the QTIWorks engine Java library dependencies to their
+      current patch releases.  Additionally, remaining uses of the Commons
+      Codec and IO libraries have been replaced with equivalents from the
+      Google Guava library.
+    </li>
+    <li>
+      Some minor documentation and variable naming improvements have been made
+      in the QTIWorks engine to improve clarity and consistency.
+    </li>
+  </ul>
+
+
   <h3>Release 1.0-beta9 (05/01/2016)</h3>
   <p>
     This release rolls up some minor improvements and fixes made during 2015.
