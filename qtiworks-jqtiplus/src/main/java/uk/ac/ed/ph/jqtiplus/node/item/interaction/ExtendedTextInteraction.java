@@ -142,6 +142,7 @@ public final class ExtendedTextInteraction extends BlockInteraction implements S
         getAttributes().add(new IntegerAttribute(this, ATTR_EXPECTED_LENGTH_NAME, false));
         getAttributes().add(new StringAttribute(this, ATTR_PATTERN_MASK_NAME, false));
         getAttributes().add(new StringAttribute(this, ATTR_PLACEHOLDER_TEXT_NAME, false));
+        getAttributes().add(new StringAttribute(this, ATTR_ARIA_LABEL_NAME, false));
     }
 
     public Integer getMaxStrings() {
@@ -226,6 +227,16 @@ public final class ExtendedTextInteraction extends BlockInteraction implements S
     @Override
     public void setStringIdentifier(final Identifier stringIdentifier) {
         getAttributes().getIdentifierAttribute(ATTR_STRING_IDENTIFIER_NAME).setValue(stringIdentifier);
+    }
+
+    @Override
+    public String getAriaLabel() {
+        return getAttributes().getStringAttribute(ATTR_ARIA_LABEL_NAME).getComputedValue();
+    }
+
+    @Override
+    public void setAriaLabel(final String ariaLabel) {
+        getAttributes().getStringAttribute(ATTR_ARIA_LABEL_NAME).setValue(ariaLabel);
     }
 
     @Override

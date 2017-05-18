@@ -85,6 +85,7 @@ public final class TextEntryInteraction extends InlineInteraction implements Str
         getAttributes().add(new IntegerAttribute(this, ATTR_EXPECTED_LENGTH_NAME, false));
         getAttributes().add(new StringAttribute(this, ATTR_PATTERN_MASK_NAME, false));
         getAttributes().add(new StringAttribute(this, ATTR_PLACEHOLDER_TEXT_NAME, false));
+        getAttributes().add(new StringAttribute(this, ATTR_ARIA_LABEL_NAME, false));
     }
 
     @Override
@@ -149,6 +150,16 @@ public final class TextEntryInteraction extends InlineInteraction implements Str
         }
         final AssessmentItem assessmentItem = getRootNode(AssessmentItem.class);
         return assessmentItem!=null ? assessmentItem.getResponseDeclaration(stringIdentifier) : null;
+    }
+
+    @Override
+    public String getAriaLabel() {
+        return getAttributes().getStringAttribute(ATTR_ARIA_LABEL_NAME).getComputedValue();
+    }
+
+    @Override
+    public void setAriaLabel(final String ariaLabel) {
+        getAttributes().getStringAttribute(ATTR_ARIA_LABEL_NAME).setValue(ariaLabel);
     }
 
     @Override
