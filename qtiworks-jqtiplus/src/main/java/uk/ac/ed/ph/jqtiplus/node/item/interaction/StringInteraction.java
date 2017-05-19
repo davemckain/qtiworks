@@ -125,9 +125,6 @@ public interface StringInteraction {
     /** Name of exponent key if response is bound to a record container. */
     static final Identifier KEY_EXPONENT_NAME = Identifier.assumedLegal("exponent");
 
-    /** Name of ariaLabel attribute in xml schema. */
-    static final String ATTR_ARIA_LABEL_NAME = "aria-label";
-
     int getBase();
     void setBase(Integer base);
 
@@ -144,7 +141,4 @@ public interface StringInteraction {
     String getPlaceholderText();
 
     ResponseDeclaration getStringIdentifierResponseDeclaration();
-
-    String getAriaLabel();
-    void setAriaLabel(String ariaLabel);
 }

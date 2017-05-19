@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.item.interaction;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
+import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.exception.ResponseBindingException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
@@ -84,10 +85,14 @@ public abstract class Interaction extends BodyElement {
     /** Name of responseIdentifier attribute in xml schema. */
     public static final String ATTR_RESPONSE_IDENTIFIER_NAME = "responseIdentifier";
 
+    /** Name of ariaLabel attribute in xml schema. */
+    static final String ATTR_ARIA_LABEL_NAME = "aria-label";
+
     public Interaction(final QtiNode parent, final String qtiClassName) {
         super(parent, qtiClassName);
 
         getAttributes().add(new IdentifierAttribute(this, ATTR_RESPONSE_IDENTIFIER_NAME, true));
+        getAttributes().add(new StringAttribute(this, ATTR_ARIA_LABEL_NAME, false));
     }
 
 
@@ -97,6 +102,14 @@ public abstract class Interaction extends BodyElement {
 
     public void setResponseIdentifier(final Identifier responseIdentifier) {
         getAttributes().getIdentifierAttribute(ATTR_RESPONSE_IDENTIFIER_NAME).setValue(responseIdentifier);
+    }
+
+    public String getAriaLabel() {
+        return getAttributes().getStringAttribute(ATTR_ARIA_LABEL_NAME).getComputedValue();
+    }
+
+    public void setAriaLabel(final String ariaLabel) {
+        getAttributes().getStringAttribute(ATTR_ARIA_LABEL_NAME).setValue(ariaLabel);
     }
 
     /**
