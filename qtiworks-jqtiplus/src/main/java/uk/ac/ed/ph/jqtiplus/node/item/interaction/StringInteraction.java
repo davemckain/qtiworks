@@ -141,5 +141,4 @@ public interface StringInteraction {
     String getPlaceholderText();
 
     ResponseDeclaration getStringIdentifierResponseDeclaration();
-
 }
