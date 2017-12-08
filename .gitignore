@@ -1,6 +1,9 @@
+# Build stuff to ignore from Maven
+*/target
+
+# Eclipse stuff to ignore
 /.project
 /.settings
-*/target
 *.sw?
 */.classpath
 */.project
@@ -11,3 +14,15 @@
 */.settings/org.eclipse.m2e.core.prefs
 */.settings/org.eclipse.wst.jsdt.ui.*
 */.settings/.jsdtscope
+
+# Intellij stuff to ignore
+.idea/
+qti-admin/
+qtiworks-code-examples/qtiworks-code-examples.iml
+qtiworks-engine-manager/qtiworks-engine-manager.iml
+qtiworks-engine/qtiworks-engine.iml
+qtiworks-jqtiplus/qtiworks-jqtiplus.iml
+qtiworks-mathassess-glue/qtiworks-mathassess-glue.iml
+qtiworks-mathassess/qtiworks-mathassess.iml
+qtiworks-samples/qtiworks-samples.iml
+qtiworks.iml

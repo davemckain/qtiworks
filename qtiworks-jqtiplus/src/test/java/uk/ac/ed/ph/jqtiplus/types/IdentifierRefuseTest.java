@@ -60,7 +60,6 @@ public class IdentifierRefuseTest {
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
                 { "" }, { " " }, { "-identifier" }, { ".identifier" }, { "1identifier" },
-                { "id.entifier" },
                 { "identifier:identifier" }, { "`A" }, { "A`" }, { "�A" }, { "A�" }, { "!A" }, { "A!" }, { "\"A" }, { "A\"" }, { "�A" }, { "A�" }, { "$A" },
                 { "A$" }, { "%A" }, { "A%" }, { "^A" }, { "A^" }, { "&A" }, { "A&" }, { "*A" }, { "A*" }, { "(A" }, { "A(" }, { ")A" }, { "A)" }, { "=A" },
                 { "A=" }, { "+A" }, { "A+" }, { "[A" }, { "A[" }, { "{A" }, { "A{" }, { "]A" }, { "A]" }, { "}A" }, { "A}" }, { ";A" }, { "A;" }, { ":A" },

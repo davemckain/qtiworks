@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.item.interaction.choice;
 
+import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.group.content.FlowStaticGroup;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
@@ -52,14 +53,121 @@ public final class SimpleChoice extends Choice {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "simpleChoice";
 
+    /** Name of ariaControls attribute in xml schema. */
+    static final String ATTR_ARIA_CONTROLS_NAME = "aria-controls";
+
+    /** Name of ariaDescribedBy attribute in xml schema. */
+    static final String ATTR_ARIA_DESCRIBED_BY_NAME = "aria-describedby";
+
+    /** Name of ariaFlowsTo attribute in xml schema. */
+    static final String ATTR_ARIA_FLOWS_TO_NAME = "aria-flowsto";
+
+    /** Name of ariaLabel attribute in xml schema. */
+    static final String ATTR_ARIA_LABEL_NAME = "aria-label";
+
+    /** Name of ariaLabelledBy attribute in xml schema. */
+    static final String ATTR_ARIA_LABELLED_BY_NAME = "aria-labelledby";
+
+    /** Name of ariaLevel attribute in xml schema. */
+    static final String ATTR_ARIA_LEVEL_NAME = "aria-level";
+
+    /** Name of ariaLive attribute in xml schema. */
+    static final String ATTR_ARIA_LIVE_NAME = "aria-live";
+
+    /** Name of ariaOrientation attribute in xml schema. */
+    static final String ATTR_ARIA_ORIENTATION_NAME = "aria-orientation";
+
+    /** Name of ariaOwns attribute in xml schema. */
+    static final String ATTR_ARIA_OWNS_NAME = "aria-owns";
+
     public SimpleChoice(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new FlowStaticGroup(this));
-    }
+        getAttributes().add(new StringAttribute(this, ATTR_ARIA_CONTROLS_NAME, false));
+        getAttributes().add(new StringAttribute(this, ATTR_ARIA_DESCRIBED_BY_NAME, false));
+        getAttributes().add(new StringAttribute(this, ATTR_ARIA_FLOWS_TO_NAME, false));
+        getAttributes().add(new StringAttribute(this, ATTR_ARIA_LABEL_NAME, false));
+        getAttributes().add(new StringAttribute(this, ATTR_ARIA_LABELLED_BY_NAME, false));
+        getAttributes().add(new StringAttribute(this, ATTR_ARIA_LEVEL_NAME, false));
+        getAttributes().add(new StringAttribute(this, ATTR_ARIA_LIVE_NAME, false));
+        getAttributes().add(new StringAttribute(this, ATTR_ARIA_ORIENTATION_NAME, false));
+        getAttributes().add(new StringAttribute(this, ATTR_ARIA_OWNS_NAME, false));    }
 
     public List<FlowStatic> getFlowStatics() {
         return getNodeGroups().getFlowStaticGroup().getFlowStatics();
+    }
+
+    public String getAriaControls() {
+        return getAttributes().getStringAttribute(ATTR_ARIA_CONTROLS_NAME).getComputedValue();
+    }
+
+    public void setAriaControls(final String ariaControls) {
+        getAttributes().getStringAttribute(ATTR_ARIA_CONTROLS_NAME).setValue(ariaControls);
+    }
+
+    public String getAriaDescribedBy() {
+        return getAttributes().getStringAttribute(ATTR_ARIA_DESCRIBED_BY_NAME).getComputedValue();
+    }
+
+    public void setAriaDescribedBy(final String ariaDescribedBy) {
+        getAttributes().getStringAttribute(ATTR_ARIA_DESCRIBED_BY_NAME).setValue(ariaDescribedBy);
+    }
+
+    public String getAriaFlowsTo() {
+        return getAttributes().getStringAttribute(ATTR_ARIA_FLOWS_TO_NAME).getComputedValue();
+    }
+
+    public void setAriaFlowsTo(final String ariaFlowsTo) {
+        getAttributes().getStringAttribute(ATTR_ARIA_FLOWS_TO_NAME).setValue(ariaFlowsTo);
+    }
+
+    public String getAriaLabel() {
+        return getAttributes().getStringAttribute(ATTR_ARIA_LABEL_NAME).getComputedValue();
+    }
+
+    public void setAriaLabel(final String ariaLabel) {
+        getAttributes().getStringAttribute(ATTR_ARIA_LABEL_NAME).setValue(ariaLabel);
+    }
+
+    public String getAriaLabelledBy() {
+        return getAttributes().getStringAttribute(ATTR_ARIA_LABELLED_BY_NAME).getComputedValue();
+    }
+
+    public void setAriaLabelledBy(final String ariaLabelledBy) {
+        getAttributes().getStringAttribute(ATTR_ARIA_LABELLED_BY_NAME).setValue(ariaLabelledBy);
+    }
+
+    public String getAriaLevel() {
+        return getAttributes().getStringAttribute(ATTR_ARIA_LEVEL_NAME).getComputedValue();
+    }
+
+    public void setAriaLevel(final String ariaLevel) {
+        getAttributes().getStringAttribute(ATTR_ARIA_LEVEL_NAME).setValue(ariaLevel);
+    }
+
+    public String getAriaLive() {
+        return getAttributes().getStringAttribute(ATTR_ARIA_LIVE_NAME).getComputedValue();
+    }
+
+    public void setAriaLive(final String ariaLive) {
+        getAttributes().getStringAttribute(ATTR_ARIA_LIVE_NAME).setValue(ariaLive);
+    }
+
+    public String getAriaOrientation() {
+        return getAttributes().getStringAttribute(ATTR_ARIA_ORIENTATION_NAME).getComputedValue();
+    }
+
+    public void setAriaOrientation(final String ariaOrientation) {
+        getAttributes().getStringAttribute(ATTR_ARIA_ORIENTATION_NAME).setValue(ariaOrientation);
+    }
+
+    public String getAriaOwns() {
+        return getAttributes().getStringAttribute(ATTR_ARIA_OWNS_NAME).getComputedValue();
+    }
+
+    public void setAriaOwns(final String ariaOwns) {
+        getAttributes().getStringAttribute(ATTR_ARIA_OWNS_NAME).setValue(ariaOwns);
     }
 
     /**
