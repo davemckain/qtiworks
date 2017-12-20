@@ -75,21 +75,21 @@ public final class FilespaceManager {
     @Resource
     private RequestTimestampContext requestTimestampContext;
 
-    private File filesystemBaseDirectory;
+    private String filesystemBaseUri;
 
     @PostConstruct
     public void init() {
         final String filesystemBaseString = qtiWorksDeploymentSettings.getFilesystemBase();
-        logger.info("Filesystem base for client data is {}", filesystemBaseString);
-        this.filesystemBaseDirectory = new File(filesystemBaseString);
+        final File filesystemBaseDirectory = new File(filesystemBaseString);
         if (!filesystemBaseDirectory.isDirectory()) {
             throw new QtiWorksRuntimeException("Filesystem base path " + filesystemBaseString + " is not a directory");
         }
+        this.filesystemBaseUri = filesystemBaseDirectory.toURI().toString().replaceFirst("/$", "");
+        logger.info("Filesystem base for client data is {}", filesystemBaseString);
     }
 
     public File createTempFile() {
-        final String tmpFolderUri = filesystemBaseDirectory.toURI().toString()
-                + "/tmp";
+        final String tmpFolderUri = filesystemBaseUri + "/tmp";
         final File tmpFolder = ensureCreateDirectory(tmpFolderUri);
         return new File(tmpFolder, createUniqueRequestComponent());
     }
@@ -127,8 +127,7 @@ public final class FilespaceManager {
     }
 
     private String getAssessmentPackageSandboxBaseUri() {
-        return filesystemBaseDirectory.toURI().toString()
-                + "/assessments";
+        return filesystemBaseUri + "assessments";
     }
 
     //-------------------------------------------------
@@ -155,8 +154,7 @@ public final class FilespaceManager {
     }
 
     private String getCandidateUploadBaseUri() {
-        return filesystemBaseDirectory.toURI().toString()
-                + "/responses";
+        return filesystemBaseUri + "/responses";
     }
 
     private String getCandidateSessionUploadBaseUri(final Delivery delivery) {
@@ -200,8 +198,7 @@ public final class FilespaceManager {
     }
 
     private final String getCandidateSessionStoreBaseUri() {
-        return filesystemBaseDirectory.toURI().toString()
-                + "/sessions";
+        return filesystemBaseUri + "/sessions";
     }
 
     private final String getCandidateSessionStoreBaseUri(final Delivery delivery) {
