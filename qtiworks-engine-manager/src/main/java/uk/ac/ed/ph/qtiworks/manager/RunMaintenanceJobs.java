@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.manager;
 
+import uk.ac.ed.ph.qtiworks.services.MaintenanceJobService;
 import uk.ac.ed.ph.qtiworks.services.ScheduledService;
 
 import java.util.List;
@@ -42,7 +43,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Invokes {@link ScheduledService#maintenanceJobs()}
+ * Invokes {@link ScheduledService#runMaintenanceJobs()}
  *
  * @author David McKain
  */
@@ -52,14 +53,14 @@ public final class RunMaintenanceJobs extends ManagerAction {
 
     @Override
     public String[] getActionSummary() {
-        return new String[] { "Invokes ScheduledService.maintenanceJobs()." };
+        return new String[] { "Directly invokes maintenance jobs normally run periodically" };
     }
 
     @Override
     public void run(final ApplicationContext applicationContext, final List<String> parameters) {
-        final ScheduledService scheduledService = applicationContext.getBean(ScheduledService.class);
+        final MaintenanceJobService maintenanceJobService = applicationContext.getBean(MaintenanceJobService.class);
         logger.info("Maintenance jobs starting");
-        scheduledService.maintenanceJobs();
+        maintenanceJobService.runMaintenanceJobs();
         logger.info("Maintenance jobs complete");
     }
 }

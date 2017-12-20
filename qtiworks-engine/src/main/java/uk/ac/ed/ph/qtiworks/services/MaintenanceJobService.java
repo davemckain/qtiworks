@@ -33,36 +33,30 @@
  */
 package uk.ac.ed.ph.qtiworks.services;
 
-import uk.ac.ed.ph.qtiworks.config.QtiWorksProfiles;
 import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 
-import uk.ac.ed.ph.jqtiplus.internal.util.Pair;
+import java.util.Date;
 
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Profile;
-import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 /**
- * Houses all scheduled tasks performed within the QTIWorks engine.
+ * Houses various maintenance jobs.
+ * <p>
+ * These are invoked in the running engine via by the {@link ScheduledService},
+ * and can also be invoked offline via the QTIWorks Engine Manager.
  * <p>
  * This is NO authorisation at this level.
  *
  * @author David McKain
  */
 @Service
-@EnableScheduling
-@Profile(QtiWorksProfiles.WEBAPP)
-public class ScheduledService {
+public class MaintenanceJobService {
 
-    private static final Logger logger = LoggerFactory.getLogger(ScheduledService.class);
-
-    @Resource
-    private MaintenanceJobService maintenanceJobService;
+    private static final Logger logger = LoggerFactory.getLogger(MaintenanceJobService.class);
 
     @Resource
     private DataDeletionService dataDeletionService;
@@ -72,29 +66,35 @@ public class ScheduledService {
 
     //-------------------------------------------------
 
-    /**
-     * Invoke routine maintenance jobs
-     */
-    @Scheduled(fixedRate=DomainConstants.ONE_HOUR, initialDelay=5*DomainConstants.ONE_MINUTE)
+    /** Invokes routine maintenance jobs */
     public void runMaintenanceJobs() {
-        maintenanceJobService.runMaintenanceJobs();
+        logger.trace("runMaintenanceJobs() invoked");
+        final long beforeTimestamp = System.currentTimeMillis();
+
+        purgeTransientData(beforeTimestamp);
+        purgeOldNonces(beforeTimestamp);
+        dataDeletionService.purgeOrphanedLtiCandidateUsers();
+
+        final long afterTimestamp = System.currentTimeMillis();
+        final long duration = afterTimestamp - beforeTimestamp;
+        logger.debug("runMaintenanceJobs() completed in {}ms", duration);
     }
 
     /**
-     * Send any queued LTI outcomes back to the relevant Tool Consumers.
+     * Purges all anonymous users and transient deliveries that were created more than
+     * {@link DomainConstants#TRANSIENT_DATA_LIFETIME} milliseconds ago. All associated data is removed.
      */
-    @Scheduled(fixedDelay=10*DomainConstants.ONE_SECOND, initialDelay=DomainConstants.ONE_MINUTE)
-    public void sendNextQueuedLtiOutcomes() {
-        logger.trace("sendNextQueuedLtiOutcomes() invoked");
+    private void purgeTransientData(final long currentTimestamp) {
+        final Date creationTimeThreshold = new Date(currentTimestamp - DomainConstants.TRANSIENT_DATA_LIFETIME);
+        dataDeletionService.purgeTransientData(creationTimeThreshold);
+    }
 
-        final long beforeTimestamp = System.currentTimeMillis();
-        final Pair<Integer, Integer> result = ltiOutcomeService.sendQueuedLtiOutcomes(false);
-        final long afterTimestamp = System.currentTimeMillis();
-        final long duration = afterTimestamp - beforeTimestamp;
-
-        final int failureCount = result.getFirst().intValue();
-        final int sendCount = result.getSecond().intValue();
-        logger.debug("sendNextQueuedLtiOutcomes() completed in {}ms with {} failure(s) out of {} send(s)", duration,
-                 failureCount, sendCount);
+    /**
+     * Pureges OAuth nonces for LTI launches that were created more than
+     * {@link DomainConstants#OAUTH_TIMESTAMP_MAX_AGE} milliseconds ago.
+     */
+    private void purgeOldNonces(final long currentTimestamp) {
+        final Date nonceThreshold = new Date(currentTimestamp - DomainConstants.OAUTH_TIMESTAMP_MAX_AGE);
+        dataDeletionService.purgeOldNonces(nonceThreshold);
     }
 }
