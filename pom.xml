@@ -34,9 +34,10 @@ All Rights Reserved
     <servlet-api.version>2.5</servlet-api.version>
     <jsp-api.version>2.1</jsp-api.version>
     <jstl.version>1.2</jstl.version>
-    <spring.version>3.2.18.RELEASE</spring.version>
-    <hibernate.version>4.2.21.Final</hibernate.version>
-    <hibernate-validator.version>4.3.2.Final</hibernate-validator.version>
+    <el.version>3.0.1-b09</el.version>
+    <spring.version>4.3.13.RELEASE</spring.version><!-- NB: This is the last version compatible with JDK 1.6 -->
+    <hibernate.version>5.1.10.Final</hibernate.version><!-- NB: This is the last version compatible with JDK 1.6 -->
+    <hibernate-validator.version>5.4.2.Final</hibernate-validator.version><!-- NB: This is the last version compatible with JDK 1.6 -->
     <mysql-connector.version>5.1.23</mysql-connector.version>
     <postgresql-jdbc.version>9.1-901.jdbc4</postgresql-jdbc.version>
     <javacsv.version>2.0</javacsv.version>
