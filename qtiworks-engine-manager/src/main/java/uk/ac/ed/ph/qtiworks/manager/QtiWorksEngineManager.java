@@ -80,7 +80,6 @@ public final class QtiWorksEngineManager {
         actionMap.put("updateSamples", new UpdateSamplesAction());
         actionMap.put("importUsers", new ImportUsersAction());
         actionMap.put("editUserPassword", new EditUserPasswordAction());
-        actionMap.put("deleteUsers", new DeleteUsersAction());
         actionMap.put("resetUsers", new ResetUsersAction());
         actionMap.put("generateSecret", new GenerateSecretAction());
         actionMap.put("registerLtiDomain", new RegisterLtiDomainAction());
@@ -88,6 +87,10 @@ public final class QtiWorksEngineManager {
         actionMap.put("exportLtiDomains", new ExportLtiDomainsAction());
         actionMap.put("runMaintenanceJobs", new RunMaintenanceJobs());
         actionMap.put("sendQueuedLtiOutcomes", new SendQueuedLtiOutcomesAction());
+        actionMap.put("deleteUsers", new DeleteUsersAction());
+        actionMap.put("deleteAssessment", new DeleteAssessmentAction());
+        actionMap.put("deleteCandidateSession", new DeleteCandidateSessionAction());
+        actionMap.put("deleteCandidateSessions", new DeleteCandidateSessionsAction());
 //        actionMap.put("adhoc", new AdhocAction());
     }
 

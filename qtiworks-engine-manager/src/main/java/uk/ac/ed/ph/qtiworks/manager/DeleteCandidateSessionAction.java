@@ -27,49 +27,58 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * This software is derived from (and contains code from) QTItools and MathAssessEngine.
- * QTItools is (c) 2008, University of Southampton.
+ * This software is derived from (and contains code from) QTITools and MathAssessEngine.
+ * QTITools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.services.dao;
+package uk.ac.ed.ph.qtiworks.manager;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateFileSubmission;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
-import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
+import uk.ac.ed.ph.qtiworks.manager.services.ManagerServices;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
+import java.util.List;
 
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 
 /**
- * DAO implementation for the {@link CandidateFileSubmission} entity.
+ * Deletes the specified {@link CandidateSession}s from the system.
  *
  * @author David McKain
  */
-@Repository
-@Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
-public class CandidateFileSubmissionDao extends GenericDao<CandidateFileSubmission> {
+public final class DeleteCandidateSessionAction extends ManagerAction {
 
-    @PersistenceContext
-    private EntityManager em;
+    private static final Logger logger = LoggerFactory.getLogger(DeleteCandidateSessionAction.class);
 
-    public CandidateFileSubmissionDao() {
-        super(CandidateFileSubmission.class);
+    @Override
+    public String[] getActionSummary() {
+        return new String[] { "Deletes the CandidateSession(s) having the given xid(s)" };
     }
 
-    public int deleteForCandidateSession(final CandidateSession candidateSession) {
-        final Query query = em.createNamedQuery("CandidateFileSubmission.deleteForSession");
-        query.setParameter("candidateSession", candidateSession);
-        return query.executeUpdate();
+    @Override
+    public String getActionParameterSummary() {
+        return "<xid> ...";
     }
 
-    public int deleteForDelivery(final Delivery delivery) {
-        final Query query = em.createNamedQuery("CandidateFileSubmission.deleteForDelivery");
-        query.setParameter("delivery", delivery);
-        return query.executeUpdate();
+    @Override
+    public String validateParameters(final List<String> parameters) {
+        if (parameters.isEmpty()) {
+            return "Required parameters: <xid> ...";
+        }
+        return null;
+    }
+
+    @Override
+    public void run(final ApplicationContext applicationContext, final List<String> parameters) throws Exception {
+        final ManagerServices managerServices = applicationContext.getBean(ManagerServices.class);
+        int deletedCount = 0;
+        for (final String parameter : parameters) {
+            final Long xid = Long.valueOf(parameter);
+            if (managerServices.deleteCandidateSession(xid)) {
+                ++deletedCount;
+            }
+        }
+        logger.info("Deleted {} CandidateSession(s) from the system", deletedCount);
     }
 }

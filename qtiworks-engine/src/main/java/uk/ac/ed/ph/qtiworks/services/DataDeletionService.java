@@ -46,12 +46,18 @@ import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.services.dao.AnonymousUserDao;
 import uk.ac.ed.ph.qtiworks.services.dao.AssessmentDao;
 import uk.ac.ed.ph.qtiworks.services.dao.AssessmentPackageDao;
+import uk.ac.ed.ph.qtiworks.services.dao.CandidateEventDao;
+import uk.ac.ed.ph.qtiworks.services.dao.CandidateEventNotificationDao;
+import uk.ac.ed.ph.qtiworks.services.dao.CandidateFileSubmissionDao;
+import uk.ac.ed.ph.qtiworks.services.dao.CandidateResponseDao;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
+import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionOutcomeDao;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliveryDao;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliverySettingsDao;
 import uk.ac.ed.ph.qtiworks.services.dao.LtiNonceDao;
 import uk.ac.ed.ph.qtiworks.services.dao.LtiResourceDao;
 import uk.ac.ed.ph.qtiworks.services.dao.LtiUserDao;
+import uk.ac.ed.ph.qtiworks.services.dao.QueuedLtiOutcomeDao;
 import uk.ac.ed.ph.qtiworks.services.dao.UserDao;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentAndPackage;
 
@@ -99,7 +105,31 @@ public class DataDeletionService {
     private AssessmentObjectManagementService assessmentObjectManagementService;
 
     @Resource
+    private AssessmentDao assessmentDao;
+
+    @Resource
+    private AnonymousUserDao anonymousUserDao;
+
+    @Resource
+    private AssessmentPackageDao assessmentPackageDao;
+
+    @Resource
+    private CandidateEventNotificationDao candidateEventNotificationDao;
+
+    @Resource
+    private CandidateEventDao candidateEventDao;
+
+    @Resource
+    private CandidateFileSubmissionDao candidateFileSubmissionDao;
+
+    @Resource
+    private CandidateResponseDao candidateResponseDao;
+
+    @Resource
     private CandidateSessionDao candidateSessionDao;
+
+    @Resource
+    private CandidateSessionOutcomeDao candidateSessionOutcomeDao;
 
     @Resource
     private DeliveryDao deliveryDao;
@@ -108,47 +138,53 @@ public class DataDeletionService {
     private DeliverySettingsDao deliverySettingsDao;
 
     @Resource
-    private AssessmentPackageDao assessmentPackageDao;
-
-    @Resource
-    private AssessmentDao assessmentDao;
-
-    @Resource
-    private LtiResourceDao ltiResourceDao;
-
-    @Resource
-    private AnonymousUserDao anonymousUserDao;
-
-    @Resource
-    private UserDao userDao;
-
-    @Resource
     private LtiUserDao ltiUserDao;
 
     @Resource
     private LtiNonceDao ltiNonceDao;
 
+    @Resource
+    private LtiResourceDao ltiResourceDao;
+
+    @Resource
+    private QueuedLtiOutcomeDao queuedLtiOutcomeDao;
+
+    @Resource
+    private UserDao userDao;
+
     /**
      * Deletes the given {@link CandidateSession} and all data that was stored for it.
-     * @param candidateSession
      */
     public void deleteCandidateSession(final CandidateSession candidateSession) {
         Assert.notNull(candidateSession, "candidateSession");
+        logger.info("Deleting candidate session {}", candidateSession.getId());
 
-        /* Delete candidate uploads & stored state information */
+        /* Delete candidate file uploads & stored state information */
         if (!filespaceManager.deleteCandidateUploads(candidateSession)) {
             logger.error("Failed to delete upload folder for CandidateSession {}", candidateSession.getId());
         }
         if (!filespaceManager.deleteCandidateSessionStore(candidateSession)) {
-            logger.error("Failed to delete stored session data for CandiateSession {}", candidateSession.getId());
+            logger.error("Failed to delete stored session data for CandidateSession {}", candidateSession.getId());
         }
 
-        /* Delete entities, taking advantage of cascading */
-        candidateSessionDao.remove(candidateSession); /* (This will cascade) */
+        /* Delete entities, taking care to do things in the right order.
+         * This does not use cascading as it's rather slow.
+         */
+        queuedLtiOutcomeDao.deleteForCandidateSession(candidateSession);
+        candidateSessionOutcomeDao.deleteForCandidateSession(candidateSession);
+        candidateFileSubmissionDao.deleteForCandidateSession(candidateSession);
+        candidateResponseDao.deleteForCandidateSession(candidateSession);
+        candidateEventNotificationDao.deleteForCandidateSession(candidateSession);
+        candidateEventDao.deleteForCandidateSession(candidateSession);
+        candidateSessionDao.remove(candidateSession);
     }
 
+    /**
+     * Deletes all {@link CandidateSession}s launched under the given {@link Delivery}.
+     */
     public int deleteCandidateSessions(final Delivery delivery) {
         Assert.notNull(delivery, "delivery");
+        logger.info("Deleting candidate sessions for Delivery {}", delivery.getId());
 
         /* Delete candidate uploads & stored state information */
         if (!filespaceManager.deleteCandidateUploads(delivery)) {
@@ -158,16 +194,30 @@ public class DataDeletionService {
             logger.error("Failed to delete stored session data for Delivery {}", delivery.getId());
         }
 
-        /* Delete each session entity, taking advantage of cascading */
-        final List<CandidateSession> candidateSessions = candidateSessionDao.getForDelivery(delivery);
-        for (final CandidateSession candidateSession : candidateSessions) {
-            candidateSessionDao.remove(candidateSession);
-        }
-        return candidateSessions.size();
+        /* Delete entities, taking care to do things in the right order.
+         * This does not use cascading as it was *very* slow here.
+         * Instead, we perform a number of bulk deletions.
+         */
+        queuedLtiOutcomeDao.deleteForDelivery(delivery);
+        candidateSessionOutcomeDao.deleteForDelivery(delivery);
+        candidateFileSubmissionDao.deleteForDelivery(delivery);
+        candidateResponseDao.deleteForDelivery(delivery);
+        candidateEventNotificationDao.deleteForDelivery(delivery);
+        candidateEventDao.deleteForDelivery(delivery);
+        return candidateSessionDao.deleteForDelivery(delivery);
     }
 
+    /**
+     * FIXME: Need to restrict deletion to non-USER_CREATED deliveries. Might therefore be better
+     * to make this non-public.
+     */
     public void deleteDelivery(final Delivery delivery) {
         Assert.notNull(delivery, "delivery");
+        logger.info("Deleting Delivery {}", delivery.getId());
+
+//        if (delivery.getDeliveryType() != DeliveryType.USER_CREATED) {
+//            throw new IllegalManagementOperationException(OperationFailureReason.DELIVERY_NOT_USER_CREATED, delivery);
+//        }
 
         /* Delete all candidate sessions on this Delivery */
         deleteCandidateSessions(delivery);

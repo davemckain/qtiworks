@@ -71,10 +71,25 @@ import org.hibernate.annotations.Type;
 @SequenceGenerator(name="candidateEventNotificationSequence", sequenceName="candidate_event_notification_sequence", initialValue=1, allocationSize=10)
 @NamedQueries({
     @NamedQuery(name="CandidateEventNotification.getForEvent",
-            query="SELECT n"
-                + "  FROM CandidateEventNotification n"
-                + "  WHERE n.candidateEvent = :candidateEvent"
-                + "  ORDER BY n.id")
+            query="SELECT xn"
+                + "  FROM CandidateEventNotification xn"
+                + "  WHERE xn.candidateEvent = :candidateEvent"
+                + "  ORDER BY xn.id"),
+    @NamedQuery(name="CandidateEventNotification.deleteForSession",
+            query="DELETE FROM CandidateEventNotification xn"
+                + "  WHERE xn.candidateEvent IN ("
+                + "    SELECT xe FROM CandidateEvent xe"
+                + "    WHERE xe.candidateSession = :candidateSession"
+                + "  )"),
+    @NamedQuery(name="CandidateEventNotification.deleteForDelivery",
+            query="DELETE FROM CandidateEventNotification xn"
+                + "  WHERE xn.candidateEvent IN ("
+                + "    SELECT xe FROM CandidateEvent xe"
+                + "    WHERE xe.candidateSession IN ("
+                + "      SELECT x FROM CandidateSession x"
+                + "      WHERE x.delivery = :delivery"
+                + "    )"
+                + "  )"),
 })
 public class CandidateEventNotification implements BaseEntity {
 

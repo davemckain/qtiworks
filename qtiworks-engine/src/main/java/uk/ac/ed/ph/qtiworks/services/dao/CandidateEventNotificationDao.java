@@ -35,11 +35,14 @@ package uk.ac.ed.ph.qtiworks.services.dao;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEventNotification;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
+import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
@@ -66,5 +69,17 @@ public class CandidateEventNotificationDao extends GenericDao<CandidateEventNoti
         final TypedQuery<CandidateEventNotification> query = em.createNamedQuery("CandidateEventNotification.getForEvent", CandidateEventNotification.class);
         query.setParameter("candidateEvent", event);
         return query.getResultList();
+    }
+
+    public int deleteForCandidateSession(final CandidateSession candidateSession) {
+        final Query query = em.createNamedQuery("CandidateEventNotification.deleteForSession");
+        query.setParameter("candidateSession", candidateSession);
+        return query.executeUpdate();
+    }
+
+    public int deleteForDelivery(final Delivery delivery) {
+        final Query query = em.createNamedQuery("CandidateEventNotification.deleteForDelivery");
+        query.setParameter("delivery", delivery);
+        return query.executeUpdate();
     }
 }

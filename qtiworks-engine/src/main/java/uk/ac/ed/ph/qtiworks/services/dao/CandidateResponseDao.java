@@ -34,9 +34,12 @@
 package uk.ac.ed.ph.qtiworks.services.dao;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateResponse;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
+import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
@@ -56,5 +59,48 @@ public class CandidateResponseDao extends GenericDao<CandidateResponse> {
 
     public CandidateResponseDao() {
         super(CandidateResponse.class);
+    }
+
+    public int deleteForCandidateSession(final CandidateSession candidateSession) {
+        /* Need to first delete @CollectionTable data manually */
+        Query query = em.createNativeQuery(
+                "DELETE FROM candidate_string_response_items"
+                + "  WHERE xrid IN ("
+                + "    SELECT xrid FROM candidate_responses"
+                + "    WHERE xeid IN ("
+                + "      SELECT xeid FROM candidate_events"
+                + "      WHERE xid= ?1"
+                + "    )"
+                + "  )");
+        query.setParameter(1, candidateSession.getId());
+        query.executeUpdate();
+
+        /* Then we can safely delete the main table */
+        query = em.createNamedQuery("CandidateResponse.deleteForSession");
+        query.setParameter("candidateSession", candidateSession);
+        return query.executeUpdate();
+    }
+
+    public int deleteForDelivery(final Delivery delivery) {
+        /* Need to first delete @CollectionTable data manually */
+        Query query = em.createNativeQuery(
+                "DELETE FROM candidate_string_response_items"
+                + "  WHERE xrid IN ("
+                + "    SELECT xrid FROM candidate_responses"
+                + "    WHERE xeid IN ("
+                + "      SELECT xeid FROM candidate_events"
+                + "      WHERE xid IN ("
+                + "        SELECT xid FROM deliveries"
+                + "        WHERE did = ?1"
+                + "      )"
+                + "    )"
+                + "  )");
+        query.setParameter(1, delivery.getId());
+        query.executeUpdate();
+
+        /* Then we can safely delete the main table */
+        query = em.createNamedQuery("CandidateResponse.deleteForDelivery");
+        query.setParameter("delivery", delivery);
+        return query.executeUpdate();
     }
 }

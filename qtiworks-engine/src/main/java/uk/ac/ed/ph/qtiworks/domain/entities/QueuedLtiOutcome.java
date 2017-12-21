@@ -77,7 +77,15 @@ import javax.persistence.TemporalType;
             query="SELECT q"
                 + "  FROM QueuedLtiOutcome q"
                 + "  ORDER BY q.id"),
-
+    @NamedQuery(name="QueuedLtiOutcome.deleteForSession",
+            query="DELETE FROM QueuedLtiOutcome q"
+                + "  WHERE q.candidateSession = :candidateSession"),
+    @NamedQuery(name="QueuedLtiOutcome.deleteForDelivery",
+            query="DELETE FROM QueuedLtiOutcome q"
+                + "  WHERE q.candidateSession IN ("
+                + "    SELECT x FROM CandidateSession x"
+                + "    WHERE x.delivery = :delivery"
+                + "  )"),
 })
 public class QueuedLtiOutcome implements BaseEntity, TimestampedOnCreation {
 

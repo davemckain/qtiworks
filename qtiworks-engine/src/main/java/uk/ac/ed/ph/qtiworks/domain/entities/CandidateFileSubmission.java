@@ -47,6 +47,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -66,6 +68,17 @@ import org.hibernate.annotations.Type;
 @Entity
 @Table(name="candidate_file_submissions")
 @SequenceGenerator(name="candidateFileSubmissionSequence", sequenceName="candidate_file_submission_sequence", initialValue=1, allocationSize=1)
+@NamedQueries({
+    @NamedQuery(name="CandidateFileSubmission.deleteForSession",
+            query="DELETE FROM CandidateFileSubmission f"
+                + "  WHERE f.candidateSession = :candidateSession"),
+    @NamedQuery(name="CandidateFileSubmission.deleteForDelivery",
+            query="DELETE FROM CandidateFileSubmission f"
+                + "  WHERE f.candidateSession IN ("
+                + "    SELECT x FROM CandidateSession x"
+                + "    WHERE x.delivery = :delivery"
+                + "  )"),
+})
 public class CandidateFileSubmission implements BaseEntity, TimestampedOnCreation {
 
     private static final long serialVersionUID = -4310598861282271053L;

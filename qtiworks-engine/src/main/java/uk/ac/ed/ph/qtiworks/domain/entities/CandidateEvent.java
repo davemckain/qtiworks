@@ -85,7 +85,18 @@ import org.hibernate.annotations.Type;
             query="SELECT xe"
                 + "  FROM CandidateEvent xe"
                 + "  WHERE xe.candidateSession = :candidateSession"
-                + "  ORDER BY xe.id DESC")
+                + "  ORDER BY xe.id DESC"),
+    /* NB: This one needs to be called after CandidateEventNotification.deleteForSession and CandidateResponse.deleteForSession */
+    @NamedQuery(name="CandidateEvent.deleteForSession",
+            query="DELETE FROM CandidateEvent xe"
+                + "  WHERE xe.candidateSession = :candidateSession"),
+    /* NB: This one needs to be called after CandidateEventNotification.deleteForDelivery and CandidateResponse.deleteForDelivery */
+    @NamedQuery(name="CandidateEvent.deleteForDelivery",
+            query="DELETE FROM CandidateEvent xe"
+                + "  WHERE xe.candidateSession IN ("
+                + "    SELECT x FROM CandidateSession x"
+                + "    WHERE x.delivery = :delivery"
+                + "  )"),
 })
 public class CandidateEvent implements BaseEntity {
 
