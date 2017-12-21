@@ -43,6 +43,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
@@ -64,7 +65,9 @@ import org.hibernate.annotations.Type;
  * @author David McKain
  */
 @Entity
-@Table(name="candidate_event_notifications")
+@Table(name="candidate_event_notifications",
+    indexes={@Index(name="candidate_notification_events", columnList="xeid")}
+)
 @SequenceGenerator(name="candidateEventNotificationSequence", sequenceName="candidate_event_notification_sequence", initialValue=1, allocationSize=10)
 @NamedQueries({
     @NamedQuery(name="CandidateEventNotification.getForEvent",
