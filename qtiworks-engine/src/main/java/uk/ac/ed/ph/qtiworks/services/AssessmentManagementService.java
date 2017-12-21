@@ -57,9 +57,9 @@ import uk.ac.ed.ph.qtiworks.services.dao.DeliveryDao;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliverySettingsDao;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentLtiOutcomesSettingsTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageDataImportException;
-import uk.ac.ed.ph.qtiworks.services.domain.CannotChangeAssessmentTypeException;
 import uk.ac.ed.ph.qtiworks.services.domain.DeliveryTemplate;
-import uk.ac.ed.ph.qtiworks.services.domain.IncompatiableDeliverySettingsException;
+import uk.ac.ed.ph.qtiworks.services.domain.IllegalManagementOperationException;
+import uk.ac.ed.ph.qtiworks.services.domain.IllegalManagementOperationException.OperationFailureReason;
 import uk.ac.ed.ph.qtiworks.services.domain.ItemDeliverySettingsTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.Privilege;
 import uk.ac.ed.ph.qtiworks.services.domain.PrivilegeException;
@@ -340,12 +340,17 @@ public class AssessmentManagementService {
      * The new {@link AssessmentPackage} must be of the same type as the
      * {@link Assessment}. I.e. it is not possible to replace an item with
      * a test, or a test with an item.
+     *
+     * @throws AssessmentPackageDataImportException
+     *
+     * @throws IllegalManagementOperationException with if an attempt is made to
+     *   replace an assessmentItem with an assessmentTest, or vice versa.
      */
     @Transactional(propagation=Propagation.REQUIRES_NEW)
     public Assessment replaceAssessmentPackage(final long aid,
             final MultipartFile multipartFile, final boolean validate)
             throws PrivilegeException, AssessmentPackageDataImportException,
-            DomainEntityNotFoundException, CannotChangeAssessmentTypeException {
+            DomainEntityNotFoundException,  IllegalManagementOperationException {
         Assert.notNull(multipartFile, "multipartFile");
         final Assessment assessment = assessmentDao.requireFindById(aid);
         ensureCallerMayManage(assessment);
@@ -356,7 +361,8 @@ public class AssessmentManagementService {
 
         /* Make sure we haven't gone item->test or test->item */
         if (newAssessmentPackage.getAssessmentType()!=assessment.getAssessmentType()) {
-            throw new CannotChangeAssessmentTypeException(assessment, newAssessmentPackage.getAssessmentType());
+            throw new IllegalManagementOperationException(OperationFailureReason.CANNOT_CHANGE_ASSESSMENT_TYPE,
+                    assessment, newAssessmentPackage.getAssessmentType());
         }
 
         /* Terminate any outstanding CandidateSessions on this Assessment, deleting any recorded
@@ -412,7 +418,7 @@ public class AssessmentManagementService {
     }
 
     public DeliverySettings lookupAndMatchDeliverySettings(final long dsid, final Assessment assessment)
-            throws DomainEntityNotFoundException, PrivilegeException, IncompatiableDeliverySettingsException {
+            throws DomainEntityNotFoundException, PrivilegeException, IllegalManagementOperationException {
         final DeliverySettings deliverySettings = deliverySettingsDao.requireFindById(dsid);
         ensureCallerMayManage(deliverySettings);
         ensureCompatible(deliverySettings, assessment);
@@ -450,7 +456,7 @@ public class AssessmentManagementService {
     // CRUD for ItemDeliverySettings
 
     public ItemDeliverySettings lookupItemDeliverySettings(final long dsid)
-            throws DomainEntityNotFoundException, PrivilegeException, IncompatiableDeliverySettingsException {
+            throws DomainEntityNotFoundException, PrivilegeException, IllegalManagementOperationException {
         final DeliverySettings deliverySettings = deliverySettingsDao.requireFindById(dsid);
         ensureCallerMayManage(deliverySettings);
         ensureCompatible(deliverySettings, AssessmentObjectType.ASSESSMENT_ITEM);
@@ -494,7 +500,7 @@ public class AssessmentManagementService {
     }
 
     public ItemDeliverySettings updateItemDeliverySettings(final long dsid, final ItemDeliverySettingsTemplate template)
-            throws PrivilegeException, DomainEntityNotFoundException, BindException, IncompatiableDeliverySettingsException {
+            throws PrivilegeException, DomainEntityNotFoundException, BindException, IllegalManagementOperationException {
         /* Check caller privileges */
         final ItemDeliverySettings itemDeliverySettings = lookupItemDeliverySettings(dsid);
         ensureCallerMayManage(itemDeliverySettings);
@@ -514,7 +520,7 @@ public class AssessmentManagementService {
     // CRUD for TestDeliverySettings
 
     public TestDeliverySettings lookupTestDeliverySettings(final long dsid)
-            throws DomainEntityNotFoundException, PrivilegeException, IncompatiableDeliverySettingsException {
+            throws DomainEntityNotFoundException, PrivilegeException, IllegalManagementOperationException {
         final DeliverySettings deliverySettings = deliverySettingsDao.requireFindById(dsid);
         ensureCallerMayManage(deliverySettings);
         ensureCompatible(deliverySettings, AssessmentObjectType.ASSESSMENT_TEST);
@@ -559,7 +565,7 @@ public class AssessmentManagementService {
     }
 
     public TestDeliverySettings updateTestDeliverySettings(final long dsid, final TestDeliverySettingsTemplate template)
-            throws PrivilegeException, DomainEntityNotFoundException, BindException, IncompatiableDeliverySettingsException {
+            throws PrivilegeException, DomainEntityNotFoundException, BindException, IllegalManagementOperationException {
         /* Check caller privileges */
         final TestDeliverySettings testDeliverySettings = lookupTestDeliverySettings(dsid);
         ensureCallerMayManage(testDeliverySettings);
@@ -666,7 +672,7 @@ public class AssessmentManagementService {
     }
 
     public void selectCurrentLtiResourceDeliverySettings(final long dsid)
-            throws DomainEntityNotFoundException, PrivilegeException, IncompatiableDeliverySettingsException {
+            throws DomainEntityNotFoundException, PrivilegeException, IllegalManagementOperationException {
         /* Look up and check access on requested Delivery Settings */
         final LtiResource currentLtiResource = identityService.assertCurrentThreadLtiIdentityContext().getLtiResource();
         final Delivery delivery = currentLtiResource.getDelivery();
@@ -698,9 +704,25 @@ public class AssessmentManagementService {
         return delivery;
     }
 
+    private User ensureCallerMayManage(final Delivery delivery)
+            throws PrivilegeException, IllegalManagementOperationException {
+        /* Check owning assignment */
+        final Assessment assessment = delivery.getAssessment();
+        final User caller = ensureCallerMayManage(assessment);
+
+        /* Make sure Delivery is user-created. Trying to delete other types of
+         * deliveries is forbidden or logically problematic.
+         */
+        if (delivery.getDeliveryType() != DeliveryType.USER_CREATED) {
+            throw new IllegalManagementOperationException(OperationFailureReason.DELIVERY_NOT_USER_CREATED, delivery);
+        }
+
+        return caller;
+    }
+
     /** Creates a new {@link Delivery} using the given {@link DeliveryTemplate} */
     public Delivery createDelivery(final long aid, final DeliveryTemplate template)
-            throws PrivilegeException, DomainEntityNotFoundException, BindException, IncompatiableDeliverySettingsException {
+            throws PrivilegeException, DomainEntityNotFoundException, BindException, IllegalManagementOperationException {
         /* Validate template */
         validateDeliveryTemplate(template);
 
@@ -756,13 +778,15 @@ public class AssessmentManagementService {
      * Deletes the {@link Delivery} having the given did and owned by the caller.
      *
      * NOTE: This deletes ALL associated data, including candidate data. Use with care!
+     * @throws IllegalManagementOperationException
      */
     public Assessment deleteDelivery(final long did)
-            throws DomainEntityNotFoundException, PrivilegeException {
-        /* Look up assessment and check permissions */
+            throws DomainEntityNotFoundException, PrivilegeException,
+            IllegalManagementOperationException {
+        /* Look up delivery and check permissions */
         final Delivery delivery = deliveryDao.requireFindById(did);
+        ensureCallerMayManage(delivery);
         final Assessment assessment = delivery.getAssessment();
-        ensureCallerMayManage(assessment);
 
         /* Now delete it and all associated data */
         dataDeletionService.deleteDelivery(delivery);
@@ -774,18 +798,18 @@ public class AssessmentManagementService {
     }
 
     public Delivery updateDelivery(final long did, final DeliveryTemplate template)
-            throws BindException, PrivilegeException, DomainEntityNotFoundException, IncompatiableDeliverySettingsException {
+            throws BindException, PrivilegeException, DomainEntityNotFoundException,
+            IllegalManagementOperationException, IllegalManagementOperationException {
         /* Validate template */
         validateDeliveryTemplate(template);
 
         /* Look up delivery and check privileges */
         final Delivery delivery = lookupDelivery(did);
-        final Assessment assessment = delivery.getAssessment();
-        ensureCallerMayManage(assessment);
+        ensureCallerMayManage(delivery);
 
         /* Look up settings and check privileges */
         final Long dsid = template.getDsid();
-        final DeliverySettings deliverySettings = (dsid!=null) ? lookupAndMatchDeliverySettings(dsid.longValue(), assessment) : null;
+        final DeliverySettings deliverySettings = (dsid!=null) ? lookupAndMatchDeliverySettings(dsid.longValue(), delivery.getAssessment()) : null;
 
         /* Update data */
         delivery.setTitle(template.getTitle().trim());
@@ -805,7 +829,6 @@ public class AssessmentManagementService {
 
         /* Update */
         delivery.setOpen(open);
-        delivery.setTitle("BOB!");
         deliveryDao.update(delivery);
 
         auditLogger.recordEvent("Set open status for Delivery #" + delivery.getId() + " to " + open);
@@ -846,14 +869,14 @@ public class AssessmentManagementService {
         try {
             return createDemoDelivery(assessment, null);
         }
-        catch (final IncompatiableDeliverySettingsException e) {
+        catch (final IllegalManagementOperationException e) {
             /* This can't happen here */
             throw QtiWorksLogicException.unexpectedException(e);
         }
     }
 
     public Delivery createDemoDelivery(final Assessment assessment, final DeliverySettings deliverySettings)
-            throws PrivilegeException, IncompatiableDeliverySettingsException {
+            throws PrivilegeException, IllegalManagementOperationException {
         Assert.notNull(assessment, "assessment");
 
         /* Make sure DeliverySettings are compatible, if provided */
@@ -908,14 +931,15 @@ public class AssessmentManagementService {
     }
 
     private void ensureCompatible(final DeliverySettings deliverySettings, final Assessment assessment)
-            throws IncompatiableDeliverySettingsException {
+            throws IllegalManagementOperationException {
         ensureCompatible(deliverySettings, assessment.getAssessmentType());
     }
 
     private void ensureCompatible(final DeliverySettings deliverySettings, final AssessmentObjectType assessmentObjectType)
-            throws IncompatiableDeliverySettingsException {
+            throws IllegalManagementOperationException {
         if (assessmentObjectType!=deliverySettings.getAssessmentType()) {
-            throw new IncompatiableDeliverySettingsException(assessmentObjectType, deliverySettings);
+            throw new IllegalManagementOperationException(OperationFailureReason.INCOMPATIBLE_DELIVERY_SETTINGS,
+                    assessmentObjectType, deliverySettings);
         }
     }
 
