@@ -87,7 +87,11 @@ import org.hibernate.annotations.Type;
             query="SELECT lc"
                 + "  FROM LtiContext lc"
                 + "  WHERE lc.ltiDomain.consumerKey = :consumerKey"
-                + "    AND lc.fallbackResourceLinkId = :fallbackResourceLinkId")
+                + "    AND lc.fallbackResourceLinkId = :fallbackResourceLinkId"),
+    @NamedQuery(name="LtiContext.getForLtiDomain",
+            query="SELECT lc"
+                + "  FROM LtiContext lc"
+                + "  WHERE lc.ltiDomain = :ltiDomain"),
 })
 public class LtiContext implements BaseEntity, TimestampedOnCreation {
 

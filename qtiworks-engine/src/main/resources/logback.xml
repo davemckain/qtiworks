@@ -38,6 +38,9 @@ if you prefer. See the documentation.
   <logger name="uk.ac.ed.ph.qtiworks.web.QtiworksWebApplicationContextInitializer" level="info"/>
   <logger name="uk.ac.ed.ph.qtiworks.services.ScheduledServices" level="info"/>
 
+  <!-- Silence warnings from Hibernate about narrowing proxies -->
+  <logger name="org.hibernate.engine.internal.StatefulPersistenceContext" level="error"/>
+
   <!-- Root logger -->
   <root level="warn">
     <appender-ref ref="STDOUT"/>

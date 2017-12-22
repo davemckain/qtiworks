@@ -34,6 +34,9 @@
 package uk.ac.ed.ph.qtiworks.services.dao;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiContext;
+import uk.ac.ed.ph.qtiworks.domain.entities.LtiDomain;
+
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -71,5 +74,11 @@ public class LtiContextDao extends GenericDao<LtiContext> {
         query.setParameter("consumerKey", consumerKey);
         query.setParameter("fallbackResourceLinkId", fallbackResourceLinkId);
         return extractNullableFindResult(query);
+    }
+
+    public List<LtiContext> getForLtiDomain(final LtiDomain ltiDomain) {
+        final TypedQuery<LtiContext> query = em.createNamedQuery("LtiContext.getForLtiDomain", LtiContext.class);
+        query.setParameter("ltiDomain", ltiDomain);
+        return query.getResultList();
     }
 }

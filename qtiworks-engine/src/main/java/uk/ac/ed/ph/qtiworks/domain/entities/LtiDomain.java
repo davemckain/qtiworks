@@ -75,7 +75,7 @@ import javax.persistence.TemporalType;
     @NamedQuery(name="LtiDomain.getAll",
             query="SELECT ld"
                 + "  FROM LtiDomain ld"
-                + "  ORDER BY ld.ldid")
+                + "  ORDER BY ld.ldid"),
 })
 public class LtiDomain implements BaseEntity, TimestampedOnCreation {
 

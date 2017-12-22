@@ -141,6 +141,7 @@ public final class FilespaceManager {
 
     public boolean deleteCandidateUploads(final Delivery delivery) {
         Assert.notNull(delivery, "delivery");
+        Assert.notNull(delivery.getAssessment(), "delivery.assessment");
         return recursivelyDeleteDirectory(getCandidateSessionUploadBaseUri(delivery));
     }
 
@@ -160,20 +161,18 @@ public final class FilespaceManager {
     private String getCandidateSessionUploadBaseUri(final Delivery delivery) {
         final Assessment assessment = delivery.getAssessment();
 
-        final String folderUri = getCandidateUploadBaseUri()
+        return getCandidateUploadBaseUri()
                 + "/assessment" + assessment.getId()
                 + "/delivery" + delivery.getId();
-        return folderUri;
     }
 
     private String getCandidateSessionUploadBaseUri(final CandidateSession candidateSession) {
         final User candidate = candidateSession.getCandidate();
         final Delivery delivery = candidateSession.getDelivery();
 
-        final String folderUri = getCandidateSessionUploadBaseUri(delivery)
+        return getCandidateSessionUploadBaseUri(delivery)
                 + "/" + candidate.getBusinessKey()
                 + "/session" + candidateSession.getId();
-        return folderUri;
     }
 
     //-------------------------------------------------

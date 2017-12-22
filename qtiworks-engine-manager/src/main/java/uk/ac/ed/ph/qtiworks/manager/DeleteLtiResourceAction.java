@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.manager;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
+import uk.ac.ed.ph.qtiworks.domain.entities.LtiContext;
 import uk.ac.ed.ph.qtiworks.manager.services.ManagerServices;
 
 import java.util.List;
@@ -43,28 +43,28 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Deletes one or more {@link Assessment} from the system.
+ * Deletes one or more {@link LtiContext} from the system.
  *
  * @author David McKain
  */
-public final class DeleteAssessmentAction extends ManagerAction {
+public final class DeleteLtiResourceAction extends ManagerAction {
 
-    private static final Logger logger = LoggerFactory.getLogger(DeleteAssessmentAction.class);
+    private static final Logger logger = LoggerFactory.getLogger(DeleteLtiResourceAction.class);
 
     @Override
     public String[] getActionSummary() {
-        return new String[] { "Deletes the Assessment(s) having the given aid(s)" };
+        return new String[] { "Deletes the LTIResource(s) having the given lrid(s)" };
     }
 
     @Override
     public String getActionParameterSummary() {
-        return "<aid> ...";
+        return "<lrid> ...";
     }
 
     @Override
     public String validateParameters(final List<String> parameters) {
         if (parameters.isEmpty()) {
-            return "Required parameters: <aid> ...";
+            return "Required parameters: <lrid> ...";
         }
         return null;
     }
@@ -74,11 +74,11 @@ public final class DeleteAssessmentAction extends ManagerAction {
         final ManagerServices managerServices = applicationContext.getBean(ManagerServices.class);
         int deletedCount = 0;
         for (final String parameter : parameters) {
-            final Long aid = Long.valueOf(parameter);
-            if (managerServices.deleteAssessment(aid)) {
+            final Long lrid = Long.valueOf(parameter);
+            if (managerServices.deleteLtiResource(lrid)) {
                 ++deletedCount;
             }
         }
-        logger.info("Deleted {} Assessment(s) from the system", deletedCount);
+        logger.info("Deleted {} LtiResource(s) from the system", deletedCount);
     }
 }

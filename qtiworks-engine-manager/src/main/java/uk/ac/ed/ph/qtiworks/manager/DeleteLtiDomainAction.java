@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.manager;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
+import uk.ac.ed.ph.qtiworks.domain.entities.LtiDomain;
 import uk.ac.ed.ph.qtiworks.manager.services.ManagerServices;
 
 import java.util.List;
@@ -43,42 +43,42 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Deletes one or more {@link Assessment} from the system.
+ * Deletes one or more {@link LtiDomain} from the system.
  *
  * @author David McKain
  */
-public final class DeleteAssessmentAction extends ManagerAction {
+public final class DeleteLtiDomainAction extends ManagerAction {
 
-    private static final Logger logger = LoggerFactory.getLogger(DeleteAssessmentAction.class);
+    private static final Logger logger = LoggerFactory.getLogger(DeleteLtiDomainAction.class);
 
     @Override
     public String[] getActionSummary() {
-        return new String[] { "Deletes the Assessment(s) having the given aid(s)" };
+        return new String[] { "Deletes the LTIDomain(s) having the given ldid(s)" };
     }
 
     @Override
     public String getActionParameterSummary() {
-        return "<aid> ...";
+        return "<ldid> ...";
     }
 
     @Override
     public String validateParameters(final List<String> parameters) {
         if (parameters.isEmpty()) {
-            return "Required parameters: <aid> ...";
+            return "Required parameters: <ldid> ...";
         }
         return null;
     }
 
     @Override
-    public void run(final ApplicationContext applicationContext, final List<String> parameters) throws Exception {
-        final ManagerServices managerServices = applicationContext.getBean(ManagerServices.class);
+    public void run(final ApplicationContext applicationDomain, final List<String> parameters) throws Exception {
+        final ManagerServices managerServices = applicationDomain.getBean(ManagerServices.class);
         int deletedCount = 0;
         for (final String parameter : parameters) {
-            final Long aid = Long.valueOf(parameter);
-            if (managerServices.deleteAssessment(aid)) {
+            final Long ldid = Long.valueOf(parameter);
+            if (managerServices.deleteLtiDomain(ldid)) {
                 ++deletedCount;
             }
         }
-        logger.info("Deleted {} Assessment(s) from the system", deletedCount);
+        logger.info("Deleted {} LtiDomain(s) from the system", deletedCount);
     }
 }

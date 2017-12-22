@@ -88,9 +88,12 @@ public final class QtiWorksEngineManager {
         actionMap.put("runMaintenanceJobs", new RunMaintenanceJobs());
         actionMap.put("sendQueuedLtiOutcomes", new SendQueuedLtiOutcomesAction());
         actionMap.put("deleteUsers", new DeleteUsersAction());
-        actionMap.put("deleteAssessment", new DeleteAssessmentAction());
         actionMap.put("deleteCandidateSession", new DeleteCandidateSessionAction());
         actionMap.put("deleteCandidateSessions", new DeleteCandidateSessionsAction());
+        actionMap.put("deleteAssessment", new DeleteAssessmentAction());
+        actionMap.put("deleteLtiResource", new DeleteLtiResourceAction());
+        actionMap.put("deleteLtiContext", new DeleteLtiContextAction());
+        actionMap.put("deleteLtiDomain", new DeleteLtiDomainAction());
 //        actionMap.put("adhoc", new AdhocAction());
     }
 

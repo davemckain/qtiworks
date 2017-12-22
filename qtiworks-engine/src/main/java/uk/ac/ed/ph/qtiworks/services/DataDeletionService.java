@@ -40,6 +40,8 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
+import uk.ac.ed.ph.qtiworks.domain.entities.LtiContext;
+import uk.ac.ed.ph.qtiworks.domain.entities.LtiDomain;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiResource;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
@@ -54,6 +56,8 @@ import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionOutcomeDao;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliveryDao;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliverySettingsDao;
+import uk.ac.ed.ph.qtiworks.services.dao.LtiContextDao;
+import uk.ac.ed.ph.qtiworks.services.dao.LtiDomainDao;
 import uk.ac.ed.ph.qtiworks.services.dao.LtiNonceDao;
 import uk.ac.ed.ph.qtiworks.services.dao.LtiResourceDao;
 import uk.ac.ed.ph.qtiworks.services.dao.LtiUserDao;
@@ -138,6 +142,12 @@ public class DataDeletionService {
     private DeliverySettingsDao deliverySettingsDao;
 
     @Resource
+    private LtiContextDao ltiContextDao;
+
+    @Resource
+    private LtiDomainDao ltiDomainDao;
+
+    @Resource
     private LtiUserDao ltiUserDao;
 
     @Resource
@@ -210,8 +220,7 @@ public class DataDeletionService {
     }
 
     /**
-     * FIXME: Need to restrict deletion to non-USER_CREATED deliveries. Might therefore be better
-     * to make this non-public.
+     * Deletes the given user-created {@link Delivery}.
      */
     public void deleteDelivery(final Delivery delivery) {
         Assert.notNull(delivery, "delivery");
@@ -229,6 +238,7 @@ public class DataDeletionService {
 
     public void deleteAssessmentPackage(final AssessmentPackage assessmentPackage) {
         Assert.notNull(assessmentPackage, "assessmentPackage");
+        logger.info("Deleting AssessmentPackage {}", assessmentPackage.getId());
 
         /* Delete package sandbox in filesystem (if appropriate) */
         if (assessmentPackage.getSandboxPath()!=null) {
@@ -246,6 +256,7 @@ public class DataDeletionService {
 
     public void deleteAssessment(final Assessment assessment) {
         Assert.notNull(assessment, "assessment");
+        logger.info("Deleting Assessment {}", assessment.getId());
 
         /* NB: The ordering is important here due to the bi-directional relationship
          * between Assessment and AssessmentPackage. Don't try to optimise this away
@@ -288,8 +299,9 @@ public class DataDeletionService {
         }
     }
 
-    private void deleteLtiResource(final LtiResource ltiResource) {
+    public void deleteLtiResource(final LtiResource ltiResource) {
         Assert.notNull(ltiResource, "ltiResource");
+        logger.info("Deleting LtiResource {}", ltiResource.getId());
 
         /* Delete Delivery matched to this entity */
         final Delivery delivery = ltiResource.getDelivery();
@@ -299,6 +311,51 @@ public class DataDeletionService {
 
         /* Delete LTIResource entity */
         ltiResourceDao.remove(ltiResource);
+    }
+
+    public void deleteLtiContext(final LtiContext ltiContext) {
+        Assert.notNull(ltiContext, "ltiContext");
+        logger.info("Deleting LtiContext {}", ltiContext.getId());
+
+        /* First delete Assessments created in this context */
+        for (final AssessmentAndPackage assessmentAndPackage : assessmentDao.getForOwnerLtiContext(ltiContext)) {
+            deleteAssessment(assessmentAndPackage.getAssessment());
+        }
+
+        /* ... next we can delete LtiResources created in this context */
+        final List<LtiResource> ltiResources = ltiResourceDao.getForLtiContext(ltiContext);
+        for (final LtiResource ltiResource : ltiResources) {
+            deleteLtiResource(ltiResource);
+        }
+
+        /* ... can then safely delete DeliverySettings created in this context */
+        for (final DeliverySettings deliverySettings : deliverySettingsDao.getForOwnerLtiContext(ltiContext)) {
+            deliverySettingsDao.remove(deliverySettings);
+        }
+
+        /* Finally delete the entity itself */
+        ltiContextDao.remove(ltiContext);
+    }
+
+    public void deleteLtiDomain(final LtiDomain ltiDomain) {
+        Assert.notNull(ltiDomain, "ltiDomain");
+        logger.info("Deleting LtiDomain {}", ltiDomain.getId());
+
+        /* Delete LTI contexts in this domain */
+        final List<LtiContext> ltiContexts = ltiContextDao.getForLtiDomain(ltiDomain);
+        for (final LtiContext ltiContext : ltiContexts) {
+            deleteLtiContext(ltiContext);
+        }
+
+        /* Delete all users created under this domain */
+        final List<LtiUser> ltiUsers = ltiUserDao.getForLtiDomain(ltiDomain);
+        for (final LtiUser ltiUser : ltiUsers) {
+            logger.info("Deleting user {}", ltiUser.getId());
+            ltiUserDao.remove(ltiUser);
+        }
+
+        /* Finally delete the entity itself */
+        ltiDomainDao.remove(ltiDomain);
     }
 
     /* NB: This method is called AFTER candidate session data is removed, so there are no
@@ -312,6 +369,7 @@ public class DataDeletionService {
 
         final List<LtiUser> ltiUsers = ltiUserDao.getCandidatesForLinkDelivery(delivery);
         for (final LtiUser ltiUser : ltiUsers) {
+            logger.info("Deleting user {}", ltiUser.getId());
             ltiUserDao.remove(ltiUser);
         }
         return ltiUsers.size();
@@ -327,6 +385,8 @@ public class DataDeletionService {
      */
     public void deleteUser(final User user) {
         Assert.notNull(user, "user");
+        logger.info("Deleting user {}", user.getBusinessKey());
+
         resetUser(user);
         userDao.remove(user);
     }
@@ -344,6 +404,7 @@ public class DataDeletionService {
      */
     public void resetUser(final User user) {
         Assert.notNull(user, "user");
+        logger.info("Resetting user {}", user.getBusinessKey());
 
         for (final LtiResource ltiResource : ltiResourceDao.getForCreatorUser(user)) {
             deleteLtiResource(ltiResource);
