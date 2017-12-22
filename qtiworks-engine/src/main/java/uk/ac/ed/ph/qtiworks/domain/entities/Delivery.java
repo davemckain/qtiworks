@@ -135,7 +135,12 @@ public class Delivery implements BaseEntity, TimestampedOnCreation {
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationTime;
 
-    /** {@link Assessment} chosen for this Delivery */
+    /**
+     * {@link Assessment} chosen for this Delivery.
+     *
+     * NOTE: This will be NULL at first when created via an {@link LtiResource}.
+     * It will become non-NULL by the time the assessment is launched.
+     */
     @ManyToOne(optional=true, fetch=FetchType.EAGER)
     @JoinColumn(name="aid")
     private Assessment assessment;

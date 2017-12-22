@@ -44,6 +44,7 @@ import uk.ac.ed.ph.qtiworks.services.AssessmentReportingService;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStatusReport;
 import uk.ac.ed.ph.qtiworks.services.domain.CandidateEventSummaryData;
 import uk.ac.ed.ph.qtiworks.services.domain.CandidateSessionSummaryReport;
+import uk.ac.ed.ph.qtiworks.services.domain.IllegalManagementOperationException;
 import uk.ac.ed.ph.qtiworks.services.domain.PrivilegeException;
 
 import java.util.List;
@@ -101,8 +102,8 @@ public class InstructorModelHelper {
     //------------------------------------------------------
 
     public Delivery setupModelForDelivery(final long did, final Model model)
-            throws PrivilegeException, DomainEntityNotFoundException {
-        return setupModelForDelivery(assessmentManagementService.lookupDelivery(did), model);
+            throws PrivilegeException, DomainEntityNotFoundException, IllegalManagementOperationException {
+        return setupModelForDelivery(assessmentManagementService.lookupUserCreatedDelivery(did), model);
     }
 
     public Delivery setupModelForDelivery(final Delivery delivery, final Model model) {

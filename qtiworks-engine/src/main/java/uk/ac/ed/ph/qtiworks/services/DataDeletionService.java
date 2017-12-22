@@ -187,11 +187,13 @@ public class DataDeletionService {
         logger.info("Deleting candidate sessions for Delivery {}", delivery.getId());
 
         /* Delete candidate uploads & stored state information */
-        if (!filespaceManager.deleteCandidateUploads(delivery)) {
-            logger.error("Failed to delete upload folder for Delivery {}", delivery.getId());
-        }
-        if (!filespaceManager.deleteCandidateSessionData(delivery)) {
-            logger.error("Failed to delete stored session data for Delivery {}", delivery.getId());
+        if (delivery.getAssessment() != null) {
+            if (!filespaceManager.deleteCandidateUploads(delivery)) {
+                logger.error("Failed to delete upload folder for Delivery {}", delivery.getId());
+            }
+            if (!filespaceManager.deleteCandidateSessionData(delivery)) {
+                logger.error("Failed to delete stored session data for Delivery {}", delivery.getId());
+            }
         }
 
         /* Delete entities, taking care to do things in the right order.
@@ -214,10 +216,6 @@ public class DataDeletionService {
     public void deleteDelivery(final Delivery delivery) {
         Assert.notNull(delivery, "delivery");
         logger.info("Deleting Delivery {}", delivery.getId());
-
-//        if (delivery.getDeliveryType() != DeliveryType.USER_CREATED) {
-//            throw new IllegalManagementOperationException(OperationFailureReason.DELIVERY_NOT_USER_CREATED, delivery);
-//        }
 
         /* Delete all candidate sessions on this Delivery */
         deleteCandidateSessions(delivery);

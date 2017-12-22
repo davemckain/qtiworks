@@ -305,8 +305,8 @@ public class InstructorAssessmentManagementController {
 
     @RequestMapping(value="/delivery/{did}", method=RequestMethod.GET)
     public String showDelivery(final Model model, @PathVariable final long did)
-            throws PrivilegeException, DomainEntityNotFoundException {
-        final Delivery delivery = assessmentManagementService.lookupDelivery(did);
+            throws PrivilegeException, DomainEntityNotFoundException, IllegalManagementOperationException {
+        final Delivery delivery = assessmentManagementService.lookupUserCreatedDelivery(did);
         instructorModelHelper.setupModelForDelivery(delivery, model);
         return "showDelivery";
     }
@@ -314,9 +314,9 @@ public class InstructorAssessmentManagementController {
     /** FIXME: Support trying out with authorMode turned off */
     @RequestMapping(value="/delivery/{did}/try", method=RequestMethod.POST)
     public String tryDelivery(final @PathVariable long did, final HttpSession httpSession)
-            throws PrivilegeException, DomainEntityNotFoundException, CandidateException {
+            throws PrivilegeException, DomainEntityNotFoundException, CandidateException, IllegalManagementOperationException {
         final User caller = identityService.getCurrentThreadUser();
-        final Delivery delivery = assessmentManagementService.lookupDelivery(did);
+        final Delivery delivery = assessmentManagementService.lookupUserCreatedDelivery(did);
         final String sessionExitReturnUrl = instructorRouter.buildWithinContextUrl("/delivery/" + did);
         final CandidateSessionTicket candidateSessionTicket = candidateSessionLaunchService.launchInstructorTrialSession(httpSession, caller, delivery, true, sessionExitReturnUrl);
         return GlobalRouter.buildSessionStartRedirect(candidateSessionTicket);
@@ -346,7 +346,7 @@ public class InstructorAssessmentManagementController {
         /* Perform creation */
         final Delivery delivery;
         try {
-            delivery = assessmentManagementService.createDelivery(aid, template);
+            delivery = assessmentManagementService.createUserCreatedDelivery(aid, template);
         }
         catch (final BindException e) {
             throw new QtiWorksLogicException("Top layer validation is currently same as service layer in this case, so this Exception should not happen");
@@ -360,15 +360,15 @@ public class InstructorAssessmentManagementController {
     @RequestMapping(value="/delivery/{did}/delete", method=RequestMethod.POST)
     public String deleteDelivery(final @PathVariable long did, final RedirectAttributes redirectAttributes)
             throws PrivilegeException, DomainEntityNotFoundException, IllegalManagementOperationException {
-        final Assessment assessment = assessmentManagementService.deleteDelivery(did);
+        final Assessment assessment = assessmentManagementService.deleteUserCreatedDelivery(did);
         redirectAttributes.addFlashAttribute(GlobalRouter.FLASH, "Delivery has been deleted");
         return instructorRouter.buildInstructorRedirect("/assessment/" + assessment.getId());
     }
 
     @RequestMapping(value="/delivery/{did}/toggle-availability", method=RequestMethod.POST)
     public String toggleDeliveryAvailabilityStatus(final @PathVariable long did)
-            throws PrivilegeException, DomainEntityNotFoundException {
-        final Delivery delivery = assessmentManagementService.lookupDelivery(did);
+            throws PrivilegeException, DomainEntityNotFoundException, IllegalManagementOperationException {
+        final Delivery delivery = assessmentManagementService.lookupUserCreatedDelivery(did);
         try {
             assessmentManagementService.setDeliveryLtiLinkOpenStatus(delivery.getId(), !delivery.isOpen());
         }
@@ -380,8 +380,8 @@ public class InstructorAssessmentManagementController {
 
     @RequestMapping(value="/delivery/{did}/edit", method=RequestMethod.GET)
     public String showEditDeliveryForm(final Model model, @PathVariable final long did)
-            throws PrivilegeException, DomainEntityNotFoundException {
-        final Delivery delivery = assessmentManagementService.lookupDelivery(did);
+            throws PrivilegeException, DomainEntityNotFoundException, IllegalManagementOperationException {
+        final Delivery delivery = assessmentManagementService.lookupUserCreatedDelivery(did);
         final DeliverySettings deliverySettings = delivery.getDeliverySettings();
 
         final DeliveryTemplate template = new DeliveryTemplate();
@@ -405,7 +405,7 @@ public class InstructorAssessmentManagementController {
 
         /* Perform update */
         try {
-            assessmentManagementService.updateDelivery(did, template);
+            assessmentManagementService.updateUserCreatedDelivery(did, template);
         }
         catch (final BindException e) {
             throw new QtiWorksLogicException("Top layer validation is currently same as service layer in this case, so this Exception should not happen");

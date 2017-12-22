@@ -69,17 +69,17 @@ import java.util.Set;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
-import net.oauth.OAuth.Problems;
-import net.oauth.OAuthException;
-import net.oauth.OAuthMessage;
-import net.oauth.OAuthProblemException;
-import net.oauth.server.OAuthServlet;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import net.oauth.OAuth.Problems;
+import net.oauth.OAuthException;
+import net.oauth.OAuthMessage;
+import net.oauth.OAuthProblemException;
+import net.oauth.server.OAuthServlet;
 
 /**
  * Service for handling LTI launches.
@@ -479,6 +479,7 @@ public class LtiLaunchService {
                 return null;
             }
             final Delivery delivery = new Delivery();
+            delivery.setAssessment(null); /* NB: This sets set later in this case! */
             delivery.setDeliveryType(DeliveryType.LTI_RESOURCE);
             delivery.setOpen(false); /* (Require instructor to explicitly turn on when ready) */
             delivery.setTitle(StringUtilities.defaultIfNull(ltiLaunchData.getResourceLinkTitle(), "LTI Delivery " + resourceLinkId));

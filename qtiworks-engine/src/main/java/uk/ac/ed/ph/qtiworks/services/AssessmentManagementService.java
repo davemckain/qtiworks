@@ -694,34 +694,59 @@ public class AssessmentManagementService {
     }
 
     //-------------------------------------------------
-    // CRUD for Delivery
+    // CRUD for general Deliveries
     // (access controls are governed by owning Assessment)
 
     public Delivery lookupDelivery(final long did)
             throws DomainEntityNotFoundException, PrivilegeException {
         final Delivery delivery = deliveryDao.requireFindById(did);
-        ensureCallerMayManage(delivery.getAssessment());
+        ensureCallerMayManage(delivery);
         return delivery;
     }
 
-    private User ensureCallerMayManage(final Delivery delivery)
-            throws PrivilegeException, IllegalManagementOperationException {
+    private User ensureCallerMayManage(final Delivery delivery) throws PrivilegeException {
         /* Check owning assignment */
         final Assessment assessment = delivery.getAssessment();
-        final User caller = ensureCallerMayManage(assessment);
+        if (assessment == null) {
+            throw new QtiWorksLogicException("Expected delivery.getAssessment() to return non-null by now");
+        }
+        return ensureCallerMayManage(assessment);
+    }
 
-        /* Make sure Delivery is user-created. Trying to delete other types of
-         * deliveries is forbidden or logically problematic.
+    public Delivery setDeliveryOpenStatus(final long did, final boolean open)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        /* Look up delivery and check privileges */
+        final Delivery delivery = lookupDelivery(did);
+
+        /* Update */
+        delivery.setOpen(open);
+        deliveryDao.update(delivery);
+
+        auditLogger.recordEvent("Set open status for Delivery #" + delivery.getId() + " to " + open);
+        return delivery;
+    }
+
+    //-------------------------------------------------
+    // CRUD for *USER_CREATED* Deliveries.
+    // (access controls are governed by owning Assessment)
+
+    public Delivery lookupUserCreatedDelivery(final long did)
+            throws DomainEntityNotFoundException, PrivilegeException,
+            IllegalManagementOperationException {
+        final Delivery delivery = deliveryDao.requireFindById(did);
+        ensureCallerMayManage(delivery);
+
+        /* Additionally make sure Delivery is user-created. Trying to explicitly
+         * manage other types of deliveries is forbidden or logically problematic.
          */
         if (delivery.getDeliveryType() != DeliveryType.USER_CREATED) {
             throw new IllegalManagementOperationException(OperationFailureReason.DELIVERY_NOT_USER_CREATED, delivery);
         }
-
-        return caller;
+        return delivery;
     }
 
     /** Creates a new {@link Delivery} using the given {@link DeliveryTemplate} */
-    public Delivery createDelivery(final long aid, final DeliveryTemplate template)
+    public Delivery createUserCreatedDelivery(final long aid, final DeliveryTemplate template)
             throws PrivilegeException, DomainEntityNotFoundException, BindException, IllegalManagementOperationException {
         /* Validate template */
         validateDeliveryTemplate(template);
@@ -738,28 +763,12 @@ public class AssessmentManagementService {
         }
 
         /* Create and return new entity */
-        final Delivery result = createDelivery(assessment, template.getTitle(), deliverySettings);
+        final Delivery result = createUserCreatedDelivery(assessment, template.getTitle(), deliverySettings);
         auditLogger.recordEvent("Created Delivery #" + result.getId() + " for Assessment #" + aid + " using template");
         return result;
     }
 
-    /** Creates a new {@link Delivery} for the given Assignment using reasonable default values */
-    public Delivery createDelivery(final long aid)
-            throws PrivilegeException, DomainEntityNotFoundException {
-        /* Look up Assessment and check privs */
-        final Assessment assessment = lookupAssessment(aid);
-        ensureCallerMayManage(assessment);
-
-        /* Create Delivery template with reasonable defaults */
-        final DeliveryTemplate template = assessmentDataService.createDeliveryTemplate(assessment);
-
-        /* Create and return new entity */
-        final Delivery result = createDelivery(assessment, template.getTitle(), null);
-        auditLogger.recordEvent("Created Delivery #" + result.getId() + " for Assessment #" + aid + " without template");
-        return result;
-    }
-
-    private Delivery createDelivery(final Assessment assessment, final String title,
+    private Delivery createUserCreatedDelivery(final Assessment assessment, final String title,
             final DeliverySettings deliverySettings) {
         final Delivery delivery = new Delivery();
         delivery.setAssessment(assessment);
@@ -778,14 +787,12 @@ public class AssessmentManagementService {
      * Deletes the {@link Delivery} having the given did and owned by the caller.
      *
      * NOTE: This deletes ALL associated data, including candidate data. Use with care!
-     * @throws IllegalManagementOperationException
      */
-    public Assessment deleteDelivery(final long did)
+    public Assessment deleteUserCreatedDelivery(final long did)
             throws DomainEntityNotFoundException, PrivilegeException,
             IllegalManagementOperationException {
         /* Look up delivery and check permissions */
-        final Delivery delivery = deliveryDao.requireFindById(did);
-        ensureCallerMayManage(delivery);
+        final Delivery delivery = lookupUserCreatedDelivery(did);
         final Assessment assessment = delivery.getAssessment();
 
         /* Now delete it and all associated data */
@@ -797,15 +804,14 @@ public class AssessmentManagementService {
         return assessment;
     }
 
-    public Delivery updateDelivery(final long did, final DeliveryTemplate template)
+    public Delivery updateUserCreatedDelivery(final long did, final DeliveryTemplate template)
             throws BindException, PrivilegeException, DomainEntityNotFoundException,
             IllegalManagementOperationException, IllegalManagementOperationException {
         /* Validate template */
         validateDeliveryTemplate(template);
 
         /* Look up delivery and check privileges */
-        final Delivery delivery = lookupDelivery(did);
-        ensureCallerMayManage(delivery);
+        final Delivery delivery = lookupUserCreatedDelivery(did);
 
         /* Look up settings and check privileges */
         final Long dsid = template.getDsid();
@@ -820,25 +826,10 @@ public class AssessmentManagementService {
         return delivery;
     }
 
-    public Delivery setDeliveryOpenStatus(final long did, final boolean open)
-            throws PrivilegeException, DomainEntityNotFoundException {
-        /* Look up delivery and check privileges */
-        final Delivery delivery = lookupDelivery(did);
-        final Assessment assessment = delivery.getAssessment();
-        ensureCallerMayManage(assessment);
-
-        /* Update */
-        delivery.setOpen(open);
-        deliveryDao.update(delivery);
-
-        auditLogger.recordEvent("Set open status for Delivery #" + delivery.getId() + " to " + open);
-        return delivery;
-    }
-
     public Delivery setDeliveryLtiLinkOpenStatus(final long did, final boolean open)
-            throws PrivilegeException, DomainEntityNotFoundException {
+            throws PrivilegeException, DomainEntityNotFoundException, IllegalManagementOperationException {
         /* Look up delivery and check privileges */
-        final Delivery delivery = lookupDelivery(did);
+        final Delivery delivery = lookupUserCreatedDelivery(did);
         final Assessment assessment = delivery.getAssessment();
         ensureCallerMayManage(assessment);
 
