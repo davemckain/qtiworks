@@ -27,57 +27,40 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * This software is derived from (and contains code from) QTITools and MathAssessEngine.
- * QTITools is (c) 2008, University of Southampton.
+ * This software is derived from (and contains code from) QTItools and MathAssessEngine.
+ * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.manager;
+package uk.ac.ed.ph.qtiworks.config;
 
-import uk.ac.ed.ph.qtiworks.config.QtiWorksProfiles;
-import uk.ac.ed.ph.qtiworks.services.FilespaceManager;
+import java.util.Properties;
 
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 /**
- * Bootstraps the database schema
+ * Hibernate/JPA properties to be used only when bootstrapping the schema
+ *
+ * @see JpaSchemaUpdateConfiguration
  *
  * @author David McKain
  */
-public final class BootstrapAction extends ManagerAction {
+@Configuration
+@Profile(QtiWorksProfiles.SCHEMA_BOOTSTRAP)
+public class JpaSchemaBootstrapConfiguration {
 
-    private static final Logger logger = LoggerFactory.getLogger(BootstrapAction.class);
+    @Bean(name="extraJpaProperties")
+    public Properties extraJpaProperties() {
+        final Properties extraJpaProperties = new Properties();
 
-    @Override
-    public String[] getActionSummary() {
-        return new String[] {
-                "Bootstraps the QTIWorks database and file store.",
-                "WARNING! Any existing data will be deleted!"
-        };
+        /* As recommended, and required for sequence generation 'initialValue' */
+        extraJpaProperties.put("hibernate.id.new_generator_mappings", "true");
+
+        /* Tell Hibernate to recreate the DB schema */
+        extraJpaProperties.put("hibernate.hbm2ddl.auto", "create");
+
+        return extraJpaProperties;
     }
 
-    @Override
-    public String getSpringProfileName() {
-        return QtiWorksProfiles.BOOTSTRAP;
-    }
-
-    @Override
-    public void beforeApplicationContextInit() {
-        logger.warn("QTIWorks database is being bootstrapped. Any existing data will be deleted!!!");
-        logger.warn("Make sure you have created the QTIWorks database already. Refer to the documentation for help");
-    }
-
-    @Override
-    public void run(final ApplicationContext applicationContext, final List<String> parameters) {
-        /* (Bootstrap profile does stuff first) */
-
-        logger.info("Deleting any existing user data from filesystem");
-        final FilespaceManager filespaceManager = applicationContext.getBean(FilespaceManager.class);
-        filespaceManager.deleteAllUserData();
-
-        logger.info("QTIWorks database bootstrap has completed successfully");
-    }
 }

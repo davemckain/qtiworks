@@ -33,8 +33,9 @@
  */
 package uk.ac.ed.ph.qtiworks.manager;
 
-import uk.ac.ed.ph.qtiworks.config.JpaBootstrapConfiguration;
 import uk.ac.ed.ph.qtiworks.config.JpaProductionConfiguration;
+import uk.ac.ed.ph.qtiworks.config.JpaSchemaBootstrapConfiguration;
+import uk.ac.ed.ph.qtiworks.config.JpaSchemaUpdateConfiguration;
 import uk.ac.ed.ph.qtiworks.config.PropertiesConfiguration;
 import uk.ac.ed.ph.qtiworks.config.QtiWorksApplicationContextHelper;
 import uk.ac.ed.ph.qtiworks.config.ServicesConfiguration;
@@ -73,7 +74,8 @@ public final class QtiWorksEngineManager {
     private static final Map<String, ManagerAction> actionMap;
     static {
         actionMap = new LinkedHashMap<String, ManagerAction>();
-        actionMap.put("bootstrap", new BootstrapAction());
+        actionMap.put("bootstrap", new SchemaBootstrapAction());
+        actionMap.put("updateSchema", new SchemaUpdateAction());
         actionMap.put("importSamples", new ImportSamplesAction());
         actionMap.put("updateSamples", new UpdateSamplesAction());
         actionMap.put("importUsers", new ImportUsersAction());
@@ -154,7 +156,7 @@ public final class QtiWorksEngineManager {
         /* Let action do any pre-setup work */
         action.beforeApplicationContextInit();
 
-        /* Initialise ApplicationConetext */
+        /* Initialise ApplicationContext */
         logger.debug("Setting up Spring ApplicationContext using profile '{}'", profileName);
         final AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext();
         applicationContext.getEnvironment().setActiveProfiles(profileName);
@@ -162,7 +164,8 @@ public final class QtiWorksEngineManager {
         applicationContext.register(
                 PropertiesConfiguration.class,
                 JpaProductionConfiguration.class,
-                JpaBootstrapConfiguration.class,
+                JpaSchemaBootstrapConfiguration.class,
+                JpaSchemaUpdateConfiguration.class,
                 ServicesConfiguration.class,
                 ManagerConfiguration.class
         );

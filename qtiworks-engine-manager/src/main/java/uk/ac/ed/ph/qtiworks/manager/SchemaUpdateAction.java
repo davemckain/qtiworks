@@ -31,20 +31,44 @@
  * QTITools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.config;
+package uk.ac.ed.ph.qtiworks.manager;
 
-import org.springframework.context.annotation.Profile;
+import uk.ac.ed.ph.qtiworks.config.QtiWorksProfiles;
+
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 
 /**
- * Defines the Spring {@link Profile}s used by QTIWorks
+ * Updates the database schema
  *
  * @author David McKain
  */
-public final class QtiWorksProfiles {
+public final class SchemaUpdateAction extends ManagerAction {
 
-    public static final String SCHEMA_BOOTSTRAP = "schemaBootstrap";
-    public static final String SCHEMA_UPDATE = "schemaUpdate";
-    public static final String WEBAPP = "webapp";
-    public static final String MANAGER = "manager";
+    private static final Logger logger = LoggerFactory.getLogger(SchemaUpdateAction.class);
 
+    @Override
+    public String[] getActionSummary() {
+        return new String[] {
+                "Updates the database schema. Run after upgrading to a new release."
+        };
+    }
+
+    @Override
+    public String getSpringProfileName() {
+        return QtiWorksProfiles.SCHEMA_UPDATE;
+    }
+
+    @Override
+    public void beforeApplicationContextInit() {
+        logger.warn("QTIWorks database schema is being updated.");
+    }
+
+    @Override
+    public void run(final ApplicationContext applicationContext, final List<String> parameters) {
+        /* (All of the work here is done by JpaSchemaUpdateConfiguration) */
+    }
 }
