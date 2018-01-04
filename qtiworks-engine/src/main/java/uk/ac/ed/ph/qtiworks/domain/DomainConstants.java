@@ -64,7 +64,7 @@ public final class DomainConstants {
     public static final int XSRF_TOKEN_LENGTH = 32;
 
     /** Maximum length for an LTI "token" (i.e. identifier, primary key) */
-    public static final int LTI_TOKEN_MAX_LENGTH = 256;
+    public static final int LTI_TOKEN_MAX_LENGTH = 128;
 
     /** Maximum length for an LTI shared secret */
     public static final int LTI_SHARED_SECRET_MAX_LENGTH = 32;
@@ -73,7 +73,7 @@ public final class DomainConstants {
      * Maximum length for an LTI user logical key.
      * (This has been chosen large enough according to the conventions used to generate these keys.)
      */
-    public static final int LTI_USER_LOGICAL_KEY_MAX_LENGTH = 300;
+    public static final int LTI_USER_LOGICAL_KEY_MAX_LENGTH = LTI_TOKEN_MAX_LENGTH + 64;
 
     /**
      * How long (in milliseconds) to keep transient data before purging
@@ -83,7 +83,7 @@ public final class DomainConstants {
     /**
      * Maximum length for an OAuth nonce.
      */
-    public static final int OAUTH_NONCE_MAX_LENGTH = 256;
+    public static final int OAUTH_NONCE_MAX_LENGTH = 128;
 
     /**
      * Maximum permitted age (in milliseconds)
