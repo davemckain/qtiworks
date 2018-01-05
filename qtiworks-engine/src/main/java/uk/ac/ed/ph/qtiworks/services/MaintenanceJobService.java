@@ -62,6 +62,9 @@ public class MaintenanceJobService {
     private DataDeletionService dataDeletionService;
 
     @Resource
+    private FilespaceManager filespaceManager;
+
+    @Resource
     private LtiOutcomeService ltiOutcomeService;
 
     //-------------------------------------------------
@@ -74,6 +77,7 @@ public class MaintenanceJobService {
         purgeTransientData(beforeTimestamp);
         purgeOldNonces(beforeTimestamp);
         dataDeletionService.purgeOrphanedLtiCandidateUsers();
+        purgeEmptyStoreDirectories();
 
         final long afterTimestamp = System.currentTimeMillis();
         final long duration = afterTimestamp - beforeTimestamp;
@@ -90,11 +94,21 @@ public class MaintenanceJobService {
     }
 
     /**
-     * Pureges OAuth nonces for LTI launches that were created more than
+     * Purges OAuth nonces for LTI launches that were created more than
      * {@link DomainConstants#OAUTH_TIMESTAMP_MAX_AGE} milliseconds ago.
      */
     private void purgeOldNonces(final long currentTimestamp) {
         final Date nonceThreshold = new Date(currentTimestamp - DomainConstants.OAUTH_TIMESTAMP_MAX_AGE);
         dataDeletionService.purgeOldNonces(nonceThreshold);
+    }
+
+    /**
+     * Purges empty directories in the QTIWorks filestore
+     */
+    private void purgeEmptyStoreDirectories() {
+        final int deletedCount = filespaceManager.purgeEmptyStoreDirectories();
+        if (deletedCount > 0) {
+            logger.info("Purged {} empty filestore directories", deletedCount);
+        }
     }
 }

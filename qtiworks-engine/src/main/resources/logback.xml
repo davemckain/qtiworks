@@ -35,8 +35,9 @@ if you prefer. See the documentation.
 
   <!-- Also log certain other services at info level -->
   <logger name="uk.ac.ed.ph.qtiworks.config.ServicesConfiguration" level="info"/>
+  <logger name="uk.ac.ed.ph.qtiworks.services.ScheduledService" level="info"/>
+  <logger name="uk.ac.ed.ph.qtiworks.services.MaintenanceJobService" level="info"/>
   <logger name="uk.ac.ed.ph.qtiworks.web.QtiworksWebApplicationContextInitializer" level="info"/>
-  <logger name="uk.ac.ed.ph.qtiworks.services.ScheduledServices" level="info"/>
 
   <!-- Silence warnings from Hibernate about narrowing proxies -->
   <logger name="org.hibernate.engine.internal.StatefulPersistenceContext" level="error"/>

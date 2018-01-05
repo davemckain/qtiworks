@@ -127,7 +127,7 @@ public final class FilespaceManager {
     }
 
     private String getAssessmentPackageSandboxBaseUri() {
-        return filesystemBaseUri + "assessments";
+        return filesystemBaseUri + "/assessments";
     }
 
     //-------------------------------------------------
@@ -237,6 +237,44 @@ public final class FilespaceManager {
     public void deleteSandbox(final File sandboxDirectory) {
         Assert.notNull(sandboxDirectory, "sandboxDirectory");
         recursivelyDeleteDirectory(sandboxDirectory);
+    }
+
+    //-------------------------------------------------
+
+    /**
+     * Prunes empty subdirectories within the QTIWorks file store.
+     *
+     * @return the total number of empty subdirectories deleted
+     */
+    public int purgeEmptyStoreDirectories() {
+        int deletedCount;
+        deletedCount = purgeStoreDirectoryIfEmpty(fileUriToFile(getCandidateSessionStoreBaseUri()));
+        deletedCount += purgeStoreDirectoryIfEmpty(fileUriToFile(getCandidateUploadBaseUri()));
+        deletedCount += purgeStoreDirectoryIfEmpty(fileUriToFile(getAssessmentPackageSandboxBaseUri()));
+        return deletedCount;
+    }
+
+    private int purgeStoreDirectoryIfEmpty(final File directory) {
+        /* Perform depth first search */
+        int deletedCount = 0;
+        final File[] childFiles = directory.listFiles();
+        for (final File childFile : childFiles) {
+            if (childFile.isDirectory()) {
+                deletedCount += purgeStoreDirectoryIfEmpty(childFile);
+            }
+        }
+
+        /* Then delete this directory if it is (now) empty */
+        if (directory.listFiles().length == 0) {
+            logger.debug("Deleting empty store directory {}", directory);
+            if (directory.delete()) {
+                ++deletedCount;
+            }
+            else {
+                logger.warn("Unexpected failure to delete apparently empty store directory {}", directory);
+            }
+        }
+        return deletedCount;
     }
 
     //-------------------------------------------------
