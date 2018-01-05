@@ -108,7 +108,12 @@ public final class FilespaceManager {
         if (assessmentPackage.getSandboxPath()==null) {
             throw new IllegalStateException("Built-in AssessmentPackages may not be deleted");
         }
-        return recursivelyDeleteDirectory(new File(assessmentPackage.getSandboxPath()));
+        return deleteAssessmentPackageSandbox(new File(assessmentPackage.getSandboxPath()));
+    }
+
+    public boolean deleteAssessmentPackageSandbox(final File sandboxDirectory) {
+        Assert.notNull(sandboxDirectory, "sandboxDirectory");
+        return recursivelyDeleteDirectory(sandboxDirectory);
     }
 
     public boolean deleteAssessmentPackageSandboxes(final User owner) {
@@ -233,14 +238,6 @@ public final class FilespaceManager {
 
     //-------------------------------------------------
 
-
-    public void deleteSandbox(final File sandboxDirectory) {
-        Assert.notNull(sandboxDirectory, "sandboxDirectory");
-        recursivelyDeleteDirectory(sandboxDirectory);
-    }
-
-    //-------------------------------------------------
-
     /**
      * Prunes empty subdirectories within the QTIWorks file store.
      *
@@ -280,14 +277,8 @@ public final class FilespaceManager {
     //-------------------------------------------------
 
     private final File ensureCreateDirectory(final String fileUri) {
-        final File directory;
-        try {
-            directory = new File(URI.create(fileUri));
-            return ServiceUtilities.ensureDirectoryCreated(directory);
-        }
-        catch (final RuntimeException e) {
-            throw new QtiWorksLogicException("Unexpected failure parsing File URI " + fileUri);
-        }
+        final File directory = fileUriToFile(fileUri);
+        return ServiceUtilities.ensureDirectoryCreated(directory);
     }
 
     private final boolean recursivelyDeleteDirectory(final String fileUri) {

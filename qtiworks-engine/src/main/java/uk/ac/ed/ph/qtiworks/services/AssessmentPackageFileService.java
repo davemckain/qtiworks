@@ -185,11 +185,11 @@ public class AssessmentPackageFileService {
             }
         }
         catch (final AssessmentPackageDataImportException e) {
-            filespaceManager.deleteSandbox(packageSandbox);
+            filespaceManager.deleteAssessmentPackageSandbox(packageSandbox);
             throw e;
         }
         catch (final RuntimeException e) {
-            filespaceManager.deleteSandbox(packageSandbox);
+            filespaceManager.deleteAssessmentPackageSandbox(packageSandbox);
             throw e;
         }
         return assessmentPackage;

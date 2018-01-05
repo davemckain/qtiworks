@@ -71,7 +71,6 @@ import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
 
-import java.io.File;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
@@ -935,11 +934,7 @@ public class AssessmentManagementService {
     }
 
     private void deleteAssessmentPackageSandbox(final AssessmentPackage assessmentPackage) {
-        final String sandboxPath = assessmentPackage.getSandboxPath();
-        if (sandboxPath==null) {
-            throw new QtiWorksLogicException("AssessmentPackage sandbox is null");
-        }
-        filespaceManager.deleteSandbox(new File(sandboxPath));
+        filespaceManager.deleteAssessmentPackageSandbox(assessmentPackage);
         assessmentPackage.setSandboxPath(null);
     }
 
