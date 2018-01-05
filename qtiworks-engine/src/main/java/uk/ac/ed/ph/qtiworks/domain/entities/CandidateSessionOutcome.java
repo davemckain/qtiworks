@@ -79,7 +79,13 @@ import org.hibernate.annotations.Type;
                 + "  ORDER BY xo.candidateSession.xid, xo.id"),
     @NamedQuery(name="CandidateSessionOutcome.deleteForSession",
             query="DELETE FROM CandidateSessionOutcome xo"
-                + "  WHERE xo.candidateSession = :candidateSession")
+                + "  WHERE xo.candidateSession = :candidateSession"),
+    @NamedQuery(name="CandidateSessionOutcome.deleteForDelivery",
+            query="DELETE FROM CandidateSessionOutcome xo"
+                + "  WHERE xo.candidateSession IN ("
+                + "    SELECT x FROM CandidateSession x"
+                + "    WHERE x.delivery = :delivery"
+                + "  )"),
 })
 public class CandidateSessionOutcome implements BaseEntity {
 

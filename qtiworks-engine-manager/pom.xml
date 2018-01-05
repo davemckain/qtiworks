@@ -32,6 +32,13 @@ etc...
       <classifier>classes</classifier>
     </dependency>
     <dependency>
+      <!-- NB: This must be a 'provided' dependency for qtiworks-engine, so
+           needs to be included here again. -->
+      <groupId>org.glassfish</groupId>
+      <artifactId>javax.el</artifactId>
+      <version>${el.version}</version>
+    </dependency>
+    <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
       <version>${mysql-connector.version}</version>

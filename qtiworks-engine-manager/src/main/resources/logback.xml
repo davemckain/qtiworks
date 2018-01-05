@@ -17,6 +17,17 @@ if you prefer. See the documentation.
 
   <logger name="uk.ac.ed.ph.qtiworks.manager" level="info"/>
   <logger name="uk.ac.ed.ph.qtiworks.services.DataDeletionService" level="info"/>
+  <logger name="uk.ac.ed.ph.qtiworks.services.MaintenanceJobService" level="info"/>
+
+  <!-- Silence warnings from Hibernate about narrowing proxies -->
+  <logger name="org.hibernate.engine.internal.StatefulPersistenceContext" level="error"/>
+
+  <!-- Silence exceptions when performing DB schema changes.
+       (Unfortunately Hibernate emits lots of false positives (at least on PostgreSQL)
+       because the dialect doesn't use '... IF EXISTS' queries as much as it
+       probably could do.) -->
+  <logger name="org.hibernate.tool.schema.internal.ExceptionHandlerLoggedImpl" level="error"/>
+  <logger name="org.hibernate.engine.jdbc.spi.SqlExceptionHelper" level="error"/>
 
   <!-- Root logger -->
   <root level="warn">

@@ -31,42 +31,54 @@
  * QTITools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.services.domain;
+package uk.ac.ed.ph.qtiworks.manager;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
-import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
+import uk.ac.ed.ph.qtiworks.domain.entities.LtiContext;
+import uk.ac.ed.ph.qtiworks.manager.services.ManagerServices;
 
-import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
+import java.util.List;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 
 /**
- * Exception thrown when an attempt is made to upload a {@link AssessmentPackage}
- * containing a test into an {@link Assessment} of type test, or vice versa.
+ * Deletes one or more {@link LtiContext} from the system.
  *
  * @author David McKain
  */
-@ResponseStatus(value=HttpStatus.CONFLICT)
-public final class CannotChangeAssessmentTypeException extends Exception {
+public final class DeleteLtiResourceAction extends ManagerAction {
 
-    private static final long serialVersionUID = -7034213203309557258L;
+    private static final Logger logger = LoggerFactory.getLogger(DeleteLtiResourceAction.class);
 
-    private final Assessment assessment;
-    private final AssessmentObjectType packageAssessmentObjectType;
-
-    public CannotChangeAssessmentTypeException(final Assessment assessment, final AssessmentObjectType packageAssessmentObjectType) {
-        super("Uploaded package containing assessment of type " + packageAssessmentObjectType
-                + " is not compatible with the type of the Assessment " + assessment.getId());
-        this.assessment = assessment;
-        this.packageAssessmentObjectType = packageAssessmentObjectType;
+    @Override
+    public String[] getActionSummary() {
+        return new String[] { "Deletes the LTIResource(s) having the given lrid(s)" };
     }
 
-    public Assessment getAssessment() {
-        return assessment;
+    @Override
+    public String getActionParameterSummary() {
+        return "<lrid> ...";
     }
 
-    public AssessmentObjectType getPackageAssessmentObjectType() {
-        return packageAssessmentObjectType;
+    @Override
+    public String validateParameters(final List<String> parameters) {
+        if (parameters.isEmpty()) {
+            return "Required parameters: <lrid> ...";
+        }
+        return null;
+    }
+
+    @Override
+    public void run(final ApplicationContext applicationContext, final List<String> parameters) throws Exception {
+        final ManagerServices managerServices = applicationContext.getBean(ManagerServices.class);
+        int deletedCount = 0;
+        for (final String parameter : parameters) {
+            final Long lrid = Long.valueOf(parameter);
+            if (managerServices.deleteLtiResource(lrid)) {
+                ++deletedCount;
+            }
+        }
+        logger.info("Deleted {} LtiResource(s) from the system", deletedCount);
     }
 }

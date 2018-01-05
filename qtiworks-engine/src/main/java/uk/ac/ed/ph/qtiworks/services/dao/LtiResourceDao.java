@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.services.dao;
 
+import uk.ac.ed.ph.qtiworks.domain.entities.LtiContext;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiDomain;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiResource;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
@@ -74,5 +75,11 @@ public class LtiResourceDao extends GenericDao<LtiResource> {
         query.setParameter("ltiDomain", ltiDomain);
         query.setParameter("resourceLinkId", resourceLinkId);
         return extractNullableFindResult(query);
+    }
+
+    public List<LtiResource> getForLtiContext(final LtiContext ltiContext) {
+        final TypedQuery<LtiResource> query = em.createNamedQuery("LtiResource.getForLtiContext", LtiResource.class);
+        query.setParameter("ltiContext", ltiContext);
+        return query.getResultList();
     }
 }

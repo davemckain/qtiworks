@@ -130,7 +130,10 @@ import org.hibernate.annotations.Type;
                 + "  ORDER BY x.id"),
     @NamedQuery(name="CandidateSession.getAll",
             query="SELECT x"
-                + "  FROM CandidateSession x")
+                + "  FROM CandidateSession x"),
+    @NamedQuery(name="CandidateSession.deleteForDelivery",
+            query="DELETE FROM CandidateSession x"
+                + "  WHERE x.delivery = :delivery"),
 })
 public class CandidateSession implements BaseEntity, TimestampedOnCreation {
 

@@ -35,11 +35,13 @@ package uk.ac.ed.ph.qtiworks.services.dao;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
+import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
@@ -79,5 +81,17 @@ public class CandidateEventDao extends GenericDao<CandidateEvent> {
         query.setParameter("candidateSession", candidateSession);
         query.setMaxResults(1);
         return extractNullableFindResult(query);
+    }
+
+    public int deleteForCandidateSession(final CandidateSession candidateSession) {
+        final Query query = em.createNamedQuery("CandidateEvent.deleteForSession");
+        query.setParameter("candidateSession", candidateSession);
+        return query.executeUpdate();
+    }
+
+    public int deleteForDelivery(final Delivery delivery) {
+        final Query query = em.createNamedQuery("CandidateEvent.deleteForDelivery");
+        query.setParameter("delivery", delivery);
+        return query.executeUpdate();
     }
 }

@@ -64,7 +64,7 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Table(name="lti_nonces",
-    uniqueConstraints=@UniqueConstraint(columnNames={"consumer_key", "nonce"})
+    uniqueConstraints=@UniqueConstraint(name="lti_nonce_uniqueness", columnNames={"consumer_key", "nonce"})
 )
 @SequenceGenerator(name="ltiNonceSequence", sequenceName="lti_nonce_sequence", initialValue=1, allocationSize=1)
 @NamedQueries({

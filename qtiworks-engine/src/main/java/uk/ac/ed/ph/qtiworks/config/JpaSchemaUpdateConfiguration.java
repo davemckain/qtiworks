@@ -40,13 +40,15 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 /**
- * Hibernate/JPA properties to be used only when bootstrapping the schema
+ * Hibernate/JPA properties to be used only when updating the schema
+ *
+ * @see JpaSchemaBootstrapConfiguration
  *
  * @author David McKain
  */
 @Configuration
-@Profile(QtiWorksProfiles.BOOTSTRAP)
-public class JpaBootstrapConfiguration {
+@Profile(QtiWorksProfiles.SCHEMA_UPDATE)
+public class JpaSchemaUpdateConfiguration {
 
     @Bean(name="extraJpaProperties")
     public Properties extraJpaProperties() {
@@ -55,8 +57,8 @@ public class JpaBootstrapConfiguration {
         /* As recommended, and required for sequence generation 'initialValue' */
         extraJpaProperties.put("hibernate.id.new_generator_mappings", "true");
 
-        /* Tell Hibernate to recreate the DB schema */
-        extraJpaProperties.put("hibernate.hbm2ddl.auto", "create");
+        /* Tell Hibernate to update the DB schema */
+        extraJpaProperties.put("hibernate.hbm2ddl.auto", "update");
 
         return extraJpaProperties;
     }

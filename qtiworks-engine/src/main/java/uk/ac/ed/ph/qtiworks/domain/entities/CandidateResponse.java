@@ -50,9 +50,12 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -69,8 +72,27 @@ import org.hibernate.annotations.Type;
  * @author David McKain
  */
 @Entity
-@Table(name="candidate_responses")
+@Table(name="candidate_responses",
+    indexes={@Index(name="candidate_response_events", columnList="xeid")}
+)
 @SequenceGenerator(name="candidateResponseSequence", sequenceName="candidate_response_sequence", initialValue=1, allocationSize=5)
+@NamedQueries({
+    @NamedQuery(name="CandidateResponse.deleteForSession",
+            query="DELETE FROM CandidateResponse xr"
+                + "  WHERE xr.candidateEvent IN ("
+                + "    SELECT xe FROM CandidateEvent xe"
+                + "    WHERE xe.candidateSession = :candidateSession"
+                + "  )"),
+    @NamedQuery(name="CandidateResponse.deleteForDelivery",
+            query="DELETE FROM CandidateResponse xr"
+                + "  WHERE xr.candidateEvent IN ("
+                + "    SELECT xe FROM CandidateEvent xe"
+                + "    WHERE xe.candidateSession IN ("
+                + "      SELECT x FROM CandidateSession x"
+                + "      WHERE x.delivery = :delivery"
+                + "    )"
+                + "  )"),
+})
 public class CandidateResponse implements BaseEntity {
 
     private static final long serialVersionUID = -4310598861282271053L;
@@ -81,7 +103,7 @@ public class CandidateResponse implements BaseEntity {
     private Long xrid;
 
     /** {@link CandidateEvent} on which this response was submitted */
-    @ManyToOne(optional=false, fetch=FetchType.EAGER, cascade=CascadeType.REMOVE)
+    @ManyToOne(optional=false, fetch=FetchType.LAZY, cascade=CascadeType.REMOVE)
     @JoinColumn(name="xeid")
     private CandidateEvent candidateEvent;
 

@@ -31,20 +31,54 @@
  * QTITools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.config;
+package uk.ac.ed.ph.qtiworks.manager;
 
-import org.springframework.context.annotation.Profile;
+import uk.ac.ed.ph.qtiworks.domain.entities.LtiContext;
+import uk.ac.ed.ph.qtiworks.manager.services.ManagerServices;
+
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 
 /**
- * Defines the Spring {@link Profile}s used by QTIWorks
+ * Deletes one or more {@link LtiContext} from the system.
  *
  * @author David McKain
  */
-public final class QtiWorksProfiles {
+public final class DeleteLtiContextAction extends ManagerAction {
 
-    public static final String SCHEMA_BOOTSTRAP = "schemaBootstrap";
-    public static final String SCHEMA_UPDATE = "schemaUpdate";
-    public static final String WEBAPP = "webapp";
-    public static final String MANAGER = "manager";
+    private static final Logger logger = LoggerFactory.getLogger(DeleteLtiContextAction.class);
 
+    @Override
+    public String[] getActionSummary() {
+        return new String[] { "Deletes the LTIContext(s) having the given lcid(s)" };
+    }
+
+    @Override
+    public String getActionParameterSummary() {
+        return "<lcid> ...";
+    }
+
+    @Override
+    public String validateParameters(final List<String> parameters) {
+        if (parameters.isEmpty()) {
+            return "Required parameters: <lcid> ...";
+        }
+        return null;
+    }
+
+    @Override
+    public void run(final ApplicationContext applicationContext, final List<String> parameters) throws Exception {
+        final ManagerServices managerServices = applicationContext.getBean(ManagerServices.class);
+        int deletedCount = 0;
+        for (final String parameter : parameters) {
+            final Long lcid = Long.valueOf(parameter);
+            if (managerServices.deleteLtiContext(lcid)) {
+                ++deletedCount;
+            }
+        }
+        logger.info("Deleted {} LtiContext(s) from the system", deletedCount);
+    }
 }

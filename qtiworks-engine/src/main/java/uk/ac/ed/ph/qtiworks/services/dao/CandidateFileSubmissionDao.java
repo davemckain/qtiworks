@@ -34,9 +34,12 @@
 package uk.ac.ed.ph.qtiworks.services.dao;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateFileSubmission;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
+import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
@@ -56,5 +59,17 @@ public class CandidateFileSubmissionDao extends GenericDao<CandidateFileSubmissi
 
     public CandidateFileSubmissionDao() {
         super(CandidateFileSubmission.class);
+    }
+
+    public int deleteForCandidateSession(final CandidateSession candidateSession) {
+        final Query query = em.createNamedQuery("CandidateFileSubmission.deleteForSession");
+        query.setParameter("candidateSession", candidateSession);
+        return query.executeUpdate();
+    }
+
+    public int deleteForDelivery(final Delivery delivery) {
+        final Query query = em.createNamedQuery("CandidateFileSubmission.deleteForDelivery");
+        query.setParameter("delivery", delivery);
+        return query.executeUpdate();
     }
 }

@@ -39,6 +39,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.services.AssessmentProctoringService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentReportingService;
 import uk.ac.ed.ph.qtiworks.services.domain.DeliveryCandidateSummaryReport;
+import uk.ac.ed.ph.qtiworks.services.domain.IllegalManagementOperationException;
 import uk.ac.ed.ph.qtiworks.services.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.web.GlobalRouter;
 
@@ -86,7 +87,7 @@ public class InstructorAssessmentReportingController {
 
     @RequestMapping(value="/delivery/{did}/candidate-sessions", method=RequestMethod.GET)
     public String showDeliveryCandidateSummaryReport(@PathVariable final long did, final Model model)
-            throws PrivilegeException, DomainEntityNotFoundException {
+            throws PrivilegeException, DomainEntityNotFoundException, IllegalManagementOperationException {
         final DeliveryCandidateSummaryReport report = assessmentReportingService.buildDeliveryCandidateSummaryReport(did);
         instructorModelHelper.setupModelForDelivery(did, model);
         model.addAttribute(report);

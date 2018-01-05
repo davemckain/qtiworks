@@ -33,12 +33,15 @@
  */
 package uk.ac.ed.ph.qtiworks.services.dao;
 
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
+import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.QueuedLtiOutcome;
 
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
@@ -64,5 +67,17 @@ public class QueuedLtiOutcomeDao extends GenericDao<QueuedLtiOutcome> {
     public List<QueuedLtiOutcome> getAllQueuedOutcomes() {
         final TypedQuery<QueuedLtiOutcome> query = em.createNamedQuery("QueuedLtiOutcome.getAllQueuedOutcomes", QueuedLtiOutcome.class);
         return query.getResultList();
+    }
+
+    public int deleteForCandidateSession(final CandidateSession candidateSession) {
+        final Query query = em.createNamedQuery("QueuedLtiOutcome.deleteForSession");
+        query.setParameter("candidateSession", candidateSession);
+        return query.executeUpdate();
+    }
+
+    public int deleteForDelivery(final Delivery delivery) {
+        final Query query = em.createNamedQuery("QueuedLtiOutcome.deleteForDelivery");
+        query.setParameter("delivery", delivery);
+        return query.executeUpdate();
     }
 }

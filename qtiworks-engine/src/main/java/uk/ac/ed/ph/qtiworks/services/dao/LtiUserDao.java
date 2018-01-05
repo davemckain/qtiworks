@@ -92,6 +92,12 @@ public class LtiUserDao extends GenericDao<LtiUser> {
         return query.getResultList();
     }
 
+    public List<LtiUser> getForLtiDomain(final LtiDomain ltiDomain) {
+        final TypedQuery<LtiUser> query = em.createNamedQuery("LtiUser.getForLtiDomain", LtiUser.class);
+        query.setParameter("ltiDomain", ltiDomain);
+        return query.getResultList();
+    }
+
     public List<LtiUser> getCandidatesForLinkDelivery(final Delivery delivery) {
         final TypedQuery<LtiUser> query = em.createNamedQuery("LtiUser.getCandidatesForLinkDelivery", LtiUser.class);
         query.setParameter("delivery", delivery);

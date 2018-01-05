@@ -169,6 +169,7 @@ public class AssessmentDataService {
      */
     public AssessmentPackage ensureSelectedAssessmentPackage(final Delivery delivery) {
         Assert.notNull(delivery, "delivery");
+        Assert.notNull(delivery.getAssessment(), "delivery.assessment");
         return ensureSelectedAssessmentPackage(delivery.getAssessment());
     }
 
@@ -385,6 +386,7 @@ public class AssessmentDataService {
     public DeliverySettings getEffectiveDeliverySettings(final User candidate, final Delivery delivery) {
         Assert.notNull(candidate, "candidate");
         Assert.notNull(delivery, "delivery");
+        Assert.notNull(delivery.getAssessment(), "delivery.assessment");
         DeliverySettings result = delivery.getDeliverySettings();
         if (result==null) {
             result = createDefaultDeliverySettings(candidate, delivery.getAssessment().getAssessmentType());

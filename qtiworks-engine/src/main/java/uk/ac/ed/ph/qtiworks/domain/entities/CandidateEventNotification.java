@@ -43,6 +43,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
@@ -64,14 +65,31 @@ import org.hibernate.annotations.Type;
  * @author David McKain
  */
 @Entity
-@Table(name="candidate_event_notifications")
+@Table(name="candidate_event_notifications",
+    indexes={@Index(name="candidate_notification_events", columnList="xeid")}
+)
 @SequenceGenerator(name="candidateEventNotificationSequence", sequenceName="candidate_event_notification_sequence", initialValue=1, allocationSize=10)
 @NamedQueries({
     @NamedQuery(name="CandidateEventNotification.getForEvent",
-            query="SELECT n"
-                + "  FROM CandidateEventNotification n"
-                + "  WHERE n.candidateEvent = :candidateEvent"
-                + "  ORDER BY n.id")
+            query="SELECT xn"
+                + "  FROM CandidateEventNotification xn"
+                + "  WHERE xn.candidateEvent = :candidateEvent"
+                + "  ORDER BY xn.id"),
+    @NamedQuery(name="CandidateEventNotification.deleteForSession",
+            query="DELETE FROM CandidateEventNotification xn"
+                + "  WHERE xn.candidateEvent IN ("
+                + "    SELECT xe FROM CandidateEvent xe"
+                + "    WHERE xe.candidateSession = :candidateSession"
+                + "  )"),
+    @NamedQuery(name="CandidateEventNotification.deleteForDelivery",
+            query="DELETE FROM CandidateEventNotification xn"
+                + "  WHERE xn.candidateEvent IN ("
+                + "    SELECT xe FROM CandidateEvent xe"
+                + "    WHERE xe.candidateSession IN ("
+                + "      SELECT x FROM CandidateSession x"
+                + "      WHERE x.delivery = :delivery"
+                + "    )"
+                + "  )"),
 })
 public class CandidateEventNotification implements BaseEntity {
 

@@ -35,14 +35,24 @@ package uk.ac.ed.ph.qtiworks.manager.services;
 
 import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksDeploymentSettings;
 import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
+import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
+import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
+import uk.ac.ed.ph.qtiworks.domain.entities.LtiContext;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiDomain;
+import uk.ac.ed.ph.qtiworks.domain.entities.LtiResource;
 import uk.ac.ed.ph.qtiworks.domain.entities.SystemUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.domain.entities.UserRole;
 import uk.ac.ed.ph.qtiworks.services.AssessmentDataService;
 import uk.ac.ed.ph.qtiworks.services.DataDeletionService;
 import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
+import uk.ac.ed.ph.qtiworks.services.dao.AssessmentDao;
+import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
+import uk.ac.ed.ph.qtiworks.services.dao.DeliveryDao;
+import uk.ac.ed.ph.qtiworks.services.dao.LtiContextDao;
 import uk.ac.ed.ph.qtiworks.services.dao.LtiDomainDao;
+import uk.ac.ed.ph.qtiworks.services.dao.LtiResourceDao;
 import uk.ac.ed.ph.qtiworks.services.dao.SystemUserDao;
 import uk.ac.ed.ph.qtiworks.services.dao.UserDao;
 
@@ -82,13 +92,28 @@ public class ManagerServices {
     private AssessmentDataService assessmentDataService;
 
     @Resource
+    private AssessmentDao assessmentDao;
+
+    @Resource
+    private CandidateSessionDao candidateSessionDao;
+
+    @Resource
+    private DeliveryDao deliveryDao;
+
+    @Resource
+    private LtiContextDao ltiContextDao;
+
+    @Resource
+    private LtiDomainDao ltiDomainDao;
+
+    @Resource
+    private LtiResourceDao ltiResourceDao;
+
+    @Resource
     private SystemUserDao systemUserDao;
 
     @Resource
     private UserDao userDao;
-
-    @Resource
-    private LtiDomainDao ltiDomainDao;
 
     //----------------------------------------------
 
@@ -193,7 +218,6 @@ public class ManagerServices {
             logger.warn("Could not find user having loginName or ID {}", loginNameOrUid);
             return false;
         }
-        logger.info("Deleting user {}", user);
         dataDeletionService.deleteUser(user);
         return true;
     }
@@ -205,7 +229,6 @@ public class ManagerServices {
             logger.warn("Could not find user having loginName or ID {}", loginNameOrUid);
             return false;
         }
-        logger.info("Resetting user {}", user);
         dataDeletionService.resetUser(user);
         return true;
     }
@@ -270,4 +293,68 @@ public class ManagerServices {
         }
         return true;
     }
+
+    //-------------------------------------------------
+    // Data deletion
+
+    public boolean deleteCandidateSession(final Long xid) {
+        final CandidateSession candidateSession = candidateSessionDao.findById(xid);
+        if (candidateSession==null) {
+            logger.warn("Could not find CandidateSession with ID {}", xid);
+            return false;
+        }
+        logger.info("Deleting CandidateSession {}", xid);
+        dataDeletionService.deleteCandidateSession(candidateSession);
+        return true;
+    }
+
+    public int deleteCandidateSessions(final Long did) {
+        final Delivery delivery = deliveryDao.findById(did);
+        if (delivery==null) {
+            logger.warn("Could not find Delivery with ID {}", did);
+            return -1;
+        }
+        return dataDeletionService.deleteCandidateSessions(delivery);
+    }
+
+    public boolean deleteAssessment(final Long aid) {
+        final Assessment assessment = assessmentDao.findById(aid);
+        if (assessment==null) {
+            logger.warn("Could not find Assessment with ID {}", aid);
+            return false;
+        }
+        dataDeletionService.deleteAssessment(assessment);
+        return true;
+    }
+
+    public boolean deleteLtiResource(final Long lrid) {
+        final LtiResource ltiResource = ltiResourceDao.findById(lrid);
+        if (ltiResource==null) {
+            logger.warn("Could not find LtiResource with ID {}", lrid);
+            return false;
+        }
+        dataDeletionService.deleteLtiResource(ltiResource);
+        return true;
+    }
+
+    public boolean deleteLtiContext(final Long lcid) {
+        final LtiContext ltiContext = ltiContextDao.findById(lcid);
+        if (ltiContext==null) {
+            logger.warn("Could not find LtiContext with ID {}", lcid);
+            return false;
+        }
+        dataDeletionService.deleteLtiContext(ltiContext);
+        return true;
+    }
+
+    public boolean deleteLtiDomain(final Long ldid) {
+        final LtiDomain ltiDomain = ltiDomainDao.findById(ldid);
+        if (ltiDomain==null) {
+            logger.warn("Could not find LtiDomain with ID {}", ldid);
+            return false;
+        }
+        dataDeletionService.deleteLtiDomain(ltiDomain);
+        return true;
+    }
+
 }

@@ -78,6 +78,10 @@ import org.hibernate.annotations.Type;
             query="SELECT u"
                 + "  FROM LtiUser u"
                 + "  WHERE u.userRole = :userRole"),
+    @NamedQuery(name="LtiUser.getForLtiDomain",
+            query="SELECT u"
+                + "  FROM LtiUser u"
+                + "  WHERE u.ltiDomain = :ltiDomain"),
     @NamedQuery(name="LtiUser.getCandidatesForLinkDelivery",
             query="SELECT u"
                 + "  FROM LtiUser u"

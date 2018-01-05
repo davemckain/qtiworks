@@ -81,4 +81,10 @@ public class CandidateSessionOutcomeDao extends GenericDao<CandidateSessionOutco
         query.setParameter("candidateSession", candidateSession);
         return query.executeUpdate();
     }
+
+    public int deleteForDelivery(final Delivery delivery) {
+        final Query query = em.createNamedQuery("CandidateSessionOutcome.deleteForDelivery");
+        query.setParameter("delivery", delivery);
+        return query.executeUpdate();
+    }
 }

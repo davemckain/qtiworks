@@ -50,10 +50,9 @@ import uk.ac.ed.ph.qtiworks.services.domain.AssessmentAndPackage;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentLtiOutcomesSettingsTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageDataImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageDataImportException.ImportFailureReason;
-import uk.ac.ed.ph.qtiworks.services.domain.CannotChangeAssessmentTypeException;
 import uk.ac.ed.ph.qtiworks.services.domain.DeliveryTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.EnumerableClientFailure;
-import uk.ac.ed.ph.qtiworks.services.domain.IncompatiableDeliverySettingsException;
+import uk.ac.ed.ph.qtiworks.services.domain.IllegalManagementOperationException;
 import uk.ac.ed.ph.qtiworks.services.domain.ItemDeliverySettingsTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.services.domain.TestDeliverySettingsTemplate;
@@ -203,7 +202,7 @@ public class InstructorAssessmentManagementController {
                 final EnumerableClientFailure<ImportFailureReason> failure = e.getFailure();
                 failure.registerErrors(result, "assessmentPackageUpload");
             }
-            catch (final CannotChangeAssessmentTypeException e) {
+            catch (final IllegalManagementOperationException e) {
                 result.reject("assessmentPackageUpload.CANNOT_CHANGE_ASSESSMENT_TYPE");
             }
         }
@@ -245,7 +244,7 @@ public class InstructorAssessmentManagementController {
     @RequestMapping(value="/assessment/{aid}/try/{dsid}", method=RequestMethod.POST)
     public String tryAssessment(final @PathVariable long aid, final @PathVariable long dsid, final HttpSession httpSession)
             throws PrivilegeException, DomainEntityNotFoundException,
-            CandidateException, IncompatiableDeliverySettingsException {
+            CandidateException, IllegalManagementOperationException {
         final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
         final DeliverySettings deliverySettings = assessmentManagementService.lookupAndMatchDeliverySettings(dsid, assessment);
         final Delivery demoDelivery = assessmentManagementService.createDemoDelivery(assessment, deliverySettings);
@@ -306,8 +305,8 @@ public class InstructorAssessmentManagementController {
 
     @RequestMapping(value="/delivery/{did}", method=RequestMethod.GET)
     public String showDelivery(final Model model, @PathVariable final long did)
-            throws PrivilegeException, DomainEntityNotFoundException {
-        final Delivery delivery = assessmentManagementService.lookupDelivery(did);
+            throws PrivilegeException, DomainEntityNotFoundException, IllegalManagementOperationException {
+        final Delivery delivery = assessmentManagementService.lookupUserCreatedDelivery(did);
         instructorModelHelper.setupModelForDelivery(delivery, model);
         return "showDelivery";
     }
@@ -315,9 +314,9 @@ public class InstructorAssessmentManagementController {
     /** FIXME: Support trying out with authorMode turned off */
     @RequestMapping(value="/delivery/{did}/try", method=RequestMethod.POST)
     public String tryDelivery(final @PathVariable long did, final HttpSession httpSession)
-            throws PrivilegeException, DomainEntityNotFoundException, CandidateException {
+            throws PrivilegeException, DomainEntityNotFoundException, CandidateException, IllegalManagementOperationException {
         final User caller = identityService.getCurrentThreadUser();
-        final Delivery delivery = assessmentManagementService.lookupDelivery(did);
+        final Delivery delivery = assessmentManagementService.lookupUserCreatedDelivery(did);
         final String sessionExitReturnUrl = instructorRouter.buildWithinContextUrl("/delivery/" + did);
         final CandidateSessionTicket candidateSessionTicket = candidateSessionLaunchService.launchInstructorTrialSession(httpSession, caller, delivery, true, sessionExitReturnUrl);
         return GlobalRouter.buildSessionStartRedirect(candidateSessionTicket);
@@ -337,7 +336,7 @@ public class InstructorAssessmentManagementController {
     @RequestMapping(value="/assessment/{aid}/deliveries/create", method=RequestMethod.POST)
     public String handleCreateDeliveryForm(@PathVariable final long aid, final Model model, final RedirectAttributes redirectAttributes,
             final @Valid @ModelAttribute DeliveryTemplate template, final BindingResult result)
-            throws PrivilegeException, DomainEntityNotFoundException, IncompatiableDeliverySettingsException {
+            throws PrivilegeException, DomainEntityNotFoundException, IllegalManagementOperationException {
         /* Validate command Object */
         if (result.hasErrors()) {
             instructorModelHelper.setupModelForAssessment(aid, model);
@@ -347,7 +346,7 @@ public class InstructorAssessmentManagementController {
         /* Perform creation */
         final Delivery delivery;
         try {
-            delivery = assessmentManagementService.createDelivery(aid, template);
+            delivery = assessmentManagementService.createUserCreatedDelivery(aid, template);
         }
         catch (final BindException e) {
             throw new QtiWorksLogicException("Top layer validation is currently same as service layer in this case, so this Exception should not happen");
@@ -360,16 +359,16 @@ public class InstructorAssessmentManagementController {
 
     @RequestMapping(value="/delivery/{did}/delete", method=RequestMethod.POST)
     public String deleteDelivery(final @PathVariable long did, final RedirectAttributes redirectAttributes)
-            throws PrivilegeException, DomainEntityNotFoundException {
-        final Assessment assessment = assessmentManagementService.deleteDelivery(did);
+            throws PrivilegeException, DomainEntityNotFoundException, IllegalManagementOperationException {
+        final Assessment assessment = assessmentManagementService.deleteUserCreatedDelivery(did);
         redirectAttributes.addFlashAttribute(GlobalRouter.FLASH, "Delivery has been deleted");
         return instructorRouter.buildInstructorRedirect("/assessment/" + assessment.getId());
     }
 
     @RequestMapping(value="/delivery/{did}/toggle-availability", method=RequestMethod.POST)
     public String toggleDeliveryAvailabilityStatus(final @PathVariable long did)
-            throws PrivilegeException, DomainEntityNotFoundException {
-        final Delivery delivery = assessmentManagementService.lookupDelivery(did);
+            throws PrivilegeException, DomainEntityNotFoundException, IllegalManagementOperationException {
+        final Delivery delivery = assessmentManagementService.lookupUserCreatedDelivery(did);
         try {
             assessmentManagementService.setDeliveryLtiLinkOpenStatus(delivery.getId(), !delivery.isOpen());
         }
@@ -381,8 +380,8 @@ public class InstructorAssessmentManagementController {
 
     @RequestMapping(value="/delivery/{did}/edit", method=RequestMethod.GET)
     public String showEditDeliveryForm(final Model model, @PathVariable final long did)
-            throws PrivilegeException, DomainEntityNotFoundException {
-        final Delivery delivery = assessmentManagementService.lookupDelivery(did);
+            throws PrivilegeException, DomainEntityNotFoundException, IllegalManagementOperationException {
+        final Delivery delivery = assessmentManagementService.lookupUserCreatedDelivery(did);
         final DeliverySettings deliverySettings = delivery.getDeliverySettings();
 
         final DeliveryTemplate template = new DeliveryTemplate();
@@ -397,7 +396,7 @@ public class InstructorAssessmentManagementController {
     @RequestMapping(value="/delivery/{did}/edit", method=RequestMethod.POST)
     public String handleEditDeliveryForm(@PathVariable final long did, final Model model, final RedirectAttributes redirectAttributes,
             final @Valid @ModelAttribute DeliveryTemplate template, final BindingResult result)
-            throws PrivilegeException, DomainEntityNotFoundException, IncompatiableDeliverySettingsException {
+            throws PrivilegeException, DomainEntityNotFoundException, IllegalManagementOperationException {
         /* Validate command Object */
         if (result.hasErrors()) {
             instructorModelHelper.setupModelForDelivery(did, model);
@@ -406,7 +405,7 @@ public class InstructorAssessmentManagementController {
 
         /* Perform update */
         try {
-            assessmentManagementService.updateDelivery(did, template);
+            assessmentManagementService.updateUserCreatedDelivery(did, template);
         }
         catch (final BindException e) {
             throw new QtiWorksLogicException("Top layer validation is currently same as service layer in this case, so this Exception should not happen");
@@ -533,7 +532,7 @@ public class InstructorAssessmentManagementController {
 
     @RequestMapping(value="/deliverysettings/item/{dsid}", method=RequestMethod.GET)
     public String showEditItemDeliverySettingsForm(@PathVariable final long dsid, final Model model)
-            throws PrivilegeException, DomainEntityNotFoundException, IncompatiableDeliverySettingsException {
+            throws PrivilegeException, DomainEntityNotFoundException, IllegalManagementOperationException {
         final ItemDeliverySettings itemDeliverySettings = assessmentManagementService.lookupItemDeliverySettings(dsid);
         final ItemDeliverySettingsTemplate template = new ItemDeliverySettingsTemplate();
         assessmentDataService.mergeItemDeliverySettings(itemDeliverySettings, template);
@@ -545,7 +544,7 @@ public class InstructorAssessmentManagementController {
 
     @RequestMapping(value="/deliverysettings/test/{dsid}", method=RequestMethod.GET)
     public String showEditTestDeliverySettingsForm(@PathVariable final long dsid, final Model model)
-            throws PrivilegeException, DomainEntityNotFoundException, IncompatiableDeliverySettingsException {
+            throws PrivilegeException, DomainEntityNotFoundException, IllegalManagementOperationException {
         final TestDeliverySettings testDeliverySettings = assessmentManagementService.lookupTestDeliverySettings(dsid);
         final TestDeliverySettingsTemplate template = new TestDeliverySettingsTemplate();
         assessmentDataService.mergeTestDeliverySettings(testDeliverySettings, template);
@@ -558,7 +557,7 @@ public class InstructorAssessmentManagementController {
     @RequestMapping(value="/deliverysettings/item/{dsid}", method=RequestMethod.POST)
     public String handleEditItemDeliverySettingsForm(@PathVariable final long dsid, final Model model, final RedirectAttributes redirectAttributes,
             final @Valid @ModelAttribute ItemDeliverySettingsTemplate template, final BindingResult result)
-            throws PrivilegeException, DomainEntityNotFoundException, IncompatiableDeliverySettingsException {
+            throws PrivilegeException, DomainEntityNotFoundException, IllegalManagementOperationException {
         /* Validate command Object */
         if (result.hasErrors()) {
             instructorModelHelper.setupModelForDeliverySettings(dsid, model);
@@ -581,7 +580,7 @@ public class InstructorAssessmentManagementController {
     public String handleEditTestDeliverySettingsForm(@PathVariable final long dsid,
             final Model model, final RedirectAttributes redirectAttributes,
             final @Valid @ModelAttribute TestDeliverySettingsTemplate template, final BindingResult result)
-            throws PrivilegeException, DomainEntityNotFoundException, IncompatiableDeliverySettingsException {
+            throws PrivilegeException, DomainEntityNotFoundException, IllegalManagementOperationException {
         /* Validate command Object */
         if (result.hasErrors()) {
             instructorModelHelper.setupModelForDeliverySettings(dsid, model);

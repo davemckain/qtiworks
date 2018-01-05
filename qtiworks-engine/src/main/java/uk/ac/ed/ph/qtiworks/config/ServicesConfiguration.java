@@ -56,7 +56,7 @@ import javax.annotation.Resource;
 import javax.sql.DataSource;
 
 import org.apache.commons.dbcp.BasicDataSource;
-import org.hibernate.ejb.HibernatePersistence;
+import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -119,7 +119,7 @@ public class ServicesConfiguration {
     @Bean
     public LocalContainerEntityManagerFactoryBean localContainerEntityManagerFactoryBean() {
         final LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
-        emf.setPersistenceProviderClass(HibernatePersistence.class);
+        emf.setPersistenceProvider(new HibernatePersistenceProvider());
         emf.setDataSource(dataSource());
         emf.setJpaProperties(jpaProperties());
         emf.setPackagesToScan("uk.ac.ed.ph.qtiworks.domain.entities");

@@ -40,18 +40,28 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
+import uk.ac.ed.ph.qtiworks.domain.entities.LtiContext;
+import uk.ac.ed.ph.qtiworks.domain.entities.LtiDomain;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiResource;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.services.dao.AnonymousUserDao;
 import uk.ac.ed.ph.qtiworks.services.dao.AssessmentDao;
 import uk.ac.ed.ph.qtiworks.services.dao.AssessmentPackageDao;
+import uk.ac.ed.ph.qtiworks.services.dao.CandidateEventDao;
+import uk.ac.ed.ph.qtiworks.services.dao.CandidateEventNotificationDao;
+import uk.ac.ed.ph.qtiworks.services.dao.CandidateFileSubmissionDao;
+import uk.ac.ed.ph.qtiworks.services.dao.CandidateResponseDao;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
+import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionOutcomeDao;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliveryDao;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliverySettingsDao;
+import uk.ac.ed.ph.qtiworks.services.dao.LtiContextDao;
+import uk.ac.ed.ph.qtiworks.services.dao.LtiDomainDao;
 import uk.ac.ed.ph.qtiworks.services.dao.LtiNonceDao;
 import uk.ac.ed.ph.qtiworks.services.dao.LtiResourceDao;
 import uk.ac.ed.ph.qtiworks.services.dao.LtiUserDao;
+import uk.ac.ed.ph.qtiworks.services.dao.QueuedLtiOutcomeDao;
 import uk.ac.ed.ph.qtiworks.services.dao.UserDao;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentAndPackage;
 
@@ -99,7 +109,31 @@ public class DataDeletionService {
     private AssessmentObjectManagementService assessmentObjectManagementService;
 
     @Resource
+    private AssessmentDao assessmentDao;
+
+    @Resource
+    private AnonymousUserDao anonymousUserDao;
+
+    @Resource
+    private AssessmentPackageDao assessmentPackageDao;
+
+    @Resource
+    private CandidateEventNotificationDao candidateEventNotificationDao;
+
+    @Resource
+    private CandidateEventDao candidateEventDao;
+
+    @Resource
+    private CandidateFileSubmissionDao candidateFileSubmissionDao;
+
+    @Resource
+    private CandidateResponseDao candidateResponseDao;
+
+    @Resource
     private CandidateSessionDao candidateSessionDao;
+
+    @Resource
+    private CandidateSessionOutcomeDao candidateSessionOutcomeDao;
 
     @Resource
     private DeliveryDao deliveryDao;
@@ -108,19 +142,10 @@ public class DataDeletionService {
     private DeliverySettingsDao deliverySettingsDao;
 
     @Resource
-    private AssessmentPackageDao assessmentPackageDao;
+    private LtiContextDao ltiContextDao;
 
     @Resource
-    private AssessmentDao assessmentDao;
-
-    @Resource
-    private LtiResourceDao ltiResourceDao;
-
-    @Resource
-    private AnonymousUserDao anonymousUserDao;
-
-    @Resource
-    private UserDao userDao;
+    private LtiDomainDao ltiDomainDao;
 
     @Resource
     private LtiUserDao ltiUserDao;
@@ -128,46 +153,78 @@ public class DataDeletionService {
     @Resource
     private LtiNonceDao ltiNonceDao;
 
+    @Resource
+    private LtiResourceDao ltiResourceDao;
+
+    @Resource
+    private QueuedLtiOutcomeDao queuedLtiOutcomeDao;
+
+    @Resource
+    private UserDao userDao;
+
     /**
      * Deletes the given {@link CandidateSession} and all data that was stored for it.
-     * @param candidateSession
      */
     public void deleteCandidateSession(final CandidateSession candidateSession) {
         Assert.notNull(candidateSession, "candidateSession");
+        logger.info("Deleting candidate session {}", candidateSession.getId());
 
-        /* Delete candidate uploads & stored state information */
+        /* Delete candidate file uploads & stored state information */
         if (!filespaceManager.deleteCandidateUploads(candidateSession)) {
             logger.error("Failed to delete upload folder for CandidateSession {}", candidateSession.getId());
         }
         if (!filespaceManager.deleteCandidateSessionStore(candidateSession)) {
-            logger.error("Failed to delete stored session data for CandiateSession {}", candidateSession.getId());
+            logger.error("Failed to delete stored session data for CandidateSession {}", candidateSession.getId());
         }
 
-        /* Delete entities, taking advantage of cascading */
-        candidateSessionDao.remove(candidateSession); /* (This will cascade) */
+        /* Delete entities, taking care to do things in the right order.
+         * This does not use cascading as it's rather slow.
+         */
+        queuedLtiOutcomeDao.deleteForCandidateSession(candidateSession);
+        candidateSessionOutcomeDao.deleteForCandidateSession(candidateSession);
+        candidateFileSubmissionDao.deleteForCandidateSession(candidateSession);
+        candidateResponseDao.deleteForCandidateSession(candidateSession);
+        candidateEventNotificationDao.deleteForCandidateSession(candidateSession);
+        candidateEventDao.deleteForCandidateSession(candidateSession);
+        candidateSessionDao.remove(candidateSession);
     }
 
+    /**
+     * Deletes all {@link CandidateSession}s launched under the given {@link Delivery}.
+     */
     public int deleteCandidateSessions(final Delivery delivery) {
         Assert.notNull(delivery, "delivery");
+        logger.info("Deleting candidate sessions for Delivery {}", delivery.getId());
 
         /* Delete candidate uploads & stored state information */
-        if (!filespaceManager.deleteCandidateUploads(delivery)) {
-            logger.error("Failed to delete upload folder for Delivery {}", delivery.getId());
-        }
-        if (!filespaceManager.deleteCandidateSessionData(delivery)) {
-            logger.error("Failed to delete stored session data for Delivery {}", delivery.getId());
+        if (delivery.getAssessment() != null) {
+            if (!filespaceManager.deleteCandidateUploads(delivery)) {
+                logger.error("Failed to delete upload folder for Delivery {}", delivery.getId());
+            }
+            if (!filespaceManager.deleteCandidateSessionData(delivery)) {
+                logger.error("Failed to delete stored session data for Delivery {}", delivery.getId());
+            }
         }
 
-        /* Delete each session entity, taking advantage of cascading */
-        final List<CandidateSession> candidateSessions = candidateSessionDao.getForDelivery(delivery);
-        for (final CandidateSession candidateSession : candidateSessions) {
-            candidateSessionDao.remove(candidateSession);
-        }
-        return candidateSessions.size();
+        /* Delete entities, taking care to do things in the right order.
+         * This does not use cascading as it was *very* slow here.
+         * Instead, we perform a number of bulk deletions.
+         */
+        queuedLtiOutcomeDao.deleteForDelivery(delivery);
+        candidateSessionOutcomeDao.deleteForDelivery(delivery);
+        candidateFileSubmissionDao.deleteForDelivery(delivery);
+        candidateResponseDao.deleteForDelivery(delivery);
+        candidateEventNotificationDao.deleteForDelivery(delivery);
+        candidateEventDao.deleteForDelivery(delivery);
+        return candidateSessionDao.deleteForDelivery(delivery);
     }
 
+    /**
+     * Deletes the given user-created {@link Delivery}.
+     */
     public void deleteDelivery(final Delivery delivery) {
         Assert.notNull(delivery, "delivery");
+        logger.info("Deleting Delivery {}", delivery.getId());
 
         /* Delete all candidate sessions on this Delivery */
         deleteCandidateSessions(delivery);
@@ -181,6 +238,7 @@ public class DataDeletionService {
 
     public void deleteAssessmentPackage(final AssessmentPackage assessmentPackage) {
         Assert.notNull(assessmentPackage, "assessmentPackage");
+        logger.info("Deleting AssessmentPackage {}", assessmentPackage.getId());
 
         /* Delete package sandbox in filesystem (if appropriate) */
         if (assessmentPackage.getSandboxPath()!=null) {
@@ -198,6 +256,7 @@ public class DataDeletionService {
 
     public void deleteAssessment(final Assessment assessment) {
         Assert.notNull(assessment, "assessment");
+        logger.info("Deleting Assessment {}", assessment.getId());
 
         /* NB: The ordering is important here due to the bi-directional relationship
          * between Assessment and AssessmentPackage. Don't try to optimise this away
@@ -240,8 +299,9 @@ public class DataDeletionService {
         }
     }
 
-    private void deleteLtiResource(final LtiResource ltiResource) {
+    public void deleteLtiResource(final LtiResource ltiResource) {
         Assert.notNull(ltiResource, "ltiResource");
+        logger.info("Deleting LtiResource {}", ltiResource.getId());
 
         /* Delete Delivery matched to this entity */
         final Delivery delivery = ltiResource.getDelivery();
@@ -251,6 +311,51 @@ public class DataDeletionService {
 
         /* Delete LTIResource entity */
         ltiResourceDao.remove(ltiResource);
+    }
+
+    public void deleteLtiContext(final LtiContext ltiContext) {
+        Assert.notNull(ltiContext, "ltiContext");
+        logger.info("Deleting LtiContext {}", ltiContext.getId());
+
+        /* First delete Assessments created in this context */
+        for (final AssessmentAndPackage assessmentAndPackage : assessmentDao.getForOwnerLtiContext(ltiContext)) {
+            deleteAssessment(assessmentAndPackage.getAssessment());
+        }
+
+        /* ... next we can delete LtiResources created in this context */
+        final List<LtiResource> ltiResources = ltiResourceDao.getForLtiContext(ltiContext);
+        for (final LtiResource ltiResource : ltiResources) {
+            deleteLtiResource(ltiResource);
+        }
+
+        /* ... can then safely delete DeliverySettings created in this context */
+        for (final DeliverySettings deliverySettings : deliverySettingsDao.getForOwnerLtiContext(ltiContext)) {
+            deliverySettingsDao.remove(deliverySettings);
+        }
+
+        /* Finally delete the entity itself */
+        ltiContextDao.remove(ltiContext);
+    }
+
+    public void deleteLtiDomain(final LtiDomain ltiDomain) {
+        Assert.notNull(ltiDomain, "ltiDomain");
+        logger.info("Deleting LtiDomain {}", ltiDomain.getId());
+
+        /* Delete LTI contexts in this domain */
+        final List<LtiContext> ltiContexts = ltiContextDao.getForLtiDomain(ltiDomain);
+        for (final LtiContext ltiContext : ltiContexts) {
+            deleteLtiContext(ltiContext);
+        }
+
+        /* Delete all users created under this domain */
+        final List<LtiUser> ltiUsers = ltiUserDao.getForLtiDomain(ltiDomain);
+        for (final LtiUser ltiUser : ltiUsers) {
+            logger.info("Deleting user {}", ltiUser.getId());
+            ltiUserDao.remove(ltiUser);
+        }
+
+        /* Finally delete the entity itself */
+        ltiDomainDao.remove(ltiDomain);
     }
 
     /* NB: This method is called AFTER candidate session data is removed, so there are no
@@ -264,6 +369,7 @@ public class DataDeletionService {
 
         final List<LtiUser> ltiUsers = ltiUserDao.getCandidatesForLinkDelivery(delivery);
         for (final LtiUser ltiUser : ltiUsers) {
+            logger.info("Deleting user {}", ltiUser.getId());
             ltiUserDao.remove(ltiUser);
         }
         return ltiUsers.size();
@@ -279,6 +385,8 @@ public class DataDeletionService {
      */
     public void deleteUser(final User user) {
         Assert.notNull(user, "user");
+        logger.info("Deleting user {}", user.getBusinessKey());
+
         resetUser(user);
         userDao.remove(user);
     }
@@ -296,6 +404,7 @@ public class DataDeletionService {
      */
     public void resetUser(final User user) {
         Assert.notNull(user, "user");
+        logger.info("Resetting user {}", user.getBusinessKey());
 
         for (final LtiResource ltiResource : ltiResourceDao.getForCreatorUser(user)) {
             deleteLtiResource(ltiResource);

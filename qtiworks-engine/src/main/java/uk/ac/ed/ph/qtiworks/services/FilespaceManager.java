@@ -75,21 +75,21 @@ public final class FilespaceManager {
     @Resource
     private RequestTimestampContext requestTimestampContext;
 
-    private File filesystemBaseDirectory;
+    private String filesystemBaseUri;
 
     @PostConstruct
     public void init() {
         final String filesystemBaseString = qtiWorksDeploymentSettings.getFilesystemBase();
-        logger.info("Filesystem base for client data is {}", filesystemBaseString);
-        this.filesystemBaseDirectory = new File(filesystemBaseString);
+        final File filesystemBaseDirectory = new File(filesystemBaseString);
         if (!filesystemBaseDirectory.isDirectory()) {
             throw new QtiWorksRuntimeException("Filesystem base path " + filesystemBaseString + " is not a directory");
         }
+        this.filesystemBaseUri = filesystemBaseDirectory.toURI().toString().replaceFirst("/$", "");
+        logger.info("Filesystem base for client data is {}", filesystemBaseString);
     }
 
     public File createTempFile() {
-        final String tmpFolderUri = filesystemBaseDirectory.toURI().toString()
-                + "/tmp";
+        final String tmpFolderUri = filesystemBaseUri + "/tmp";
         final File tmpFolder = ensureCreateDirectory(tmpFolderUri);
         return new File(tmpFolder, createUniqueRequestComponent());
     }
@@ -108,7 +108,12 @@ public final class FilespaceManager {
         if (assessmentPackage.getSandboxPath()==null) {
             throw new IllegalStateException("Built-in AssessmentPackages may not be deleted");
         }
-        return recursivelyDeleteDirectory(new File(assessmentPackage.getSandboxPath()));
+        return deleteAssessmentPackageSandbox(new File(assessmentPackage.getSandboxPath()));
+    }
+
+    public boolean deleteAssessmentPackageSandbox(final File sandboxDirectory) {
+        Assert.notNull(sandboxDirectory, "sandboxDirectory");
+        return recursivelyDeleteDirectory(sandboxDirectory);
     }
 
     public boolean deleteAssessmentPackageSandboxes(final User owner) {
@@ -127,8 +132,7 @@ public final class FilespaceManager {
     }
 
     private String getAssessmentPackageSandboxBaseUri() {
-        return filesystemBaseDirectory.toURI().toString()
-                + "/assessments";
+        return filesystemBaseUri + "/assessments";
     }
 
     //-------------------------------------------------
@@ -142,6 +146,7 @@ public final class FilespaceManager {
 
     public boolean deleteCandidateUploads(final Delivery delivery) {
         Assert.notNull(delivery, "delivery");
+        Assert.notNull(delivery.getAssessment(), "delivery.assessment");
         return recursivelyDeleteDirectory(getCandidateSessionUploadBaseUri(delivery));
     }
 
@@ -155,27 +160,24 @@ public final class FilespaceManager {
     }
 
     private String getCandidateUploadBaseUri() {
-        return filesystemBaseDirectory.toURI().toString()
-                + "/responses";
+        return filesystemBaseUri + "/responses";
     }
 
     private String getCandidateSessionUploadBaseUri(final Delivery delivery) {
         final Assessment assessment = delivery.getAssessment();
 
-        final String folderUri = getCandidateUploadBaseUri()
+        return getCandidateUploadBaseUri()
                 + "/assessment" + assessment.getId()
                 + "/delivery" + delivery.getId();
-        return folderUri;
     }
 
     private String getCandidateSessionUploadBaseUri(final CandidateSession candidateSession) {
         final User candidate = candidateSession.getCandidate();
         final Delivery delivery = candidateSession.getDelivery();
 
-        final String folderUri = getCandidateSessionUploadBaseUri(delivery)
+        return getCandidateSessionUploadBaseUri(delivery)
                 + "/" + candidate.getBusinessKey()
                 + "/session" + candidateSession.getId();
-        return folderUri;
     }
 
     //-------------------------------------------------
@@ -200,8 +202,7 @@ public final class FilespaceManager {
     }
 
     private final String getCandidateSessionStoreBaseUri() {
-        return filesystemBaseDirectory.toURI().toString()
-                + "/sessions";
+        return filesystemBaseUri + "/sessions";
     }
 
     private final String getCandidateSessionStoreBaseUri(final Delivery delivery) {
@@ -237,23 +238,47 @@ public final class FilespaceManager {
 
     //-------------------------------------------------
 
+    /**
+     * Prunes empty subdirectories within the QTIWorks file store.
+     *
+     * @return the total number of empty subdirectories deleted
+     */
+    public int purgeEmptyStoreDirectories() {
+        int deletedCount;
+        deletedCount = purgeStoreDirectoryIfEmpty(fileUriToFile(getCandidateSessionStoreBaseUri()));
+        deletedCount += purgeStoreDirectoryIfEmpty(fileUriToFile(getCandidateUploadBaseUri()));
+        deletedCount += purgeStoreDirectoryIfEmpty(fileUriToFile(getAssessmentPackageSandboxBaseUri()));
+        return deletedCount;
+    }
 
-    public void deleteSandbox(final File sandboxDirectory) {
-        Assert.notNull(sandboxDirectory, "sandboxDirectory");
-        recursivelyDeleteDirectory(sandboxDirectory);
+    private int purgeStoreDirectoryIfEmpty(final File directory) {
+        /* Perform depth first search */
+        int deletedCount = 0;
+        final File[] childFiles = directory.listFiles();
+        for (final File childFile : childFiles) {
+            if (childFile.isDirectory()) {
+                deletedCount += purgeStoreDirectoryIfEmpty(childFile);
+            }
+        }
+
+        /* Then delete this directory if it is (now) empty */
+        if (directory.listFiles().length == 0) {
+            logger.debug("Deleting empty store directory {}", directory);
+            if (directory.delete()) {
+                ++deletedCount;
+            }
+            else {
+                logger.warn("Unexpected failure to delete apparently empty store directory {}", directory);
+            }
+        }
+        return deletedCount;
     }
 
     //-------------------------------------------------
 
     private final File ensureCreateDirectory(final String fileUri) {
-        final File directory;
-        try {
-            directory = new File(URI.create(fileUri));
-            return ServiceUtilities.ensureDirectoryCreated(directory);
-        }
-        catch (final RuntimeException e) {
-            throw new QtiWorksLogicException("Unexpected failure parsing File URI " + fileUri);
-        }
+        final File directory = fileUriToFile(fileUri);
+        return ServiceUtilities.ensureDirectoryCreated(directory);
     }
 
     private final boolean recursivelyDeleteDirectory(final String fileUri) {

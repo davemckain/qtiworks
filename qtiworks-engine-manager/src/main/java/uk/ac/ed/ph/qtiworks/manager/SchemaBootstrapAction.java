@@ -31,20 +31,53 @@
  * QTITools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.config;
+package uk.ac.ed.ph.qtiworks.manager;
 
-import org.springframework.context.annotation.Profile;
+import uk.ac.ed.ph.qtiworks.config.QtiWorksProfiles;
+import uk.ac.ed.ph.qtiworks.services.FilespaceManager;
+
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 
 /**
- * Defines the Spring {@link Profile}s used by QTIWorks
+ * Bootstraps the database schema
  *
  * @author David McKain
  */
-public final class QtiWorksProfiles {
+public final class SchemaBootstrapAction extends ManagerAction {
 
-    public static final String SCHEMA_BOOTSTRAP = "schemaBootstrap";
-    public static final String SCHEMA_UPDATE = "schemaUpdate";
-    public static final String WEBAPP = "webapp";
-    public static final String MANAGER = "manager";
+    private static final Logger logger = LoggerFactory.getLogger(SchemaBootstrapAction.class);
 
+    @Override
+    public String[] getActionSummary() {
+        return new String[] {
+                "Bootstraps the QTIWorks database and file store.",
+                "WARNING! Any existing data will be deleted!"
+        };
+    }
+
+    @Override
+    public String getSpringProfileName() {
+        return QtiWorksProfiles.SCHEMA_BOOTSTRAP;
+    }
+
+    @Override
+    public void beforeApplicationContextInit() {
+        logger.warn("QTIWorks database is being bootstrapped. Any existing data will be deleted!!!");
+        logger.warn("Make sure you have created the QTIWorks database already. Refer to the documentation for help");
+    }
+
+    @Override
+    public void run(final ApplicationContext applicationContext, final List<String> parameters) {
+        /* (Bootstrap profile does stuff first) */
+
+        logger.info("Deleting any existing user data from filesystem");
+        final FilespaceManager filespaceManager = applicationContext.getBean(FilespaceManager.class);
+        filespaceManager.deleteAllUserData();
+
+        logger.info("QTIWorks database bootstrap has completed successfully");
+    }
 }

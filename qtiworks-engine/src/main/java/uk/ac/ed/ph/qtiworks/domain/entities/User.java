@@ -254,6 +254,7 @@ public class User implements BaseEntity, TimestampedOnCreation {
     public final String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(key=" + getBusinessKey()
+                + ",userType=" + userType
                 + ",userRole=" + userRole
                 + ",firstName=" + firstName
                 + ",lastName=" + lastName

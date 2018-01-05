@@ -33,8 +33,9 @@
  */
 package uk.ac.ed.ph.qtiworks.manager;
 
-import uk.ac.ed.ph.qtiworks.config.QtiWorksProfiles;
-import uk.ac.ed.ph.qtiworks.services.FilespaceManager;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
+import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
+import uk.ac.ed.ph.qtiworks.manager.services.ManagerServices;
 
 import java.util.List;
 
@@ -43,41 +44,44 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Bootstraps the database schema
+ * Deletes all {@link CandidateSession}s launched on the specifieid
+ * {@link Delivery} from the system.
  *
  * @author David McKain
  */
-public final class BootstrapAction extends ManagerAction {
+public final class DeleteCandidateSessionsAction extends ManagerAction {
 
-    private static final Logger logger = LoggerFactory.getLogger(BootstrapAction.class);
+    private static final Logger logger = LoggerFactory.getLogger(DeleteCandidateSessionsAction.class);
 
     @Override
     public String[] getActionSummary() {
-        return new String[] {
-                "Bootstraps the QTIWorks database and file store.",
-                "WARNING! Any existing data will be deleted!"
-        };
+        return new String[] { "Deletes the CandidateSessions launched on the Deliveries having the given did(s)" };
     }
 
     @Override
-    public String getSpringProfileName() {
-        return QtiWorksProfiles.BOOTSTRAP;
+    public String getActionParameterSummary() {
+        return "<did> ...";
     }
 
     @Override
-    public void beforeApplicationContextInit() {
-        logger.warn("QTIWorks database is being bootstrapped. Any existing data will be deleted!!!");
-        logger.warn("Make sure you have created the QTIWorks database already. Refer to the documentation for help");
+    public String validateParameters(final List<String> parameters) {
+        if (parameters.isEmpty()) {
+            return "Required parameters: <did> ...";
+        }
+        return null;
     }
 
     @Override
-    public void run(final ApplicationContext applicationContext, final List<String> parameters) {
-        /* (Bootstrap profile does stuff first) */
-
-        logger.info("Deleting any existing user data from filesystem");
-        final FilespaceManager filespaceManager = applicationContext.getBean(FilespaceManager.class);
-        filespaceManager.deleteAllUserData();
-
-        logger.info("QTIWorks database bootstrap has completed successfully");
+    public void run(final ApplicationContext applicationContext, final List<String> parameters) throws Exception {
+        final ManagerServices managerServices = applicationContext.getBean(ManagerServices.class);
+        int deletedCount = 0;
+        for (final String parameter : parameters) {
+            final Long did = Long.valueOf(parameter);
+            final int deleted = managerServices.deleteCandidateSessions(did);
+            if (deleted > 0) {
+                deletedCount += deleted;
+            }
+        }
+        logger.info("Deleted {} CandidateSession(s) from the system", deletedCount);
     }
 }

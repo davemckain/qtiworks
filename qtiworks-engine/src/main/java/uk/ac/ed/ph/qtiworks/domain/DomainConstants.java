@@ -42,6 +42,15 @@ package uk.ac.ed.ph.qtiworks.domain;
  */
 public final class DomainConstants {
 
+    /** One second (in milliseconds) */
+    public static final long ONE_SECOND = 1000L;
+
+    /** One minute (in milliseconds) */
+    public static final long ONE_MINUTE = ONE_SECOND * 60;
+
+    /** One hour (in milliseconds) */
+    public static final long ONE_HOUR = ONE_MINUTE * 60;
+
     public static final int USER_LOGIN_NAME_MAX_LENGTH = 32;
     public static final int USER_EMAIL_ADDRESS_MAX_LENGTH = 128;
     public static final int USER_NAME_COMPONENT_MAX_LENGTH = 256;
@@ -55,7 +64,7 @@ public final class DomainConstants {
     public static final int XSRF_TOKEN_LENGTH = 32;
 
     /** Maximum length for an LTI "token" (i.e. identifier, primary key) */
-    public static final int LTI_TOKEN_MAX_LENGTH = 256;
+    public static final int LTI_TOKEN_MAX_LENGTH = 128;
 
     /** Maximum length for an LTI shared secret */
     public static final int LTI_SHARED_SECRET_MAX_LENGTH = 32;
@@ -64,18 +73,23 @@ public final class DomainConstants {
      * Maximum length for an LTI user logical key.
      * (This has been chosen large enough according to the conventions used to generate these keys.)
      */
-    public static final int LTI_USER_LOGICAL_KEY_MAX_LENGTH = 300;
+    public static final int LTI_USER_LOGICAL_KEY_MAX_LENGTH = LTI_TOKEN_MAX_LENGTH + 64;
+
+    /**
+     * How long (in milliseconds) to keep transient data before purging
+     */
+    public static final long TRANSIENT_DATA_LIFETIME = 24 * ONE_HOUR;
 
     /**
      * Maximum length for an OAuth nonce.
      */
-    public static final int OAUTH_NONCE_MAX_LENGTH = 256;
+    public static final int OAUTH_NONCE_MAX_LENGTH = 128;
 
     /**
      * Maximum permitted age (in milliseconds)
      * for an OAuth timestamp before the OAuth message is rejected
      */
-    public static final long OAUTH_TIMESTAMP_MAX_AGE = 90 * 60 * 1000L;
+    public static final long OAUTH_TIMESTAMP_MAX_AGE = 90 * ONE_MINUTE;
 
     /**
      * NB: Should be set to the maximum length of the permitted values of

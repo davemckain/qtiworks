@@ -84,7 +84,11 @@ import org.hibernate.annotations.Type;
             query="SELECT lr"
                 + "  FROM LtiResource lr"
                 + "  WHERE lr.ltiContext.ltiDomain = :ltiDomain"
-                + "    AND lr.resourceLinkId = :resourceLinkId")
+                + "    AND lr.resourceLinkId = :resourceLinkId"),
+    @NamedQuery(name="LtiResource.getForLtiContext",
+            query="SELECT lr"
+                + "  FROM LtiResource lr"
+                + "  WHERE lr.ltiContext = :ltiContext"),
 })
 public class LtiResource implements BaseEntity, TimestampedOnCreation {
 
