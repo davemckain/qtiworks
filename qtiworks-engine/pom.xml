@@ -42,11 +42,6 @@ All Rights Reserved
       <version>${hibernate-validator.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.glassfish</groupId>
-      <artifactId>javax.el</artifactId>
-      <version>${el.version}</version>
-    </dependency>
-    <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-entitymanager</artifactId>
       <version>${hibernate.version}</version>
@@ -186,6 +181,12 @@ All Rights Reserved
       <groupId>javax.servlet.jsp</groupId>
       <artifactId>jsp-api</artifactId>
       <version>${jsp-api.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish</groupId>
+      <artifactId>javax.el</artifactId>
+      <version>${el.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
