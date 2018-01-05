@@ -12,6 +12,71 @@ All Rights Reserved
   </nav>
   <h2>QTIWorks Release Notes</h2>
 
+  <h3>Release 1.0-beta11 (05/01/2018)</h3>
+  <p>
+    Minor update release. This adds in some improved functionality for deleting
+    data from the system, and updates some software dependencies to newer versions.
+    It also defines some new database indexes to improve performance of some queries.
+  </p>
+  <h4>Issues resolved</h4>
+  <ul>
+    <li>
+      <a href="https://github.com/davemckain/qtiworks/issues/62">#62</a>:
+      Added a maintenance job to routinely purge empty directories from the
+      QTIWorks file store.
+    </li>
+    <li>
+      <a href="https://github.com/davemckain/qtiworks/issues/72">#72</a>:
+      Resized some LTI- and OAuth- related columns in the QTIWorks database
+      to avoid violating MySQL's limits on indexes.
+    </li>
+  </ul>
+  <h4>Other changes</h4>
+  <ul>
+    <li>
+      Upgraded the Spring Framework and Hibernate software dependencies to the
+      latest versions still supported by Java 1.6. This was done to support some
+      of the other changes in this release.
+    </li>
+    <li>
+      Rewrote the logic in DataDeletionService for performing bulk deletions of
+      CandidateSessions and Assessments in order to make these much faster.
+      These operations now use custom bulk deletion queries in the database, rather
+      than relying on cascading deletion. Some new database indexes have been added to
+      support this.
+    </li>
+    <li>
+      Added further bulk deletion operations in DataDeletionService for deleting LTI
+      resources, contexts and domains, with corresponding new actions added to
+      the QTIWorks Engine Manager.
+    </li>
+    <li>
+      Did some minor refactoring to the AssessmentManagerService class, replacing
+      two Exception classes with a new multi-purpose class, similar to other
+      Exception classes.
+    </li>
+    <li>
+      Created new <code>schemaUpdate</code> QTIWorks Engine Manager action for performing
+      (some) updates to the database schema.
+    </li>
+  </ul>
+  <h4>Migration notes</h4>
+  <p>
+    If you have an existing QTIWorks installation then note that a database
+    schema change will be required. Please do the following:
+  </p>
+  <ol>
+    <li>
+      Run
+      <code>qtiworks-engine/support/schema-migrations/beta10-to-beta11.sql</code>
+      to perform some preparatory updates to the database schema.
+    </li>
+    <li>
+      Invoke the new <code>updateSchema</code> action in the QTIWorks Engine Manager
+      to complete the schema changes.
+    </li>
+  </p>
+
   <h3>Release 1.0-beta10 (12/04/2017)</h3>
   <p>
     This release rolls up some minor improvements and fixes made since the last beta.
@@ -42,7 +107,6 @@ All Rights Reserved
       in the QTIWorks engine to improve clarity and consistency.
     </li>
   </ul>
-
 
   <h3>Release 1.0-beta9 (05/01/2016)</h3>
   <p>
