@@ -51,6 +51,9 @@ public final class DomainConstants {
     /** One hour (in milliseconds) */
     public static final long ONE_HOUR = ONE_MINUTE * 60;
 
+    /** One day (in milliseconds) */
+    public static final long ONE_DAY = ONE_HOUR * 24;
+
     public static final int USER_LOGIN_NAME_MAX_LENGTH = 32;
     public static final int USER_EMAIL_ADDRESS_MAX_LENGTH = 128;
     public static final int USER_NAME_COMPONENT_MAX_LENGTH = 256;
@@ -78,7 +81,7 @@ public final class DomainConstants {
     /**
      * How long (in milliseconds) to keep transient data before purging
      */
-    public static final long TRANSIENT_DATA_LIFETIME = 24 * ONE_HOUR;
+    public static final long TRANSIENT_DATA_LIFETIME = ONE_DAY;
 
     /**
      * Maximum length for an OAuth nonce.
