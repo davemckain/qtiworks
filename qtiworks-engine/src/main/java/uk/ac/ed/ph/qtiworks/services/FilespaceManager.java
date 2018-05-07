@@ -252,6 +252,10 @@ public final class FilespaceManager {
     }
 
     private int purgeStoreDirectoryIfEmpty(final File directory) {
+        if (!directory.exists()) {
+            logger.warn("Store directory {} does not exist", directory);
+            return 0;
+        }
         /* Perform depth first search */
         int deletedCount = 0;
         final File[] childFiles = directory.listFiles();
