@@ -64,9 +64,11 @@ public final class QtiWorksDeploymentSettings implements Serializable {
     private @Value("${qtiworks.admin.name}") String adminName;
     private @Value("${qtiworks.admin.email}") String adminEmailAddress;
     private @Value("${qtiworks.base.url}") String baseUrl;
+    private @Value("${qtiworks.privacy.policy.url}") String privacyPolicyUrl;
     private @Value("${qtiworks.web.authn.fake.login:}") String fakeLoginName; /* (Optional - default null) */
     private @Value("${qtiworks.features.publicdemos:false}") boolean publicDemosEnabled; /* (Optional - default false) */
     private @Value("${qtiworks.features.rest:false}") boolean restEnabled; /* (Optional - default false) */
+    private @Value("${qtiworks.retention.max.candidatesession.age:180}") int maxCandidateSessionAge; /* (Optional - default 180 days) */
 
 
     public String getJdbcDriverClassName() {
@@ -105,6 +107,10 @@ public final class QtiWorksDeploymentSettings implements Serializable {
         return baseUrl;
     }
 
+    public String getPrivacyPolicyUrl() {
+        return privacyPolicyUrl;
+    }
+
     public boolean isEnableMathAssessExtension() {
         return enableMathAssessExtension;
     }
@@ -119,6 +125,10 @@ public final class QtiWorksDeploymentSettings implements Serializable {
 
     public boolean isRestEnabled() {
         return restEnabled;
+    }
+
+    public int getMaxCandidateSessionAge() {
+        return maxCandidateSessionAge;
     }
 
     @Override

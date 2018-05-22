@@ -182,11 +182,22 @@ public class DataDeletionService {
          */
         queuedLtiOutcomeDao.deleteForCandidateSession(candidateSession);
         candidateSessionOutcomeDao.deleteForCandidateSession(candidateSession);
-        candidateFileSubmissionDao.deleteForCandidateSession(candidateSession);
         candidateResponseDao.deleteForCandidateSession(candidateSession);
+        candidateFileSubmissionDao.deleteForCandidateSession(candidateSession);
         candidateEventNotificationDao.deleteForCandidateSession(candidateSession);
         candidateEventDao.deleteForCandidateSession(candidateSession);
         candidateSessionDao.remove(candidateSession);
+    }
+
+    public int deleteCandidateSessionsCreatedBefore(final Date creationTime) {
+        Assert.notNull(creationTime, "creationTime");
+        logger.info("Deleting CandidateSession created before {}", creationTime);
+
+        final List<CandidateSession> toDelete = candidateSessionDao.getCreatedBefore(creationTime);
+        for (final CandidateSession candidateSession: toDelete) {
+            deleteCandidateSession(candidateSession);
+        }
+        return toDelete.size();
     }
 
     /**
@@ -212,8 +223,8 @@ public class DataDeletionService {
          */
         queuedLtiOutcomeDao.deleteForDelivery(delivery);
         candidateSessionOutcomeDao.deleteForDelivery(delivery);
-        candidateFileSubmissionDao.deleteForDelivery(delivery);
         candidateResponseDao.deleteForDelivery(delivery);
+        candidateFileSubmissionDao.deleteForDelivery(delivery);
         candidateEventNotificationDao.deleteForDelivery(delivery);
         candidateEventDao.deleteForDelivery(delivery);
         return candidateSessionDao.deleteForDelivery(delivery);

@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.services;
 
+import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksDeploymentSettings;
 import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 
 import java.util.Date;
@@ -59,6 +60,9 @@ public class MaintenanceJobService {
     private static final Logger logger = LoggerFactory.getLogger(MaintenanceJobService.class);
 
     @Resource
+    private QtiWorksDeploymentSettings qtiWorksDeploymentSettings;
+
+    @Resource
     private DataDeletionService dataDeletionService;
 
     @Resource
@@ -74,6 +78,7 @@ public class MaintenanceJobService {
         logger.trace("runMaintenanceJobs() invoked");
         final long beforeTimestamp = System.currentTimeMillis();
 
+        purgeOldCandidateSessions(beforeTimestamp);
         purgeTransientData(beforeTimestamp);
         purgeOldNonces(beforeTimestamp);
         dataDeletionService.purgeOrphanedLtiCandidateUsers();
@@ -82,6 +87,18 @@ public class MaintenanceJobService {
         final long afterTimestamp = System.currentTimeMillis();
         final long duration = afterTimestamp - beforeTimestamp;
         logger.debug("runMaintenanceJobs() completed in {}ms", duration);
+    }
+
+    private void purgeOldCandidateSessions(final long currentTimestamp) {
+        final int maxCandidateSessionAge = qtiWorksDeploymentSettings.getMaxCandidateSessionAge();
+        if (maxCandidateSessionAge <= 0) {
+            return;
+        }
+        final Date creationTimeThreshold = new Date(currentTimestamp - DomainConstants.ONE_DAY * maxCandidateSessionAge);
+        final int deletedCount = dataDeletionService.deleteCandidateSessionsCreatedBefore(creationTimeThreshold);
+        if (deletedCount > 0) {
+            logger.info("Purged {} candidate sessions older than {} days", deletedCount, maxCandidateSessionAge);
+        }
     }
 
     /**

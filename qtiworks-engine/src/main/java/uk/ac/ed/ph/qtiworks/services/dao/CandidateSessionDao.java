@@ -38,6 +38,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -123,6 +124,12 @@ public class CandidateSessionDao extends GenericDao<CandidateSession> {
         final TypedQuery<CandidateSession> query = em.createNamedQuery("CandidateSession.getNonTerminatedForDeliveryAndCandidate", CandidateSession.class);
         query.setParameter("delivery", delivery);
         query.setParameter("candidate", candidate);
+        return query.getResultList();
+    }
+
+    public List<CandidateSession> getCreatedBefore(final Date creationTime) {
+        final TypedQuery<CandidateSession> query = em.createNamedQuery("CandidateSession.getCreatedBefore", CandidateSession.class);
+        query.setParameter("creationTime", creationTime);
         return query.getResultList();
     }
 

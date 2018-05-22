@@ -128,6 +128,11 @@ import org.hibernate.annotations.Type;
                 + "  AND x.candidate = :candidate"
                 + "  AND x.terminationTime IS NULL"
                 + "  ORDER BY x.id"),
+    @NamedQuery(name="CandidateSession.getCreatedBefore",
+            query="SELECT x"
+                + "  FROM CandidateSession x"
+                + "  WHERE x.creationTime < :creationTime"
+                + "  ORDER BY x.id"),
     @NamedQuery(name="CandidateSession.getAll",
             query="SELECT x"
                 + "  FROM CandidateSession x"),
