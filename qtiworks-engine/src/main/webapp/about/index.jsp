@@ -15,8 +15,8 @@ Top page for public functionality
 
   <h3>Overview</h3>
   <p>
-    QTIWorks is a new open-source tool for delivering Question &amp; Test
-    Interoperability (QTI) v2.1 assessment items and tests. It has been
+    QTIWorks is an open-source tool for delivering Question &amp; Test
+    Interoperability (QTI) v2.1 assessment items and tests. It was
     developed as part of the JISC QTIDI project as a next-generation
     advancement of the existing QTIEngine and MathAssessEngine tools.  It
     supports almost all of the QTI 2.1 specification, as well as the MathAssess
@@ -31,25 +31,23 @@ Top page for public functionality
 
   <h3>Development</h3>
   <p>
-    QTIWorks is open source and released under a BSD license. The project is being incubated in GitHub,
+    QTIWorks is open source and released under a BSD license. The project was incubated in GitHub,
     whence you can find the source code and development documentation.
   </p>
   <p>
-    The software is being developed within the School of Physics and Astronomy at the University of Edinburgh.
-    The principal architect and developer is David McKain.
+    The software was developed within the School of Physics and Astronomy at the University of Edinburgh.
+    The principal architect and developer was David McKain.
   </p>
   <p>
     QTIWorks is a reworking of the earlier MathAssessEngine and QTIEngine
     projects, the latter of which was developed by the University of
-    Southampton. The functional part of it is a Java web application, which
+    Southampton. The most visible part of it is a Java web application, which
     makes extensive use of the Spring Framework. At the core of QTIWorks is a
     significantly refactored version of Southampton's JQTI library, called JQTI+.
   </p>
   <ul>
     <li><a href="https://github.com/davemckain/qtiworks">QTIWorks on GitHub</a></li>
-    <li><a href="http://www.ph.ed.ac.uk">School of Physics and Astronomy at the University of Edinburgh</a></li>
-    <li><a href="http://www2.ph.ed.ac.uk/MathAssessEngine">MathAssessEngine</a></li>
-    <li><a href="http://www.qtitools.org">QTIEngine (and the old QTItools project)</a></li>
+    <li><a href="https://www.ph.ed.ac.uk">School of Physics and Astronomy at the University of Edinburgh</a></li>
   </ul>
 
   <h3>Funding</h3>
@@ -59,8 +57,8 @@ Top page for public functionality
     for this and related projects.
   </p>
   <ul>
-    <li><a href="http://www.jisc.ac.uk/whatwedo/programmes/elearning/assessmentandfeedback/qtidi.aspx">QTI Delivery Integration (QTIDI)</a></li>
-    <li><a href="http://www.jisc.ac.uk">JISC</a></li>
+    <li><a href="https://www.jisc.ac.uk/whatwedo/programmes/elearning/assessmentandfeedback/qtidi.aspx">QTI Delivery Integration (QTIDI)</a></li>
+    <li><a href="https://www.jisc.ac.uk">JISC</a></li>
   </ul>
 
 </page:page>
