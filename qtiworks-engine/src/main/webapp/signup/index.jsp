@@ -34,6 +34,11 @@ All Rights Reserved
     (You will almost certainly need to get your VLE administrator to do this
     for you.)
   </p>
+  <p>
+    Please also make sure you have read details about
+    <a href="${utils:escapeLink(qtiWorksDeploymentSettings.privacyPolicyUrl)}">privacy, security &amp; cookies</a>
+    in QTIWorks.
+  </p>
 
   <h3>2. Request an individual QTIWorks account</h3>
   <p>
@@ -47,6 +52,20 @@ All Rights Reserved
     Please contact the administrator of this instance of QTIWorks
     (<a href="mailto:${qtiWorksDeploymentSettings.adminEmailAddress}"><c:out value="${qtiWorksDeploymentSettings.adminName}"/></a>)
     if you would like an individual account created for you.
+  </p>
+  <p>
+    Please also make sure you have read details about
+    <a href="${utils:escapeLink(qtiWorksDeploymentSettings.privacyPolicyUrl)}">privacy, security &amp; cookies</a>
+    in QTIWorks.
+  </p>
+
+  <h2>Deleting your QTIWorks account and/or LTI Connections</h2>
+
+  <p>
+    If you have previously been given a QTIWorks individual account and/or LTI Connection,
+    then you may request the deletion of all of your data at any time by emailing the
+    administrator of this instance of QTIWorks
+    (<a href="mailto:${qtiWorksDeploymentSettings.adminEmailAddress}"><c:out value="${qtiWorksDeploymentSettings.adminName}"/></a>).
   </p>
 
 </page:page>

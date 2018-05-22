@@ -94,8 +94,8 @@ primaryRouting (action -> URL)
       <div class="clear"></div>
       <footer>
         <div class="logos">
-          <a href="http://www.jisc.ac.uk"><img src="${utils:internalLink(pageContext, '/includes/images/jisc75.png')}" width="75" height="50" alt="JISC Logo" /></a>
-          <a href="http://www.ed.ac.uk"><img src="${utils:internalLink(pageContext, '/includes/images/uoe.png')}" width="60" height="60" alt="University of Edinburgh Logo" /></a>
+          <a href="https://www.jisc.ac.uk"><img src="${utils:internalLink(pageContext, '/includes/images/jisc75.png')}" width="75" height="50" alt="JISC Logo" /></a>
+          <a href="https://www.ed.ac.uk"><img src="${utils:internalLink(pageContext, '/includes/images/uoe.png')}" width="60" height="60" alt="University of Edinburgh Logo" /></a>
         </div>
         <div class="copyright">
           <p>
@@ -103,8 +103,11 @@ primaryRouting (action -> URL)
           </p>
           <p>
             Copyright &#xa9; <fmt:formatDate value="${now}" type="date" pattern="yyyy"/>
-            <a href="http://www.ph.ed.ac.uk">The School of Physics and Astronomy</a>,
-            <a href="http://www.ed.ac.uk">The University of Edinburgh</a>.
+            <a href="https://www.ph.ed.ac.uk">The School of Physics and Astronomy</a>,
+            <a href="https://www.ed.ac.uk">The University of Edinburgh</a>.
+          </p>
+          <p>
+            Information about <a href="${utils:escapeLink(qtiWorksDeploymentSettings.privacyPolicyUrl)}">privacy, security &amp; cookies</a> in QTIWorks.
           </p>
           <p>
             Contact: <a href="mailto:${qtiWorksDeploymentSettings.adminEmailAddress}"><c:out value="${qtiWorksDeploymentSettings.adminName}"/></a>
