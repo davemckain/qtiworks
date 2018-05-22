@@ -12,6 +12,24 @@ All Rights Reserved
   </nav>
   <h2>QTIWorks Release Notes</h2>
 
+  <h3>Release 1.0-beta12 (22/05/2018)</h3>
+  <p>
+    Minor update release for the GDPR. This adds in new functionality to
+    automatically delete old candidate sessions, plus a configurable
+    (but mandatory) installation-specific link to a page describing how
+    privacy, security and cookies are handled.
+  </p>
+  <h4>Migration notes</h4>
+  <p>
+    If you have an existing QTIWorks installation then no database changes
+    are required. But you must configure a default retention period for
+    candidate sessions and add in a link to a suitable privacy, security
+    and cookies policy for your QTIWorks instance. Both of these are
+    specified within your <code>qtiworks-deployment.properties</code> file.
+    You may use the privacy policy for the Edinburgh instance of
+    QTIWorks as a guide, but please don't blindly copy or link to it.
+  </p>
+
   <h3>Release 1.0-beta11 (05/01/2018)</h3>
   <p>
     Minor update release. This adds in some improved functionality for deleting
