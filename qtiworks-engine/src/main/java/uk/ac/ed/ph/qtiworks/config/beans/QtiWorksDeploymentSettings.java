@@ -68,7 +68,7 @@ public final class QtiWorksDeploymentSettings implements Serializable {
     private @Value("${qtiworks.web.authn.fake.login:}") String fakeLoginName; /* (Optional - default null) */
     private @Value("${qtiworks.features.publicdemos:false}") boolean publicDemosEnabled; /* (Optional - default false) */
     private @Value("${qtiworks.features.rest:false}") boolean restEnabled; /* (Optional - default false) */
-    private @Value("${qtiworks.retention.max.candidatesession.age:365}") int maxCandidateSessionAge; /* (Optional - default 365 days) */
+    private @Value("${qtiworks.retention.max.candidatesession.age:180}") int maxCandidateSessionAge; /* (Optional - default 180 days) */
 
 
     public String getJdbcDriverClassName() {
