@@ -12,7 +12,7 @@ All Rights Reserved
   <name>QTIWorks</name>
   <groupId>uk.ac.ed.ph.qtiworks</groupId>
   <artifactId>qtiworks</artifactId>
-  <version>1.0-beta11</version>
+  <version>1.0-beta12</version>
   <packaging>pom</packaging>
   <modules>
     <module>qtiworks-jqtiplus</module>
