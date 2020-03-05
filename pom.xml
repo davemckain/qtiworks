@@ -72,7 +72,7 @@ All Rights Reserved
   <inceptionYear>2011</inceptionYear>
   <organization>
     <name>The University of Edinburgh</name>
-    <url>http://www.ed.ac.uk</url>
+    <url>https://www.ed.ac.uk</url>
   </organization>
   <licenses>
     <license>
@@ -86,9 +86,9 @@ All Rights Reserved
       <id>davemckain</id>
       <name>David McKain</name>
       <email>david.mckain&#xa0;[at]&#xa0;ed.ac.uk</email>
-      <url>http://www.ph.ed.ac.uk/people/david-mckain</url>
+      <url>https://www.ph.ed.ac.uk/people/david-mckain</url>
       <organization>School of Physics and Astronomy, University of Edinburgh</organization>
-      <organizationUrl>http://www.ph.ed.ac.uk</organizationUrl>
+      <organizationUrl>https://www.ph.ed.ac.uk</organizationUrl>
       <roles>
         <role>architect</role>
         <role>developer</role>
