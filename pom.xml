@@ -54,7 +54,7 @@ All Rights Reserved
   <repositories>
     <repository>
       <id>www2.ph.ed.ac.uk</id>
-      <url>http://www2.ph.ed.ac.uk/maven2</url>
+      <url>https://www2.ph.ed.ac.uk/maven2</url>
       <snapshots>
         <enabled>true</enabled>
       </snapshots>
