@@ -1,0 +1,34 @@
+<assessmentResult xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xmlns="http://www.imsglobal.org/xsd/imsqti_result_v2p1"
+                  xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_result_v2p1 http://www.imsglobal.org/xsd/imsqti_result_v2p1.xsd">
+  <context>
+    <sessionIdentifier sourceID="https://webapps.ph.ed.ac.uk/qtiworks-dev2"
+                       identifier="itemsession/272306"/>
+  </context>
+  <itemResult identifier="choice" datestamp="2020-03-05T15:41:08" sessionStatus="final">
+    <outcomeVariable identifier="completionStatus" cardinality="single" baseType="identifier">
+      <value>unknown</value>
+    </outcomeVariable>
+    <outcomeVariable identifier="SCORE" cardinality="single" baseType="float">
+      <value>1.0</value>
+    </outcomeVariable>
+    <responseVariable identifier="duration" cardinality="single" baseType="float">
+      <candidateResponse>
+        <value>28.498</value>
+      </candidateResponse>
+    </responseVariable>
+    <responseVariable identifier="numAttempts" cardinality="single" baseType="integer">
+      <candidateResponse>
+        <value>1</value>
+      </candidateResponse>
+    </responseVariable>
+    <responseVariable identifier="RESPONSE" cardinality="single" baseType="identifier">
+      <correctResponse>
+        <value>ChoiceA</value>
+      </correctResponse>
+      <candidateResponse>
+        <value>ChoiceA</value>
+      </candidateResponse>
+    </responseVariable>
+  </itemResult>
+</assessmentResult>

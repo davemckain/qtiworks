@@ -39,6 +39,7 @@ import static org.junit.Assert.assertNotNull;
 import uk.ac.ed.ph.jqtiplus.QtiConstants;
 import uk.ac.ed.ph.jqtiplus.node.RootNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
+import uk.ac.ed.ph.jqtiplus.node.result.AssessmentResult;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.testutils.UnitTestHelper;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceNotFoundException;
@@ -57,11 +58,13 @@ public final class QtiObjectReaderTest {
 
     private QtiObjectReader qtiObjectReader;
     private URI choiceUri;
+    private URI choiceAssessmentResultUri;
 
     @Before
     public void before() {
         qtiObjectReader = UnitTestHelper.createUnitTestQtiObjectReader(false);
-        choiceUri = UnitTestHelper.createTestResourceUri("running/choice.xml");
+        choiceUri = UnitTestHelper.createTestResourceUri("reading/choice.xml");
+        choiceAssessmentResultUri = UnitTestHelper.createTestResourceUri("reading/choice-assessmentResult.xml");
     }
 
     @Test(expected=IllegalArgumentException.class)
@@ -103,5 +106,17 @@ public final class QtiObjectReaderTest {
     @Test(expected=QtiXmlInterpretationException.class)
     public void testLookupChoiceItemWrongRoot() throws Exception {
         qtiObjectReader.lookupRootNode(choiceUri, AssessmentTest.class);
+    }
+
+    @Test
+    public void testLookupChoiceAssessmentResult() throws Exception {
+        final QtiObjectReadResult<AssessmentResult> result = qtiObjectReader.lookupRootNode(choiceAssessmentResultUri, AssessmentResult.class);
+
+        assertNotNull(result);
+        assertEquals(QtiConstants.QTI_RESULT_21_NAMESPACE_URI, result.getQtiNamespaceUri());
+        assertEquals(AssessmentResult.class, result.getRequestedRootNodeClass());
+        assertNotNull(result.getXmlParseResult());
+        assertNotNull(result.getRootNode());
+        assertEquals(AssessmentResult.class, result.getRootNode().getClass());
     }
 }
