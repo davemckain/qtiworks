@@ -12,6 +12,24 @@ All Rights Reserved
   </nav>
   <h2>QTIWorks Release Notes</h2>
 
+  <h3>Release 1.0-beta13 (14/04/2020)</h3>
+  <p>
+    Tiny wee fix release. This merges in the fixes to issues 76 &amp; 77,
+    and updates the intro page to reflect the fact that the project is
+    now essentially dormant.
+  </p>
+  <h4>Issues resolved</h4>
+  <ul>
+    <li>
+      <a href="https://github.com/davemckain/qtiworks/issues/76">#76</a>:
+        Security: Fixed URLs of Maven dependencies to use HTTPS instead of HTTP.
+    </li>
+    <li>
+      <a href="https://github.com/davemckain/qtiworks/issues/77">#77</a>:
+        Fix to &lt;assessmentResult&gt; object model in JQTI+.
+    </li>
+  </ul>
+
   <h3>Release 1.0-beta12 (22/05/2018)</h3>
   <p>
     Minor update release for the GDPR. This adds in new functionality to
