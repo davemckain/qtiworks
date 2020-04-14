@@ -38,6 +38,7 @@ import uk.ac.ed.ph.jqtiplus.group.shared.FieldValueGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.result.ResponseVariable;
 import uk.ac.ed.ph.jqtiplus.node.shared.FieldValue;
 import uk.ac.ed.ph.jqtiplus.node.shared.FieldValueParent;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
@@ -93,11 +94,6 @@ public class CorrectResponse extends AbstractNode implements FieldValueParent {
         evaluate();
     }
 
-    @Override
-    public ResponseDeclaration getParent() {
-        return (ResponseDeclaration) super.getParent();
-    }
-
     /**
      * Gets value of interpretation attribute.
      *
@@ -129,18 +125,32 @@ public class CorrectResponse extends AbstractNode implements FieldValueParent {
 
     @Override
     public Cardinality getCardinality() {
-        return getParent().getCardinality();
+        final QtiNode parent = getParent();
+        if (parent instanceof ResponseDeclaration) {
+            return ((ResponseDeclaration) parent).getCardinality();
+        }
+        if (parent instanceof ResponseVariable) {
+            return ((ResponseVariable) parent).getCardinality();
+        }
+        return null;
     }
 
     @Override
     public BaseType getBaseType() {
-        return getParent().getBaseType();
+        final QtiNode parent = getParent();
+        if (parent instanceof ResponseDeclaration) {
+            return ((ResponseDeclaration) parent).getBaseType();
+        }
+        if (parent instanceof ResponseVariable) {
+            return ((ResponseVariable) parent).getBaseType();
+        }
+        return null;
     }
 
     @Override
     protected void validateThis(final ValidationContext context) {
         super.validateThis(context);
-        if (getParent().hasCardinality(Cardinality.SINGLE) && getFieldValues().size() > 1) {
+        if (getCardinality()==Cardinality.SINGLE && getFieldValues().size() > 1) {
             context.fireValidationError(this, "Invalid values count. Expected: " + 1 + ". Found: " + getFieldValues().size());
         }
     }

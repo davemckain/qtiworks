@@ -59,4 +59,13 @@ All Rights Reserved
     <div class="clear"></div>
   </form>
 
+  <h2 style="margin-top:2em">Deleting your QTIWorks account and/or LTI Connections</h2>
+
+  <p>
+    If you have previously been given a QTIWorks individual account and/or LTI Connection,
+    then you may request the deletion of all of your data at any time by emailing the
+    administrator of this instance of QTIWorks
+    (<a href="mailto:${qtiWorksDeploymentSettings.adminEmailAddress}"><c:out value="${qtiWorksDeploymentSettings.adminName}"/></a>).
+  </p>
+
 </page:page>
