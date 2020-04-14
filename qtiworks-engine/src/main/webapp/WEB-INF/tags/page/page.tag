@@ -68,7 +68,7 @@ All Rights Reserved
             QTIWorks ${qtiWorksVersion} &#x2012; <a href="${utils:internalLink(pageContext, '/release-notes.jsp')}">Release notes</a>
           </p>
           <p>
-            Copyright &#xa9; <fmt:formatDate value="${now}" type="date" pattern="yyyy"/>
+            Copyright &#xa9; 2012 &#x2013; <fmt:formatDate value="${now}" type="date" pattern="yyyy"/>
             <a href="https://www.ph.ed.ac.uk">The School of Physics and Astronomy</a>,
             <a href="https://www.ed.ac.uk">The University of Edinburgh</a>.
           </p>
