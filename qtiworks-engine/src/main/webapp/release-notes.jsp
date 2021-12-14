@@ -12,6 +12,16 @@ All Rights Reserved
   </nav>
   <h2>QTIWorks Release Notes</h2>
 
+  <h3>Release 1.0-beta14 (14/12/2021)</h3>
+  <p>
+    Maintenance release in light of the recent Log4J 2 vulnerability.
+    We're not using that here - we're using Logback &amp; SLF4J instead -
+    but I thought this would be a good time to update key dependencies.
+  </p>
+  <p>
+    Note also that the minimum Java version supported by QTIWorks is now 8.
+  </p>
+
   <h3>Release 1.0-beta13 (14/04/2020)</h3>
   <p>
     Tiny wee fix release. This merges in the fixes to issues 76 &amp; 77,
