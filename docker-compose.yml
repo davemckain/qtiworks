@@ -1,0 +1,32 @@
+version: '3'
+services:
+  db: 
+    image: mysql:5.6
+    environment:
+      - MYSQL_DATABASE=qtiworks
+      - MYSQL_USER=qtiworks
+      - MYSQL_PASSWORD=qtiworks
+      - MYSQL_RANDOM_ROOT_PASSWORD=true
+    expose:
+      - 3306
+    volumes:
+      - mysql:/var/lib/mysql
+    healthcheck:
+        test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+        timeout: 20s
+        retries: 10
+  qtiworks:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - qtiworks:/var/qtiworks
+    ports:
+      - 8080:8080
+
+volumes:
+  mysql:
+    driver: local
+  qtiworks:	
+    driver: local
