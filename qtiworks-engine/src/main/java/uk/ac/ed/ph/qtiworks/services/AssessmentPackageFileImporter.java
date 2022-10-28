@@ -160,6 +160,10 @@ public class AssessmentPackageFileImporter {
             while ((zipEntry = zipInputStream.getNextEntry()) != null) {
                 foundEntry = true;
                 final File destFile = new File(importSandboxDirectory, zipEntry.getName());
+                if (!destFile.toPath().normalize().startsWith(importSandboxDirectory.toPath().normalize())) {
+                    logger.warn("ZIP file contains entry '{}' that escapes sandbox - rejecting entire package", zipEntry.getName());
+                    return false;
+                }
                 if (!zipEntry.isDirectory()) {
                     ServiceUtilities.ensureFileCreated(destFile);
                     final FileOutputStream destOutputStream = new FileOutputStream(destFile);

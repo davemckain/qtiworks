@@ -12,6 +12,17 @@ All Rights Reserved
   </nav>
   <h2>QTIWorks Release Notes</h2>
 
+  <h3>Release 1.0-beta15 (28/10/2022) <strong>[SECURITY RELEASE!]</strong></h3>
+  <p>
+    This release fixes CVE-2022-39367, a critical vulnerability in the handling
+    of uploaded ZIP files.
+  </p>
+  <p>
+    (This release also includes a further security update to the Logback library.
+    This was committed to the master branch back in January but not made into
+    a formal release.)
+  </p>
+
   <h3>Release 1.0-beta14 (14/12/2021)</h3>
   <p>
     Maintenance release in light of the recent Log4J 2 vulnerability.
