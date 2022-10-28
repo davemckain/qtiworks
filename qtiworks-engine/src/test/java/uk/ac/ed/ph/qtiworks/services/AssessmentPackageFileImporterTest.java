@@ -156,6 +156,18 @@ public class AssessmentPackageFileImporterTest {
     }
 
     @Test
+    public void badZipSandboxEscape() throws Exception {
+        final MultipartFile multipartFile = getThisUnitTestMultipartFile("uk/ac/ed/ph/qtiworks/services/ZipSlip.zip", "application/zip");
+        try {
+            assessmentPackageFileImporter.importAssessmentPackageData(importSandboxDirectory, multipartFile);
+            Assert.fail("Should have failed");
+        }
+        catch (final AssessmentPackageDataImportException e) {
+            Assert.assertEquals(ImportFailureReason.NOT_XML_OR_ZIP, e.getFailure().getReason());
+        }
+    }
+
+    @Test
     public void notContentPackage() throws Exception {
         final MultipartFile multipartFile = getThisUnitTestMultipartFile("uk/ac/ed/ph/qtiworks/services/NotContentPackage.zip", "application/zip");
         try {
