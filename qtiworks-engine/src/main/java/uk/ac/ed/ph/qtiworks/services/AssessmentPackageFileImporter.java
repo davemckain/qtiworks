@@ -160,6 +160,9 @@ public class AssessmentPackageFileImporter {
             while ((zipEntry = zipInputStream.getNextEntry()) != null) {
                 foundEntry = true;
                 final File destFile = new File(importSandboxDirectory, zipEntry.getName());
+                if (!destFile.toPath().normalize().startsWith(importSandboxDirectory.toPath().normalize())) {
+                    throw new RuntimeException("Bad zip entry");
+                }
                 if (!zipEntry.isDirectory()) {
                     ServiceUtilities.ensureFileCreated(destFile);
                     final FileOutputStream destOutputStream = new FileOutputStream(destFile);
